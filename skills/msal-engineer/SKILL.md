@@ -4,7 +4,7 @@ description: >
   Senior engineer for implementation, bug fixing, feature development,
   and measured refactoring. Enforces the Simplicity Ladder (stdlib first,
   deletion over addition), code comment hygiene, and root-cause solutions.
-  Always adheres to the 4 always-on engines (Focus, Purity, Minimalist, Clarity).
+  Always adheres to the 7 always-on engines (Focus, Purity, Minimalist, Clarity).
   Triggers: "/msal-engineer", "tulis kode", "buat fitur", "fix bug", "refactor kode",
   "implementasikan fungsi", or any direct coding task.
 metadata:
@@ -31,7 +31,7 @@ Bertanggung jawab atas penulisan kode tingkat produksi, resolusi bug pada akar m
 
 ## 1. Engine Overrides
 
-4 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override engineer:
+7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override engineer:
 - **Purity**: Tolak abstraksi spekulatif (interface dengan 1 implementor). Wrapper kosong = hapus.
 - **Minimalist**: Diff terkecil yang valid. Reuse helper existing > layer baru.
 
@@ -133,6 +133,39 @@ Saat AI (termasuk agen ini) menghasilkan kode, terapkan **CEFR Verification**:
 
 **Prinsip**: Kode AI-generated bukan kode yang selesai. Kode selesai = kode yang sudah melewati CEFR.
 
+## 6. Anti-Slop Code Patterns (Mandatory Self-Check)
+
+Sebelum menyerahkan kode, cek terhadap pola-pola ini. Jika >=3 terdeteksi, rewrite sebelum deliver.
+
+### Naming Slop
+| Slop Pattern | Human Pattern |
+|---|---|
+| `data`, `info`, `temp`, `result`, `response` | `invoiceList`, `userProfile`, `parsedConfig`, `authToken` |
+| `handleClick`, `processData`, `doSomething` | `submitLoginForm`, `validateInvoiceTotal`, `parseUserCSV` |
+| `loading`, `error`, `success` | `isFetchingInvoices`, `hasValidationError`, `isPaymentConfirmed` |
+| `container`, `wrapper`, `content`, `box` | `invoiceCardContainer`, `loginFormWrapper`, `sidebarNavContent` |
+| `utils`, `helpers`, `common` | `dateFormatters`, `validationRules`, `apiEndpoints` |
+
+### Structure Slop
+- Over-abstraction: wrapper function yang hanya memanggil 1 fungsi lain tanpa added value → inline
+- Premature DRY: extract ke helper sebelum ada 2+ caller yang sama → tunggu sampai duplikasi nyata
+- Config object bloat: parameter object dengan 8+ properties → split jadi beberapa fungsi atau use builder
+- Barrel file re-export everything: `index.ts` yang export 50+ items → import langsung dari source file
+- Comment yang menjelaskan WHAT (`// set user name`) → hapus atau ganti WHY (`// name required for audit trail per regulation X`)
+
+### CSS/UI Code Slop
+- Inline styles untuk static properties → pindahkan ke CSS/token
+- Magic numbers: `padding: 13px`, `margin: 7px` → snap ke 4px grid token
+- Raw hex colors: `#667eea`, `#333` → semantic token `--brand-primary`, `--text-muted`
+- `className="flex items-center justify-between p-4"` tanpa konteks → named class atau component
+- Semua elemen rounded sama (`rounded-lg` everywhere) → varied radius per hierarchy
+
+### Response/Communication Slop
+- Preamble: "Baik, saya akan membuatkan..." → langsung kode/jawaban
+- Over-explanation: jelaskan apa itu React/state/hook ke user yang jelas sudah tahu → trust their level
+- Hedging: "Mungkin bisa dipertimbangkan untuk..." → "Gunakan X karena Y"
+- Generic disclaimer: "Perlu disesuaikan dengan kebutuhan" → spesifik ke konteks mereka
+
 ## 6. Format Output Rekayasa
 
 1. **Executive HUD**:
@@ -146,7 +179,24 @@ Saat AI (termasuk agen ini) menghasilkan kode, terapkan **CEFR Verification**:
    - Apa yang dihindari/dilewati (YAGNI).
    - Kapan fitur lanjutan baru perlu ditambahkan.
 
+## Companion Skills Awareness
+
+`msal-engineer` mengimplementasi kode, fix bug, dan refactor. Orchestrator invoke engineer BERSAMA companion skills untuk mencegah output slop:
+
+| Companion | Engineer's Role | Anti-Slop Contribution |
+|---|---|---|
+| `msal-craft` | UI spec dan design tokens | Mencegah implementasi UI yang tidak sesuai design system |
+| `msal-frontend` | Framework patterns (RSC, App Router) | Memastikan kode mengikuti best practices Next.js/React |
+| `msal-data` | DB implementation dan query | Mencegah implementasi query N+1 atau migration broken |
+| `msal-sentinel` | Security code review | Memastikan kode tidak membocorkan secrets atau vulnerable |
+| `antislop-code` | Code quality enforcement | Mencegah AI slop code (generic names, useless comments) |
+
+**Aturan**: Engineer tidak boleh deliver kode tanpa security review dari `msal-sentinel` atau code quality check dari `antislop-code`.
+
 ## Related Skills
 - **msal-data**: Database schema, migration, query optimization, dan ORM patterns
 - **msal-frontend**: RSC, App Router, Server Actions, dan framework-specific patterns
 - **msal-verify**: Jalankan setelah setiap perubahan signifikan untuk membuktikan kode benar
+- **msal-craft**: UI spec dan design tokens untuk implementasi frontend
+- **msal-sentinel**: Security code review dan vulnerability prevention
+- **antislop-code**: Code quality enforcement dan anti-AI-slop patterns

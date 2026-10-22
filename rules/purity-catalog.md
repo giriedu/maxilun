@@ -68,7 +68,7 @@ Setiap elemen berikut dilarang ditambahkan tanpa fungsi nyata. Jika muncul tanpa
 19. **Overflow issues** — horizontal scroll unintended, text truncation tanpa ellipsis, content clipping.
 
 ### B4. Component & Pattern Issues
-20. **Breadcrumb overuse** — breadcrumbs pada simple pages tanpa hierarchical navigation. Only for deep taxonomies.
+20. **Breadcrumb overuse** — breadcrumbs pada simple pages tanpa hierarchical navigation. Only for deep taxonomies (≥3 levels). Login, register, 404, single-page forms TIDAK pakai breadcrumb.
 21. **Badge inflation** — badges labeled "Powerful", "AI-Powered", "New" tanpa factual basis. Badges only for status (version, count, state).
 22. **Emoji as icons** — emoji menggantikan professional icon set. Icons wajib dari satu family (Lucide, Phosphor, etc.) dengan consistent weight.
 23. **Uniform border radius** — semua elements rounded sama (e.g., all 8px). Nested radii: child ≤ parent, concentric hierarchy.
@@ -77,6 +77,8 @@ Setiap elemen berikut dilarang ditambahkan tanpa fungsi nyata. Jika muncul tanpa
 26. **Decorative components** — buttons/tabs/dropdowns/search that don't function. If non-functional, don't render.
 27. **Tab bar bloat** — >5 tabs di mobile nav. Mobile tab bars: 3-5 items max dengan icons + labels.
 28. **Modal abuse** — modals untuk content yang bisa inline. Modals only for interrupts requiring focus.
+29. **Login page decoration** — gradient backgrounds, floating shapes, fake product screenshots, marketing copy, atau testimonials pada halaman login/register. Login page fokus pada form functionality, bukan visual impressiveness. Background boleh textured/subtle tapi tidak boleh mengganggu readability form.
+30. **Generic menu names** — sidebar/nav menggunakan "Dashboard", "Settings", "Profile", "Admin" tanpa konteks produk. Menu names wajib mencerminkan struktur informasi aktual: "Patient Records" bukan "Dashboard", "Notification Preferences" bukan "Settings", "Clinic Profile" bukan "Profile".
 
 ### B5. Animation & Motion Issues
 29. **Animation overload** — glow, floating, parallax, hover effects tanpa functional purpose. Motion clarifies cause-effect only.
@@ -153,6 +155,10 @@ Rules ini bisa divalidasi secara otomatis via tooling (CLI, pre-commit, CI). Set
 | CMP-005 | Non-functional interactive element (button/link without action) | ERROR | ❌ |
 | CMP-006 | Modal for content displayable inline | WARNING | ❌ |
 | CMP-007 | Tab bar with >5 items (mobile) | ERROR | ❌ |
+| CMP-008 | Login/register page with decorative gradient background | WARNING | ❌ |
+| CMP-009 | Login/register page with marketing copy or testimonials | ERROR | ❌ |
+| CMP-010 | Generic menu name ("Dashboard", "Settings", "Profile") without product context | WARNING | ❌ |
+| CMP-011 | Breadcrumb on login/register/404/single-form page | ERROR | ❌ |
 
 ### C5. Animation & Performance Detectors
 | ID | Rule | Severity | Auto-fix |

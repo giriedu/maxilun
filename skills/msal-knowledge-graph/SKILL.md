@@ -29,7 +29,7 @@ Fondasi navigasi seluruh ekosistem Maxilun. Basis kode diperlakukan sebagai graf
 
 ## 1. Engine Overrides
 
-4 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override knowledge-graph:
+7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override knowledge-graph:
 - **Clarity**: Laporan simbol presisi (`file:line`). Edge berlabel confidence (`exact` atau `name-only`); struktur yang tidak berdasar kode nyata tidak dilaporkan.
 
 ## Workflow
@@ -145,6 +145,12 @@ Pilih bentuk cepat untuk pencarian murni; bentuk lengkap hanya saat tugas memodi
 - Label results `[DIRECT]` so user knows precision level
 
 **Decision rule**: Check once at session start. If first KG query returns structured results → full protocol. If not → direct mode for entire session. Do not re-check per query.
+
+## Companion Skills Awareness
+
+KG adalah fondasi discovery, bukan output final. Semua skill lain bergantung pada KG untuk code mapping. Orchestrator invoke KG SEBELUM skill eksekutor lainnya:
+
+**Aturan**: KG tidak menghasilkan deliverable langsung — output KG (`file:line` terkonfirmasi) menjadi input bagi `msal-engineer`, `msal-architect`, `msal-insight`, dan skill eksekutor lainnya. Tanpa KG, skill lain bekerja buta.
 
 ## 8. Visualisasi Graf
 

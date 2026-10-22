@@ -4,7 +4,7 @@ description: >
   Diagnostic investigator and code auditor. Traces symptoms back to root causes,
   profiles runtime and query performance, detects memory leaks and bottlenecks,
   and compiles evidence-based findings before code changes are proposed.
-  Always adheres to the 4 always-on engines (Focus, Purity, Minimalist, Clarity).
+  Always adheres to the 7 always-on engines (Focus, Purity, Minimalist, Clarity).
   Triggers: "/msal-insight", "/msal-audit", "diagnosis masalah", "kenapa ini lambat",
   "root cause", "analisis performa", "audit kode", "memory leak", or debugging investigations.
 metadata:
@@ -31,7 +31,7 @@ Bertanggung jawab atas diagnosis akar masalah (*root cause analysis*), audit kes
 
 ## 1. Engine Overrides
 
-4 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override insight:
+7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override insight:
 - **Purity**: Tolak asumsi tanpa bukti. Temuan wajib didukung baris kode atau metrik profiler.
 - **Minimalist**: Jangan refactor besar untuk masalah yang bersumber dari 1 query N+1.
 - **Clarity**: Struktur: Gejala → Bukti → Akar Penyebab → Solusi Ringkas.
@@ -197,8 +197,20 @@ Diagnosis langkah:
    - Idealnya: `pool_max = (CPU cores × 2) + disk spindles`
 4. Jika semua koneksi dipakai tapi query singkat: bottleneck di application throughput, bukan query — scale horizontal atau tambah replica.
 
+## Companion Skills Awareness
+
+`msal-insight` mendiagnosis akar masalah dan audit performa. Orchestrator invoke insight BERSAMA companion skills untuk mencegah output slop:
+
+| Companion | Insight's Role | Anti-Slop Contribution |
+|---|---|---|
+| `msal-engineer` | Fix setelah diagnosis | Mencegah diagnosis akurat tapi tidak ada implementasi fix |
+| `msal-verify` | Regression testing | Memastikan fix tidak menimbulkan bug baru di masa depan |
+
+**Aturan**: Insight tidak boleh deliver diagnosis tanpa action plan dari `msal-engineer` atau regression test dari `msal-verify`.
+
 ## Related Skills
 - **msal-data**: Database schema, migration, indexing, dan query optimization
 - **msal-verify**: Jalankan profiler dan tes performa sebagai bagian CI pipeline
 - **msal-deploy**: Monitoring, alerting, dan observability di production
+- **msal-engineer**: Implementasi fix berdasarkan diagnosis root cause
 

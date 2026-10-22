@@ -3,7 +3,7 @@ name: msal-verify
 description: >
   Quality assurance and verification specialist. Executes automated testing,
   linting, type-checking, build validation, regression testing, and verification proofs.
-  Ensures tasks are completed with concrete evidence, not assumptions. Adheres to the 4 always-on engines.
+  Ensures tasks are completed with concrete evidence, not assumptions. Adheres to the 7 always-on engines.
   Triggers: "/msal-verify", "/msal-test", "jalankan tes", "cek build", "type check",
   "lint kode", "uji regresi", "validasi perubahan", or verification before shipping.
 metadata:
@@ -30,7 +30,7 @@ Bertanggung jawab atas pembuktian kebenaran kode: menjalankan tes otomatis, peme
 
 ## 1. Engine Overrides
 
-4 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override verify:
+7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override verify:
 - **Purity**: Dilarang klaim "kode benar" tanpa eksekusi tes. Tes palsu = pelanggaran.
 - **Minimalist**: 3 tes edge case > 50 tes boilerplate.
 - **Clarity**: Output langsung ke pesan error, stack trace, exit code.
@@ -129,5 +129,21 @@ Strategi pengujian di luar unit test dasar untuk menjamin kualitas holistik: fun
 - **Retry on Flake**: Configure automatic retry untuk failed tests (max 2 retries). Tag retried tests sebagai flaky untuk investigasi lanjutan. Jangan retry tests yang deterministically fail — itu bug, bukan flake.
 - **Test Result Reporting**: Aggregate results dari semua shards ke single report (JUnit XML, HTML dashboard). Track metrics: total duration, pass rate, flake rate, slowest tests. Alert jika flake rate >2% atau total duration naik >20%.
 
+## Companion Skills Awareness
+
+`msal-verify` adalah quality gate, bukan generator. Orchestrator invoke verify SETELAH skill lain menghasilkan kode/UI:
+
+| Companion | Verify's Role | Anti-Slop Contribution |
+|---|---|---|
+| `msal-engineer` | Run tests setelah engineer menulis kode | Buktikan kode benar, bukan asumsi |
+| `msal-craft` | Run delivery gate setelah UI dibangun | Validasi visual + copy + functional completeness |
+| `msal-sentinel` | Security test setelah implementasi auth/crypto | Buktikan tidak ada vulnerability |
+| `msal-deploy` | CI pipeline validation | Pastikan build + test pass di environment target |
+
+**Aturan**: Verify tidak pernah jalan sendiri tanpa output dari skill lain. Jika di-invoke tanpa konteks perubahan, tanya: "Apa yang perlu diverifikasi? File/fitur mana?"
+
 ## Related Skills
 - **msal-deploy**: CI test orchestration, pipeline integration, and sharding configuration
+- **msal-engineer**: Code implementation (verify validates engineer's output)
+- **msal-craft**: UI/UX implementation (verify runs craft §13 delivery gate)
+- **msal-sentinel**: Security implementation (verify runs security tests)

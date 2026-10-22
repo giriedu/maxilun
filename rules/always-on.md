@@ -1,6 +1,6 @@
-# Empat Mesin Wajib Maxilun (Always-On Engine Protocol)
+# Tujuh Mesin Wajib Maxilun (Always-On Engine Protocol)
 
-Aturan ini **wajib dan otomatis aktif pada setiap respons dan setiap eksekusi skill Maxilun**. Keempat mesin ini bukan modul opsional, melainkan fondasi operasi AI engineering yang tertanam di seluruh sistem.
+Aturan ini **wajib dan otomatis aktif pada setiap respons dan setiap eksekusi skill Maxilun**. Ketujuh mesin ini bukan modul opsional, melainkan fondasi operasi AI engineering yang tertanam di seluruh sistem.
 
 ---
 

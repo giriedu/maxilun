@@ -5,7 +5,7 @@ description: >
   implements hardened authentication (JWT/sessions) and authorization (RBAC/ABAC),
   enforces cryptographic integrity (AEAD encryption, KDF, constant-time checks),
   enforces input validation at trust boundaries, and safeguards secrets and privacy.
-  Always adheres to the 4 always-on engines (Focus, Purity, Minimalist, Clarity).
+  Always adheres to the 7 always-on engines (Focus, Purity, Minimalist, Clarity).
   Triggers: "/msal-sentinel", "/msal-security", "audit keamanan", "autentikasi", "otorisasi",
   "validasi input", "cegah sql injection", "xss", "csrf", "rahasia api",
   "kriptografi", "enkripsi", "AES", "hashing", "timing attack", "sertifikat TLS", or security tasks.
@@ -33,7 +33,7 @@ Bertanggung jawab atas postur keamanan aplikasi, arsitektur autentikasi & otoris
 
 ## 1. Engine Overrides
 
-4 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override sentinel:
+7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override sentinel:
 - **Purity**: Tolak security theater (checklist generik tanpa relevansi codebase).
 - **Minimalist**: Kripto native (`crypto.subtle`, Web Crypto) > dependency wrapper berat.
 - **Clarity**: Format temuan: Nama Kerentanan → Dampak → Lokasi Baris → Kode Perbaikan.
@@ -268,7 +268,19 @@ location /api/v1/auth/ {
 - **IP Reputation**: Blokir traffic dari ASN atau rentang IP yang teridentifikasi sebagai sumber ancaman terkoordinasi.
 - **Delegasi Tanggung Jawab**: Pengaturan sertifikat TLS, firewall host, dan konfigurasi ingress didelegasikan bersama `msal-deploy`.
 
+## Companion Skills Awareness
+
+`msal-sentinel` melindungi aplikasi dari kerentanan keamanan. Orchestrator invoke sentinel BERSAMA companion skills untuk mencegah output slop:
+
+| Companion | Sentinel's Role | Anti-Slop Contribution |
+|---|---|---|
+| `msal-engineer` | Implement security measures | Mencegah security config yang benar tapi implementasi bocor |
+| `msal-verify` | Security testing dan validation | Memastikan security measures teruji di CI pipeline |
+
+**Aturan**: Sentinel tidak boleh approve security implementation tanpa code review dari `msal-engineer` atau test coverage dari `msal-verify`.
+
 ## Related Skills
 - **msal-deploy**: Security monitoring, secret injection, SSL/TLS configuration, perimeter WAF, dan audit logging
 - **msal-verify**: Security regression tests, OWASP ZAP integration, dan vulnerability scanning di CI
+- **msal-engineer**: Implementasi security measures dan secure coding patterns
 

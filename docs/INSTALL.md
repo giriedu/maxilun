@@ -9,19 +9,19 @@ Mendukung instalasi langsung dari GitHub untuk Claude Code, Antigravity, Cursor,
 npx skills add giriedu/maxilun
 
 # 2. Pasang seluruh 18 skill secara global (-g) tanpa prompt (-y):
-npx skills add giriedu/msal -g -y
+npx skills add giriedu/maxilun -g -y
 
 # 3. Khusus Claude Code (Level Project Workspace):
-npx skills add giriedu/msal -a claude-code
+npx skills add giriedu/maxilun -a claude-code
 
 # 4. Pasang skill spesifik tertentu:
-npx skills add giriedu/msal --skill msal-engineer
-npx skills add giriedu/msal --skill msal-architect
+npx skills add giriedu/maxilun --skill msal-engineer
+npx skills add giriedu/maxilun --skill msal-architect
 ```
 
 > [!TIP]
 > **Catatan Pengguna Windows (Symlink Restriction):**  
-> Di Windows, jika akun Anda membatasi pembuatan *Symbolic Link* (tanpa Developer Mode/Admin), tambahkan flag `--copy` (misal: `npx skills add giriedu/msal -g -y --copy`) atau pilih opsi **Copy** di menu interaktif CLI.
+> Di Windows, jika akun Anda membatasi pembuatan *Symbolic Link* (tanpa Developer Mode/Admin), tambahkan flag `--copy` (misal: `npx skills add giriedu/maxilun -g -y --copy`) atau pilih opsi **Copy** di menu interaktif CLI.
 
 ## Via Script Installer Mandiri
 
@@ -50,7 +50,7 @@ npx skills update
 npx skills update -g -y
 
 # Atau install ulang langsung dari repo (otomatis memperbarui):
-npx skills add giriedu/msal -g -y
+npx skills add giriedu/maxilun -g -y
 ```
 
 ### 2. Update via Repositori Lokal (Git)

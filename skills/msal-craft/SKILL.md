@@ -4,6 +4,7 @@ description: >
   Production UI/UX specialist for design systems, spatial rhythm, responsive
   layouts, WCAG accessibility, and interaction polish. Combines mathematical
   scales (4px grid, OKLCH tokens) with native CSS minimalism and purity-engine visual gates.
+  Includes mandatory pre-generation anti-slop gate that blocks AI-generic output before coding starts.
   Triggers: "/msal-craft", "/msal-ui", "desain UI", "sistem desain", "tampilan antarmuka",
   "responsif", "aksesibilitas", "dark mode", "interaksi tombol", or any visual frontend task.
 metadata:
@@ -24,26 +25,156 @@ metadata:
     - rules/purity-catalog.md
 ---
 
-# Maxilun Craft: UI/UX & Design Systems v2.0
+# Maxilun Craft: UI/UX & Design Systems v2.1
 
 Bertanggung jawab atas rekayasa visual tingkat produksi: sistem desain konsisten, tipografi matematis, palet warna aksesibel, tata letak responsif, dan interaksi pengguna yang hidup tanpa beban library berlebih.
 
-**Enhanced with Impeccable-inspired workflows**: Persistent product context (PRODUCT.md), 24 iterative design commands, live browser iteration, and automated detector integration.
+**Enhanced with Impeccable-inspired workflows**: Persistent product context (PRODUCT.md), 24 iterative design commands, live browser iteration, automated detector integration, and **mandatory pre-generation anti-slop gate**.
+
+## 0. PRE-GENERATION ANTI-SLOP GATE (MANDATORY, NON-NEGOTIABLE)
+
+**Sebelum menulis satu baris kode UI apa pun**, jalankan gate ini. Jika gagal, STOP. Jangan lanjutkan ke §1 atau workflow apa pun sampai semua item PASS.
+
+### 0a. Context Gathering (Wajib Ditanyakan)
+
+Tanyakan kepada pengguna (dalam bahasa chat mereka) SEBELUM mulai:
+
+1. **Produk/Aplikasi ini untuk siapa?** (audiens spesifik, bukan "semua orang")
+2. **Apa fungsi utama halaman/komponen ini?** (task konkret, bukan "tampilan bagus")
+3. **Apakah ada brand guideline, moodboard, atau referensi visual?** (jika tidak, tawarkan untuk buat direction singkat)
+4. **Nama aplikasi/fitur sudah ditentukan?** (jika belum, usulkan nama berdasarkan fungsi, bukan buzzword)
+
+Jika pengguna menolak menjawab atau bilang "terserah", nyatakan eksplisit: *"Tanpa konteks produk, output akan cenderung generik. Saya akan labeli sebagai DRAFT TANPA ARAH dan menggunakan dial minimal ENERGY 1 / RHYTHM 1 / MOTION 1."*
+
+### 0b. Anti-Slop Name & Label Check
+
+Sebelum menamai halaman, menu, tombol, atau fitur:
+
+| DILARANG (AI Slop) | GANTI DENGAN (Fungsi Spesifik) |
+|---|---|
+| Dashboard, Admin Panel, Control Center | [Nama Fungsi] Monitor, [Entitas] Manager, Ringkasan [Aktivitas] |
+| Get Started, Learn More, Explore | [Aksi Konkret]: Buat Akun, Lihat Harga, Coba Demo |
+| Settings, Configuration, Preferences | Pengaturan [Konteks]: Notifikasi Email, Privasi Data, Tampilan |
+| Profile, Account, User | Nama Pengguna + Konteks: Profil Dokter, Akun Toko, Data Siswa |
+| Welcome, Hello, Hi there | Sapaan kontekstual: Selamat Datang di [App], Lanjutkan Pekerjaan, Kembali ke [Fitur] |
+| Powerful, Smart, AI-Powered, Next-Gen | Hapus. Jelaskan fungsi nyata dalam 3-5 kata |
+| Revolutionize, Transform, Elevate | Hapus. Gunakan kata kerja konkret: Otomatisasi, Percepat, Sederhanakan |
+
+**Aturan penamaan**:
+- Nama harus menjawab: "Halaman ini melakukan APA untuk SIAPA?"
+- Jika nama bisa dipakai di 10+ aplikasi lain tanpa perubahan → nama terlalu generik, ganti
+- Menu sidebar/nav wajib mencerminkan struktur informasi aktual, bukan template default
+- Breadcrumb hanya jika hierarki navigasi ≥3 level; halaman sederhana (login, register, 404) TIDAK pakai breadcrumb
+
+### 0c. Visual Direction Declaration (Design Read)
+
+Sebelum generate, deklarasikan satu baris:
+
+> Reading this as: `<page kind>` for `<audience>`, in a `<visual language>` style, dial ENERGY X / RHYTHM Y / MOTION Z.
+
+Contoh: *"Reading this as: Login page for clinic staff, in a calm medical-professional style, dial ENERGY 1 / RHYTHM 1 / MOTION 1."*
+
+Jika tidak ada direction dari pengguna:
+- Label output: **"DRAFT TANPA ARAH"**
+- Dial default jujur: **ENERGY 1 / RHYTHM 1 / MOTION 1**
+- Jangan silently fallback ke aesthetic AI default (ungu-biru, glassmorphism, glow)
+
+### 0d. Page-Type Specific Pre-Check
+
+Untuk tipe halaman umum, jalankan checklist tambahan SEBELUM coding:
+
+**Login/Register Page:**
+- [ ] Form fields sesuai kebutuhan autentikasi aktual (email+password? OAuth? OTP?)
+- [ ] Error state untuk setiap field (invalid format, wrong password, account locked)
+- [ ] Loading state pada submit button (spinner + disable)
+- [ ] Success/failure feedback setelah submit
+- [ ] "Forgot password" link berfungsi atau ditandai "Coming soon"
+- [ ] Social login buttons hanya jika backend mendukung
+- [ ] Tidak ada elemen dekoratif yang tidak berfungsi (gradient background, floating shapes, fake testimonials)
+- [ ] Layout fokus pada form, bukan hero section atau marketing copy
+- [ ] Mobile: input font ≥16px, tap target ≥44px, no horizontal scroll
+
+**Dashboard/Admin Page:**
+- [ ] Data yang ditampilkan berasal dari sumber nyata atau placeholder berlabel `[REAL DATA]`
+- [ ] Empty state untuk setiap widget/chart/list
+- [ ] Loading skeleton yang meniru bentuk konten final
+- [ ] Filter/search berfungsi atau ditandai non-fungsional
+- [ ] Navigation menu mencerminkan struktur informasi aktual, bukan template 4-item default
+- [ ] Tidak ada statistik palsu ("99.9% uptime", "10K+ users") tanpa sumber
+
+**Landing Page:**
+- [ ] Hero menjelaskan nilai produk dalam 1 kalimat spesifik, bukan slogan generik
+- [ ] CTA utama mengarah ke aksi nyata (signup, demo, pricing)
+- [ ] Testimonials dari orang/perusahaan nyata atau dihapus sepenuhnya
+- [ ] Feature list berdasarkan kemampuan aktual, bukan klaim marketing
+- [ ] FAQ berisi pertanyaan yang benar-benar ditanyakan user, bukan template
+- [ ] Tidak ada "Trusted by" logo bar tanpa izin penggunaan logo
+
+### 0e. Gate Status Output
+
+Setelah menjalankan §0a-0d, output status gate SEBELUM mulai coding:
+
+```
+🔒 PRE-GENERATION ANTI-SLOP GATE
+- Context gathered: ✅/❌ (jika ❌, labeled DRAFT TANPA ARAH)
+- Names/labels checked: ✅/❌ (list yang diganti)
+- Design Read declared: ✅ "Reading this as: ..."
+- Page-type pre-check: ✅/❌ (list item yang perlu perhatian)
+- Verdict: PROCEED / BLOCKED (jika BLOCKED, sebutkan alasan dan langkah perbaikan)
+```
+
+Jika verdict = BLOCKED, jangan lanjutkan. Perbaiki dulu, lalu re-run gate.
+
+### 0f. Copywriting Anti-Slop Filter (Inline)
+
+Meskipun `msal-content` adalah spesialis copywriting, `msal-craft` WAJIB punya filter copy dasar untuk mencegah AI slop text masuk ke UI. Aturan ini berlaku untuk SEMUA teks yang ditulis dalam kode UI (label, heading, deskripsi, placeholder, error message, toast, tooltip).
+
+**Teks DILARANG (AI Slop Patterns):**
+
+| Kategori | Contoh DILARANG | Ganti Dengan |
+|---|---|---|
+| Deskripsi bombastis | "Studio desain independen yang merancang identitas visual, arsitektur jenama, dan sistem desain digital" | "Kami membantu brand membangun identitas visual yang konsisten" (singkat, konkret, manusia) |
+| Buzzword stacking | "Portal tracking progres proyek dan verifikasi invoice digital transparan" | "Pantau progres proyek dan cek invoice kapan saja" |
+| Formal berlebihan | "Dilengkapi dengan fitur mutakhir untuk optimalisasi produktivitas" | "Fitur yang membantu Anda bekerja lebih cepat" |
+| Jargon tanpa konteks | "Arsitektur jenama", "Sistem desain digital", "Ekosistem terintegrasi" | Gunakan kata yang dimengerti audiens target |
+| Kalimat panjang >25 kata | Satu kalimat menjelaskan 3+ hal sekaligus | Pecah jadi 2-3 kalimat pendek atau bullet points |
+| Passive voice dominan | "Proyek dapat dilacak melalui portal yang telah disediakan" | "Lacak progres proyek Anda di portal" |
+| Triple adjective | "Cepat, aman, dan terpercaya" | Pilih SATU yang paling relevan + buktikan |
+
+**Prinsip copy di UI:**
+1. **Tulis seperti manusia berbicara**, bukan seperti brosur korporat
+2. **Satu kalimat = satu ide**. Jika ada "dan", "yang", "dengan" bertumpuk, pecah
+3. **Kata kerja aktif**: "Lacak", "Kelola", "Buat" bukan "Dapat dilacak", "Dapat dikelola"
+4. **Spesifik > Umum**: "Upload invoice PDF" bukan "Upload dokumen"
+5. **Singkat > Panjang**: Label tombol max 3 kata. Heading max 8 kata. Deskripsi max 2 kalimat.
+6. **Test baca keras**: Jika terasa kaku/bukan cara orang bicara, tulis ulang
+7. **Bahasa Indonesia natural**: Jangan terjemahkan literal dari English AI patterns. "Get started" bukan "Mulai sekarang" (lebih baik: "Buat akun" atau "Coba gratis")
+
+**Copy Check Gate** (jalankan sebelum ship):
+- [ ] Baca semua teks UI keras-keras. Terasa natural atau seperti robot/brosur?
+- [ ] Adakah kalimat >25 kata? Pecah.
+- [ ] Adakah buzzword dari purity-catalog A.5? Hapus/ganti.
+- [ ] Adakah klaim tanpa bukti ("terpercaya", "mutakhir", "terbaik")? Hapus atau beri data.
+- [ ] Apakah label tombol/CTA spesifik untuk konteks ini? Bukan "Submit", "Klik di sini", "Pelajari lebih lanjut"?
+
+---
 
 ## 1. Engine Overrides
 
-4 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override craft:
-- **Purity**: Tolak klise visual AI (gradien biru-ungu, glow semua border, glassmorphism bertumpuk). Purpose Gate wajib. Enhanced dengan 61+ deterministic detector rules (§10).
+7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override craft:
+- **Purity**: Tolak klise visual AI (gradien biru-ungu, glow semua border, glassmorphism bertumpuk). Purpose Gate wajib. Enhanced dengan 61+ deterministic detector rules (§10). **Pre-generation gate (§0) wajib dijalankan sebelum eksekusi.**
 - **Minimalist**: CSS native modern (Grid, `@container`, `oklch()`) > utility framework pihak ketiga.
 
 ## Workflow
 ```mermaid
 flowchart LR
-    A[PRODUCT.md Init] --> B[Tokens]
-    B --> C[Layout]
-    C --> D[States]
-    D --> E[Purity Gate]
-    E --> F[Detector Audit]
+    A[§0 Anti-Slop Gate] --> B[PRODUCT.md Init]
+    B --> C[Tokens]
+    C --> D[Layout]
+    D --> E[States]
+    E --> F[Purity Gate]
+    F --> G[Detector Audit]
+    G --> H[Delivery Gate]
 ```
 
 ---
@@ -668,8 +799,123 @@ Surface briefs terpisah dari PRODUCT.md karena:
 
 ---
 
+## 13. DELIVERY GATE (MANDATORY, SEBELUM SHIP)
+
+Jalankan gate ini SETELAH coding selesai, SEBELUM menyerahkan hasil ke pengguna. Output status PASS/FAIL per item. Jika ada FAIL, perbaiki dulu, re-run, baru ship.
+
+### Block A: Pre-Generation Gate Verification
+- [ ] §0a Context gathering dilakukan atau labeled DRAFT TANPA ARAH?
+- [ ] §0b Names/labels dicek terhadap tabel anti-slop?
+- [ ] §0c Design Read dideklarasikan sebelum coding?
+- [ ] §0d Page-type pre-check dijalankan untuk tipe halaman yang relevan?
+- [ ] §0e Gate status output ditampilkan sebelum mulai coding?
+
+### Block B: Purity Catalog Compliance (dari rules/purity-catalog.md)
+- [ ] Tidak ada gradient biru-ungu/purple-to-blue sebagai default dekoratif? (CLR-001)
+- [ ] Tidak ada breadcrumb pada halaman tanpa hierarki ≥3 level? (CMP-001)
+- [ ] Tidak ada badge marketing ("Powerful", "AI-Powered", "New") tanpa basis faktual? (CMP-002)
+- [ ] Tidak ada emoji sebagai ikon fungsional? (CMP-003)
+- [ ] Tidak ada border-radius seragam di semua elemen? (CMP-004)
+- [ ] Tidak ada elemen interaktif non-fungsional? (CMP-005)
+- [ ] Tidak ada glassmorphism bertumpuk (>1 layer)? (§6 item 37)
+- [ ] Tidak ada shadow berlebihan di setiap komponen? (§6 item 36)
+- [ ] Tidak ada animasi tanpa tujuan UX? (§6 item 29)
+- [ ] Typography bukan font AI default (Arial, Inter, Roboto) tanpa modifikasi? (TYPO-001)
+
+### Block C: Functional Completeness
+- [ ] Setiap form punya validasi inline + error state + loading state + success/failure feedback?
+- [ ] Setiap list/data view punya empty state + loading skeleton + error state?
+- [ ] Setiap link/button mengarah ke destinasi nyata atau ditandai `// TODO` + label visible?
+- [ ] Mobile layout tested: no horizontal overflow, tap targets ≥44px, input font ≥16px?
+- [ ] Keyboard navigation berfungsi: Tab order logis, focus visible, Escape closes modals?
+- [ ] Dark mode (jika diimplementasikan) berfungsi penuh di kedua mode tanpa break?
+
+### Block D: Anti-Slop Identity Check
+- [ ] Jika logo dan nama produk ditukar, apakah desain masih terasa unik dan berkarakter? (Jika tidak → terlalu generik, revisi)
+- [ ] Apakah nama menu/halaman/tombol spesifik untuk produk ini, bukan template yang bisa dipakai di 10+ app lain?
+- [ ] Apakah layout mengikuti kebutuhan konten aktual, bukan pola Hero+Cards+Testimonials+FAQ+Footer?
+- [ ] Apakah warna/font/spacing dipilih dengan alasan tertulis, bukan karena "terlihat bagus" atau "default AI"?
+- [ ] Apakah ada minimal satu elemen identitas visual yang unik untuk produk ini (motif, aksen, tipografi khas)?
+
+### Block E: Evidence & Honesty
+- [ ] Tidak ada statistik palsu atau klaim tanpa sumber? (R-17, R-36)
+- [ ] Tidak ada testimonial fiktif (avatar AI, nama random)? (R-18)
+- [ ] Tidak ada fabricated security/compliance claims? (R-36)
+- [ ] Placeholder berlabel eksplisit (`[REAL DATA]`, `[LOGO]`, "Coming soon") jika data belum tersedia? (R-23, R-38)
+- [ ] Em dash tidak digunakan di teks UI? (R-02)
+
+### Block F: Copywriting Anti-Slop
+- [ ] Semua teks UI terbaca natural saat dibaca keras, tidak seperti brosur/robot? (§0f)
+- [ ] Tidak ada kalimat >25 kata di label/heading/deskripsi UI? (§0f)
+- [ ] Tidak ada buzzword dari purity-catalog A.5 ("mutakhir", "terdepan", "revolusioner", dll.)? (§0f)
+- [ ] Tidak ada klaim tanpa bukti ("terpercaya", "terbaik", "profesional")? (§0f)
+- [ ] CTA/label tombol spesifik untuk konteks produk, bukan "Submit"/"Klik di sini"/"Pelajari lebih lanjut"? (§0f)
+- [ ] Deskripsi/tagline max 2 kalimat, bukan paragraf panjang yang menumpuk jargon? (§0f)
+- [ ] Bahasa Indonesia natural, bukan terjemahan literal dari English AI patterns? (§0f)
+
+### Delivery Gate Output Format
+```
+🔒 DELIVERY GATE STATUS
+Block A (Pre-Gen Gate): ✅ PASS / ❌ FAIL (detail)
+Block B (Purity Catalog): ✅ PASS / ❌ FAIL (detail)
+Block C (Functional): ✅ PASS / ❌ FAIL (detail)
+Block D (Identity): ✅ PASS / ❌ FAIL (detail)
+Block E (Evidence): ✅ PASS / ❌ FAIL (detail)
+Block F (Copywriting): ✅ PASS / ❌ FAIL (detail)
+Verdict: SHIP / FIX FIRST (jika FIX FIRST, list item yang harus diperbaiki)
+```
+
+**ATURAN KERAS**: Verdict = FIX FIRST → jangan ship. Perbaiki, re-run gate, baru ship. Delivery tanpa clean gate = kegagalan.
+
+---
+
+## 14. INTEGRASI DENGAN ANTISLOP SKILL
+
+`msal-craft` mengadopsi dan memperluas aturan dari `antislop` skill. Berikut mapping rule antislop ke implementasi msal-craft:
+
+| Antislop Rule | msal-craft Implementation | Enforcement Point |
+|---|---|---|
+| R-01 (Color/Gradients) | §6 Purity Visual item 2, purity-catalog CLR-001 | Pre-gen §0c + Delivery Block B |
+| R-02 (Em Dash) | purity-catalog §A.5 Banned Vocabulary | Delivery Block E |
+| R-03 (Mobile) | §3 Gerbang Aksesibilitas, §9 Mobile Patterns | Delivery Block C |
+| R-04 (Icons) | §6 item 5, purity-catalog CMP-003 | Delivery Block B |
+| R-05 (Layout) | §6 item 10, purity-catalog B3 | Pre-gen §0d + Delivery Block D |
+| R-09 (Badges) | §6 item 4, purity-catalog CMP-002 | Delivery Block B |
+| R-10 (Glassmorphism) | §6 item 3, purity-catalog B6.37 | Delivery Block B |
+| R-15 (CTAs) | §0b Anti-Slop Name Table | Pre-gen §0b + Delivery Block D |
+| R-16 (Buzzwords) | purity-catalog §A.5-6 Banned Vocabulary | Pre-gen §0b + Delivery Block E |
+| R-17/R-18/R-36 (Fake Data) | §6 item 8, purity-catalog B4.25 | Delivery Block E |
+| R-23/R-38 (Assets) | §0a Context Gathering | Pre-gen §0a + Delivery Block E |
+| R-24 (Nav Links) | §0b Menu naming rules | Pre-gen §0b + Delivery Block C |
+| R-25 (Contrast) | §3 WCAG AA/AAA, purity-catalog CLR-002 | Delivery Block B |
+| R-26 (Interactive) | §7 State Design, purity-catalog CMP-005 | Delivery Block C |
+| R-27 (UI States) | §7 State Design (4 states minimum) | Delivery Block C |
+| R-31 (Write Reason) | §0c Design Read declaration | Pre-gen §0c |
+| R-35 (Verify) | §13 Delivery Gate + msal-verify integration | Post-code verification |
+| R-37 (Direction) | §0a/§0c Context + Design Read | Pre-gen §0a/§0c |
+
+**Catatan**: Jika `antislop` skill terinstall secara terpisah, keduanya berjalan komplementer. `antislop` menyediakan filter broader; `msal-craft` menyediakan enforcement spesifik UI production + Maxilun token system integration. Jangan konflik: jika aturan berbeda, ikuti yang lebih ketat.
+
+---
+
+## Companion Skills Awareness
+
+`msal-craft` adalah spesialis UI/visual. Orchestrator WAJIB invoke craft BERSAMA companion skills untuk mencegah output slop:
+
+| Companion | Craft's Role | Anti-Slop Contribution |
+|---|---|---|
+| `msal-content` | Bangun visual untuk copy yang content tulis | Copy natural + visual non-slop = halaman yang terasa manusia |
+| `msal-frontend` | Desain UI untuk framework architecture | Arsitektur benar + visual tidak generik |
+| `msal-engineer` | Design spec untuk engineer implement | Spec yang jelas + code yang sesuai visual intent |
+| `frontend-design` / `antislop` | Filter visual anti-slop sebelum coding | Mencegah gradient, glow, glassmorphism generik |
+
+**ATURAN KERAS**: Craft TIDAK PERNAH jalan sendiri untuk website/page generation. Tanpa `msal-content`, copy akan jadi AI slop ("Studio desain independen yang merancang..."). Tanpa `frontend-design`/`antislop`, visual akan jadi generic AI aesthetic. Orchestrator yang invoke craft tanpa companion = kegagalan sistem.
+
 ## Related Skills
 - **msal-motion**: Animation, motion design, kinetic typography, and performance-gated motion
 - **msal-frontend**: RSC architecture, Server Actions, state management, type safety
-- **msal-content**: UX copy, microcopy, error messages, onboarding text (collaborates on §7 state design)
-- **msal-verify**: Test generation and validation for craft outputs
+- **msal-content**: UX Copy, microcopy, error messages, onboarding text (MANDATORY companion untuk semua page/UI)
+- **msal-verify**: Test generation and validation for craft outputs (runs §13 delivery gate)
+- **msal-engineer**: Code implementation (craft designs, engineer builds)
+- **antislop**: Core anti-slop filter (complementary; msal-craft extends with production enforcement)
+- **frontend-design**: Visual anti-slop enforcement (companion untuk website/page generation)

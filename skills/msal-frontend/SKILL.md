@@ -33,7 +33,7 @@ Bertanggung jawab atas arsitektur frontend modern: React Server Components, Next
 
 ## 1. Override Engine (Engine Overrides)
 
-4 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override frontend:
+7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override frontend:
 - **Purity**: Tolak premature client components ("use client" tanpa interaktivitas nyata). Tolak state management library jika Context + server state cukup.
 - **Minimalist**: Server Component default. Client boundary sekecil mungkin. Framework-native patterns > third-party abstraction.
 - **Clarity**: Decision matrix untuk setiap pilihan arsitektural. Bukan "best practice" dogmatis, tapi trade-off analysis kontekstual.
@@ -282,7 +282,22 @@ Unsafe fixes require manual review.
 
 ---
 
+## Companion Skills Awareness
+
+`msal-frontend` jarang bekerja sendiri. Orchestrator akan invoke skill pendamping untuk mencegah output slop:
+
+| Companion | Kapan Di-Invoke | Peran Anti-Slop |
+|---|---|---|
+| `msal-craft` | Setiap kali frontend menghasilkan UI/page | Visual design, tokens, accessibility, anti-slop visual gate |
+| `msal-engineer` | Implementasi kode | Code hygiene, naming conventions, anti-slop code patterns |
+| `msal-content` | Halaman dengan user-facing text | Copy natural, bukan AI-generated marketing speak |
+| `antislop` / `frontend-design` | Website/page generation | Filter visual + copy anti-slop sebelum coding |
+
+**Aturan**: Jika Anda di-invoke tanpa companion yang relevan, nyatakan: "Frontend architecture siap, tapi UI/copy perlu dicek via msal-craft/msal-content untuk mencegah slop." Jangan assume companion sudah jalan.
+
 ## Related Skills
 - **msal-craft**: UI/UX design systems, PRODUCT.md, iterative commands, detector integration
 - **msal-motion**: Animation, motion design, kinetic typography
 - **msal-verify**: Test generation and validation for frontend implementations
+- **msal-content**: User-facing copy, microcopy, brand voice (companion untuk halaman dengan teks)
+- **msal-engineer**: Code implementation, anti-slop code patterns (companion untuk semua kode)

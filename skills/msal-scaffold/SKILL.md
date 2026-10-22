@@ -45,7 +45,7 @@ Tanpa konteks tertulis, setiap AI session dimulai dari nol. Dengan `docs/` yang 
 
 ## 1. Engine Overrides
 
-4 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override scaffold:
+7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override scaffold:
 - **Purity**: Dokumen yang dihasilkan harus berisi fakta konkret project ini — bukan template generik yang copy-paste dari mana saja. Setiap placeholder `[...]` wajib diisi atau ditandai `[TBD: alasan]`.
 - **Minimalist**: Tidak semua dokumen harus panjang. PRD 1 halaman lebih baik dari PRD 10 halaman yang tidak dibaca. Setiap bagian harus justify keberadaannya.
 - **Clarity**: Gunakan sinyal `[CONFIRMED]` untuk fakta yang sudah fix, `[TBD]` untuk yang belum diputuskan, `[ASSUMED]` untuk asumsi yang belum divalidasi.
@@ -758,6 +758,17 @@ Jika project sudah berjalan dan butuh refresh docs:
 | `SKILLS.md` | msal-scaffold (auto-generate dari skills aktif) |
 | `GLOSSARY.md` | msal-scaffold (init), collaborative update |
 | `ONBOARDING.md` | msal-scaffold, msal-deploy (setup steps) |
+
+## Companion Skills Awareness
+
+`msal-scaffold` menghasilkan dokumen konteks project (PRD, TECHSTACK, ARCHITECTURE). Orchestrator invoke scaffold BERSAMA companion skills untuk mencegah output slop:
+
+| Companion | Scaffold's Role | Anti-Slop Contribution |
+|---|---|---|
+| `msal-content` | Doc readability dan tone | Mencegah dokumen template kosong yang tidak terbaca user |
+| `msal-architect` | Architecture docs accuracy | Memastikan ARCHITECTURE.md sesuai dengan keputusan ADR nyata |
+
+**Aturan**: Scaffold tidak boleh generate dokumen tanpa readability check dari `msal-content` atau technical review dari `msal-architect`.
 
 ## 7. Aturan Kualitas Dokumen
 

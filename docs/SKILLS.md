@@ -2,7 +2,7 @@
 
 | No | Nama Skill | Fungsi Utama | Pemicu Khas |
 |:---:|---|---|---|
-| 1 | **maxilun** | Master Orchestrator. Memahami permintaan, menentukan mode kerja, memilih spesialis, mengatur alur eksekusi, dan merangkum hasil. | `/maxilun`, `mode maxilun` |
+| 1 | **maxilun** | Master Orchestrator. Memahami permintaan, menentukan mode kerja, memilih spesialis, mengatur alur eksekusi, dan merangkum hasil. | `/maxilun`, `/msal`, `mode maxilun` |
 | 2 | **msal-knowledge-graph** | Fondasi Pencarian Kode. WAJIB berjalan sebelum skill lain menyentuh kode: memetakan simbol, import, caller/callee, dan dependensi sebagai directed graph. Dilengkapi visualizer WebGL (Lens). | `/msal-knowledge-graph`, `/msal-graph`, `/msal-trace` |
 | 3 | **msal-scaffold** | Project Context Scaffolder: generate 10 dokumen AI-readable (PRD, TECHSTACK, DESIGN, SECURITY, STYLEGUIDE, TASK, ARCHITECTURE, SKILLS, GLOSSARY, ONBOARDING) ke folder `docs/` sebelum coding dimulai. Update per milestone. | `/msal-scaffold`, `/msal-init`, `scaffold dokumen`, `buat docs project` |
 | 4 | **msal-architect** | Arsitektur Sistem: C4 Model, Event Storming, kontrak API, batas modul, analisis dampak dependensi, dan penalaran mendalam (/msal-think). | `/msal-architect`, `/msal-think` |

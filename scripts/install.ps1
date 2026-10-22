@@ -119,9 +119,9 @@ if ($InstalledTo.Count -eq 0) {
 }
 
 Write-Host ""
-Write-Host "  18 Specialist Skills (/msal):" -ForegroundColor Cyan
+Write-Host "  18 Specialist Skills (/maxilun, /msal-*):" -ForegroundColor Cyan
 $skills = @(
-    "1.  msal                 | Master Orchestrator",
+    "1.  maxilun              | Master Orchestrator (/maxilun, /msal)",
     "2.  msal-knowledge-graph | Dependency & Repo Graph (AST/Lens)",
     "3.  msal-scaffold        | Project Context Scaffolder (docs/)",
     "4.  msal-architect       | Architecture & API Design (/msal-think)",

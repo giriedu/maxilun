@@ -6,7 +6,7 @@ description: >
   migration strategies, multi-tenancy, technology selection, threat modeling,
   capacity planning, and evolutionary architecture validation. Powered by deep
   multi-hypothesis reasoning (/msal-think) with strict boundary enforcement.
-  Adheres to the 4 always-on engines. Triggers: "/msal-architect", "/msal-think",
+  Adheres to the 7 always-on engines. Triggers: "/msal-architect", "/msal-think",
   "rancang arsitektur", "analisis dependensi", "kontrak API", "batas modul",
   "dampak perubahan", "/migration", "/tech-select", "capacity planning",
   "multi-tenant", or major structural decisions.
@@ -66,7 +66,7 @@ Tidak semua keputusan butuh /msal-think penuh:
 
 ## 1. Engine Overrides
 
-4 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override arsitek:
+7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override arsitek:
 - **Purity**: Tolak buzzword architecture. Event-sourcing hanya jika invarian audit/replay terpenuhi sesuai kriteria Bagian 10. Microservices hanya jika friction nyata muncul sesuai anti-pattern catalog.
 - **Minimalist**: Tolak folder berjenjang 5 lapis untuk logika yang muat 1 berkas. **Counterweight eksplisit**: jika Minimalist bertentangan dengan Security Posture atau Multi-Tenancy isolation, keamanan menang. Document trade-off di ADR.
 - **Clarity**: Tabel perbandingan + matriks trade-off. Tanpa narasi berbunga-bunga. Skill ini sendiri harus mengikuti prinsip ini — gunakan tabel ringkas wherever possible.
@@ -698,6 +698,17 @@ Untuk engineer baru join tim:
 | **Event Sourcing** | Store state as sequence of events, derive current state by replay. |
 | **RLS** | Row-Level Security: database-level tenant isolation. |
 | **CDC** | Change Data Capture: stream database changes to external systems. |
+
+## Companion Skills Awareness
+
+`msal-architect` mendesain struktur sistem, batas modul, dan kontrak API. Orchestrator invoke architect BERSAMA companion skills untuk mencegah output slop:
+
+| Companion | Architect's Role | Anti-Slop Contribution |
+|---|---|---|
+| `msal-diagrams` | Visualisasi arsitektur (C4, Event Storming) | Mencegah diagram abstrak tanpa dasar arsitektur yang benar |
+| `msal-sentinel` | Threat modeling tingkat struktural (STRIDE) | Memastikan keputusan arsitektur tidak mengorbankan keamanan |
+
+**Aturan**: Architect tidak boleh menghasilkan ADR tanpa validasi visual dari `msal-diagrams` atau threat assessment dari `msal-sentinel` untuk keputusan Type 1a/1b.
 
 ## Related Skills — Integration Protocols
 

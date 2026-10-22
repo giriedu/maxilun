@@ -32,7 +32,7 @@ Bertanggung jawab atas pembuatan video melalui kode: komponen visual sebagai fra
 
 ## 1. Engine Overrides
 
-4 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override cinecode:
+7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override cinecode:
 - **Purity**: Tolak video yang hanya estetis tanpa tujuan komunikasi. Setiap scene wajib menyampaikan informasi atau emosi yang terdefinisi.
 - **Minimalist**: Native CSS animations + Canvas API > heavy video libraries. Server-side rendering > browser recording. Komponen reusable > monolithic scenes.
 - **Clarity**: Video spec = kode + parameter eksplisit (durasi, fps, resolusi). Bukan deskripsi naratif ambigu.
@@ -740,6 +740,24 @@ msal-cinecode list                     # List all compositions
 msal-cinecode benchmark                # Performance profiling
 msal-cinecode test                     # Run scene unit tests
 ```
+
+---
+
+## Companion Skills Awareness
+
+`msal-cinecode` membuat video melalui kode dengan rendering server-side. Orchestrator invoke cinecode BERSAMA companion skills untuk mencegah output slop:
+
+| Companion | CineCode's Role | Anti-Slop Contribution |
+|---|---|---|
+| `msal-motion` | Animasi untuk scene video | Mencegah video technically correct tapi lifeless tanpa motion design |
+| `msal-engineer` | Code quality dan testing | Memastikan kode video mengikuti standar engineering, bukan script sekali pakai |
+
+**Aturan**: CineCode tidak boleh render production video tanpa review code quality dari `msal-engineer` atau integrasi animasi dari `msal-motion`.
+
+## Related Skills
+- **msal-craft**: UI/UX, sistem desain token, dan aksesibilitas antarmuka
+- **msal-motion**: Animasi interaktif HTML, Lottie/SVG export, dan audio reactivity
+- **msal-engineer**: Implementasi kode, bug fixing, dan refactoring terukur
 
 ---
 

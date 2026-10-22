@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="assets/banner.jpg" alt="Maxilun — 18 Specialist Skills · Zero AI Slop · Always-On Engines" width="100%">
+<img src="assets/banner.jpg" alt="Maxilun — 18 Specialist Skills · Zero AI Slop · 7 Always-On Engines" width="100%">
 
 <br/>
 
@@ -21,7 +21,7 @@
 
 ---
 
-**Maxilun** is a production-grade ecosystem of 18 specialist AI skills designed for high-performing engineering teams. Rather than a loose bundle of prompts, Maxilun provides an integrated engineering co-pilot built on a mandatory **Knowledge Graph** foundation, **4 Always-On Quality Engines**, **confidence-score-based orchestration**, and **zero tolerance for AI slop**.
+**Maxilun** is a production-grade ecosystem of 18 specialist AI skills designed for high-performing engineering teams. Rather than a loose bundle of prompts, Maxilun provides an integrated engineering co-pilot built on a mandatory **Knowledge Graph** foundation, **7 Always-On Quality Engines**, **anti-slop intelligence with self-correction and companion-skill enforcement**, and **zero tolerance for AI slop**.
 
 ## Quick Install
 
@@ -30,8 +30,8 @@ npx skills add giriedu/maxilun
 ```
 
 > Track and explore all 18 skills on [skills.sh/giriedu/maxilun](https://skills.sh/giriedu/maxilun).  
-> **Non-interactive (all skills)**: `npx skills add giriedu/msal -y` (add `-g` for global availability across projects).  
-> **Windows Note**: If symlink creation is restricted, add `--copy` flag (`npx skills add giriedu/msal --copy -y`) or use the PowerShell installer in [docs/INSTALL.md](docs/INSTALL.md).
+> **Non-interactive (all skills)**: `npx skills add giriedu/maxilun -y` (add `-g` for global availability across projects).  
+> **Windows Note**: If symlink creation is restricted, add `--copy` flag (`npx skills add giriedu/maxilun --copy -y`) or use the PowerShell installer in [docs/INSTALL.md](docs/INSTALL.md).
 
 ---
 
@@ -41,7 +41,7 @@ Structured by real-world software engineering lifecycle — from foundational ar
 
 | # | Skill | Engineering Domain | Primary Trigger |
 |:--:|---|---|---|
-| 1 | `msal` | Master Orchestrator — confidence-based routing & multi-specialist wave coordination | `/maxilun` |
+| 1 | `maxilun` | Master Orchestrator — anti-slop brain, companion-skill enforcement, self-correction, wave coordination | `/maxilun`, `/msal` |
 | 2 | `msal-knowledge-graph` | Mandatory Code Discovery — high-precision AST parser & WebGL 3D/2D visualizer (Lens) | `/msal-graph`, `/msal-trace` |
 | 3 | `msal-scaffold` | Project Context Scaffolder — generates 10 AI-readable architecture docs in `docs/` | `/msal-scaffold`, `/msal-init` |
 | 4 | `msal-architect` | System Architecture — C4 Model, Event Storming, ADRs, deep `/msal-think` reasoning | `/msal-think`, `/msal-architect` |
@@ -62,7 +62,7 @@ Structured by real-world software engineering lifecycle — from foundational ar
 
 ---
 
-## 4 Always-On Quality Engines
+## 7 Always-On Quality Engines
 
 Enforced automatically across all 18 skills, non-overridable:
 
@@ -72,6 +72,9 @@ Enforced automatically across all 18 skills, non-overridable:
 | **Purity Engine** | Zero AI slop — automatically purges buzzwords, fabricated claims, and empty placeholders |
 | **Minimalist Engineering** | Dependency Decision Framework, cognitive load reduction, simplicity ladder |
 | **Clarity Engine** | Explicit technical signaling: `[CONFIRMED]`, `[INFERRED]`, `[UNCERTAIN]`, `[UNVERIFIED]` |
+| **Dependency Decision Framework** | Stdlib-first evaluation, bundle size gating, maintenance viability check before adding any dependency |
+| **Cognitive Load Reduction** | Naming as documentation, file size ceiling, nesting depth limit, explicit over implicit |
+| **Proactive Communication** | Blocker reporting, no silent failures, explicit assumptions, scope change notification |
 
 ---
 
@@ -110,7 +113,7 @@ Enforced automatically across all 18 skills, non-overridable:
 |---|---|
 | [docs/INSTALL.md](docs/INSTALL.md) | Comprehensive installation guides, one-line scripts & verification |
 | [docs/SKILLS.md](docs/SKILLS.md) | Exhaustive triggers, capabilities, and parameters for all 18 skills |
-| [docs/ENGINES.md](docs/ENGINES.md) | Architectural specification of the 4 Always-On Engines |
+| [docs/ENGINES.md](docs/ENGINES.md) | Architectural specification of the 7 Always-On Engines |
 | [docs/EXAMPLES.md](docs/EXAMPLES.md) | Real-world engineering scenarios & multi-specialist Wave Patterns |
 | [docs/RELEASE.md](docs/RELEASE.md) | Automated GitHub Releases, tag dispatch, and versioning protocols |
 | [CHANGELOG.md](CHANGELOG.md) | Semantic version release history |

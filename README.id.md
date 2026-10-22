@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="assets/banner.jpg" alt="Maxilun — 18 Specialist Skills · Zero AI Slop · Always-On Engines" width="100%">
+<img src="assets/banner.jpg" alt="Maxilun — 18 Specialist Skills · Zero AI Slop · 7 Always-On Engines" width="100%">
 
 <br/>
 
@@ -21,7 +21,7 @@
 
 ---
 
-**Maxilun** adalah ekosistem 18 skill AI spesialis tingkat produksi untuk tim rekayasa perangkat lunak. Bukan sekadar kumpulan prompt — melainkan sistem rekayasa terpadu dengan fondasi Knowledge Graph, 4 always-on engines, orkestrator berbasis confidence score, dan toleransi nol terhadap AI slop.
+**Maxilun** adalah ekosistem 18 skill AI spesialis tingkat produksi untuk tim rekayasa perangkat lunak. Bukan sekadar kumpulan prompt — melainkan sistem rekayasa terpadu dengan fondasi Knowledge Graph, 7 always-on engines, orkestrator dengan anti-slop intelligence dan companion-skill enforcement, serta toleransi nol terhadap AI slop.
 
 ## Instalasi Cepat
 
@@ -30,8 +30,8 @@ npx skills add giriedu/maxilun
 ```
 
 > Pantau dan jelajahi 18 skill Maxilun di [skills.sh/giriedu/maxilun](https://skills.sh/giriedu/maxilun).  
-> **Mode Non-interaktif (semua skill)**: `npx skills add giriedu/msal -y` (tambahkan `-g` untuk instalasi global).  
-> **Catatan Windows**: Jika symlink dibatasi hak akses Windows, tambahkan opsi `--copy` (`npx skills add giriedu/msal --copy -y`) atau jalankan script PowerShell di [docs/INSTALL.md](docs/INSTALL.md).
+> **Mode Non-interaktif (semua skill)**: `npx skills add giriedu/maxilun -y` (tambahkan `-g` untuk instalasi global).  
+> **Catatan Windows**: Jika symlink dibatasi hak akses Windows, tambahkan opsi `--copy` (`npx skills add giriedu/maxilun --copy -y`) atau jalankan script PowerShell di [docs/INSTALL.md](docs/INSTALL.md).
 
 ---
 
@@ -41,7 +41,7 @@ Disusun berdasarkan siklus rekayasa perangkat lunak dari fondasi arsitektur hing
 
 | # | Skill | Fungsi Rekayasa | Pemicu Utama |
 |:--:|---|---|---|
-| 1 | `msal` | Master Orchestrator — confidence routing, koordinasi wave antar-spesialis | `/maxilun` |
+| 1 | `maxilun` | Master Orchestrator — confidence routing, koordinasi wave antar-spesialis | `/maxilun`, `/msal` |
 | 2 | `msal-knowledge-graph` | Fondasi Penemuan Kode — AST parser mendalam & WebGL visualizer (Lens) | `/msal-graph`, `/msal-trace` |
 | 3 | `msal-scaffold` | Project Context Scaffolder — 10 dokumen konteks siap-baca AI di `docs/` | `/msal-scaffold`, `/msal-init` |
 | 4 | `msal-architect` | Arsitektur Sistem — C4 model, Event Storming, ADRs, penalaran `/msal-think` | `/msal-think`, `/msal-architect` |
@@ -62,7 +62,7 @@ Disusun berdasarkan siklus rekayasa perangkat lunak dari fondasi arsitektur hing
 
 ---
 
-## 4 Mesin Selalu Aktif (Always-On Engines)
+## 7 Mesin Selalu Aktif (Always-On Engines)
 
 Aktif tanpa jeda di seluruh 18 skill dan tidak dapat diabaikan (*non-overridable*):
 

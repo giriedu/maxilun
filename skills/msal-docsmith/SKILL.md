@@ -3,7 +3,7 @@ name: msal-docsmith
 description: >
   Technical documentation specialist for READMEs, API specifications (OpenAPI/Swagger),
   changelogs, operational runbooks, and migration guides. Writes precise, authoritative,
-  no-fluff documentation designed for engineers. Adheres to the 4 always-on engines.
+  no-fluff documentation designed for engineers. Adheres to the 7 always-on engines.
   Triggers: "/msal-docsmith", "/msal-docs", "tulis README", "dokumentasi API", "buat changelog",
   "panduan migrasi", "spesifikasi teknis", or developer documentation tasks.
 metadata:
@@ -30,7 +30,7 @@ Bertanggung jawab atas penyusunan dokumentasi teknis berkualitas tinggi: README 
 
 ## 1. Engine Overrides
 
-4 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override docsmith:
+7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override docsmith:
 - **Purity**: Tolak basa-basi promosi di dokumen teknis. Tunduk pada `rules/purity-catalog.md`.
 - **Minimalist**: 1 baris perintah cukup jelas = tidak perlu narasi 3 paragraf.
 
@@ -155,8 +155,20 @@ Menyediakan dokumentasi terstruktur yang siap diproses langsung oleh agen AI dan
   ```
 - **`llms-full.txt`**: Versi gabungan lengkap (markdown tunggal) yang menyatukan dokumen teknis penting, mempermudah agen membaca konteks menyeluruh tanpa crawling puluhan tautan terpisah.
 
+## Companion Skills Awareness
+
+`msal-docsmith` menyusun dokumentasi teknis (README, API spec, changelog). Orchestrator invoke docsmith BERSAMA companion skills untuk mencegah output slop:
+
+| Companion | Docsmith's Role | Anti-Slop Contribution |
+|---|---|---|
+| `msal-content` | Readability dan tone consistency | Mencegah docs technically accurate tapi tidak terbaca oleh user |
+| `msal-architect` | Technical accuracy validation | Memastikan dokumentasi arsitektur sesuai dengan keputusan ADR |
+
+**Aturan**: Docsmith tidak boleh publish dokumentasi tanpa readability check dari `msal-content` atau technical review dari `msal-architect`.
+
 ## Related Skills
 - **msal-seo-audit**: Validasi aksesibilitas `llms.txt` bagi bot dan perayap
 - **msal-engineer**: Penyelarasan perubahan kode dengan pembaruan kontrak API
 - **msal-architect**: Penyusunan Architecture Decision Records (ADR)
+- **msal-content**: Readability dan tone consistency untuk dokumentasi
 

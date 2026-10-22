@@ -41,7 +41,7 @@ metadata:
 
 ### 3. Delta-only engine pattern
 
-Specialists **must not** restate the 4 always-on engines. Instead, declare only overrides:
+Specialists **must not** restate the 7 Always-On Engines. Instead, declare only overrides:
 
 ```markdown
 ## 1. Engine Overrides

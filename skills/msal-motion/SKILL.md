@@ -627,9 +627,21 @@ msal-motion debug                   # Launch timeline editor
 msal-motion benchmark               # Performance stress test
 ```
 
+## Companion Skills Awareness
+
+`msal-motion` membuat animasi HTML interaktif dan export video. Orchestrator invoke motion BERSAMA companion skills untuk mencegah output slop:
+
+| Companion | Motion's Role | Anti-Slop Contribution |
+|---|---|---|
+| `msal-craft` | UX integration dan design tokens | Mencegah animasi keren tapi merusak UX atau tidak accessible |
+| `msal-frontend` | Framework integration (React/Next.js) | Memastikan animasi terintegrasi dengan component lifecycle yang benar |
+
+**Aturan**: Motion tidak boleh deliver animasi tanpa UX review dari `msal-craft` atau framework integration check dari `msal-frontend`.
+
 ## Related Skills
 - **msal-craft**: UI/UX, sistem desain token, dan aksesibilitas antarmuka
 - **msal-cinecode**: Pembuatan video programatik, rendering server-side ke MP4/WebM/GIF, dan batch export
+- **msal-frontend**: React component integration dan Next.js optimization
 
 ---
 

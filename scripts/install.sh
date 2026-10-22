@@ -113,11 +113,10 @@ else
     done
 fi
 
-echo ""
-echo "🌑 Maxilun ecosystem ready. Type /msal to verify."
+echo "🌑 Maxilun ecosystem ready. Type /maxilun or /msal to verify."
 echo ""
 echo "18 Specialist Skills Installed:"
-echo "   1.  msal                 — Master Orchestrator"
+echo "   1.  maxilun              — Master Orchestrator (/maxilun, /msal)"
 echo "   2.  msal-knowledge-graph — Dependency & Repo Graph (AST/Lens)"
 echo "   3.  msal-scaffold        — Project Context Scaffolder (docs/)"
 echo "   4.  msal-architect       — Architecture & API Design (/msal-think)"

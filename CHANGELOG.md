@@ -10,7 +10,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Initial Stable Release
 
-Maxilun launches as a complete 18-specialist AI engineering co-pilot ecosystem, purpose-built for production-grade software development. Every component — from the mandatory Knowledge Graph foundation and 4 Always-On Quality Engines to the specialist routing matrix and MSAL namespace — has been designed, implemented, tested, and verified as a unified, coherent system.
+Maxilun launches as a complete 18-specialist AI engineering co-pilot ecosystem, purpose-built for production-grade software development. Every component — from the mandatory Knowledge Graph foundation and 7 Always-On Quality Engines to the specialist routing matrix and MSAL namespace — has been designed, implemented, tested, and verified as a unified, coherent system.
 
 ### Ecosystem Highlights
 
@@ -40,12 +40,15 @@ Maxilun launches as a complete 18-specialist AI engineering co-pilot ecosystem, 
 - Standardized slash command prefix across all specialist skills to prevent namespace conflicts with other skill ecosystems.
 - MSAL = Maxilun Skill Abstraction Layer.
 
-#### 4 Always-On Quality Engines
+#### 7 Always-On Quality Engines
 Enforced automatically across all 18 skills, non-overridable:
 - **Focus Engine** — Executive HUD, task decomposition, persistent subtask tracking (max 3 concurrent).
 - **Purity Engine** — Zero AI slop: automatically purges buzzwords, fabricated claims, and empty placeholders.
-- **Minimalist Engineering** — Dependency Decision Framework, cognitive load reduction, simplicity ladder.
+- **Minimalist Engineering** — Simplicity ladder, native APIs first, minimal valid changes.
 - **Clarity Engine** — Explicit technical signaling (`[CONFIRMED]`, `[INFERRED]`, `[UNCERTAIN]`, `[UNVERIFIED]`).
+- **Dependency Decision Framework** — Stdlib-first evaluation, bundle size gating, maintenance viability checks.
+- **Cognitive Load Reduction** — Naming as documentation, file size ceilings, nesting depth limits.
+- **Proactive Communication Rules** — Blocker reporting, no silent failures, explicit assumptions.
 
 #### Mandatory Knowledge Graph Foundation
 - Python AST scanner + TypeScript scanner + Generic polyglot scanner.

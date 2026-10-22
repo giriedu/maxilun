@@ -4,7 +4,7 @@ description: >
   System visualization specialist. Generates clear, accurate architecture,
   workflow, sequence, data flow, and state machine diagrams using Mermaid
   or standalone SVG/HTML. Supports optional Archify integration without external dependencies.
-  Adheres to the 4 always-on engines (Focus, Purity, Minimalist, Clarity).
+  Adheres to the 7 always-on engines (Focus, Purity, Minimalist, Clarity).
   Triggers: "/msal-diagrams", "/msal-diagram", "buat diagram", "gambar arsitektur",
   "sequence diagram", "alur kerja", "data flow diagram", "archify diagram", or system visualization tasks.
 metadata:
@@ -31,7 +31,7 @@ Bertanggung jawab atas visualisasi sistem teknis: diagram arsitektur tingkat tin
 
 ## 1. Engine Overrides
 
-4 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override diagrams:
+7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override diagrams:
 - **Purity**: Node/garis = entitas nyata. Tolak komponen fiktif dekoratif. Satu set warna, satu ketebalan garis.
 - **Minimalist**: Mermaid markdown atau HTML tunggal mandiri. Zero external dependencies.
 - **Clarity**: Label edge wajib kata kerja aktif (`"POST /checkout"`, `"Kueri data user"`). Panah kosong = dilarang.
@@ -140,6 +140,22 @@ Sebelum menyerahkan diagram, validasi aturan sintaksis berikut untuk mencegah br
    mmdc -i diagram.mmd -o diagram.svg
    ```
    Jika `mmdc` tidak terpasang, verifikasi dengan copy-paste ke mermaid.live atau pastikan parser Markdown viewer tidak melempar syntax error.
+
+## Companion Skills Awareness
+
+`msal-diagrams` memvisualisasikan sistem teknis (arsitektur, workflow, sequence). Orchestrator invoke diagrams BERSAMA companion skills untuk mencegah output slop:
+
+| Companion | Diagrams' Role | Anti-Slop Contribution |
+|---|---|---|
+| `msal-architect` | Architecture correctness validation | Mencegah diagram visual bagus tapi arsitektur salah atau misleading |
+| `msal-craft` | Visual clarity dan design consistency | Memastikan diagram mengikuti design system dan accessible |
+
+**Aturan**: Diagrams tidak boleh deliver diagram arsitektur tanpa validasi dari `msal-architect` atau review visual clarity dari `msal-craft`.
+
+## Related Skills
+- **msal-architect**: Validasi kebenaran arsitektur sebelum visualisasi
+- **msal-craft**: Design tokens dan visual clarity untuk diagram yang konsisten
+- **msal-docsmith**: Integrasi diagram ke dalam dokumentasi teknis
 
 ## 5. Dukungan Ekspor & Integrasi Archify (Opsional)
 

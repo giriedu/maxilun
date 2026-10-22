@@ -30,7 +30,7 @@ Bertanggung jawab atas pipeline CI/CD yang reliabel, containerization efisien, m
 
 ## 1. Override Engine (Engine Overrides)
 
-4 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override deploy:
+7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override deploy:
 - **Purity**: Tolak over-engineering infra (Kubernetes untuk single-server app, microservices CI untuk monorepo sederhana). Infra mengikuti kebutuhan aplikasi, bukan tren.
 - **Minimalist**: Pipeline stage minimal yang memenuhi quality gate. Image Docker sekecil mungkin. Secret injection via platform native, bukan file `.env` di image.
 - **Clarity**: Runbook operasional dengan langkah eksplisit. Alert message berisi konteks + aksi. Log structured dengan field konsisten.
@@ -253,6 +253,23 @@ CMD ["node", "server.js"]
 - [ ] Custom error pages (404, 500, 503) branded dan informatif.
 - [ ] robots.txt dan sitemap.xml configured.
 - [ ] Security headers: CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy.
+
+## Companion Skills Awareness
+
+`msal-deploy` mengelola pipeline CI/CD, containerization, dan deployment. Orchestrator invoke deploy BERSAMA companion skills untuk mencegah output slop:
+
+| Companion | Deploy's Role | Anti-Slop Contribution |
+|---|---|---|
+| `msal-verify` | CI test validation dan quality gates | Mencegah pipeline jalan tapi app broken di production |
+| `msal-sentinel` | Security dalam deployment (secrets, SSL) | Memastikan deployment tidak membocorkan credentials atau config aman |
+
+**Aturan**: Deploy tidak boleh release ke production tanpa test pass dari `msal-verify` atau security review dari `msal-sentinel`.
+
+## Related Skills
+- **msal-architect**: Capacity planning dan infrastructure requirements
+- **msal-verify**: Test automation dan quality gates di CI pipeline
+- **msal-sentinel**: Secret management, SSL/TLS, dan security headers
+- **msal-insight**: Monitoring dan observability setup
 
 ## 8. Backup & Recovery Database
 

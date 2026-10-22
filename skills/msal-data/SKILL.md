@@ -30,7 +30,7 @@ Bertanggung jawab atas desain skema yang tahan evolusi, migrasi tanpa downtime, 
 
 ## 1. Override Engine (Engine Overrides)
 
-4 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override data:
+7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override data:
 - **Purity**: Tolak over-engineering schema (normalisasi berlebihan untuk read-heavy workload, denormalisasi tanpa justifikasi performa). Setiap kolom dan tabel wajib punya alasan eksplisit.
 - **Minimalist**: Constraint database (FK, UNIQUE, CHECK) > validasi aplikasi redundan. Satu query efisien > tiga query terpisah.
 - **Clarity**: EXPLAIN output + metrik konkret (ms, rows scanned). Tanpa klaim performa tanpa bukti.
@@ -238,8 +238,21 @@ SET LOCAL app.current_tenant_id = '11111111-2222-3333-4444-555555555555';
 -- Semua query SELECT/INSERT/UPDATE/DELETE otomatis terisolasi pada tenant tersebut.
 ```
 
+## Companion Skills Awareness
+
+`msal-data` mendesain skema database, migrasi, dan optimasi query. Orchestrator invoke data BERSAMA companion skills untuk mencegah output slop:
+
+| Companion | Data's Role | Anti-Slop Contribution |
+|---|---|---|
+| `msal-engineer` | Implementasi query dan migration code | Mencegah schema bagus tapi implementasi query N+1 atau migration broken |
+| `msal-verify` | Testing data layer dan migration | Memastikan migration reversible dan query performan di CI pipeline |
+
+**Aturan**: Data tidak boleh approve schema change atau migration tanpa implementation review dari `msal-engineer` atau test coverage dari `msal-verify`.
+
 ## Related Skills
 - **msal-architect**: Pemilihan pola multi-tenant dan strategi partisi data
 - **msal-sentinel**: Pencegahan kerentanan IDOR (Insecure Direct Object References)
 - **msal-insight**: Diagnosis performa query database dan connection pool exhaustion
+- **msal-engineer**: Implementasi kode query, migration, dan ORM patterns
+- **msal-verify**: Testing regression data layer dan validation migration
 

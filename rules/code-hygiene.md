@@ -53,3 +53,48 @@ genuinely new fact. Never three lines for a single point.
 - Guard clauses at function top
 - Related code stays together (no "organize by type" when "organize
   by feature" makes more sense)
+
+## CSS & UI Code Anti-Slop
+
+### Class Naming
+- Forbidden generic names: `container`, `wrapper`, `content`, `section`,
+  `box`, `card`, `inner`, `outer`, `left`, `right` without context
+- Required contextual naming: `login-form-container`, `invoice-card`,
+  `sidebar-nav-section`, `hero-cta-box`
+- Component prefix for scoped styles: `.InvoiceCard__header`,
+  `.LoginForm__input-group` (BEM or project convention)
+- Utility classes allowed only from established system (Tailwind,
+  design tokens). No ad-hoc utility classes invented per-component.
+
+### Inline Styles
+- Forbidden: inline styles for layout, spacing, colors, typography
+- Allowed: dynamic values computed at runtime (position from drag,
+  color from user preference, width from data)
+- All static visual properties belong in CSS/design tokens
+
+### Component Structure Anti-Patterns
+- Forbidden: header + content + footer structure in every component
+  without reason. Structure follows content needs, not template.
+- Forbidden: wrapping plain text in `<div>` or `<Card>` without
+  grouping purpose. Text can exist without container.
+- Forbidden: decorative wrapper elements (`<div className="wrapper">`
+  that does nothing but add a layer)
+- Required: semantic HTML first (`<nav>`, `<main>`, `<article>`,
+  `<form>`, `<dialog>`). Generic `<div>` only when no semantic tag fits.
+
+### Design Token Compliance
+- Spacing values must reference token scale (4px grid), not magic numbers
+- Colors must reference semantic tokens (`--brand-primary`), not raw hex/rgb
+- Border radius must follow nested hierarchy (child <= parent)
+- Font sizes must follow modular scale, not arbitrary px values
+- If design tokens don't exist yet, create them BEFORE writing component CSS
+
+### JavaScript/TypeScript UI Code
+- Event handler naming: `onSubmit`, `handleFormSubmit`, not `click`,
+  `handleClick` (what happens, not what triggers it)
+- State variable naming: `isSubmitting`, `hasError`, `userList`, not
+  `loading`, `error`, `data` (specific to context)
+- Magic strings forbidden: use constants or enums for status values,
+  route paths, event names
+- Type definitions: prefer specific interfaces over `any`, `object`,
+  `Record<string, unknown>`. Define shape explicitly.

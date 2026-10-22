@@ -30,7 +30,7 @@ RULES_DIR = REPO_ROOT / "rules"
 sys.path.insert(0, str(REPO_ROOT / "skills" / "msal-knowledge-graph"))
 
 EXPECTED_SKILLS = [
-    "msal",
+    "maxilun",
     "msal-knowledge-graph",
     "msal-scaffold",
     "msal-architect",
@@ -212,7 +212,7 @@ def test_foundation_integration():
     if passed:
         print("  ✅ msal-knowledge-graph: Foundation markers present")
 
-    for consumer in ["msal", "msal-engineer"]:
+    for consumer in ["maxilun", "msal-engineer"]:
         content = (SKILLS_DIR / consumer / "SKILL.md").read_text(encoding="utf-8")
         if "msal-knowledge-graph" in content:
             print(f"  ✅ {consumer}: References msal-knowledge-graph")
@@ -403,7 +403,7 @@ def test_cross_references():
         print("  ❌ cinecode does not reference msal-motion")
         passed = False
 
-    orchestrator_content = (SKILLS_DIR / "msal" / "SKILL.md").read_text(encoding="utf-8")
+    orchestrator_content = (SKILLS_DIR / "maxilun" / "SKILL.md").read_text(encoding="utf-8")
     if "msal-scaffold" in orchestrator_content:
         print("  ✅ maxilun orchestrator references msal-scaffold")
     else:
