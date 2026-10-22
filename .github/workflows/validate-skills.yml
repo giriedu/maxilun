@@ -1,0 +1,108 @@
+name: Validate Maxilun Skills
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  validate-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run Test Suite
+        run: python scripts/test-suite.py
+
+      - name: Validate Bash Installer Syntax
+        run: bash -n scripts/install.sh
+
+      - name: Validate Bash Uninstall Syntax
+        run: bash -n scripts/uninstall.sh
+
+      - name: Verify KG Python files compile
+        run: |
+          python -m py_compile skills/msal-knowledge-graph/cli.py
+          python -m py_compile skills/msal-knowledge-graph/graph_builder.py
+          python -m py_compile skills/msal-knowledge-graph/server.py
+          python -m py_compile skills/msal-knowledge-graph/scanner/base_scanner.py
+          python -m py_compile skills/msal-knowledge-graph/scanner/python_scanner.py
+          python -m py_compile skills/msal-knowledge-graph/scanner/typescript_scanner.py
+          python -m py_compile skills/msal-knowledge-graph/scanner/generic_scanner.py
+          echo "All Python files compile OK"
+
+      - name: Count skills and rules
+        run: |
+          SKILL_COUNT=$(find skills -maxdepth 2 -name "SKILL.md" | wc -l)
+          RULE_COUNT=$(find rules -maxdepth 1 -name "*.md" | wc -l)
+          echo "Skills: $SKILL_COUNT"
+          echo "Rules: $RULE_COUNT"
+          [ "$SKILL_COUNT" -ge 18 ] || (echo "ERROR: Expected 18 skills, found $SKILL_COUNT" && exit 1)
+          [ "$RULE_COUNT" -ge 4 ] || (echo "ERROR: Expected 4 rules, found $RULE_COUNT" && exit 1)
+          echo "Skill and rule counts OK"
+
+  validate-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run Test Suite
+        shell: pwsh
+        run: python scripts/test-suite.py
+
+      - name: Validate PowerShell Installer Syntax
+        shell: pwsh
+        run: |
+          $file = (Resolve-Path "scripts/install.ps1").Path
+          $tokens = $null
+          $errors = $null
+          $null = [System.Management.Automation.Language.Parser]::ParseFile($file, [ref]$tokens, [ref]$errors)
+          if ($errors.Count -gt 0) {
+            $errors | ForEach-Object { Write-Error $_.ToString() }
+            exit 1
+          }
+          Write-Host "PowerShell syntax OK"
+
+      - name: Validate PowerShell Uninstall Syntax
+        shell: pwsh
+        run: |
+          $file = (Resolve-Path "scripts/uninstall.ps1").Path
+          $tokens = $null
+          $errors = $null
+          $null = [System.Management.Automation.Language.Parser]::ParseFile($file, [ref]$tokens, [ref]$errors)
+          if ($errors.Count -gt 0) {
+            $errors | ForEach-Object { Write-Error $_.ToString() }
+            exit 1
+          }
+          Write-Host "PowerShell uninstall syntax OK"
+
+      - name: Verify KG Python files compile
+        shell: pwsh
+        run: |
+          $files = @(
+            "skills/msal-knowledge-graph/cli.py",
+            "skills/msal-knowledge-graph/graph_builder.py",
+            "skills/msal-knowledge-graph/server.py",
+            "skills/msal-knowledge-graph/scanner/base_scanner.py",
+            "skills/msal-knowledge-graph/scanner/python_scanner.py",
+            "skills/msal-knowledge-graph/scanner/typescript_scanner.py",
+            "skills/msal-knowledge-graph/scanner/generic_scanner.py"
+          )
+          foreach ($f in $files) {
+            python -m py_compile $f
+            if ($LASTEXITCODE -ne 0) { Write-Error "Compile failed: $f"; exit 1 }
+          }
+          Write-Host "All Python files compile OK"

@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maxilun Motion — Opener Template</title>
+<style>
+/* ============================================================
+   BRAND DNA INJECTION POINTS
+   Modify these custom properties to rebrand the entire template.
+   All animation timing, colors, and typography derive from here.
+   ============================================================ */
+:root {
+  --brand-primary: #8b5cf6;
+  --brand-secondary: #06b6d4;
+  --brand-bg: #0a0a1a;
+  --brand-font-display: 'Inter', system-ui, -apple-system, sans-serif;
+  --brand-font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --motion-duration-base: 0.6s;
+  --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Internal layout constants — do not modify unless changing viewport */
+  --stage-width: 1920;
+  --stage-height: 1080;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: var(--brand-font-body);
+}
+
+/* ============================================================
+   STAGE / CANVAS SYSTEM
+   Fixed 1920×1080 design surface that scales responsively via
+   CSS transform to fit any viewport while preserving aspect ratio.
+   ============================================================ */
+#stage-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+#stage {
+  position: relative;
+  width: calc(var(--stage-width) * 1px);
+  height: calc(var(--stage-height) * 1px);
+  background: var(--brand-bg);
+  overflow: hidden;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+/* ============================================================
+   LAYER SYSTEM
+   Z-index hierarchy: bg → mid → fg → text → overlay
+   Each layer is a full-stage positioning context.
+   ============================================================ */
+.layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.layer--bg      { z-index: 1; }
+.layer--mid     { z-index: 2; }
+.layer--fg      { z-index: 3; }
+.layer--text    { z-index: 4; }
+.layer--overlay { z-index: 5; }
+
+/* ============================================================
+   CAMERA RIG
+   The camera wrapper receives GSAP-driven transforms for
+   breathing drift, push-through, and pan effects.
+   ============================================================ */
+#camera-rig {
+  position: absolute;
+  inset: -10%;
+  width: 120%;
+  height: 120%;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+/* ============================================================
+   PARTICLE CANVAS
+   GPU-composited canvas overlay for particle effects.
+   ============================================================ */
+#particle-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.7;
+}
+
+/* ============================================================
+   TEXT KINETICS
+   Base styles for animated text elements. Characters are wrapped
+   in spans by the kinetics engine for per-character animation.
+   ============================================================ */
+.kinetic-text {
+  font-family: var(--brand-font-display);
+  color: #fff;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.kinetic-text .char {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.title-main {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 120px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  text-align: center;
+}
+
+.subtitle {
+  position: absolute;
+  top: calc(50% + 90px); left: 50%;
+  transform: translate(-50%, 0);
+  font-size: 36px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  text-align: center;
+}
+
+/* ============================================================
+   TRANSITION OVERLAYS
+   Full-stage surfaces used by the transition library.
+   ============================================================ */
+.transition-wipe {
+  position: absolute;
+  inset: 0;
+  background: var(--brand-primary);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.transition-dissolve {
+  position: absolute;
+  inset: 0;
+  background: var(--brand-bg);
+  opacity: 0;
+}
+
+/* ============================================================
+   DEBUG SCRUB BAR
+   Visible only when ?debug=1 is in the URL. Provides timeline
+   scrubbing, play/pause, and speed controls.
+   ============================================================ */
+#debug-panel {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,0.9);
+  padding: 12px 20px;
+  font-family: monospace;
+  font-size: 13px;
+  color: #ccc;
+  gap: 12px;
+  align-items: center;
+}
+
+#debug-panel.visible { display: flex; }
+
+#debug-scrub {
+  flex: 1;
+  cursor: pointer;
+  accent-color: var(--brand-primary);
+}
+
+#debug-panel button {
+  background: #333;
+  border: 1px solid #555;
+  color: #fff;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  border-radius: 3px;
+}
+
+#debug-panel button:hover { background: #444; }
+#debug-info { min-width: 180px; text-align: right; }
+
+/* ============================================================
+   ACCESSIBILITY: REDUCED MOTION
+   Disables all animation and shows a static frame when the user
+   has requested reduced motion at the OS level.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  #particle-canvas { display: none; }
+
+  .kinetic-text .char {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  #camera-rig {
+    transform: none !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     STAGE STRUCTURE
+     The stage is the single rendering surface. All visual elements
+     live inside layers within the camera rig.
+     ============================================================ -->
+<div id="stage-container">
+  <div id="stage">
+    <div id="camera-rig">
+
+      <!-- BACKGROUND LAYER: gradients, ambient shapes, video -->
+      <div class="layer layer--bg" data-layer="bg">
+        <div class="transition-dissolve"></div>
+      </div>
+
+      <!-- MIDGROUND LAYER: particles, decorative geometry -->
+      <div class="layer layer--mid" data-layer="mid">
+        <canvas id="particle-canvas"></canvas>
+      </div>
+
+      <!-- FOREGROUND LAYER: key visual elements, logos -->
+      <div class="layer layer--fg" data-layer="fg">
+        <div class="transition-wipe"></div>
+      </div>
+
+      <!-- TEXT LAYER: kinetic typography, titles -->
+      <div class="layer layer--text" data-layer="text">
+        <h1 class="kinetic-text title-main" data-kinetic="wave">YOUR TITLE</h1>
+        <p class="kinetic-text subtitle" data-kinetic="stagger">Subtitle or tagline goes here</p>
+      </div>
+
+    </div><!-- /camera-rig -->
+
+    <!-- OVERLAY LAYER: sits outside camera rig for UI-grade overlays -->
+    <div class="layer layer--overlay" data-layer="overlay"></div>
+  </div>
+</div>
+
+<!-- DEBUG PANEL -->
+<div id="debug-panel">
+  <button id="debug-playpause">Pause</button>
+  <input type="range" id="debug-scrub" min="0" max="1" step="0.001" value="0">
+  <button id="debug-speed" data-speed="1">1×</button>
+  <span id="debug-info">0.00s / 0.00s</span>
+</div>
+
+<!-- ============================================================
+     GSAP 3 FROM CDN
+     For offline use: download gsap.min.js locally and change src.
+     ============================================================ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<script>
+/* ============================================================
+   AUDIO REACTIVE STUB
+   Replace with real audio analysis to drive animations from
+   beat detection, frequency bands, or amplitude.
+   ============================================================ */
+window.__MOTION_AUDIO__ = { beat: false, frequency: 0, amplitude: 0 };
+
+/* ============================================================
+   EXPORT HOOK
+   Called once per frame during playback when an external capture
+   system is connected. Passes the current progress (0–1).
+   ============================================================ */
+window.__MOTION_FRAME__ = null;
+
+/* ============================================================
+   CONFIGURATION
+   Central place to adjust timing, content, and behavior without
+   touching animation logic.
+   ============================================================ */
+const CONFIG = {
+  duration: 5,
+  loop: true,
+  autoplay: true,
+  particleCount: 150,
+  particleMaxSize: 3,
+  cameraBreathScale: 0.015,
+  cameraBreathDuration: 4,
+  debugParam: 'debug',
+};
+
+/* ============================================================
+   STAGE SCALING
+   Maintains 16:9 aspect ratio by scaling the fixed 1920×1080
+   stage to fit the current viewport via CSS transform.
+   ============================================================ */
+function scaleStage() {
+  const stage = document.getElementById('stage');
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const scale = Math.min(vw / 1920, vh / 1080);
+  stage.style.transform = `scale(${scale})`;
+}
+
+window.addEventListener('resize', scaleStage);
+scaleStage();
+
+/* ============================================================
+   TEXT KINETICS ENGINE
+   Wraps each character of .kinetic-text elements in spans and
+   exposes reveal methods: stagger, wave, scramble.
+   ============================================================ */
+const TextKinetics = {
+  init() {
+    document.querySelectorAll('.kinetic-text').forEach(el => {
+      const text = el.textContent;
+      el.textContent = '';
+      [...text].forEach(ch => {
+        const span = document.createElement('span');
+        span.className = 'char';
+        span.textContent = ch === ' ' ? '\u00A0' : ch;
+        el.appendChild(span);
+      });
+    });
+  },
+
+  getChars(selector) {
+    return gsap.utils.toArray(`${selector} .char`);
+  },
+
+  stagger(selector, opts = {}) {
+    const chars = this.getChars(selector);
+    return gsap.from(chars, {
+      opacity: 0,
+      y: 40,
+      duration: opts.duration || 0.5,
+      stagger: opts.stagger || 0.03,
+      ease: opts.ease || 'power3.out',
+      ...opts.extra,
+    });
+  },
+
+  wave(selector, opts = {}) {
+    const chars = this.getChars(selector);
+    return gsap.from(chars, {
+      opacity: 0,
+      y: 60,
+      rotationX: -40,
+      duration: opts.duration || 0.7,
+      stagger: opts.stagger || 0.04,
+      ease: opts.ease || 'back.out(1.4)',
+      transformOrigin: 'center bottom',
+      ...opts.extra,
+    });
+  },
+
+  scramble(selector, opts = {}) {
+    const chars = this.getChars(selector);
+    const glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&';
+    const tl = gsap.timeline();
+
+    chars.forEach((char, i) => {
+      const original = char.textContent;
+      const steps = opts.steps || 8;
+      for (let s = 0; s < steps; s++) {
+        tl.set(char, {
+          textContent: glyphs[Math.floor(Math.random() * glyphs.length)],
+        }, i * 0.02 + s * 0.04);
+      }
+      tl.set(char, { textContent: original }, i * 0.02 + steps * 0.04);
+    });
+
+    tl.from(chars, {
+      opacity: 0,
+      duration: 0.1,
+      stagger: 0.02,
+    }, 0);
+
+    return tl;
+  },
+};
+
+/* ============================================================
+   PARTICLE SYSTEM
+   Canvas-based, capped at 200 particles for GPU friendliness.
+   Particles drift upward with subtle horizontal sway.
+   ============================================================ */
+class ParticleSystem {
+  constructor(canvas, count) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.count = Math.min(count, 200);
+    this.particles = [];
+    this.resize();
+    this.seed();
+  }
+
+  resize() {
+    this.canvas.width = 1920;
+    this.canvas.height = 1080;
+  }
+
+  seed() {
+    const style = getComputedStyle(document.documentElement);
+    const primary = style.getPropertyValue('--brand-primary').trim();
+    const secondary = style.getPropertyValue('--brand-secondary').trim();
+    this.colors = [primary, secondary, '#ffffff'];
+
+    for (let i = 0; i < this.count; i++) {
+      this.particles.push({
+        x: Math.random() * 1920,
+        y: Math.random() * 1080,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: -(Math.random() * 0.8 + 0.2),
+        size: Math.random() * CONFIG.particleMaxSize + 0.5,
+        color: this.colors[Math.floor(Math.random() * this.colors.length)],
+        alpha: Math.random() * 0.6 + 0.1,
+        phase: Math.random() * Math.PI * 2,
+      });
+    }
+  }
+
+  update(progress) {
+    this.ctx.clearRect(0, 0, 1920, 1080);
+
+    for (const p of this.particles) {
+      p.x += p.vx + Math.sin(progress * 4 + p.phase) * 0.3;
+      p.y += p.vy;
+
+      if (p.y < -10) {
+        p.y = 1090;
+        p.x = Math.random() * 1920;
+      }
+      if (p.x < -10) p.x = 1930;
+      if (p.x > 1930) p.x = -10;
+
+      this.ctx.globalAlpha = p.alpha;
+      this.ctx.fillStyle = p.color;
+      this.ctx.beginPath();
+      this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+
+    this.ctx.globalAlpha = 1;
+  }
+}
+
+/* ============================================================
+   CAMERA RIG
+   GSAP-driven camera movements layered on the #camera-rig element.
+   Breathing runs continuously; push/pan are timeline-triggered.
+   ============================================================ */
+const CameraRig = {
+  breathTimeline: null,
+
+  startBreathing() {
+    this.breathTimeline = gsap.to('#camera-rig', {
+      scale: 1 + CONFIG.cameraBreathScale,
+      x: () => (Math.random() - 0.5) * 10,
+      y: () => (Math.random() - 0.5) * 8,
+      duration: CONFIG.cameraBreathDuration,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: -1,
+    });
+  },
+
+  pushThrough(tl, startTime, duration, scaleTo = 1.08) {
+    tl.to('#camera-rig', {
+      scale: scaleTo,
+      duration,
+      ease: 'power2.inOut',
+    }, startTime);
+  },
+
+  pan(tl, startTime, duration, x = 0, y = 0) {
+    tl.to('#camera-rig', {
+      x, y,
+      duration,
+      ease: 'power2.inOut',
+    }, startTime);
+  },
+};
+
+/* ============================================================
+   TRANSITION LIBRARY
+   Reusable transition primitives that operate on overlay elements.
+   Each returns a GSAP timeline segment for compositing.
+   ============================================================ */
+const Transitions = {
+  wipe(direction = 'left', duration = 0.8) {
+    const origins = {
+      left: 'left center', right: 'right center',
+      top: 'center top', bottom: 'center bottom',
+    };
+    const tl = gsap.timeline();
+    tl.set('.transition-wipe', { transformOrigin: origins[direction] || origins.left });
+    tl.to('.transition-wipe', { scaleX: 1, duration: duration / 2, ease: 'power2.in' });
+    tl.to('.transition-wipe', { scaleX: 0, duration: duration / 2, ease: 'power2.out', transformOrigin: direction === 'left' ? 'right center' : 'left center' });
+    return tl;
+  },
+
+  dissolve(duration = 0.6) {
+    const tl = gsap.timeline();
+    tl.to('.transition-dissolve', { opacity: 1, duration: duration / 2, ease: 'power2.in' });
+    tl.to('.transition-dissolve', { opacity: 0, duration: duration / 2, ease: 'power2.out' });
+    return tl;
+  },
+
+  slideThrough(direction = 'up', duration = 0.7) {
+    const props = {
+      up: { y: '-100%' }, down: { y: '100%' },
+      left: { x: '-100%' }, right: { x: '100%' },
+    };
+    const tl = gsap.timeline();
+    tl.fromTo('.transition-wipe', props[direction], { ...props[direction], opacity: 1, duration: duration / 2, ease: 'power2.in' });
+    tl.to('.transition-wipe', { opacity: 0, duration: duration / 2, ease: 'power2.out' });
+    return tl;
+  },
+
+  zoomPush(duration = 0.9) {
+    const tl = gsap.timeline();
+    tl.fromTo('.transition-dissolve',
+      { opacity: 0, scale: 0.8 },
+      { opacity: 1, scale: 1, duration: duration / 2, ease: 'power2.in' }
+    );
+    tl.to('.transition-dissolve', {
+      opacity: 0, scale: 1.2, duration: duration / 2, ease: 'power2.out',
+    });
+    return tl;
+  },
+};
+
+/* ============================================================
+   MAIN TIMELINE
+   Compose the full animation sequence here. This is the primary
+   edit surface for creating unique motion pieces.
+   ============================================================ */
+function buildTimeline() {
+  const tl = gsap.timeline({
+    paused: true,
+    onComplete: () => {
+      if (CONFIG.loop) tl.restart();
+    },
+    onUpdate: () => {
+      if (window.__MOTION_FRAME__) {
+        window.__MOTION_FRAME__(tl.progress());
+      }
+    },
+  });
+
+  // Background gradient reveal
+  tl.fromTo('.layer--bg', { opacity: 0 }, { opacity: 1, duration: 0.8, ease: 'power2.out' }, 0);
+
+  // Camera breathing starts immediately
+  CameraRig.startBreathing();
+
+  // Push-through during title reveal
+  CameraRig.pushThrough(tl, 0.3, 2, 1.06);
+
+  // Title: wave reveal
+  tl.add(TextKinetics.wave('.title-main', { duration: 0.8, stagger: 0.05 }), 0.4);
+
+  // Subtitle: stagger reveal
+  tl.add(TextKinetics.stagger('.subtitle', { duration: 0.5, stagger: 0.02 }), 1.2);
+
+  // Hold for readability
+  tl.to({}, { duration: 1.5 }, 2.0);
+
+  // Exit: dissolve out
+  tl.add(Transitions.dissolve(0.8), 3.5);
+
+  // Reset for loop
+  tl.set(['.title-main .char', '.subtitle .char'], { opacity: 0, clearProps: 'all' }, 4.3);
+  tl.set('.transition-dissolve', { opacity: 0 }, 4.3);
+
+  return tl;
+}
+
+/* ============================================================
+   DEBUG CONTROLS
+   Activated by appending ?debug=1 to the URL. Exposes timeline
+   scrubbing, playback control, and speed adjustment.
+   ============================================================ */
+function initDebug(timeline) {
+  const params = new URLSearchParams(window.location.search);
+  if (!params.has(CONFIG.debugParam)) return;
+
+  const panel = document.getElementById('debug-panel');
+  const scrub = document.getElementById('debug-scrub');
+  const playBtn = document.getElementById('debug-playpause');
+  const speedBtn = document.getElementById('debug-speed');
+  const info = document.getElementById('debug-info');
+
+  panel.classList.add('visible');
+
+  let isScrubbing = false;
+
+  scrub.addEventListener('input', () => {
+    isScrubbing = true;
+    timeline.pause();
+    timeline.progress(parseFloat(scrub.value));
+  });
+
+  scrub.addEventListener('change', () => {
+    isScrubbing = false;
+    if (!timeline.paused()) timeline.play();
+  });
+
+  playBtn.addEventListener('click', () => {
+    if (timeline.paused()) {
+      timeline.play();
+      playBtn.textContent = 'Pause';
+    } else {
+      timeline.pause();
+      playBtn.textContent = 'Play';
+    }
+  });
+
+  const speeds = [0.25, 0.5, 1, 2, 4];
+  let speedIdx = 2;
+  speedBtn.addEventListener('click', () => {
+    speedIdx = (speedIdx + 1) % speeds.length;
+    timeline.timeScale(speeds[speedIdx]);
+    speedBtn.textContent = `${speeds[speedIdx]}×`;
+    speedBtn.dataset.speed = speeds[speedIdx];
+  });
+
+  timeline.eventCallback('onUpdate', () => {
+    if (!isScrubbing) scrub.value = timeline.progress();
+    info.textContent = `${timeline.time().toFixed(2)}s / ${timeline.duration().toFixed(2)}s`;
+  });
+}
+
+/* ============================================================
+   INITIALIZATION
+   Boots all subsystems in dependency order.
+   ============================================================ */
+function init() {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  TextKinetics.init();
+
+  const particles = new ParticleSystem(
+    document.getElementById('particle-canvas'),
+    CONFIG.particleCount
+  );
+
+  const timeline = buildTimeline();
+
+  if (!prefersReducedMotion) {
+    // Particle render loop synced to GSAP ticker
+    gsap.ticker.add(() => {
+      particles.update(timeline.progress());
+    });
+
+    if (CONFIG.autoplay) timeline.play();
+  }
+
+  initDebug(timeline);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+</body>
+</html>

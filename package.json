@@ -1,0 +1,55 @@
+{
+  "name": "maxilun",
+  "version": "1.0.0",
+  "description": "AI engineering co-pilot — 18 specialist skills, mandatory knowledge graph, confidence-based orchestration, zero AI slop.",
+  "keywords": [
+    "ai-skills",
+    "claude-code",
+    "antigravity",
+    "cursor",
+    "codex",
+    "agent-protocol",
+    "purity-engine",
+    "token-compression",
+    "ui-ux",
+    "seo",
+    "code-intelligence",
+    "motion-design",
+    "database",
+    "deployment",
+    "frontend",
+    "react-server-components",
+    "nextjs",
+    "docker",
+    "ci-cd",
+    "knowledge-graph",
+    "programmatic-video",
+    "cinecode",
+    "project-scaffold",
+    "context-docs"
+  ],
+  "author": "Maxilun Architecture",
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/giriedu/maxilun.git"
+  },
+  "scripts": {
+    "test": "python scripts/test-suite.py",
+    "install-skills": "node -e \"const{execSync}=require('child_process');const p=require('path');const s=p.join(__dirname,'scripts');process.platform==='win32'?execSync('powershell -ExecutionPolicy Bypass -File '+p.join(s,'install.ps1'),{stdio:'inherit'}):execSync('bash '+p.join(s,'install.sh'),{stdio:'inherit'})\"",
+    "update-skills": "node -e \"const{execSync}=require('child_process');const p=require('path');const s=p.join(__dirname,'scripts');process.platform==='win32'?execSync('powershell -ExecutionPolicy Bypass -File '+p.join(s,'install.ps1'),{stdio:'inherit'}):execSync('bash '+p.join(s,'install.sh'),{stdio:'inherit'})\"",
+    "uninstall-skills": "node -e \"const{execSync}=require('child_process');const p=require('path');const s=p.join(__dirname,'scripts');process.platform==='win32'?execSync('powershell -ExecutionPolicy Bypass -File '+p.join(s,'uninstall.ps1'),{stdio:'inherit'}):execSync('bash '+p.join(s,'uninstall.sh'),{stdio:'inherit'})\""
+  },
+  "files": [
+    "skills/",
+    "rules/",
+    "scripts/",
+    "docs/",
+    "README.md",
+    "README.id.md",
+    "CONTRIBUTING.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "skills.sh.json"
+  ]
+}

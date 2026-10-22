@@ -1,0 +1,254 @@
+# Maxilun Source Available License v2.0 (MSAL-2.0)
+
+**Version 2.0, October 2026**  
+**License Identifier**: `Maxilun-Source-Available-2.0` (MSAL-2.0)
+
+Copyright © 2025-2026 Maxilun Architecture. All rights reserved.
+
+---
+
+## Preamble
+
+This license is designed to balance open collaboration with sustainable development. It grants broad permissions for personal, educational, and internal commercial use while protecting the long-term viability of the Maxilun project. This license is inspired by modern source-available licenses that prioritize developer freedom alongside project sustainability.
+
+---
+
+## 1. Definitions
+
+**"Software"** means the Maxilun source code, documentation, skills, rules, templates, and associated files distributed under this license, including any updates or modifications made available by Maxilun Architecture.
+
+**"You"** or **"Your"** means an individual or legal entity exercising permissions granted by this license.
+
+**"Contribution"** means any work of authorship, including the original version of the Software and any modifications or additions to it, intentionally submitted to Maxilun Architecture for inclusion in the Software.
+
+**"Commercial Use"** means using the Software to generate revenue, including but not limited to: selling products or services built with the Software, offering consulting or implementation services involving the Software, or using the Software in revenue-generating business operations.
+
+**"Managed Service"** means offering the Software itself, or a substantially similar product, as a hosted service, SaaS, PaaS, API, or platform where the primary value proposition is the Software's core functionality.
+
+**"Derivative Work"** means any modification, adaptation, translation, or enhancement of the Software that is based upon or incorporates all or a substantial portion of the Software.
+
+**"Internal Use"** means use within Your organization for non-revenue-generating purposes, including development, testing, evaluation, research, education, and internal tooling.
+
+---
+
+## 2. Grant of Permissions
+
+Subject to the terms of this license, You are granted a perpetual, worldwide, non-exclusive, royalty-free license to:
+
+### 2.1 Personal & Educational Use
+(a) Use, copy, modify, merge, publish, distribute, and sublicense the Software for personal projects, educational purposes, academic research, and open-source projects;
+
+(b) Create and share Derivative Works for non-commercial purposes;
+
+(c) Use the Software in tutorials, courses, books, and educational content.
+
+### 2.2 Internal Commercial Use
+(a) Use the Software internally within Your organization for development, testing, evaluation, and internal tooling;
+
+(b) Build internal tools, prototypes, and proof-of-concepts using the Software;
+
+(c) Evaluate the Software for potential adoption in commercial products.
+
+### 2.3 Commercial Product Development
+(a) Build and sell products or services that incorporate or are built with the Software, subject to Section 3;
+
+(b) Create Derivative Works for commercial distribution, subject to Section 3;
+
+(c) Use the Software in client projects, freelance work, and consulting engagements, subject to Section 3.
+
+---
+
+## 3. Commercial Use Conditions
+
+If You engage in Commercial Use of the Software, You must comply with the following conditions:
+
+### 3.1 Attribution Requirement
+Include the following attribution in all user-facing documentation, about pages, credits, or product descriptions:
+
+> "Built with Maxilun — https://github.com/giriedu/maxilun"
+
+For digital products, this attribution must be visible in the application's settings, about page, or footer. For physical products or services, include the attribution in accompanying documentation.
+
+### 3.2 License Retention
+Retain this license text and copyright notice in all copies or substantial portions of the Software, including Derivative Works.
+
+### 3.3 Notice of Commercial Use
+Provide written notice to Maxilun Architecture at **license@maxilun.com** describing the nature of Your commercial use within 30 days of first commercial deployment. This notice helps us understand how Maxilun is being used and supports community-driven improvements.
+
+### 3.4 Revenue Threshold Exemption
+Organizations with annual revenue below USD $1,000,000 (or equivalent in local currency) are exempt from the notification requirement in Section 3.3, but must still comply with Sections 3.1 and 3.2.
+
+---
+
+## 4. Restrictions
+
+You may NOT:
+
+### 4.1 Managed Service Restriction
+Sell, resell, rent, lease, or offer the Software itself as a Managed Service without prior written permission from Maxilun Architecture. This includes:
+- Hosting Maxilun as a service where users interact with Maxilun's core functionality
+- Offering "Maxilun-as-a-Service" or similar branded offerings
+- Providing API access to Maxilun's skill execution engine as a standalone service
+
+**Exception**: Using Maxilun to build and host Your own distinct product or service is permitted under Section 2.3.
+
+### 4.2 Proprietary Notices
+Remove, alter, or obscure any copyright, patent, trademark, or proprietary notices contained in the Software.
+
+### 4.3 Legal Compliance
+Use the Software in violation of applicable laws or regulations, including export control laws, data protection regulations, and intellectual property laws.
+
+### 4.4 False Endorsement
+Represent that You are endorsed by or affiliated with Maxilun Architecture beyond what this license permits. Do not use Maxilun trademarks, logos, or branding in a way that suggests official partnership or endorsement without written permission.
+
+### 4.5 Competitive Forking
+Distribute a fork of the Software that competes directly with Maxilun's core offering without significant differentiation in features, target audience, or value proposition. Community forks for experimentation, education, or niche use cases are permitted.
+
+---
+
+## 5. Patent Grant
+
+### 5.1 Contributor Patent License
+Each contributor to the Software grants You a perpetual, worldwide, non-exclusive, royalty-free patent license to make, use, sell, offer for sale, import, and otherwise transfer the Software, limited to claims necessarily infringed by their contribution alone or in combination with the Software.
+
+### 5.2 Patent Litigation Termination
+This patent grant does not extend to claims infringed only by modifications made after receiving the Software. If You institute patent litigation against any party alleging that the Software constitutes direct or contributory patent infringement, then all patent licenses granted to You under this license terminate as of the date such litigation is filed.
+
+### 5.3 Defensive Suspension
+If You assert a patent claim against anyone regarding their use of the Software, Your patent license from Section 5.1 is suspended for the duration of such assertion.
+
+---
+
+## 6. Contribution Terms
+
+### 6.1 Contributor License
+By submitting a Contribution to Maxilun Architecture, You grant Maxilun Architecture a perpetual, worldwide, non-exclusive, royalty-free license to use, reproduce, modify, display, perform, sublicense, and distribute Your Contribution as part of the Software.
+
+### 6.2 Originality Warranty
+You represent that each Contribution is Your original creation or that You have sufficient rights to grant the license described in Section 6.1.
+
+### 6.3 No Obligation
+Maxilun Architecture has no obligation to accept or include any Contribution in the Software.
+
+---
+
+## 7. Disclaimer of Warranty
+
+**THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.**
+
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+You acknowledge that the Software may contain bugs, errors, or other issues. Maxilun Architecture makes no representation regarding the reliability, accuracy, or completeness of the Software. You assume all risks associated with Your use of the Software.
+
+---
+
+## 8. Limitation of Liability
+
+**IN NO EVENT SHALL MAXILUN ARCHITECTURE OR ANY CONTRIBUTOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES** (INCLUDING BUT NOT LIMITED TO PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, LOSS OF USE, DATA, PROFITS, BUSINESS INTERRUPTION, OR LOSS OF GOODWILL) **HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT** (INCLUDING NEGLIGENCE OR OTHERWISE) **ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.**
+
+This limitation applies regardless of whether Maxilun Architecture was informed of the possibility of such damages. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so this limitation may not apply to You.
+
+---
+
+## 9. Indemnification
+
+You agree to indemnify, defend, and hold harmless Maxilun Architecture and its contributors from and against any claims, liabilities, damages, losses, and expenses (including reasonable attorneys' fees) arising out of or in connection with:
+
+(a) Your use of the Software;
+(b) Your violation of this license;
+(c) Your Derivative Works;
+(d) Your Commercial Use of the Software.
+
+---
+
+## 10. Term & Termination
+
+### 10.1 Term
+This license is effective until terminated.
+
+### 10.2 Automatic Termination
+This license terminates automatically if You fail to comply with any material term of this license. Upon termination, You must:
+- Cease all use of the Software
+- Destroy all copies of the Software in Your possession
+- Remove all attributions required under Section 3.1
+
+### 10.3 Revocation for Cause
+Maxilun Architecture reserves the right to revoke this license with 90 days' written notice if You are found to be in material breach of its terms and fail to cure such breach within the notice period.
+
+### 10.4 Survival
+Sections 4 through 12 survive termination of this license.
+
+---
+
+## 11. License Versions & Updates
+
+### 11.1 Version Policy
+Maxilun Architecture may publish revised versions of this license from time to time. Each version will be given a distinguishing version number.
+
+### 11.2 Upgrade Rights
+You may choose to continue using the Software under the version of this license under which You received it, or upgrade to any subsequent version published by Maxilun Architecture.
+
+### 11.3 Backward Compatibility
+New versions of this license will maintain backward compatibility with prior versions for existing uses, except where required by law or to address security concerns.
+
+---
+
+## 12. General Provisions
+
+### 12.1 Entire Agreement
+This license constitutes the entire agreement between You and Maxilun Architecture regarding the Software and supersedes all prior communications, representations, or agreements, whether oral or written.
+
+### 12.2 Severability
+If any provision of this license is held invalid or unenforceable by a court of competent jurisdiction, the remaining provisions remain in full force and effect. The invalid provision shall be modified to the minimum extent necessary to make it valid and enforceable while preserving its intent.
+
+### 12.3 Governing Law
+This license is governed by the laws of the jurisdiction in which Maxilun Architecture is established, without regard to conflict of law principles. Any disputes arising under this license shall be resolved exclusively in the courts of that jurisdiction.
+
+### 12.4 No Waiver
+The failure of Maxilun Architecture to enforce any right or provision of this license shall not constitute a waiver of such right or provision.
+
+### 12.5 Assignment
+You may not assign or transfer this license without the prior written consent of Maxilun Architecture. Maxilun Architecture may assign this license freely.
+
+### 12.6 Export Compliance
+You agree to comply with all applicable export laws and regulations. The Software may be subject to export controls, and You are responsible for ensuring compliance.
+
+### 12.7 Government Users
+If You are a U.S. government agency or contractor, the Software is provided with restricted rights as set forth in FAR §52.227-19 or DFARS §252.227-7014, as applicable.
+
+---
+
+## 13. Contact Information
+
+For questions about this license, commercial licensing inquiries, or to request permissions beyond the scope of this license:
+
+- **Email**: license@maxilun.com
+- **GitHub**: https://github.com/giriedu/maxilun
+- **Website**: https://maxilun.com
+
+---
+
+## Summary (Non-Binding)
+
+This summary is provided for convenience only and does not modify the terms above.
+
+✅ **You CAN**:
+- Use Maxilun for personal, educational, and research purposes
+- Build and sell products/services with Maxilun (with attribution)
+- Modify and create derivative works
+- Use internally for business operations
+
+❌ **You CANNOT**:
+- Offer Maxilun itself as a managed service
+- Remove copyright notices
+- Claim endorsement by Maxilun Architecture
+- Use in violation of laws
+
+📋 **You MUST**:
+- Include attribution when building commercial products
+- Retain this license in distributions
+- Notify us of commercial deployments (revenue >$1M)
+
+---
+
+*Last updated: October 2026*

@@ -1,0 +1,56 @@
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Temp / IDE
+.vscode/
+.idea/
+*.swp
+*.bak
+*.tmp
+*~
+
+# Local skills / testing
+.agents/
+.claude/
+.codex/
+.cursor/
+.opencode/
+.gemini/
+skills-lock.json
+.maxilun/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Coverage / Test output
+coverage/
+.nyc_output/
+.pytest_cache/
+htmlcov/
+
+# Build artifacts
+*.log
+.cinecode/
+out/

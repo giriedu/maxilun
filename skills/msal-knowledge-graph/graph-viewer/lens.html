@@ -1,0 +1,2651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maxilun — Lens</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --ink: #04040a;
+  --surface: rgba(10, 10, 24, 0.72);
+  --surface-solid: #0d0d1f;
+  --surface-hover: rgba(25, 25, 52, 0.8);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(139, 92, 246, 0.5);
+  --text: #e2e8f0;
+  --text-muted: #64748b;
+  --text-dim: #94a3b8;
+  --primary: #8b5cf6;
+  --primary-glow: rgba(139, 92, 246, 0.35);
+  --cyan: #06b6d4;
+  --cyan-glow: rgba(6, 182, 212, 0.35);
+  --amber: #f59e0b;
+  --emerald: #10b981;
+  --rose: #f43f5e;
+  --panel-width: 320px;
+}
+html, body {
+  width: 100%; height: 100%; overflow: hidden;
+  background: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  color: var(--text);
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+canvas {
+  position: fixed; inset: 0;
+  width: 100% !important; height: 100% !important;
+  display: block;
+}
+#cv-3d { z-index: 1; }
+#cv-2d { z-index: 2; display: none; }
+#label-layer {
+  position: fixed; inset: 0; z-index: 3;
+  pointer-events: none; overflow: hidden;
+}
+.node-label-3d {
+  position: absolute;
+  font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  font-size: 10px; font-weight: 500;
+  color: rgba(226, 232, 240, 0.9);
+  text-shadow: 0 0 4px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.7);
+  white-space: nowrap; pointer-events: none;
+  transform: translate(-50%, -100%);
+  transition: opacity 0.1s;
+}
+.node-label-3d.selected {
+  color: #fff; font-weight: 700; font-size: 12px;
+  text-shadow: 0 0 6px var(--primary), 0 0 12px rgba(139,92,246,0.5);
+}
+.project-tag {
+  display: inline-block; padding: 1px 5px; border-radius: 3px;
+  font-size: 8px; margin-left: 4px; vertical-align: middle;
+  background: rgba(139,92,246,0.3); color: #c4b5fd;
+}
+
+/* ── HUD LAYER ── */
+#hud {
+  position: fixed; inset: 0; z-index: 10;
+  pointer-events: none;
+}
+.interactive { pointer-events: auto; }
+
+/* Glass Panel Utility */
+.glass {
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── TOP HEADER BAR ── */
+#top-bar {
+  position: absolute; top: 16px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; align-items: center; gap: 14px;
+  padding: 8px 18px; border-radius: 40px;
+  z-index: 20;
+}
+.brand-badge {
+  display: flex; align-items: center; gap: 8px;
+  padding-right: 12px; border-right: 1px solid var(--border);
+}
+.brand-logo {
+  width: 18px; height: 18px;
+  background: linear-gradient(135deg, #a78bfa, #06b6d4);
+  border-radius: 5px;
+  display: grid; place-items: center;
+  font-size: 10px; font-weight: 800; color: #fff;
+  box-shadow: 0 0 12px var(--primary-glow);
+}
+.brand-name {
+  font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.15em;
+  background: linear-gradient(90deg, #c4b5fd, #67e8f9);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.stat-pill {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  color: var(--text-dim);
+}
+.stat-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 20px;
+  border: 1px solid transparent; background: transparent;
+  color: var(--text-dim); font-size: 11px; font-weight: 500;
+  cursor: pointer; font-family: inherit; transition: 0.15s;
+}
+.btn:hover { color: var(--text); background: rgba(255, 255, 255, 0.05); }
+.btn-active {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(6, 182, 212, 0.3));
+  border-color: var(--primary);
+  color: #fff;
+  box-shadow: 0 0 16px var(--primary-glow);
+}
+.btn-icon {
+  width: 30px; height: 30px; padding: 0;
+  display: grid; place-items: center; border-radius: 50%;
+  border: 1px solid var(--border); background: rgba(255, 255, 255, 0.03);
+}
+.btn-icon:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+.v-sep { width: 1px; height: 18px; background: var(--border); }
+
+/* ── LEFT DRAWER: COMMUNITIES & FILTERS ── */
+#left-drawer {
+  position: absolute; left: 18px; top: 74px;
+  width: 250px; max-height: calc(100vh - 140px);
+  padding: 16px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 14px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#left-drawer.collapsed {
+  transform: translateX(-280px);
+}
+.section-title {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--text-muted);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.comm-list { display: flex; flex-direction: column; gap: 4px; }
+.comm-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 10px; border-radius: 8px;
+  font-size: 12px; cursor: pointer; transition: 0.12s;
+  border: 1px solid transparent;
+}
+.comm-item:hover { background: rgba(255, 255, 255, 0.04); }
+.comm-item.active {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.4);
+}
+.comm-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.comm-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.comm-count { font-size: 10px; font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace; color: var(--text-muted); }
+
+/* ── RIGHT DRAWER: NODE INSPECTOR ── */
+#right-drawer {
+  position: absolute; right: 18px; top: 74px;
+  width: var(--panel-width); max-height: calc(100vh - 140px);
+  padding: 18px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 14px;
+  transform: translateX(360px); opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s;
+}
+#right-drawer.open {
+  transform: translateX(0); opacity: 1;
+}
+.node-header { display: flex; flex-direction: column; gap: 4px; }
+.node-tag-row { display: flex; align-items: center; gap: 6px; }
+.type-badge {
+  font-size: 9px; font-weight: 600; font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  padding: 2px 7px; border-radius: 4px; text-transform: uppercase;
+  background: rgba(139, 92, 246, 0.2); color: #c4b5fd;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+.node-title {
+  font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  font-size: 14px; font-weight: 600; color: #fff;
+  word-break: break-all;
+}
+.node-file {
+  font-size: 11px; color: var(--text-muted);
+  font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  display: flex; align-items: center; gap: 4px;
+}
+.meta-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  padding: 10px; background: rgba(0, 0, 0, 0.25);
+  border-radius: 8px; border: 1px solid var(--border);
+}
+.meta-cell { display: flex; flex-direction: column; gap: 2px; }
+.meta-label { font-size: 9px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.08em; }
+.meta-value { font-size: 12px; font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace; color: var(--text); }
+
+/* Code Snippet Box */
+.snippet-box {
+  background: #020206; border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px;
+  font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace; font-size: 10px;
+  color: #a5b4fc; line-height: 1.5; max-height: 140px;
+  overflow-x: auto; overflow-y: auto; white-space: pre;
+}
+
+/* Call lists */
+.call-list { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+.call-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 8px; border-radius: 6px;
+  font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace; font-size: 11px;
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer; transition: 0.1s;
+}
+.call-item:hover { background: rgba(139, 92, 246, 0.15); color: #fff; }
+.call-arrow { font-size: 10px; color: var(--primary); }
+.call-type { margin-left: auto; font-size: 9px; color: var(--text-muted); }
+
+/* ── BOTTOM TOOLBAR & CONTROLS ── */
+#bottom-bar {
+  position: absolute; bottom: 18px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px; border-radius: 40px;
+  z-index: 20;
+}
+.mode-toggle-group {
+  display: flex; align-items: center; gap: 2px;
+  background: rgba(0, 0, 0, 0.3); padding: 3px; border-radius: 20px;
+}
+
+/* ── FLIGHT / WALK HUD ── */
+#flight-hud {
+  position: absolute; bottom: 80px; left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px; border-radius: 20px;
+  display: none; align-items: center; gap: 14px;
+  font-size: 11px; font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  color: var(--cyan);
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+}
+#flight-hud.active { display: flex; }
+.hud-key {
+  padding: 2px 6px; border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff; font-weight: 600;
+}
+
+/* ── AUTOPILOT CRUISE HUD ── */
+#cruise-hud {
+  position: absolute; top: 80px; left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px; border-radius: 30px;
+  display: none; align-items: center; gap: 14px;
+  font-size: 12px; font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  box-shadow: 0 0 24px rgba(139, 92, 246, 0.25);
+}
+#cruise-hud.active { display: flex; }
+.pulse-indicator {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #22d3ee;
+  box-shadow: 0 0 10px #22d3ee;
+  animation: pulse 1s infinite alternate;
+}
+@keyframes pulse { from { opacity: 0.3; transform: scale(0.8); } to { opacity: 1; transform: scale(1.2); } }
+
+/* ── SEARCH MODAL (CTRL+K) ── */
+#search-modal {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(2, 2, 8, 0.7);
+  backdrop-filter: blur(8px);
+  display: none; align-items: flex-start; justify-content: center;
+  padding-top: 100px;
+}
+#search-modal.active { display: flex; }
+.search-box {
+  width: 480px; max-width: 90vw;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.search-input-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px; border-bottom: 1px solid var(--border);
+}
+.search-input {
+  flex: 1; background: transparent; border: none; outline: none;
+  font-family: inherit; font-size: 15px; color: #fff;
+}
+.search-results {
+  max-height: 280px; overflow-y: auto; padding: 6px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.search-result-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 8px;
+  font-size: 12px; font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  cursor: pointer; transition: 0.1s;
+}
+.search-result-item:hover, .search-result-item.selected {
+  background: rgba(139, 92, 246, 0.2);
+  color: #fff;
+}
+
+/* ── PATH TRACE BAR ── */
+#path-hud {
+  position: absolute; bottom: 80px; left: 50%;
+  transform: translateX(-50%);
+  max-width: 80vw; padding: 10px 18px; border-radius: 12px;
+  display: none; flex-direction: column; gap: 6px;
+  z-index: 20;
+}
+#path-hud.active { display: flex; }
+.path-chain {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+  font-size: 11px; font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+}
+.path-node {
+  padding: 3px 8px; border-radius: 5px;
+  background: rgba(139, 92, 246, 0.25);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  cursor: pointer;
+}
+.path-node:hover { background: rgba(139, 92, 246, 0.45); }
+.path-arrow { color: var(--cyan); }
+
+/* ── TOAST NOTIFICATIONS ── */
+#toast-container {
+  position: fixed; top: 20px; right: 20px; z-index: 200;
+  display: flex; flex-direction: column; gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  padding: 10px 16px; border-radius: 10px;
+  font-size: 12px; font-weight: 500;
+  background: rgba(13, 13, 31, 0.9);
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  animation: toastIn 0.25s ease-out;
+  color: #fff; pointer-events: auto;
+}
+@keyframes toastIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── DROP OVERLAY ── */
+#drop-zone {
+  position: fixed; inset: 0; z-index: 80;
+  background: radial-gradient(ellipse at 50% 40%, rgba(139, 92, 246, 0.15), transparent 60%),
+              radial-gradient(ellipse at 70% 70%, rgba(6, 182, 212, 0.1), transparent 50%),
+              var(--ink);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.drop-card {
+  width: 440px; max-width: 90vw; padding: 36px;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  border-radius: 24px;
+}
+.drop-title {
+  font-size: 32px; font-weight: 700; letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #c4b5fd, #67e8f9, #fde047);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 6px;
+}
+.drop-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 30px; }
+.drop-box {
+  width: 100%; padding: 32px; border: 1.5px dashed rgba(139, 92, 246, 0.4);
+  border-radius: 16px; cursor: pointer; transition: 0.2s;
+  background: rgba(139, 92, 246, 0.03);
+}
+.drop-box:hover, .drop-box.drag-over {
+  border-color: var(--cyan); background: rgba(6, 182, 212, 0.08);
+}
+.preset-section {
+  margin-top: 24px; display: flex; flex-direction: column; gap: 8px; width: 100%;
+}
+.preset-btn {
+  width: 100%; padding: 9px 14px; border-radius: 10px;
+  border: 1px solid var(--border); background: rgba(255, 255, 255, 0.02);
+  color: var(--text-dim); font-size: 11px; cursor: pointer; transition: 0.15s;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.preset-btn:hover {
+  background: rgba(139, 92, 246, 0.12); color: #fff; border-color: rgba(139, 92, 246, 0.3);
+}
+
+/* Tooltip */
+#hover-tip {
+  position: fixed; pointer-events: none; z-index: 50;
+  padding: 8px 12px; border-radius: 8px;
+  font-size: 11px; opacity: 0; transition: opacity 0.1s;
+}
+#hover-tip.visible { opacity: 1; }
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- CANVASES -->
+<canvas id="cv-3d"></canvas>
+<div id="label-layer"></div>
+<canvas id="cv-2d"></canvas>
+
+<!-- HUD OVERLAY -->
+<div id="hud">
+  <!-- Top Bar -->
+  <div class="glass interactive" id="top-bar">
+    <div class="brand-badge">
+      <div class="brand-logo">M</div>
+      <div class="brand-name">MAXILUN</div>
+    </div>
+    <div class="stat-pill"><div class="stat-dot" style="background:var(--primary)"></div><span id="st-nodes">0</span> nodes</div>
+    <div class="stat-pill"><div class="stat-dot" style="background:var(--cyan)"></div><span id="st-edges">0</span> edges</div>
+    <div class="stat-pill"><div class="stat-dot" style="background:var(--amber)"></div><span id="st-comms">0</span> clusters</div>
+    <div class="stat-pill" id="st-projects-pill" style="display:none;"><div class="stat-dot" style="background:var(--emerald)"></div><span id="st-projects">0</span> projects</div>
+    <div class="v-sep"></div>
+    <div class="mode-toggle-group">
+      <button class="btn btn-active" id="btn-mode-3d" onclick="setMode('3d')">◈ 3D Galaxy</button>
+      <button class="btn" id="btn-mode-2d" onclick="setMode('2d')">⬡ 2D Matrix</button>
+    </div>
+    <div class="v-sep"></div>
+    <button class="btn" onclick="openSearch()" title="Search symbols (Ctrl+K)">⌕ Search</button>
+    <button class="btn-icon" onclick="resetCamera()" title="Reset Camera">⟳</button>
+    <button class="btn" id="btn-load-modal" onclick="showDropZone()">↑ Load</button>
+  </div>
+
+  <!-- Left Drawer: Communities -->
+  <div class="glass interactive" id="left-drawer">
+    <div class="section-title">
+      <span>Architectural Clusters</span>
+      <button class="btn-icon" style="width:20px;height:20px;font-size:10px;" onclick="toggleLeftDrawer()">✕</button>
+    </div>
+    <div class="comm-list" id="community-list"></div>
+  </div>
+
+  <!-- Right Drawer: Node Inspector -->
+  <div class="glass interactive" id="right-drawer">
+    <div class="node-header">
+      <div class="node-tag-row">
+        <span class="type-badge" id="insp-type">FUNCTION</span>
+        <span style="font-size:10px;color:var(--text-muted);margin-left:auto;" id="insp-comm">Cluster 0</span>
+        <button class="btn-icon" style="width:20px;height:20px;font-size:10px;" onclick="closeInspector()">✕</button>
+      </div>
+      <div class="node-title" id="insp-title">validateToken</div>
+      <div class="node-file" id="insp-file">src/auth/jwt.ts:42</div>
+    </div>
+
+    <div class="meta-grid">
+      <div class="meta-cell">
+        <div class="meta-label">Inbound (Callers)</div>
+        <div class="meta-value" id="insp-in">0</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">Outbound (Calls)</div>
+        <div class="meta-value" id="insp-out">0</div>
+      </div>
+    </div>
+
+    <div class="section-title">Code Signature Preview</div>
+    <div class="snippet-box" id="insp-snippet">// Source snippet loading...</div>
+
+    <div class="section-title">Inbound References (Callers)</div>
+    <ul class="call-list" id="insp-callers"></ul>
+
+    <div class="section-title">Outbound Dependencies (Calls)</div>
+    <ul class="call-list" id="insp-callees"></ul>
+
+    <div style="display:flex;gap:6px;margin-top:6px;">
+      <button class="btn" style="flex:1;background:rgba(139,92,246,0.2);border:1px solid rgba(139,92,246,0.3);" onclick="startPathTrace()">⚡ Trace Path</button>
+      <button class="btn" style="flex:1;background:rgba(6,182,212,0.15);border:1px solid rgba(6,182,212,0.3);" onclick="warpToCurrentNode()">✈ Warp View</button>
+    </div>
+  </div>
+
+  <!-- Bottom Toolbar -->
+  <div class="glass interactive" id="bottom-bar">
+    <button class="btn" id="btn-walk" onclick="toggleWalkMode()">✈ Fly / Walkthrough</button>
+    <button class="btn" id="btn-cruise" onclick="toggleCruiseMode()">▶ Autopilot Tour</button>
+    <div class="v-sep"></div>
+    <button class="btn" id="btn-particles" onclick="toggleEdgeParticles()">✦ Particles: ON</button>
+    <button class="btn" id="btn-isolate" style="display:none;" onclick="clearIsolation()">✕ Clear Filter</button>
+  </div>
+
+  <!-- Flight HUD -->
+  <div class="glass" id="flight-hud">
+    <span>FLIGHT MODE:</span>
+    <span><span class="hud-key">W</span> <span class="hud-key">S</span> Thrust</span>
+    <span><span class="hud-key">A</span> <span class="hud-key">D</span> Strafe</span>
+    <span><span class="hud-key">Space</span> Lift</span>
+    <span><span class="hud-key">Shift</span> Dive</span>
+    <span style="color:var(--text-muted)">| Drag mouse to steer</span>
+    <button class="btn" style="padding:2px 8px;font-size:10px;" onclick="toggleWalkMode()">Exit</button>
+  </div>
+
+  <!-- Cruise HUD -->
+  <div class="glass" id="cruise-hud">
+    <div class="pulse-indicator"></div>
+    <span>AUTOPILOT TOUR: <strong id="cruise-node-name" style="color:#fff;">Inspecting Module...</strong></span>
+    <button class="btn" style="padding:2px 8px;font-size:10px;" onclick="skipCruiseStep()">Next ⏭</button>
+    <button class="btn" style="padding:2px 8px;font-size:10px;" onclick="toggleCruiseMode()">Stop ⏹</button>
+  </div>
+
+  <!-- Path HUD -->
+  <div class="glass interactive" id="path-hud">
+    <div class="section-title">
+      <span>Shortest Execution Path</span>
+      <button class="btn-icon" style="width:18px;height:18px;font-size:9px;" onclick="closePathTrace()">✕</button>
+    </div>
+    <div class="path-chain" id="path-chain-nodes"></div>
+  </div>
+
+  <!-- Hover Tooltip -->
+  <div class="glass" id="hover-tip">
+    <div style="font-family:ui-monospace,'Cascadia Code',monospace;font-size:10px;color:var(--cyan);" id="tip-type"></div>
+    <div style="font-weight:600;font-size:12px;" id="tip-title"></div>
+    <div style="font-size:10px;color:var(--text-muted);" id="tip-meta"></div>
+  </div>
+</div>
+
+<!-- SEARCH MODAL -->
+<div id="search-modal" onclick="if(event.target===this)closeSearch()">
+  <div class="glass search-box interactive">
+    <div class="search-input-row">
+      <span style="color:var(--text-muted)">⌕</span>
+      <input type="text" class="search-input" id="search-input" placeholder="Search functions, classes, files..." oninput="onSearchQuery(this.value)" onkeydown="onSearchKeyDown(event)">
+      <span style="font-size:10px;color:var(--text-muted);font-family:ui-monospace,'Cascadia Code',monospace;">ESC to close</span>
+    </div>
+    <div class="search-results" id="search-results"></div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<!-- DROP ZONE / PRESET SELECTOR -->
+<div id="drop-zone">
+  <div class="glass drop-card interactive">
+    <div style="font-size:11px;letter-spacing:0.25em;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">Maxilun Ecosystem</div>
+    <div class="drop-title">MAXILUN</div>
+    <div class="drop-sub">Multi-Project Code Knowledge Graph Visualizer</div>
+
+    <div class="drop-box" id="drop-target" onclick="document.getElementById('file-input').click()"
+         ondrop="handleFileDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+      <div style="font-size:32px;margin-bottom:8px;color:var(--primary);">◈</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Drop .maxilun/graph.json here</div>
+      <div style="font-size:11px;color:var(--text-muted);">or click to browse • Multi-project supported</div>
+    </div>
+    <input type="file" id="file-input" accept=".json" multiple style="display:none" onchange="handleFileSelectMulti(event)">
+
+    <div class="preset-section">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted);margin-bottom:2px;">Built-in Architectures</div>
+      <button class="preset-btn" onclick="loadPreset('maxilun')">
+        <span>🚀 <strong>Maxilun Core Engine</strong></span>
+        <span style="font-family:ui-monospace,'Cascadia Code',monospace;font-size:10px;color:var(--cyan);">18 nodes · 28 edges</span>
+      </button>
+      <button class="preset-btn" onclick="loadPreset('ecommerce')">
+        <span>⚡ <strong>Microservices E-Commerce</strong></span>
+        <span style="font-family:ui-monospace,'Cascadia Code',monospace;font-size:10px;color:var(--amber);">24 nodes · 42 edges</span>
+      </button>
+      <button class="preset-btn" onclick="loadPreset('agent')">
+        <span>🧠 <strong>Autonomous Agent Memory</strong></span>
+        <span style="font-family:ui-monospace,'Cascadia Code',monospace;font-size:10px;color:var(--primary);">20 nodes · 35 edges</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//  PALETTES & THEMES
+// ═══════════════════════════════════════════════════════════════════
+const COMMUNITY_COLORS = [
+  [0.55, 0.36, 0.96], // Purple
+  [0.02, 0.71, 0.83], // Cyan
+  [0.96, 0.62, 0.04], // Amber
+  [0.06, 0.72, 0.51], // Emerald
+  [0.96, 0.25, 0.37], // Rose
+  [0.39, 0.40, 0.95], // Indigo
+  [0.85, 0.27, 0.93], // Fuchsia
+  [0.52, 0.80, 0.09], // Lime
+  [0.08, 0.72, 0.64], // Teal
+  [0.98, 0.44, 0.52]  // Coral
+];
+
+const EDGE_COLORS = {
+  CALLS: [0.55, 0.36, 0.96],
+  IMPORTS: [0.02, 0.71, 0.83],
+  DEFINES: [0.96, 0.62, 0.04],
+  IMPLEMENTS: [0.06, 0.72, 0.51],
+  EXTENDS: [0.96, 0.25, 0.37],
+  DEFAULT: [0.45, 0.50, 0.60]
+};
+
+// ═══════════════════════════════════════════════════════════════════
+//  GLOBAL STATE
+// ═══════════════════════════════════════════════════════════════════
+let GRAPH = null;
+let PROJECTS = []; // Multi-project support
+let currentMode = '3d'; // '3d' or '2d'
+let selectedNode = null;
+let hoveredNode = null;
+let activeIsolationCluster = null;
+let particlesEnabled = true;
+
+// 3D Camera State
+let camOrbit = { rx: 0.35, ry: 0.1, dist: 12.0, tx: 0, ty: 0, autoRotate: true };
+let camWalk = { active: false, pos: [0, 0.5, 7.0], pitch: 0, yaw: 0, vel: [0, 0, 0], keys: {} };
+let camCruise = { active: false, tourIdx: 0, tourChain: [], progress: 0, timer: 0 };
+let camAnim = { active: false, startPos: [0,0,0], targetPos: [0,0,0], startLook: [0,0,0], targetLook: [0,0,0], t: 0, duration: 1.0 };
+
+// Mouse / Drag State
+let drag3D = { active: false, lx: 0, ly: 0, btn: 0, moved: false };
+
+// 2D Physics & Camera State
+let cam2D = { x: 0, y: 0, zoom: 1.0, drag: false, lx: 0, ly: 0 };
+let simTick2D = 0;
+
+// Path Tracing State
+let traceSourceNode = null;
+
+// ═══════════════════════════════════════════════════════════════════
+//  WEBGL SHADERS
+// ═══════════════════════════════════════════════════════════════════
+const BG_VS = `#version 300 es
+in vec2 aPos;
+out vec2 vUV;
+void main() {
+  vUV = aPos * 0.5 + 0.5;
+  gl_Position = vec4(aPos, 1.0, 1.0);
+}`;
+
+const BG_FS = `#version 300 es
+precision highp float;
+in vec2 vUV;
+out vec4 fragColor;
+uniform float uTime;
+uniform vec2 uRes;
+
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+float noise(vec2 p) {
+  vec2 i = floor(p), f = fract(p), u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
+             mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+}
+float fbm(vec2 p) {
+  float v = 0.0, a = 0.5;
+  for(int i = 0; i < 4; i++) { v += a * noise(p); p = p * 2.1 + vec2(1.7, 0.9); a *= 0.5; }
+  return v;
+}
+
+void main() {
+  vec2 st = (vUV - 0.5) * vec2(uRes.x / uRes.y, 1.0);
+  float t = uTime * 0.02;
+  float n1 = fbm(st * 1.5 + vec2(t * 0.3, t * 0.2));
+  float n2 = fbm(st * 2.5 - vec2(t * 0.2, -t * 0.4) + n1 * 0.5);
+
+  vec3 colNebula1 = vec3(0.08, 0.03, 0.18) * pow(n1, 2.0); // Violet void
+  vec3 colNebula2 = vec3(0.01, 0.07, 0.12) * pow(n2, 1.8); // Deep cyan
+  vec3 bg = colNebula1 + colNebula2 + vec3(0.015, 0.015, 0.035);
+
+  // Distant twinkling star field
+  vec2 starGrid = fract(st * 45.0) - 0.5;
+  float starId = hash(floor(st * 45.0));
+  if(starId > 0.96) {
+    float starDist = length(starGrid);
+    float twinkle = 0.6 + 0.4 * sin(uTime * 3.0 + starId * 10.0);
+    float starVal = max(0.0, 1.0 - starDist * 9.0) * twinkle;
+    bg += vec3(0.8, 0.9, 1.0) * starVal * 0.7;
+  }
+
+  fragColor = vec4(bg, 1.0);
+}`;
+
+const NODE_VS = `#version 300 es
+precision highp float;
+in vec3 aPos;
+in float aRad;
+in vec3 aCol;
+in float aGlow;
+in vec2 aQuad;
+
+uniform mat4 uProj;
+uniform mat4 uView;
+uniform float uTime;
+uniform vec3 uSelPos;
+uniform float uHasSel;
+
+out vec2 vUV;
+out vec3 vCol;
+out float vGlow;
+out float vIsSel;
+
+void main() {
+  vec4 center = uView * vec4(aPos, 1.0);
+  float isThisSel = (uHasSel > 0.5 && length(aPos - uSelPos) < 0.001) ? 1.0 : 0.0;
+  float pulse = 1.0 + 0.04 * sin(uTime * 2.5 + aPos.x * 4.0) + isThisSel * 0.18 * sin(uTime * 6.0);
+  float r = (aRad * pulse) * (isThisSel > 0.5 ? 1.4 : 1.0);
+  
+  center.xy += aQuad * r * 1.45; // Extended for soft bloom halo
+  vUV = aQuad;
+  vCol = aCol;
+  vGlow = aGlow + isThisSel * 0.5;
+  vIsSel = isThisSel;
+  gl_Position = uProj * center;
+}`;
+
+const NODE_FS = `#version 300 es
+precision highp float;
+in vec2 vUV;
+in vec3 vCol;
+in float vGlow;
+in float vIsSel;
+out vec4 fragColor;
+
+void main() {
+  float d = length(vUV);
+  if(d > 1.45) discard;
+
+  // Sphere Surface Lighting
+  float sphere = 1.0 - smoothstep(0.0, 0.95, d);
+  vec3 N = normalize(vec3(vUV * 0.9, sqrt(max(0.0, 1.0 - dot(vUV * 0.9, vUV * 0.9)))));
+  vec3 L = normalize(vec3(0.35, 0.75, 1.0));
+  float diff = max(dot(N, L), 0.0);
+  float spec = pow(max(dot(reflect(-L, N), vec3(0.0, 0.0, 1.0)), 0.0), 28.0);
+
+  vec3 lit = vCol * (0.25 + diff * 0.7) + vec3(spec * 0.85);
+  vec3 core = vCol * pow(max(0.0, 1.0 - d), 2.2) * 2.8;
+  vec3 nodeBody = mix(lit, lit + core, vGlow);
+
+  // Outer corona glow
+  float corona = 0.0;
+  if(d > 0.85) {
+    float t = (d - 0.85) / 0.60;
+    corona = pow(1.0 - t, 2.5) * vGlow * 1.4;
+  }
+
+  float alpha = sphere > 0.05 ? 1.0 : corona;
+  if(alpha < 0.01) discard;
+
+  vec3 finalColor = nodeBody + vCol * corona + (vIsSel > 0.5 ? vec3(0.3, 0.6, 1.0) * corona : vec3(0.0));
+  fragColor = vec4(finalColor, alpha);
+}`;
+
+const EDGE_VS = `#version 300 es
+precision highp float;
+in vec3 aA;
+in vec3 aB;
+in float aSide;
+in float aT;
+in vec3 aCol;
+in float aHighlight;
+
+uniform mat4 uProj;
+uniform mat4 uView;
+uniform float uWidth;
+uniform float uTime;
+
+out vec2 vUV;
+out vec3 vCol;
+out float vHighlight;
+out float vAlpha;
+
+void main() {
+  vec4 pa = uProj * uView * vec4(aA, 1.0);
+  vec4 pb = uProj * uView * vec4(aB, 1.0);
+  vec2 da = pa.xy / pa.w, db = pb.xy / pb.w;
+  vec2 dir = normalize(db - da);
+  vec2 perp = vec2(-dir.y, dir.x);
+
+  vec4 base = mix(pa, pb, aT);
+  float w = uWidth * base.w * (aHighlight > 0.5 ? 2.2 : 1.0);
+  base.xy += perp * aSide * w;
+
+  vUV = vec2(aT, aSide);
+  vCol = aCol;
+  vHighlight = aHighlight;
+  float depthFade = max(0.2, 1.0 / (base.z + 2.0));
+  vAlpha = depthFade * (aHighlight > 0.5 ? 0.95 : 0.22);
+  gl_Position = base;
+}`;
+
+const EDGE_FS = `#version 300 es
+precision highp float;
+in vec2 vUV;
+in vec3 vCol;
+in float vHighlight;
+in float vAlpha;
+out vec4 fragColor;
+uniform float uTime;
+
+void main() {
+  float falloff = 1.0 - abs(vUV.y);
+  falloff = pow(falloff, 1.5);
+
+  float pulse = 0.0;
+  if(vHighlight > 0.5) {
+    float wave = fract(vUV.x * 2.0 - uTime * 0.8);
+    pulse = exp(-pow(wave - 0.5, 2.0) * 80.0) * 1.5;
+  }
+
+  float alpha = (falloff * vAlpha + pulse * 0.6);
+  if(alpha < 0.005) discard;
+  vec3 col = vCol + (pulse * vec3(0.4, 0.8, 1.0));
+  fragColor = vec4(col, alpha);
+}`;
+
+// 3D Particles Streamer Shader (Photons streaming along edges!)
+const PARTICLE_VS = `#version 300 es
+precision highp float;
+in vec3 aStart;
+in vec3 aEnd;
+in float aPhase;
+in float aSpeed;
+in vec3 aCol;
+in vec2 aQuad;
+
+uniform mat4 uProj;
+uniform mat4 uView;
+uniform float uTime;
+uniform float uGlobalSpeed;
+
+out vec2 vUV;
+out vec3 vCol;
+
+void main() {
+  float t = fract(aPhase + uTime * aSpeed * uGlobalSpeed);
+  vec3 pos = mix(aStart, aEnd, t);
+  vec4 center = uView * vec4(pos, 1.0);
+  float pSize = 0.022;
+  center.xy += aQuad * pSize;
+  vUV = aQuad;
+  vCol = aCol;
+  gl_Position = uProj * center;
+}`;
+
+const PARTICLE_FS = `#version 300 es
+precision highp float;
+in vec2 vUV;
+in vec3 vCol;
+out vec4 fragColor;
+
+void main() {
+  float d = length(vUV);
+  if(d > 1.0) discard;
+  float glow = pow(1.0 - d, 2.0);
+  fragColor = vec4(vCol * 2.0, glow * 0.85);
+}`;
+
+// ═══════════════════════════════════════════════════════════════════
+//  WEBGL DETECTION & FALLBACK
+// ═══════════════════════════════════════════════════════════════════
+function detectWebGL() {
+  try {
+    const c = document.createElement('canvas');
+    return !!(window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl')));
+  } catch(e) { return false; }
+}
+
+const webglSupported = detectWebGL();
+
+if(!webglSupported) {
+  // Show fallback overlay styled to match dark theme
+  const fallbackOverlay = document.createElement('div');
+  fallbackOverlay.id = 'webgl-fallback';
+  fallbackOverlay.style.cssText = `
+    position: fixed; top: 70px; left: 50%; transform: translateX(-50%);
+    z-index: 100; padding: 14px 24px; border-radius: 12px;
+    background: rgba(13, 13, 31, 0.92); backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.5), 0 0 20px rgba(245,158,11,0.15);
+    display: flex; align-items: center; gap: 12px;
+    font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+    animation: toastIn 0.3s ease-out;
+  `;
+  const iconSpan = document.createElement('span');
+  iconSpan.style.cssText = 'font-size:18px;color:#f59e0b;';
+  iconSpan.textContent = '⚠';
+  const textWrap = document.createElement('div');
+  const titleDiv = document.createElement('div');
+  titleDiv.style.cssText = 'font-size:12px;font-weight:600;color:#fbbf24;margin-bottom:2px;';
+  titleDiv.textContent = 'WebGL Not Available';
+  const descDiv = document.createElement('div');
+  descDiv.style.cssText = 'font-size:11px;color:#94a3b8;';
+  descDiv.textContent = 'Falling back to 2D Matrix mode (Canvas 2D). 3D Galaxy view requires WebGL support.';
+  textWrap.appendChild(titleDiv);
+  textWrap.appendChild(descDiv);
+  fallbackOverlay.appendChild(iconSpan);
+  fallbackOverlay.appendChild(textWrap);
+  document.body.appendChild(fallbackOverlay);
+
+  // Auto-dismiss after 6 seconds
+  setTimeout(() => {
+    fallbackOverlay.style.opacity = '0';
+    fallbackOverlay.style.transition = 'opacity 0.4s';
+    setTimeout(() => fallbackOverlay.remove(), 400);
+  }, 6000);
+
+  // Force 2D mode and disable 3D toggle
+  currentMode = '2d';
+  cv3D.style.display = 'none';
+  cv2D.style.display = 'block';
+  document.getElementById('btn-mode-3d').disabled = true;
+  document.getElementById('btn-mode-3d').style.opacity = '0.3';
+  document.getElementById('btn-mode-3d').style.cursor = 'not-allowed';
+  document.getElementById('btn-mode-3d').title = 'WebGL not available';
+  document.getElementById('btn-mode-3d').className = 'btn';
+  document.getElementById('btn-mode-2d').className = 'btn btn-active';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  WEBGL PIPELINE & BUFFERS
+// ═══════════════════════════════════════════════════════════════════
+const cv3D = document.getElementById('cv-3d');
+const cv2D = document.getElementById('cv-2d');
+const ctx2D = cv2D.getContext('2d');
+let gl = webglSupported ? cv3D.getContext('webgl2', { antialias: true, alpha: false }) : null;
+
+function createShader(glCtx, type, src) {
+  const s = glCtx.createShader(type);
+  glCtx.shaderSource(s, src);
+  glCtx.compileShader(s);
+  if(!glCtx.getShaderParameter(s, glCtx.COMPILE_STATUS)) {
+    console.error('Shader compile error:', glCtx.getShaderInfoLog(s));
+  }
+  return s;
+}
+
+function createProgram(glCtx, vs, fs) {
+  const p = glCtx.createProgram();
+  glCtx.attachShader(p, createShader(glCtx, glCtx.VERTEX_SHADER, vs));
+  glCtx.attachShader(p, createShader(glCtx, glCtx.FRAGMENT_SHADER, fs));
+  glCtx.linkProgram(p);
+  if(!glCtx.getProgramParameter(p, glCtx.LINK_STATUS)) {
+    console.error('Program link error:', glCtx.getProgramInfoLog(p));
+  }
+  return p;
+}
+
+let progBg, progNode, progEdge, progParticle;
+let bgVao, bgBuf;
+let nodeBuffers = {}, edgeBuffers = {}, particleBuffers = {};
+let nodeGeom = {}, edgeGeom = {}, particleGeom = {};
+
+function initGL() {
+  if(!gl) return;
+  gl.clearColor(0.008, 0.008, 0.02, 1.0);
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE); // Additive bloom
+  gl.enable(gl.DEPTH_TEST);
+
+  progBg = createProgram(gl, BG_VS, BG_FS);
+  progNode = createProgram(gl, NODE_VS, NODE_FS);
+  progEdge = createProgram(gl, EDGE_VS, EDGE_FS);
+  progParticle = createProgram(gl, PARTICLE_VS, PARTICLE_FS);
+
+  // Background screen quad
+  bgBuf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, bgBuf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+}
+
+function buildGraphBuffers() {
+  if(!GRAPH || !gl) return;
+  const nodes = GRAPH.nodes;
+  const edges = GRAPH.edges;
+
+  // 1. Build Nodes Geometry
+  const nPOS=[], nRAD=[], nCOL=[], nGLO=[], nQUAD=[], nIDX=[];
+  const qv = [[-1,-1],[1,-1],[1,1],[-1,1]];
+  const qi = [0,1,2, 0,2,3];
+
+  nodes.forEach((n, i) => {
+    const base = i * 4;
+    qv.forEach(q => {
+      nPOS.push(n._x, n._y, n._z);
+      nRAD.push(n._r);
+      nCOL.push(...(n._col || [0.55, 0.36, 0.96]));
+      nGLO.push(n._glow || 0.7);
+      nQUAD.push(...q);
+    });
+    qi.forEach(idx => nIDX.push(base + idx));
+  });
+
+  nodeGeom = {
+    count: nIDX.length,
+    pos: new Float32Array(nPOS),
+    rad: new Float32Array(nRAD),
+    col: new Float32Array(nCOL),
+    glo: new Float32Array(nGLO),
+    quad: new Float32Array(nQUAD),
+    idx: new Uint32Array(nIDX)
+  };
+
+  nodeBuffers.pos = createBuf(nodeGeom.pos, gl.ARRAY_BUFFER, gl.DYNAMIC_DRAW);
+  nodeBuffers.rad = createBuf(nodeGeom.rad, gl.ARRAY_BUFFER, gl.STATIC_DRAW);
+  nodeBuffers.col = createBuf(nodeGeom.col, gl.ARRAY_BUFFER, gl.STATIC_DRAW);
+  nodeBuffers.glo = createBuf(nodeGeom.glo, gl.ARRAY_BUFFER, gl.STATIC_DRAW);
+  nodeBuffers.quad = createBuf(nodeGeom.quad, gl.ARRAY_BUFFER, gl.STATIC_DRAW);
+  nodeBuffers.idx = createBuf(nodeGeom.idx, gl.ELEMENT_ARRAY_BUFFER, gl.STATIC_DRAW);
+
+  // 2. Build Edges Geometry
+  const eA=[], eB=[], eSIDE=[], eT=[], eCOL=[], eHL=[], eIDX=[];
+  const corners = [[-1,0],[1,0],[1,1],[-1,1]];
+
+  edges.forEach((e, i) => {
+    const s = GRAPH.nodeMap[e.source];
+    const t = GRAPH.nodeMap[e.target];
+    if(!s || !t) return;
+    const base = i * 4;
+    const c = EDGE_COLORS[e.type] || EDGE_COLORS.DEFAULT;
+    const isHighlight = isEdgeHighlighted(e) ? 1.0 : 0.0;
+
+    corners.forEach(cr => {
+      eA.push(s._x, s._y, s._z);
+      eB.push(t._x, t._y, t._z);
+      eSIDE.push(cr[0]);
+      eT.push(cr[1]);
+      eCOL.push(...c);
+      eHL.push(isHighlight);
+    });
+    qi.forEach(idx => eIDX.push(base + idx));
+  });
+
+  edgeGeom = {
+    count: eIDX.length,
+    a: new Float32Array(eA),
+    b: new Float32Array(eB),
+    side: new Float32Array(eSIDE),
+    t: new Float32Array(eT),
+    col: new Float32Array(eCOL),
+    hl: new Float32Array(eHL),
+    idx: new Uint32Array(eIDX)
+  };
+
+  edgeBuffers.a = createBuf(edgeGeom.a, gl.ARRAY_BUFFER, gl.DYNAMIC_DRAW);
+  edgeBuffers.b = createBuf(edgeGeom.b, gl.ARRAY_BUFFER, gl.DYNAMIC_DRAW);
+  edgeBuffers.side = createBuf(edgeGeom.side, gl.ARRAY_BUFFER, gl.STATIC_DRAW);
+  edgeBuffers.t = createBuf(edgeGeom.t, gl.ARRAY_BUFFER, gl.STATIC_DRAW);
+  edgeBuffers.col = createBuf(edgeGeom.col, gl.ARRAY_BUFFER, gl.STATIC_DRAW);
+  edgeBuffers.hl = createBuf(edgeGeom.hl, gl.ARRAY_BUFFER, gl.DYNAMIC_DRAW);
+  edgeBuffers.idx = createBuf(edgeGeom.idx, gl.ELEMENT_ARRAY_BUFFER, gl.STATIC_DRAW);
+
+  // 3. Build 3D Streamer Particles along edges
+  const pA=[], pB=[], pPHASE=[], pSPEED=[], pCOL=[], pQUAD=[], pIDX=[];
+  let pCount = 0;
+
+  edges.forEach(e => {
+    const s = GRAPH.nodeMap[e.source];
+    const t = GRAPH.nodeMap[e.target];
+    if(!s || !t) return;
+    const particlesPerEdge = 3;
+    const c = EDGE_COLORS[e.type] || EDGE_COLORS.DEFAULT;
+
+    for(let k = 0; k < particlesPerEdge; k++) {
+      const base = pCount * 4;
+      const phase = k / particlesPerEdge + Math.random() * 0.1;
+      const speed = 0.25 + Math.random() * 0.15;
+
+      qv.forEach(q => {
+        pA.push(s._x, s._y, s._z);
+        pB.push(t._x, t._y, t._z);
+        pPHASE.push(phase);
+        pSPEED.push(speed);
+        pCOL.push(...c);
+        pQUAD.push(...q);
+      });
+      qi.forEach(idx => pIDX.push(base + idx));
+      pCount++;
+    }
+  });
+
+  particleGeom = {
+    count: pIDX.length,
+    a: new Float32Array(pA),
+    b: new Float32Array(pB),
+    phase: new Float32Array(pPHASE),
+    speed: new Float32Array(pSPEED),
+    col: new Float32Array(pCOL),
+    quad: new Float32Array(pQUAD),
+    idx: new Uint32Array(pIDX)
+  };
+
+  particleBuffers.a = createBuf(particleGeom.a, gl.ARRAY_BUFFER, gl.DYNAMIC_DRAW);
+  particleBuffers.b = createBuf(particleGeom.b, gl.ARRAY_BUFFER, gl.DYNAMIC_DRAW);
+  particleBuffers.phase = createBuf(particleGeom.phase, gl.ARRAY_BUFFER, gl.STATIC_DRAW);
+  particleBuffers.speed = createBuf(particleGeom.speed, gl.ARRAY_BUFFER, gl.STATIC_DRAW);
+  particleBuffers.col = createBuf(particleGeom.col, gl.ARRAY_BUFFER, gl.STATIC_DRAW);
+  particleBuffers.quad = createBuf(particleGeom.quad, gl.ARRAY_BUFFER, gl.STATIC_DRAW);
+  particleBuffers.idx = createBuf(particleGeom.idx, gl.ELEMENT_ARRAY_BUFFER, gl.STATIC_DRAW);
+}
+
+function createBuf(data, target, usage) {
+  const b = gl.createBuffer();
+  gl.bindBuffer(target, b);
+  gl.bufferData(target, data, usage);
+  return b;
+}
+
+function updateEdgeHighlights() {
+  if(!edgeGeom.hl || !GRAPH || !gl) return;
+  for(let i = 0; i < GRAPH.edges.length; i++) {
+    const e = GRAPH.edges[i];
+    const isHl = isEdgeHighlighted(e) ? 1.0 : 0.0;
+    const base = i * 4;
+    edgeGeom.hl[base] = edgeGeom.hl[base+1] = edgeGeom.hl[base+2] = edgeGeom.hl[base+3] = isHl;
+  }
+  gl.bindBuffer(gl.ARRAY_BUFFER, edgeBuffers.hl);
+  gl.bufferData(gl.ARRAY_BUFFER, edgeGeom.hl, gl.DYNAMIC_DRAW);
+}
+
+function isEdgeHighlighted(e) {
+  if(selectedNode && (e.source === selectedNode.id || e.target === selectedNode.id)) return true;
+  return false;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  MATRIX OPERATIONS
+// ═══════════════════════════════════════════════════════════════════
+function mat4Create() { return new Float32Array(16); }
+
+function mat4Perspective(out, fovy, aspect, near, far) {
+  const f = 1.0 / Math.tan(fovy / 2.0);
+  out.fill(0);
+  out[0] = f / aspect;
+  out[5] = f;
+  out[10] = (far + near) / (near - far);
+  out[11] = -1.0;
+  out[14] = (2.0 * far * near) / (near - far);
+  return out;
+}
+
+function mat4LookAt(out, eye, center, up) {
+  out.fill(0);
+  let z0 = eye[0] - center[0], z1 = eye[1] - center[1], z2 = eye[2] - center[2];
+  let len = Math.hypot(z0, z1, z2) || 1;
+  z0 /= len; z1 /= len; z2 /= len;
+
+  let x0 = up[1] * z2 - up[2] * z1, x1 = up[2] * z0 - up[0] * z2, x2 = up[0] * z1 - up[1] * z0;
+  len = Math.hypot(x0, x1, x2) || 1;
+  x0 /= len; x1 /= len; x2 /= len;
+
+  let y0 = z1 * x2 - z2 * x1, y1 = z2 * x0 - z0 * x2, y2 = z0 * x1 - z1 * x0;
+
+  out[0] = x0; out[4] = x1; out[8] = x2;
+  out[1] = y0; out[5] = y1; out[9] = y2;
+  out[2] = z0; out[6] = z1; out[10] = z2;
+  out[12] = -(x0 * eye[0] + x1 * eye[1] + x2 * eye[2]);
+  out[13] = -(y0 * eye[0] + y1 * eye[1] + y2 * eye[2]);
+  out[14] = -(z0 * eye[0] + z1 * eye[1] + z2 * eye[2]);
+  out[15] = 1.0;
+  return out;
+}
+
+function bindAttrib(prog, name, buf, size) {
+  const loc = gl.getAttribLocation(prog, name);
+  if(loc < 0) return;
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 0, 0);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  3D RENDER LOOP
+// ═══════════════════════════════════════════════════════════════════
+const mProj = mat4Create(), mView = mat4Create();
+
+function render3D(timeSec) {
+  if(!gl) return;
+  const W = cv3D.width, H = cv3D.height;
+  gl.viewport(0, 0, W, H);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+  // 1. Procedural Nebula Background
+  gl.disable(gl.DEPTH_TEST);
+  gl.blendFunc(gl.ONE, gl.ZERO);
+  gl.useProgram(progBg);
+  gl.uniform2f(gl.getUniformLocation(progBg, 'uRes'), W, H);
+  gl.uniform1f(gl.getUniformLocation(progBg, 'uTime'), timeSec);
+  bindAttrib(progBg, 'aPos', bgBuf, 2);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+  if(!GRAPH) return;
+
+  // 2. Update Flight / Cruise Camera
+  updateCamera(timeSec);
+
+  // Compute View & Proj Matrices
+  const eye = getCameraEye();
+  const target = getCameraTarget();
+  mat4Perspective(mProj, 1.0, W / H, 0.05, 100.0);
+  mat4LookAt(mView, eye, target, [0, 1, 0]);
+
+  gl.enable(gl.DEPTH_TEST);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE); // Additive Glow
+
+  // 3. Render Glowing Edges
+  if(edgeGeom.count > 0) {
+    gl.useProgram(progEdge);
+    gl.uniformMatrix4fv(gl.getUniformLocation(progEdge, 'uProj'), false, mProj);
+    gl.uniformMatrix4fv(gl.getUniformLocation(progEdge, 'uView'), false, mView);
+    gl.uniform1f(gl.getUniformLocation(progEdge, 'uWidth'), 0.008);
+    gl.uniform1f(gl.getUniformLocation(progEdge, 'uTime'), timeSec);
+
+    bindAttrib(progEdge, 'aA', edgeBuffers.a, 3);
+    bindAttrib(progEdge, 'aB', edgeBuffers.b, 3);
+    bindAttrib(progEdge, 'aSide', edgeBuffers.side, 1);
+    bindAttrib(progEdge, 'aT', edgeBuffers.t, 1);
+    bindAttrib(progEdge, 'aCol', edgeBuffers.col, 3);
+    bindAttrib(progEdge, 'aHighlight', edgeBuffers.hl, 1);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, edgeBuffers.idx);
+    gl.drawElements(gl.TRIANGLES, edgeGeom.count, gl.UNSIGNED_INT, 0);
+  }
+
+  // 4. Render Edge Streamer Particles (Photons!)
+  if(particlesEnabled && particleGeom.count > 0) {
+    gl.useProgram(progParticle);
+    gl.uniformMatrix4fv(gl.getUniformLocation(progParticle, 'uProj'), false, mProj);
+    gl.uniformMatrix4fv(gl.getUniformLocation(progParticle, 'uView'), false, mView);
+    gl.uniform1f(gl.getUniformLocation(progParticle, 'uTime'), timeSec);
+    gl.uniform1f(gl.getUniformLocation(progParticle, 'uGlobalSpeed'), 1.0);
+
+    bindAttrib(progParticle, 'aStart', particleBuffers.a, 3);
+    bindAttrib(progParticle, 'aEnd', particleBuffers.b, 3);
+    bindAttrib(progParticle, 'aPhase', particleBuffers.phase, 1);
+    bindAttrib(progParticle, 'aSpeed', particleBuffers.speed, 1);
+    bindAttrib(progParticle, 'aCol', particleBuffers.col, 3);
+    bindAttrib(progParticle, 'aQuad', particleBuffers.quad, 2);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, particleBuffers.idx);
+    gl.drawElements(gl.TRIANGLES, particleGeom.count, gl.UNSIGNED_INT, 0);
+  }
+
+  // 5. Render Glowing Node Spheres
+  if(nodeGeom.count > 0) {
+    gl.useProgram(progNode);
+    gl.uniformMatrix4fv(gl.getUniformLocation(progNode, 'uProj'), false, mProj);
+    gl.uniformMatrix4fv(gl.getUniformLocation(progNode, 'uView'), false, mView);
+    gl.uniform1f(gl.getUniformLocation(progNode, 'uTime'), timeSec);
+    gl.uniform1f(gl.getUniformLocation(progNode, 'uHasSel'), selectedNode ? 1.0 : 0.0);
+    gl.uniform3f(gl.getUniformLocation(progNode, 'uSelPos'),
+      selectedNode ? selectedNode._x : 0,
+      selectedNode ? selectedNode._y : 0,
+      selectedNode ? selectedNode._z : 0
+    );
+
+    bindAttrib(progNode, 'aPos', nodeBuffers.pos, 3);
+    bindAttrib(progNode, 'aRad', nodeBuffers.rad, 1);
+    bindAttrib(progNode, 'aCol', nodeBuffers.col, 3);
+    bindAttrib(progNode, 'aGlow', nodeBuffers.glo, 1);
+    bindAttrib(progNode, 'aQuad', nodeBuffers.quad, 2);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, nodeBuffers.idx);
+    gl.drawElements(gl.TRIANGLES, nodeGeom.count, gl.UNSIGNED_INT, 0);
+  }
+
+  // 6. Update CSS2D Labels Overlay
+  updateLabels3D();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  CAMERA COMPUTATION & FLIGHT CONTROLLER
+// ═══════════════════════════════════════════════════════════════════
+function getCameraEye() {
+  if(camWalk.active) {
+    return camWalk.pos;
+  }
+  // Smooth Camera Animation
+  if(camAnim.active) {
+    const t = easeInOutCubic(camAnim.t);
+    return [
+      camAnim.startPos[0] + (camAnim.targetPos[0] - camAnim.startPos[0]) * t,
+      camAnim.startPos[1] + (camAnim.targetPos[1] - camAnim.startPos[1]) * t,
+      camAnim.startPos[2] + (camAnim.targetPos[2] - camAnim.startPos[2]) * t
+    ];
+  }
+  // Standard Orbit Camera
+  const dist = camOrbit.dist;
+  return [
+    camOrbit.tx + Math.sin(camOrbit.ry) * Math.cos(camOrbit.rx) * dist,
+    camOrbit.ty + Math.sin(camOrbit.rx) * dist,
+    Math.cos(camOrbit.ry) * Math.cos(camOrbit.rx) * dist
+  ];
+}
+
+function getCameraTarget() {
+  if(camWalk.active) {
+    const fwd = [
+      Math.sin(camWalk.yaw) * Math.cos(camWalk.pitch),
+      Math.sin(camWalk.pitch),
+      -Math.cos(camWalk.yaw) * Math.cos(camWalk.pitch)
+    ];
+    return [camWalk.pos[0] + fwd[0], camWalk.pos[1] + fwd[1], camWalk.pos[2] + fwd[2]];
+  }
+  if(camAnim.active) {
+    const t = easeInOutCubic(camAnim.t);
+    return [
+      camAnim.startLook[0] + (camAnim.targetLook[0] - camAnim.startLook[0]) * t,
+      camAnim.startLook[1] + (camAnim.targetLook[1] - camAnim.startLook[1]) * t,
+      camAnim.startLook[2] + (camAnim.targetLook[2] - camAnim.startLook[2]) * t
+    ];
+  }
+  return [camOrbit.tx, camOrbit.ty, 0];
+}
+
+function updateCamera(timeSec) {
+  // Flight / Walk Movement
+  if(camWalk.active) {
+    const speed = 0.08;
+    const fwd = [Math.sin(camWalk.yaw), 0, -Math.cos(camWalk.yaw)];
+    const right = [Math.cos(camWalk.yaw), 0, Math.sin(camWalk.yaw)];
+
+    if(camWalk.keys['KeyW'] || camWalk.keys['ArrowUp']) {
+      camWalk.vel[0] += fwd[0] * speed; camWalk.vel[2] += fwd[2] * speed;
+    }
+    if(camWalk.keys['KeyS'] || camWalk.keys['ArrowDown']) {
+      camWalk.vel[0] -= fwd[0] * speed; camWalk.vel[2] -= fwd[2] * speed;
+    }
+    if(camWalk.keys['KeyA'] || camWalk.keys['ArrowLeft']) {
+      camWalk.vel[0] -= right[0] * speed; camWalk.vel[2] -= right[2] * speed;
+    }
+    if(camWalk.keys['KeyD'] || camWalk.keys['ArrowRight']) {
+      camWalk.vel[0] += right[0] * speed; camWalk.vel[2] += right[2] * speed;
+    }
+    if(camWalk.keys['Space']) camWalk.vel[1] += speed;
+    if(camWalk.keys['ShiftLeft'] || camWalk.keys['KeyC']) camWalk.vel[1] -= speed;
+
+    camWalk.pos[0] += camWalk.vel[0];
+    camWalk.pos[1] += camWalk.vel[1];
+    camWalk.pos[2] += camWalk.vel[2];
+    camWalk.vel[0] *= 0.85; camWalk.vel[1] *= 0.85; camWalk.vel[2] *= 0.85;
+  }
+  else if(camCruise.active) {
+    updateCruiseTour();
+  }
+  else if(camAnim.active) {
+    camAnim.t += 0.025;
+    if(camAnim.t >= 1.0) {
+      camAnim.active = false;
+      camOrbit.tx = camAnim.targetLook[0];
+      camOrbit.ty = camAnim.targetLook[1];
+    }
+  }
+  else {
+    if(camOrbit.autoRotate && !drag3D.active) {
+      camOrbit.ry += 0.003;
+    }
+  }
+}
+
+function easeInOutCubic(x) {
+  return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  AUTOPILOT CRUISE TOUR ("Viewnya bisa berjalan!")
+// ═══════════════════════════════════════════════════════════════════
+function startCruiseTour() {
+  if(!GRAPH || GRAPH.nodes.length === 0) return;
+  camCruise.active = true;
+  camCruise.tourIdx = 0;
+  camCruise.progress = 0;
+  camCruise.timer = 0;
+
+  // Build connected chain starting from hubs
+  const sorted = [...GRAPH.nodes].sort((a,b) => (b.degree||0) - (a.degree||0));
+  camCruise.tourChain = sorted.slice(0, 10);
+  document.getElementById('cruise-hud').classList.add('active');
+  document.getElementById('btn-cruise').classList.add('btn-active');
+  inspectNode(camCruise.tourChain[0]);
+  showToast('Autopilot Tour activated: cruising call chains');
+}
+
+function stopCruiseTour() {
+  camCruise.active = false;
+  document.getElementById('cruise-hud').classList.remove('active');
+  document.getElementById('btn-cruise').classList.remove('btn-active');
+}
+
+function toggleCruiseMode() {
+  if(camCruise.active) stopCruiseTour(); else startCruiseTour();
+}
+
+function skipCruiseStep() {
+  if(!camCruise.active) return;
+  camCruise.tourIdx = (camCruise.tourIdx + 1) % camCruise.tourChain.length;
+  camCruise.progress = 0;
+  const n = camCruise.tourChain[camCruise.tourIdx];
+  inspectNode(n);
+}
+
+function updateCruiseTour() {
+  const chain = camCruise.tourChain;
+  if(!chain.length) return;
+  const curr = chain[camCruise.tourIdx];
+  const next = chain[(camCruise.tourIdx + 1) % chain.length];
+
+  document.getElementById('cruise-node-name').textContent = curr.label + ' → ' + next.label;
+
+  camCruise.progress += 0.008;
+  const t = easeInOutCubic(Math.min(1.0, camCruise.progress));
+
+  const eyeX = curr._x + (next._x - curr._x) * t + Math.sin(camCruise.progress * Math.PI) * 1.5;
+  const eyeY = curr._y + (next._y - curr._y) * t + 0.8;
+  const eyeZ = curr._z + (next._z - curr._z) * t + 2.5;
+
+  camOrbit.tx = curr._x + (next._x - curr._x) * t;
+  camOrbit.ty = curr._y + (next._y - curr._y) * t;
+
+  if(camCruise.progress >= 1.0) {
+    camCruise.progress = 0;
+    camCruise.tourIdx = (camCruise.tourIdx + 1) % chain.length;
+    inspectNode(chain[camCruise.tourIdx]);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  2D CANVAS MATRIX RENDERER
+// ═══════════════════════════════════════════════════════════════════
+function tickPhysics2D() {
+  if(!GRAPH || currentMode !== '2d') return;
+  const nodes = GRAPH.nodes;
+  const edges = GRAPH.edges;
+  const cool = Math.max(0.2, 1.0 - simTick2D / 400);
+  simTick2D++;
+
+  // Repulsion
+  for(let i = 0; i < nodes.length; i++) {
+    for(let j = i + 1; j < nodes.length; j++) {
+      const dx = nodes[j]._x2 - nodes[i]._x2;
+      const dy = nodes[j]._y2 - nodes[i]._y2;
+      const d2 = dx * dx + dy * dy + 10.0;
+      const force = 3400.0 / d2;
+      nodes[i]._vx2 -= dx * force; nodes[i]._vy2 -= dy * force;
+      nodes[j]._vx2 += dx * force; nodes[j]._vy2 += dy * force;
+    }
+  }
+
+  // Edge Spring Attraction
+  edges.forEach(e => {
+    const s = GRAPH.nodeMap[e.source], t = GRAPH.nodeMap[e.target];
+    if(!s || !t) return;
+    const dx = t._x2 - s._x2, dy = t._y2 - s._y2;
+    const dist = Math.hypot(dx, dy) || 1;
+    const targetDist = 110.0;
+    const force = (dist - targetDist) / dist * 0.08;
+    s._vx2 += dx * force; s._vy2 += dy * force;
+    t._vx2 -= dx * force; t._vy2 -= dy * force;
+  });
+
+  // Apply velocity & damping
+  nodes.forEach(n => {
+    n._x2 += n._vx2 * cool;
+    n._y2 += n._vy2 * cool;
+    n._vx2 *= 0.88; n._vy2 *= 0.88;
+  });
+}
+
+function render2D(timeSec) {
+  const W = cv2D.width, H = cv2D.height;
+  ctx2D.clearRect(0, 0, W, H);
+
+  // Background gradient
+  const bgGrad = ctx2D.createRadialGradient(W/2, H/2, 0, W/2, H/2, W * 0.7);
+  bgGrad.addColorStop(0, 'rgba(8, 8, 24, 1)');
+  bgGrad.addColorStop(0.6, 'rgba(4, 4, 14, 1)');
+  bgGrad.addColorStop(1, 'rgba(2, 2, 8, 1)');
+  ctx2D.fillStyle = bgGrad;
+  ctx2D.fillRect(0, 0, W, H);
+
+  if(!GRAPH) return;
+  tickPhysics2D();
+
+  ctx2D.save();
+  ctx2D.translate(W / 2 + cam2D.x, H / 2 + cam2D.y);
+  ctx2D.scale(cam2D.zoom, cam2D.zoom);
+
+  // 1. Draw Community Cluster Halos
+  drawCommunityHulls2D();
+
+  // 2. Draw Curved Glowing Bezier Edges
+  ctx2D.globalCompositeOperation = 'screen';
+  GRAPH.edges.forEach(e => {
+    const s = GRAPH.nodeMap[e.source], t = GRAPH.nodeMap[e.target];
+    if(!s || !t) return;
+    const isSel = isEdgeHighlighted(e);
+    const c = EDGE_COLORS[e.type] || EDGE_COLORS.DEFAULT;
+    const [r, g, b] = c;
+
+    // Perpendicular Bezier control point
+    const mx = (s._x2 + t._x2) / 2, my = (s._y2 + t._y2) / 2;
+    const dx = t._x2 - s._x2, dy = t._y2 - s._y2;
+    const len = Math.hypot(dx, dy) || 1;
+    const cx = mx - dy / len * 26, cy = my + dx / len * 26;
+
+    ctx2D.beginPath();
+    ctx2D.moveTo(s._x2, s._y2);
+    ctx2D.quadraticCurveTo(cx, cy, t._x2, t._y2);
+
+    if(isSel) {
+      ctx2D.strokeStyle = `rgba(${r*255|0}, ${g*255|0}, ${b*255|0}, 0.3)`;
+      ctx2D.lineWidth = 10.0 / cam2D.zoom;
+      ctx2D.stroke();
+    }
+
+    ctx2D.strokeStyle = `rgba(${r*255|0}, ${g*255|0}, ${b*255|0}, ${isSel ? 0.9 : 0.18})`;
+    ctx2D.lineWidth = (isSel ? 2.5 : 1.0) / cam2D.zoom;
+    ctx2D.stroke();
+
+    // Flowing Photon Particle on 2D curve
+    if(particlesEnabled) {
+      const pT = (timeSec * 0.4 + (s.degree * 0.1)) % 1.0;
+      const px = (1 - pT) * (1 - pT) * s._x2 + 2 * (1 - pT) * pT * cx + pT * pT * t._x2;
+      const py = (1 - pT) * (1 - pT) * s._y2 + 2 * (1 - pT) * pT * cy + pT * pT * t._y2;
+
+      ctx2D.beginPath();
+      ctx2D.arc(px, py, (isSel ? 4 : 2.5) / cam2D.zoom, 0, Math.PI * 2);
+      ctx2D.fillStyle = `rgb(${r*255|0}, ${g*255|0}, ${b*255|0})`;
+      ctx2D.fill();
+    }
+  });
+
+  // 3. Draw Nodes
+  GRAPH.nodes.forEach(n => {
+    const isSel = selectedNode && selectedNode.id === n.id;
+    const [r, g, b] = n._col || [0.55, 0.36, 0.96];
+    const radius = (Math.max(6, Math.min(24, 7 + (n.degree || 0) * 1.1))) / cam2D.zoom;
+
+    // Glowing Outer Halo
+    const halo = ctx2D.createRadialGradient(n._x2, n._y2, radius * 0.5, n._x2, n._y2, radius * 3.5);
+    halo.addColorStop(0, `rgba(${r*255|0}, ${g*255|0}, ${b*255|0}, ${isSel ? 0.6 : 0.25})`);
+    halo.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx2D.fillStyle = halo;
+    ctx2D.beginPath();
+    ctx2D.arc(n._x2, n._y2, radius * 3.5, 0, Math.PI * 2);
+    ctx2D.fill();
+
+    // Node Core
+    const coreGrad = ctx2D.createRadialGradient(n._x2 - radius * 0.3, n._y2 - radius * 0.3, 0, n._x2, n._y2, radius);
+    coreGrad.addColorStop(0, '#ffffff');
+    coreGrad.addColorStop(0.3, `rgb(${r*255|0}, ${g*255|0}, ${b*255|0})`);
+    coreGrad.addColorStop(1, `rgba(${r*120|0}, ${g*120|0}, ${b*120|0}, 0.8)`);
+    ctx2D.fillStyle = coreGrad;
+    ctx2D.beginPath();
+    ctx2D.arc(n._x2, n._y2, radius, 0, Math.PI * 2);
+    ctx2D.fill();
+
+    // Node Label
+    ctx2D.globalCompositeOperation = 'source-over';
+    const fs = Math.max(10, Math.min(14, 11 / cam2D.zoom));
+    ctx2D.font = `${isSel ? '600' : '500'} ${fs}px ui-monospace, 'Cascadia Code', 'Fira Code', monospace`;
+    ctx2D.textAlign = 'center';
+    ctx2D.fillStyle = isSel ? '#ffffff' : 'rgba(226, 232, 240, 0.75)';
+    ctx2D.fillText(n.label.slice(0, 22), n._x2, n._y2 + radius + fs + 2);
+    ctx2D.globalCompositeOperation = 'screen';
+  });
+
+  ctx2D.restore();
+}
+
+function drawCommunityHulls2D() {
+  if(!GRAPH.communities) return;
+  Object.keys(GRAPH.communities).forEach((cid, idx) => {
+    const mems = GRAPH.communities[cid].map(id => GRAPH.nodeMap[id]).filter(Boolean);
+    if(mems.length < 3) return;
+    const col = COMMUNITY_COLORS[idx % COMMUNITY_COLORS.length];
+    const [r, g, b] = col;
+
+    // Compute bounding centroid
+    let cx = 0, cy = 0;
+    mems.forEach(m => { cx += m._x2; cy += m._y2; });
+    cx /= mems.length; cy /= mems.length;
+
+    let maxR = 0;
+    mems.forEach(m => {
+      const d = Math.hypot(m._x2 - cx, m._y2 - cy);
+      if(d > maxR) maxR = d;
+    });
+    maxR += 50 / cam2D.zoom;
+
+    const g2 = ctx2D.createRadialGradient(cx, cy, 0, cx, cy, maxR);
+    g2.addColorStop(0, `rgba(${r*255|0}, ${g*255|0}, ${b*255|0}, 0.08)`);
+    g2.addColorStop(0.7, `rgba(${r*255|0}, ${g*255|0}, ${b*255|0}, 0.02)`);
+    g2.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx2D.fillStyle = g2;
+    ctx2D.beginPath();
+    ctx2D.arc(cx, cy, maxR, 0, Math.PI * 2);
+    ctx2D.fill();
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  DATA PARSING & NORMALIZATION
+// ═══════════════════════════════════════════════════════════════════
+function normalizeGraphData(raw, projectName) {
+  const nodeMap = {};
+  const projName = projectName || raw.name || 'Project';
+  const nodes = (raw.nodes || []).map((n, i) => {
+    const id = n.id || String(i);
+    const comm = n.community !== undefined ? n.community : (n.cluster !== undefined ? n.cluster : 0);
+    const nodeObj = {
+      id: id,
+      label: n.label || n.name || id,
+      type: (n.type || n.node_type || 'function').toLowerCase(),
+      community: comm,
+      source_file: n.source_file || n.file || n.path || 'unknown',
+      degree: n.degree || 0,
+      confidence: n.confidence || 'EXTRACTED',
+      snippet: n.snippet || generateMockSnippet(n.label || id, n.type || 'function'),
+      project: projName,
+      _x: 0, _y: 0, _z: 0,
+      _x2: 0, _y2: 0, _vx2: 0, _vy2: 0,
+      _r: 0.065, _col: null, _glow: 0.7
+    };
+    nodeMap[id] = nodeObj;
+    return nodeObj;
+  });
+
+  const edges = (raw.edges || raw.links || []).map(e => ({
+    source: e.source,
+    target: e.target,
+    type: (e.type || e.relationship || e.label || 'CALLS').toUpperCase(),
+    confidence: e.confidence || 'EXTRACTED'
+  })).filter(e => nodeMap[e.source] && nodeMap[e.target]);
+
+  // Compute degrees
+  edges.forEach(e => {
+    if(nodeMap[e.source]) nodeMap[e.source].degree++;
+    if(nodeMap[e.target]) nodeMap[e.target].degree++;
+  });
+
+  // Group communities
+  let communities = raw.communities || {};
+  if(Object.keys(communities).length === 0) {
+    nodes.forEach(n => {
+      if(!communities[n.community]) communities[n.community] = [];
+      communities[n.community].push(n.id);
+    });
+  }
+  const commLabels = raw.community_labels || raw.labels || {};
+
+  // 3D Layout: Galaxy Multi-Spiral Clustering
+  const commKeys = Object.keys(communities);
+  const clusterRadiusScale = Math.max(2.5, commKeys.length * 0.7);
+
+  commKeys.forEach((cid, cIdx) => {
+    const members = communities[cid];
+    const angleBase = (cIdx / commKeys.length) * Math.PI * 2;
+    const distCenter = (1.8 + cIdx * 0.5) * clusterRadiusScale;
+    const col = COMMUNITY_COLORS[cIdx % COMMUNITY_COLORS.length];
+
+    members.forEach((nid, mIdx) => {
+      const n = nodeMap[nid];
+      if(!n) return;
+      n._col = col;
+
+      const armAngle = angleBase + (mIdx / members.length) * Math.PI * 2.2;
+      const spiralRadius = distCenter + (mIdx / members.length) * 1.2 * clusterRadiusScale;
+      const yOffset = (Math.random() - 0.5) * 1.6 * clusterRadiusScale;
+
+      n._x = Math.cos(armAngle) * spiralRadius + (Math.random() - 0.5) * 0.4 * clusterRadiusScale;
+      n._y = yOffset;
+      n._z = Math.sin(armAngle) * spiralRadius + (Math.random() - 0.5) * 0.4 * clusterRadiusScale;
+
+      // 2D init coordinates
+      n._x2 = n._x * 75;
+      n._y2 = n._z * 75;
+
+      n._r = 0.08 + Math.min((n.degree || 0) * 0.012, 0.14);
+      n._glow = n.degree > 4 ? 0.95 : 0.7;
+    });
+  });
+
+  return { nodes, edges, nodeMap, communities, commLabels, name: raw.name || 'Maxilun Knowledge Graph' };
+}
+
+function generateMockSnippet(label, type) {
+  if(type === 'class') {
+    return `export class ${label} {\n  constructor(private config: EngineConfig) {\n    this.init();\n  }\n  public async execute(): Promise<Result> {\n    return this.dispatch();\n  }\n}`;
+  }
+  return `export async function ${label}(ctx: Context): Promise<void> {\n  const validated = await validatePayload(ctx);\n  if (!validated) throw new Error("Invalid request");\n  return processPipeline(validated);\n}`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  INTERACTION & NODE SELECTION
+// ═══════════════════════════════════════════════════════════════════
+function inspectNode(n) {
+  selectedNode = n;
+  updateEdgeHighlights();
+
+  const drawer = document.getElementById('right-drawer');
+  drawer.classList.add('open');
+
+  document.getElementById('insp-type').textContent = n.type.toUpperCase();
+  document.getElementById('insp-comm').textContent = `Cluster ${n.community}`;
+  document.getElementById('insp-title').textContent = n.label;
+  document.getElementById('insp-file').textContent = n.source_file;
+
+  const inEdges = GRAPH.edges.filter(e => e.target === n.id);
+  const outEdges = GRAPH.edges.filter(e => e.source === n.id);
+
+  document.getElementById('insp-in').textContent = inEdges.length;
+  document.getElementById('insp-out').textContent = outEdges.length;
+  document.getElementById('insp-snippet').textContent = n.snippet;
+
+  // Inbound Callers List
+  const callersUl = document.getElementById('insp-callers');
+  callersUl.replaceChildren();
+  inEdges.slice(0, 8).forEach(e => {
+    const peer = GRAPH.nodeMap[e.source];
+    if(!peer) return;
+    const li = document.createElement('li');
+    li.className = 'call-item';
+    const arrow = document.createElement('span');
+    arrow.className = 'call-arrow';
+    arrow.textContent = '←';
+    const label = document.createElement('span');
+    label.textContent = peer.label;
+    const type = document.createElement('span');
+    type.className = 'call-type';
+    type.textContent = e.type;
+    li.appendChild(arrow);
+    li.appendChild(label);
+    li.appendChild(type);
+    li.onclick = () => { inspectNode(peer); warpToNode(peer); };
+    callersUl.appendChild(li);
+  });
+  if(inEdges.length === 0) {
+    const emptyLi = document.createElement('li');
+    emptyLi.style.cssText = 'font-size:10px;color:var(--text-muted);padding:4px;';
+    emptyLi.textContent = 'No inbound callers (Entrypoint)';
+    callersUl.appendChild(emptyLi);
+  }
+
+  // Outbound Callees List
+  const calleesUl = document.getElementById('insp-callees');
+  calleesUl.replaceChildren();
+  outEdges.slice(0, 8).forEach(e => {
+    const peer = GRAPH.nodeMap[e.target];
+    if(!peer) return;
+    const li = document.createElement('li');
+    li.className = 'call-item';
+    const arrow = document.createElement('span');
+    arrow.className = 'call-arrow';
+    arrow.textContent = '→';
+    const label = document.createElement('span');
+    label.textContent = peer.label;
+    const type = document.createElement('span');
+    type.className = 'call-type';
+    type.textContent = e.type;
+    li.appendChild(arrow);
+    li.appendChild(label);
+    li.appendChild(type);
+    li.onclick = () => { inspectNode(peer); warpToNode(peer); };
+    calleesUl.appendChild(li);
+  });
+  if(outEdges.length === 0) {
+    const emptyLi = document.createElement('li');
+    emptyLi.style.cssText = 'font-size:10px;color:var(--text-muted);padding:4px;';
+    emptyLi.textContent = 'No outbound dependencies (Leaf node)';
+    calleesUl.appendChild(emptyLi);
+  }
+}
+
+function closeInspector() {
+  selectedNode = null;
+  updateEdgeHighlights();
+  document.getElementById('right-drawer').classList.remove('open');
+}
+
+function warpToCurrentNode() {
+  if(selectedNode) warpToNode(selectedNode);
+}
+
+function warpToNode(n) {
+  if(currentMode === '3d') {
+    camAnim.active = true;
+    camAnim.t = 0;
+    camAnim.startPos = getCameraEye();
+    camAnim.startLook = getCameraTarget();
+    camAnim.targetLook = [n._x, n._y, n._z];
+    camAnim.targetPos = [n._x, n._y + 0.4, n._z + 2.2];
+    camOrbit.autoRotate = false;
+  } else {
+    cam2D.x = -n._x2 * cam2D.zoom;
+    cam2D.y = -n._y2 * cam2D.zoom;
+  }
+  showToast(`Focused on ${n.label}`);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  RAYCASTING & PICKING
+// ═══════════════════════════════════════════════════════════════════
+function worldToScreen(nx, ny, nz) {
+  const W = cv3D.width, H = cv3D.height;
+  // Exact matrix projection matching WebGL vertex shader
+  const vx = mView[0]*nx + mView[4]*ny + mView[8]*nz + mView[12];
+  const vy = mView[1]*nx + mView[5]*ny + mView[9]*nz + mView[13];
+  const vz = mView[2]*nx + mView[6]*ny + mView[10]*nz + mView[14];
+  const vw = mView[3]*nx + mView[7]*ny + mView[11]*nz + mView[15];
+
+  const px = mProj[0]*vx + mProj[4]*vy + mProj[8]*vz + mProj[12]*vw;
+  const py = mProj[1]*vx + mProj[5]*vy + mProj[9]*vz + mProj[13]*vw;
+  const pw = mProj[3]*vx + mProj[7]*vy + mProj[11]*vz + mProj[15]*vw;
+
+  if(pw <= 0.05) return null; // Behind near clipping plane
+  const ndcX = px / pw;
+  const ndcY = py / pw;
+  const sx = (ndcX * 0.5 + 0.5) * W;
+  const sy = (1.0 - (ndcY * 0.5 + 0.5)) * H;
+  return { x: sx, y: sy };
+}
+
+function pickNode3D(mx, my) {
+  if(!GRAPH) return null;
+  let best = null, minD = Infinity;
+  GRAPH.nodes.forEach(n => {
+    const sp = worldToScreen(n._x, n._y, n._z);
+    if(!sp) return;
+    const d = Math.hypot(sp.x - mx, sp.y - my);
+    if(d < minD && d < 40) { minD = d; best = n; }
+  });
+  return best;
+}
+
+// 3D Label Projection System
+const labelLayer = document.getElementById('label-layer');
+let labelElements = {};
+
+function updateLabels3D() {
+  if(currentMode !== '3d' || !GRAPH) {
+    labelLayer.style.display = 'none';
+    return;
+  }
+  labelLayer.style.display = 'block';
+
+  const W = cv3D.width, H = cv3D.height;
+  const maxLabels = 60;
+  const projected = [];
+
+  GRAPH.nodes.forEach(n => {
+    const sp = worldToScreen(n._x, n._y, n._z);
+    if(!sp) return;
+    if(sp.x < -50 || sp.x > W + 50 || sp.y < -50 || sp.y > H + 50) return;
+
+    const isSelected = selectedNode && selectedNode.id === n.id;
+    const isHovered = hoveredNode && hoveredNode.id === n.id;
+    const dist = Math.hypot(sp.x - W/2, sp.y - H/2);
+    const priority = (isSelected ? 10000 : 0) + (isHovered ? 5000 : 0) + (n.degree || 0) * 10 - dist * 0.01;
+
+    projected.push({ node: n, x: sp.x, y: sp.y, priority, isSelected, isHovered });
+  });
+
+  projected.sort((a, b) => b.priority - a.priority);
+  const visible = projected.slice(0, maxLabels);
+
+  // Reuse or create label elements
+  const usedIds = new Set();
+  visible.forEach(p => {
+    usedIds.add(p.node.id);
+    let el = labelElements[p.node.id];
+    if(!el) {
+      el = document.createElement('div');
+      el.className = 'node-label-3d';
+      labelLayer.appendChild(el);
+      labelElements[p.node.id] = el;
+    }
+    el.textContent = p.node.label.slice(0, 24);
+    el.style.left = p.x + 'px';
+    el.style.top = (p.y - 12) + 'px';
+    el.style.opacity = p.isSelected || p.isHovered ? '1' : String(Math.max(0.3, Math.min(0.85, 1.0 - p.priority * 0.0001)));
+    el.classList.toggle('selected', p.isSelected);
+
+    if(p.node.project) {
+      el.textContent = p.node.label.slice(0, 20) + ' ';
+      const tag = document.createElement('span');
+      tag.className = 'project-tag';
+      tag.textContent = p.node.project;
+      el.appendChild(tag);
+    }
+  });
+
+  // Hide unused labels
+  Object.keys(labelElements).forEach(id => {
+    if(!usedIds.has(id)) {
+      labelElements[id].style.opacity = '0';
+    }
+  });
+}
+
+function pickNode2D(mx, my) {
+  if(!GRAPH) return null;
+  const W = cv2D.width, H = cv2D.height;
+  let best = null, minD = Infinity;
+  GRAPH.nodes.forEach(n => {
+    const sx = n._x2 * cam2D.zoom + W / 2 + cam2D.x;
+    const sy = n._y2 * cam2D.zoom + H / 2 + cam2D.y;
+    const d = Math.hypot(sx - mx, sy - my);
+    if(d < minD && d < 28) { minD = d; best = n; }
+  });
+  return best;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  SHORTEST PATH TRACER (BFS)
+// ═══════════════════════════════════════════════════════════════════
+function startPathTrace() {
+  if(!selectedNode) return;
+  traceSourceNode = selectedNode;
+  showToast(`Path Source: ${selectedNode.label}. Now click any target node.`);
+}
+
+function computeShortestPath(fromId, toId) {
+  const queue = [fromId];
+  const visited = { [fromId]: null };
+
+  while(queue.length > 0) {
+    const curr = queue.shift();
+    if(curr === toId) {
+      const path = [];
+      let step = curr;
+      while(step !== null) {
+        path.unshift(step);
+        step = visited[step];
+      }
+      return path;
+    }
+    const neighbors = GRAPH.edges
+      .filter(e => e.source === curr || e.target === curr)
+      .map(e => e.source === curr ? e.target : e.source);
+
+    neighbors.forEach(nxt => {
+      if(!(nxt in visited)) {
+        visited[nxt] = curr;
+        queue.push(nxt);
+      }
+    });
+  }
+  return null;
+}
+
+function showPathTrace(targetNode) {
+  if(!traceSourceNode || !targetNode || traceSourceNode.id === targetNode.id) return;
+  const path = computeShortestPath(traceSourceNode.id, targetNode.id);
+  const hud = document.getElementById('path-hud');
+  const chainEl = document.getElementById('path-chain-nodes');
+  hud.classList.add('active');
+
+  chainEl.replaceChildren();
+  if(!path || path.length < 2) {
+    const noPath = document.createElement('span');
+    noPath.style.color = 'var(--text-muted)';
+    noPath.textContent = 'No execution path found between symbols.';
+    chainEl.appendChild(noPath);
+  } else {
+    path.forEach((nid, i) => {
+      const n = GRAPH.nodeMap[nid];
+      const span = document.createElement('span');
+      span.className = 'path-node';
+      span.textContent = n ? n.label : nid;
+      span.onclick = () => {
+        const target = GRAPH.nodeMap[nid];
+        if (target) {
+          inspectNode(target);
+          warpToNode(target);
+        }
+      };
+      chainEl.appendChild(span);
+      if (i < path.length - 1) {
+        const arrow = document.createElement('span');
+        arrow.className = 'path-arrow';
+        arrow.textContent = '→';
+        chainEl.appendChild(arrow);
+      }
+    });
+  }
+  traceSourceNode = null;
+}
+
+function closePathTrace() {
+  document.getElementById('path-hud').classList.remove('active');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  SEARCH CONTROLLER
+// ═══════════════════════════════════════════════════════════════════
+function openSearch() {
+  document.getElementById('search-modal').classList.add('active');
+  const inp = document.getElementById('search-input');
+  inp.value = '';
+  inp.focus();
+  onSearchQuery('');
+}
+
+function closeSearch() {
+  document.getElementById('search-modal').classList.remove('active');
+}
+
+function onSearchQuery(q) {
+  const resContainer = document.getElementById('search-results');
+  if(!GRAPH) return;
+  const query = q.trim().toLowerCase();
+  const matches = GRAPH.nodes.filter(n =>
+    n.label.toLowerCase().includes(query) ||
+    n.id.toLowerCase().includes(query) ||
+    n.source_file.toLowerCase().includes(query)
+  ).slice(0, 12);
+
+  resContainer.replaceChildren();
+  matches.forEach((m, idx) => {
+    const item = document.createElement('div');
+    item.className = `search-result-item ${idx===0?'selected':''}`;
+    const arrow = document.createElement('span');
+    arrow.style.color = 'var(--cyan)';
+    arrow.textContent = '◈';
+    const label = document.createElement('span');
+    label.style.fontWeight = '600';
+    label.textContent = m.label;
+    const src = document.createElement('span');
+    src.style.fontSize = '10px';
+    src.style.color = 'var(--text-muted)';
+    src.style.marginLeft = 'auto';
+    src.textContent = m.source_file.split('/').slice(-2).join('/');
+    item.appendChild(arrow);
+    item.appendChild(label);
+    item.appendChild(src);
+    item.onclick = () => selectSearchResult(m.id);
+    resContainer.appendChild(item);
+  });
+}
+
+function selectSearchResult(id) {
+  const n = GRAPH.nodeMap[id];
+  if(n) {
+    closeSearch();
+    inspectNode(n);
+    warpToNode(n);
+  }
+}
+
+function onSearchKeyDown(e) {
+  if(e.key === 'Escape') closeSearch();
+  if(e.key === 'Enter') {
+    const sel = document.querySelector('.search-result-item.selected');
+    if(sel) sel.click();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  UI UTILITIES & EVENTS
+// ═══════════════════════════════════════════════════════════════════
+function setMode(m) {
+  if(m === '3d' && !webglSupported) return;
+  currentMode = m;
+  if(m === '3d') {
+    cv3D.style.display = 'block';
+    cv2D.style.display = 'none';
+    document.getElementById('btn-mode-3d').className = 'btn btn-active';
+    document.getElementById('btn-mode-2d').className = 'btn';
+  } else {
+    cv3D.style.display = 'none';
+    cv2D.style.display = 'block';
+    document.getElementById('btn-mode-3d').className = 'btn';
+    document.getElementById('btn-mode-2d').className = 'btn btn-active';
+    simTick2D = 0;
+  }
+}
+
+function toggleWalkMode() {
+  camWalk.active = !camWalk.active;
+  document.getElementById('btn-walk').classList.toggle('btn-active', camWalk.active);
+  document.getElementById('flight-hud').classList.toggle('active', camWalk.active);
+  if(camWalk.active) {
+    stopCruiseTour();
+    const eye = getCameraEye();
+    camWalk.pos = [...eye];
+    showToast('Flight Mode ON: Use W/A/S/D to fly');
+  }
+}
+
+function toggleEdgeParticles() {
+  particlesEnabled = !particlesEnabled;
+  document.getElementById('btn-particles').textContent = `✦ Particles: ${particlesEnabled ? 'ON' : 'OFF'}`;
+  document.getElementById('btn-particles').classList.toggle('btn-active', particlesEnabled);
+}
+
+function resetCamera() {
+  camOrbit = { rx: 0.35, ry: 0.1, dist: 12.0, tx: 0, ty: 0, autoRotate: true };
+  cam2D = { x: 0, y: 0, zoom: 1.0, drag: false, lx: 0, ly: 0 };
+  camWalk.active = false;
+  stopCruiseTour();
+  document.getElementById('flight-hud').classList.remove('active');
+  showToast('Camera reset');
+}
+
+function toggleLeftDrawer() {
+  document.getElementById('left-drawer').classList.toggle('collapsed');
+}
+
+function showToast(msg) {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(-10px)';
+    setTimeout(() => toast.remove(), 250);
+  }, 2800);
+}
+
+function showDropZone() {
+  document.getElementById('drop-zone').style.display = 'flex';
+}
+
+function hideDropZone() {
+  document.getElementById('drop-zone').style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  EVENT LISTENERS (MOUSE, KEYBOARD, TOUCH)
+// ═══════════════════════════════════════════════════════════════════
+window.addEventListener('resize', handleResize);
+function handleResize() {
+  const W = window.innerWidth, H = window.innerHeight;
+  if(cv3D.width !== W || cv3D.height !== H) { cv3D.width = W; cv3D.height = H; }
+  if(cv2D.width !== W || cv2D.height !== H) { cv2D.width = W; cv2D.height = H; }
+}
+
+// Mouse Drag 3D
+cv3D.addEventListener('mousedown', e => {
+  drag3D.active = true;
+  drag3D.lx = e.clientX; drag3D.ly = e.clientY;
+  drag3D.btn = e.button; drag3D.moved = false;
+});
+cv3D.addEventListener('wheel', e => {
+  camOrbit.dist = Math.max(0.8, Math.min(25.0, camOrbit.dist + e.deltaY * 0.007));
+  e.preventDefault();
+}, { passive: false });
+cv3D.addEventListener('click', e => {
+  if(!drag3D.moved) {
+    const picked = pickNode3D(e.clientX, e.clientY);
+    if(picked) {
+      if(traceSourceNode) showPathTrace(picked); else inspectNode(picked);
+    } else {
+      closeInspector();
+    }
+  }
+});
+
+// Mouse Drag 2D
+cv2D.addEventListener('mousedown', e => {
+  cam2D.drag = true;
+  cam2D.lx = e.clientX; cam2D.ly = e.clientY;
+});
+cv2D.addEventListener('wheel', e => {
+  const factor = e.deltaY > 0 ? 0.9 : 1.1;
+  cam2D.zoom = Math.max(0.1, Math.min(5.0, cam2D.zoom * factor));
+  e.preventDefault();
+}, { passive: false });
+cv2D.addEventListener('click', e => {
+  const picked = pickNode2D(e.clientX, e.clientY);
+  if(picked) {
+    if(traceSourceNode) showPathTrace(picked); else inspectNode(picked);
+  } else {
+    closeInspector();
+  }
+});
+
+window.addEventListener('mousemove', e => {
+  if(drag3D.active && currentMode === '3d') {
+    const dx = e.clientX - drag3D.lx, dy = e.clientY - drag3D.ly;
+    if(Math.hypot(dx, dy) > 3) drag3D.moved = true;
+
+    if(camWalk.active) {
+      camWalk.yaw -= dx * 0.003;
+      camWalk.pitch = Math.max(-1.4, Math.min(1.4, camWalk.pitch - dy * 0.003));
+    } else {
+      if(drag3D.btn === 0) {
+        camOrbit.ry += dx * 0.005;
+        camOrbit.rx = Math.max(-1.4, Math.min(1.4, camOrbit.rx + dy * 0.005));
+        camOrbit.autoRotate = false;
+      } else {
+        camOrbit.tx -= dx * 0.0025 * camOrbit.dist;
+        camOrbit.ty += dy * 0.0025 * camOrbit.dist;
+      }
+    }
+    drag3D.lx = e.clientX; drag3D.ly = e.clientY;
+  }
+
+  if(cam2D.drag && currentMode === '2d') {
+    cam2D.x += e.clientX - cam2D.lx;
+    cam2D.y += e.clientY - cam2D.ly;
+    cam2D.lx = e.clientX; cam2D.ly = e.clientY;
+  }
+
+  // Hover Tooltip Check
+  const hovered = currentMode === '3d' ? pickNode3D(e.clientX, e.clientY) : pickNode2D(e.clientX, e.clientY);
+  const tipEl = document.getElementById('hover-tip');
+  if(hovered) {
+    tipEl.classList.add('visible');
+    tipEl.style.left = (e.clientX + 14) + 'px';
+    tipEl.style.top = (e.clientY - 10) + 'px';
+    document.getElementById('tip-type').textContent = hovered.type.toUpperCase();
+    document.getElementById('tip-title').textContent = hovered.label;
+    document.getElementById('tip-meta').textContent = `${hovered.degree} links · ${hovered.source_file.split('/').slice(-1)[0]}`;
+  } else {
+    tipEl.classList.remove('visible');
+  }
+});
+
+window.addEventListener('mouseup', () => {
+  drag3D.active = false;
+  cam2D.drag = false;
+});
+
+// Keyboard Controls
+window.addEventListener('keydown', e => {
+  if(e.code in camWalk.keys) camWalk.keys[e.code] = true;
+  if((e.key === 'k' || e.key === 'K') && (e.ctrlKey || e.metaKey)) {
+    e.preventDefault(); openSearch();
+  }
+  if(e.key === 'Tab') {
+    e.preventDefault();
+    setMode(currentMode === '3d' ? '2d' : '3d');
+  }
+  if(e.key === 'Escape') {
+    closeSearch(); closeInspector(); closePathTrace();
+  }
+  if(e.key === 'f' || e.key === 'F') {
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+});
+window.addEventListener('keyup', e => {
+  if(e.code in camWalk.keys) camWalk.keys[e.code] = false;
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  FILE INGESTION & DEMO PRESETS
+// ═══════════════════════════════════════════════════════════════════
+function handleFileDrop(e) {
+  e.preventDefault();
+  document.getElementById('drop-target').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if(file && file.name.endsWith('.json')) readFile(file);
+}
+function handleDragOver(e) { e.preventDefault(); document.getElementById('drop-target').classList.add('drag-over'); }
+function handleDragLeave() { document.getElementById('drop-target').classList.remove('drag-over'); }
+function handleFileSelect(e) { readFile(e.target.files[0]); }
+
+function readFile(file) {
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const parsed = JSON.parse(ev.target.result);
+      const projName = parsed.name || file.name.replace(/\.json$/i, '');
+      addProjectGraph(parsed, projName);
+      hideDropZone();
+      showToast(`Loaded ${projName}`);
+    } catch(err) {
+      showToast('Error: Invalid JSON format');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function handleFileSelectMulti(e) {
+  const files = Array.from(e.target.files);
+  if(files.length === 0) return;
+  files.forEach(file => {
+    if(!file.name.endsWith('.json')) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const parsed = JSON.parse(ev.target.result);
+        const projName = parsed.name || file.name.replace(/\.json$/i, '');
+        addProjectGraph(parsed, projName);
+        showToast(`Loaded ${projName}`);
+      } catch(err) {
+        showToast(`Error loading ${file.name}`);
+      }
+    };
+    reader.readAsText(file);
+  });
+  hideDropZone();
+}
+
+function addProjectGraph(raw, projectName) {
+  const graphData = normalizeGraphData(raw, projectName);
+  
+  // Check if project already exists
+  const existingIdx = PROJECTS.findIndex(p => p.name === projectName);
+  if(existingIdx >= 0) {
+    PROJECTS[existingIdx] = graphData;
+  } else {
+    PROJECTS.push(graphData);
+  }
+  
+  // Merge all projects into single GRAPH
+  mergeProjects();
+}
+
+function mergeProjects() {
+  if(PROJECTS.length === 0) return;
+  
+  if(PROJECTS.length === 1) {
+    GRAPH = PROJECTS[0];
+  } else {
+    // Merge multiple projects
+    const allNodes = [];
+    const allEdges = [];
+    const mergedNodeMap = {};
+    const mergedCommunities = {};
+    const mergedCommLabels = {};
+    let commOffset = 0;
+    
+    PROJECTS.forEach((proj, pIdx) => {
+      const projCommOffset = commOffset;
+      
+      proj.nodes.forEach(n => {
+        const mergedId = `${n.project}:${n.id}`;
+        const mergedNode = { ...n, id: mergedId, community: n.community + projCommOffset };
+        mergedNodeMap[mergedId] = mergedNode;
+        allNodes.push(mergedNode);
+        
+        if(!mergedCommunities[mergedNode.community]) {
+          mergedCommunities[mergedNode.community] = [];
+        }
+        mergedCommunities[mergedNode.community].push(mergedId);
+      });
+      
+      proj.edges.forEach(e => {
+        allEdges.push({
+          source: `${proj.name}:${e.source}`,
+          target: `${proj.name}:${e.target}`,
+          type: e.type,
+          confidence: e.confidence
+        });
+      });
+      
+      Object.keys(proj.commLabels).forEach(k => {
+        mergedCommLabels[String(parseInt(k) + projCommOffset)] = `${proj.name}: ${proj.commLabels[k]}`;
+      });
+      
+      commOffset += Object.keys(proj.communities).length;
+    });
+    
+    // Recalculate layout for merged graph
+    const rawMerged = {
+      name: 'Multi-Project Graph',
+      nodes: allNodes,
+      edges: allEdges,
+      communities: mergedCommunities,
+      community_labels: mergedCommLabels
+    };
+    
+    GRAPH = normalizeGraphData(rawMerged, 'Multi-Project');
+  }
+  
+  buildGraphBuffers();
+  updateStatsUI();
+  resetCamera();
+}
+
+function updateStatsUI() {
+  if(!GRAPH) return;
+  document.getElementById('st-nodes').textContent = GRAPH.nodes.length;
+  document.getElementById('st-edges').textContent = GRAPH.edges.length;
+  document.getElementById('st-comms').textContent = Object.keys(GRAPH.communities).length;
+
+  const projectSet = new Set(GRAPH.nodes.map(n => n.project).filter(Boolean));
+  const projPill = document.getElementById('st-projects-pill');
+  if(projectSet.size > 1) {
+    projPill.style.display = 'flex';
+    document.getElementById('st-projects').textContent = projectSet.size;
+  } else {
+    projPill.style.display = 'none';
+  }
+  
+  // Build Community Drawer Items
+  const commListEl = document.getElementById('community-list');
+  commListEl.replaceChildren();
+  Object.keys(GRAPH.communities).forEach((cid, idx) => {
+    const col = COMMUNITY_COLORS[idx % COMMUNITY_COLORS.length];
+    const [r, g, b] = col;
+    const count = GRAPH.communities[cid].length;
+    const label = GRAPH.commLabels[cid] || `Cluster ${cid}`;
+
+    const div = document.createElement('div');
+    div.className = 'comm-item';
+    const dot = document.createElement('div');
+    dot.className = 'comm-dot';
+    dot.style.background = `rgb(${r*255|0},${g*255|0},${b*255|0})`;
+    const labelEl = document.createElement('div');
+    labelEl.className = 'comm-label';
+    labelEl.textContent = label;
+    const countEl = document.createElement('div');
+    countEl.className = 'comm-count';
+    countEl.textContent = count;
+    div.appendChild(dot);
+    div.appendChild(labelEl);
+    div.appendChild(countEl);
+    div.onclick = () => isolateCluster(cid, div);
+    commListEl.appendChild(div);
+  });
+}
+
+function loadGraph(raw) {
+  PROJECTS = [];
+  addProjectGraph(raw, raw.name || 'Default Project');
+}
+
+function isolateCluster(cid, el) {
+  if(activeIsolationCluster === cid) {
+    clearIsolation();
+    return;
+  }
+  activeIsolationCluster = cid;
+  document.querySelectorAll('.comm-item').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+
+  const btnIso = document.getElementById('btn-isolate');
+  btnIso.style.display = 'block';
+  btnIso.textContent = `✕ Cluster ${cid}`;
+  showToast(`Filtered to Cluster ${cid}`);
+}
+
+function clearIsolation() {
+  activeIsolationCluster = null;
+  document.querySelectorAll('.comm-item').forEach(x => x.classList.remove('active'));
+  document.getElementById('btn-isolate').style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  BUILT-IN PRESET DATASETS
+// ═══════════════════════════════════════════════════════════════════
+function loadPreset(name) {
+  if(name === 'maxilun') {
+    loadGraph(PRESET_MAXILUN);
+  } else if(name === 'ecommerce') {
+    loadGraph(PRESET_ECOMMERCE);
+  } else {
+    loadGraph(PRESET_AGENT);
+  }
+}
+
+const PRESET_MAXILUN = {
+  name: 'Maxilun Core Engine',
+  communities: {
+    '0': ['core:cli', 'core:engine', 'core:context', 'core:config'],
+    '1': ['kg:ast_scanner', 'kg:dep_resolver', 'kg:lens_viewer', 'kg:graph_store'],
+    '2': ['mcp:bridge', 'mcp:tool_server', 'mcp:protocol_adapter'],
+    '3': ['skill:executor', 'skill:verifier', 'skill:sentinel', 'skill:craft']
+  },
+  community_labels: {
+    '0': 'Core Runtime',
+    '1': 'Knowledge Graph',
+    '2': 'MCP Protocol',
+    '3': 'Agent Skills'
+  },
+  nodes: [
+    { id: 'core:cli', label: 'MaxilunCLI', type: 'class', community: 0, source_file: 'src/cli/index.ts' },
+    { id: 'core:engine', label: 'ExecutiveEngine', type: 'class', community: 0, source_file: 'src/core/engine.ts' },
+    { id: 'core:context', label: 'ContextBuffer', type: 'class', community: 0, source_file: 'src/core/context.ts' },
+    { id: 'core:config', label: 'EcosystemConfig', type: 'module', community: 0, source_file: 'src/core/config.ts' },
+    { id: 'kg:ast_scanner', label: 'AstCodeScanner', type: 'function', community: 1, source_file: 'src/graph/scanner.py' },
+    { id: 'kg:dep_resolver', label: 'resolveSymbolCalls', type: 'function', community: 1, source_file: 'src/graph/resolver.py' },
+    { id: 'kg:lens_viewer', label: 'LensVisualizer', type: 'module', community: 1, source_file: 'graph-viewer/lens.html' },
+    { id: 'kg:graph_store', label: 'KnowledgeGraphStore', type: 'class', community: 1, source_file: 'src/graph/store.ts' },
+    { id: 'mcp:bridge', label: 'McpServerBridge', type: 'class', community: 2, source_file: 'src/mcp/bridge.ts' },
+    { id: 'mcp:tool_server', label: 'ToolServerHandler', type: 'function', community: 2, source_file: 'src/mcp/tools.ts' },
+    { id: 'mcp:protocol_adapter', label: 'ProtocolAdapter', type: 'class', community: 2, source_file: 'src/mcp/adapter.ts' },
+    { id: 'skill:executor', label: 'SkillExecutor', type: 'class', community: 3, source_file: 'src/skills/executor.ts' },
+    { id: 'skill:verifier', label: 'VerifyContract', type: 'function', community: 3, source_file: 'src/skills/verifier.ts' },
+    { id: 'skill:sentinel', label: 'SentinelGuard', type: 'class', community: 3, source_file: 'src/skills/sentinel.ts' },
+    { id: 'skill:craft', label: 'CraftSynthesis', type: 'function', community: 3, source_file: 'src/skills/craft.ts' }
+  ],
+  edges: [
+    { source: 'core:cli', target: 'core:engine', type: 'CALLS' },
+    { source: 'core:engine', target: 'kg:graph_store', type: 'CALLS' },
+    { source: 'core:engine', target: 'skill:executor', type: 'CALLS' },
+    { source: 'core:engine', target: 'core:context', type: 'IMPORTS' },
+    { source: 'kg:ast_scanner', target: 'kg:dep_resolver', type: 'CALLS' },
+    { source: 'kg:dep_resolver', target: 'kg:graph_store', type: 'CALLS' },
+    { source: 'kg:graph_store', target: 'kg:lens_viewer', type: 'EXPOSES' },
+    { source: 'mcp:bridge', target: 'mcp:protocol_adapter', type: 'CALLS' },
+    { source: 'mcp:bridge', target: 'core:engine', type: 'CALLS' },
+    { source: 'mcp:tool_server', target: 'kg:graph_store', type: 'CALLS' },
+    { source: 'skill:executor', target: 'skill:verifier', type: 'CALLS' },
+    { source: 'skill:executor', target: 'skill:sentinel', type: 'CALLS' },
+    { source: 'skill:verifier', target: 'skill:craft', type: 'CALLS' },
+    { source: 'skill:sentinel', target: 'core:context', type: 'CALLS' },
+    { source: 'core:engine', target: 'core:config', type: 'IMPORTS' }
+  ]
+};
+
+const PRESET_ECOMMERCE = {
+  name: 'Microservices E-Commerce API',
+  communities: {
+    '0': ['gateway:router', 'gateway:auth_guard', 'gateway:rate_limiter'],
+    '1': ['order:controller', 'order:service', 'order:validator', 'order:repo'],
+    '2': ['payment:processor', 'payment:stripe_worker', 'payment:webhook_handler'],
+    '3': ['inv:stock_checker', 'inv:reservation_lock', 'inv:catalog_cache'],
+    '4': ['event:kafka_bus', 'event:audit_logger', 'event:notification_svc']
+  },
+  community_labels: {
+    '0': 'API Gateway',
+    '1': 'Order Domain',
+    '2': 'Payment Service',
+    '3': 'Inventory & Cache',
+    '4': 'Event Bus & Telemetry'
+  },
+  nodes: [
+    { id: 'gateway:router', label: 'APIRouter', type: 'class', community: 0, source_file: 'src/gateway/router.ts' },
+    { id: 'gateway:auth_guard', label: 'verifyJwtToken', type: 'function', community: 0, source_file: 'src/gateway/auth.ts' },
+    { id: 'gateway:rate_limiter', label: 'RateLimiter', type: 'class', community: 0, source_file: 'src/gateway/limiter.ts' },
+    { id: 'order:controller', label: 'OrderController', type: 'class', community: 1, source_file: 'src/order/controller.ts' },
+    { id: 'order:service', label: 'createOrder', type: 'function', community: 1, source_file: 'src/order/service.ts' },
+    { id: 'order:validator', label: 'validateCart', type: 'function', community: 1, source_file: 'src/order/validator.ts' },
+    { id: 'order:repo', label: 'OrderRepository', type: 'class', community: 1, source_file: 'src/order/repository.ts' },
+    { id: 'payment:processor', label: 'PaymentProcessor', type: 'class', community: 2, source_file: 'src/payment/processor.ts' },
+    { id: 'payment:stripe_worker', label: 'dispatchStripeCharge', type: 'function', community: 2, source_file: 'src/payment/stripe.ts' },
+    { id: 'payment:webhook_handler', label: 'handleStripeWebhook', type: 'function', community: 2, source_file: 'src/payment/webhook.ts' },
+    { id: 'inv:stock_checker', label: 'checkProductStock', type: 'function', community: 3, source_file: 'src/inventory/stock.ts' },
+    { id: 'inv:reservation_lock', label: 'acquireStockLock', type: 'function', community: 3, source_file: 'src/inventory/lock.ts' },
+    { id: 'inv:catalog_cache', label: 'RedisCatalogCache', type: 'class', community: 3, source_file: 'src/inventory/cache.ts' },
+    { id: 'event:kafka_bus', label: 'KafkaEventProducer', type: 'class', community: 4, source_file: 'src/events/kafka.ts' },
+    { id: 'event:audit_logger', label: 'logTransactionAudit', type: 'function', community: 4, source_file: 'src/events/audit.ts' },
+    { id: 'event:notification_svc', label: 'sendReceiptEmail', type: 'function', community: 4, source_file: 'src/events/notify.ts' }
+  ],
+  edges: [
+    { source: 'gateway:router', target: 'gateway:auth_guard', type: 'CALLS' },
+    { source: 'gateway:router', target: 'gateway:rate_limiter', type: 'CALLS' },
+    { source: 'gateway:router', target: 'order:controller', type: 'CALLS' },
+    { source: 'order:controller', target: 'order:service', type: 'CALLS' },
+    { source: 'order:service', target: 'order:validator', type: 'CALLS' },
+    { source: 'order:service', target: 'inv:stock_checker', type: 'CALLS' },
+    { source: 'order:service', target: 'inv:reservation_lock', type: 'CALLS' },
+    { source: 'order:service', target: 'payment:processor', type: 'CALLS' },
+    { source: 'order:service', target: 'order:repo', type: 'CALLS' },
+    { source: 'payment:processor', target: 'payment:stripe_worker', type: 'CALLS' },
+    { source: 'payment:webhook_handler', target: 'order:repo', type: 'CALLS' },
+    { source: 'order:service', target: 'event:kafka_bus', type: 'CALLS' },
+    { source: 'event:kafka_bus', target: 'event:audit_logger', type: 'CALLS' },
+    { source: 'event:kafka_bus', target: 'event:notification_svc', type: 'CALLS' },
+    { source: 'inv:stock_checker', target: 'inv:catalog_cache', type: 'CALLS' }
+  ]
+};
+
+const PRESET_AGENT = {
+  name: 'Autonomous Agent Memory Matrix',
+  communities: {
+    '0': ['agent:planner', 'agent:critic', 'agent:executor'],
+    '1': ['mem:short_term', 'mem:long_term', 'mem:vector_index'],
+    '2': ['tool:bash_runner', 'tool:file_system', 'tool:web_crawler'],
+    '3': ['safety:sanitizer', 'safety:prompt_shield', 'safety:budget_watcher']
+  },
+  community_labels: {
+    '0': 'Executive Cortex',
+    '1': 'Memory Consolidation',
+    '2': 'Tool Dispatcher',
+    '3': 'Safety & Governance'
+  },
+  nodes: [
+    { id: 'agent:planner', label: 'HierarchicalPlanner', type: 'class', community: 0, source_file: 'agent/planner.py' },
+    { id: 'agent:critic', label: 'ReflectionCritic', type: 'class', community: 0, source_file: 'agent/critic.py' },
+    { id: 'agent:executor', label: 'StepExecutor', type: 'function', community: 0, source_file: 'agent/executor.py' },
+    { id: 'mem:short_term', label: 'RollingConversationBuffer', type: 'class', community: 1, source_file: 'memory/buffer.py' },
+    { id: 'mem:long_term', label: 'EpisodicKnowledgeGraph', type: 'class', community: 1, source_file: 'memory/graph.py' },
+    { id: 'mem:vector_index', label: 'ChromaVectorEmbeddings', type: 'class', community: 1, source_file: 'memory/embeddings.py' },
+    { id: 'tool:bash_runner', label: 'executeSandboxedCommand', type: 'function', community: 2, source_file: 'tools/bash.py' },
+    { id: 'tool:file_system', label: 'FileSystemBroker', type: 'class', community: 2, source_file: 'tools/fs.py' },
+    { id: 'tool:web_crawler', label: 'fetchLiveDocumentation', type: 'function', community: 2, source_file: 'tools/web.py' },
+    { id: 'safety:sanitizer', label: 'sanitizeCommandParams', type: 'function', community: 3, source_file: 'safety/sanitize.py' },
+    { id: 'safety:prompt_shield', label: 'detectPromptInjection', type: 'function', community: 3, source_file: 'safety/shield.py' },
+    { id: 'safety:budget_watcher', label: 'TokenBudgetLimiter', type: 'class', community: 3, source_file: 'safety/budget.py' }
+  ],
+  edges: [
+    { source: 'agent:planner', target: 'mem:short_term', type: 'CALLS' },
+    { source: 'agent:planner', target: 'mem:long_term', type: 'CALLS' },
+    { source: 'agent:planner', target: 'agent:critic', type: 'CALLS' },
+    { source: 'agent:planner', target: 'agent:executor', type: 'CALLS' },
+    { source: 'agent:executor', target: 'safety:sanitizer', type: 'CALLS' },
+    { source: 'safety:sanitizer', target: 'tool:bash_runner', type: 'CALLS' },
+    { source: 'safety:sanitizer', target: 'tool:file_system', type: 'CALLS' },
+    { source: 'agent:executor', target: 'tool:web_crawler', type: 'CALLS' },
+    { source: 'mem:long_term', target: 'mem:vector_index', type: 'CALLS' },
+    { source: 'agent:planner', target: 'safety:prompt_shield', type: 'CALLS' },
+    { source: 'agent:planner', target: 'safety:budget_watcher', type: 'CALLS' }
+  ]
+};
+
+// ═══════════════════════════════════════════════════════════════════
+//  MAIN ANIMATION ENGINE
+// ═══════════════════════════════════════════════════════════════════
+let tStart = performance.now();
+
+function masterLoop() {
+  handleResize();
+  const timeSec = (performance.now() - tStart) * 0.001;
+
+  if(currentMode === '3d') {
+    render3D(timeSec);
+  } else {
+    render2D(timeSec);
+  }
+
+  requestAnimationFrame(masterLoop);
+}
+
+// BOOT ENGINE
+initGL();
+
+// Try loading from API first (when served via server.py), fallback to preset
+(async function bootLoad() {
+  try {
+    const resp = await fetch('/api/graph');
+    if(resp.ok) {
+      const data = await resp.json();
+      if(data && data.nodes && data.nodes.length > 0) {
+        loadGraph(data);
+        showToast(`Loaded ${data.name || 'Graph'} (${data.nodes.length} nodes)`);
+        return;
+      }
+    }
+  } catch(e) {}
+  loadPreset('maxilun');
+})();
+
+requestAnimationFrame(masterLoop);
+
+</script>
+</body>
+</html>
