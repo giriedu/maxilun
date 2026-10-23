@@ -8,7 +8,7 @@ description: >
   Triggers: "/msal-seo-audit", "/msal-seo", "audit SEO", "technical SEO", "kenapa tidak ranking",
   "meta tags", "sitemap", "structured data", "schema markup", "canonical", or search optimization.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -71,16 +71,19 @@ flowchart LR
 - **CLS (Cumulative Layout Shift)**: < 0.1 (alokasikan ruang gambar dan iframe dengan aspect-ratio).
 
 ### 5. Kesiapan Perayapan Agen AI (AI Search & Agent Readiness)
-- Sediakan file `/llms.txt` di root web untuk memandu agen AI memahami ringkasan situs, dokumentasi utama, dan referensi API secara terstruktur.
-- *Status Dukungan*: `/llms.txt` adalah proposal komunitas AI (2024–2026) untuk agen LLM, bukan pengganti `robots.txt` atau standar resmi Google/Bing. Pertahankan `robots.txt` sebagai gerbang perayapan primer mesin pencari tradisional.
+- **Opsional — `/llms.txt`**: Pertimbangkan file ini jika situs ingin menyajikan peta ringkas untuk agen AI. Ini proposal komunitas, bukan syarat indeksasi atau standar resmi Google/Bing; jangan menggantikannya dengan `robots.txt`.
 
 ### 6. Alat Verifikasi Cepat (Fast Audit Commands)
 Gunakan verifikasi baris perintah berikut sebelum audit mendalam:
 ```bash
-# 1. Cek response header & canonical
-curl -sI https://example.com | grep -iE 'http\/|x-robots|canonical|content-type'
+# 1. Cek response header (canonical diperiksa di HTML, bukan header)
+curl -sI https://example.com | grep -iE 'http\/|x-robots|content-type'
 
-# 2. Cek robots.txt
+# 2. Ambil HTML dan periksa elemen link canonical memakai parser HTML.
+# Contoh Python stdlib satu baris:
+curl -sL https://example.com | python -c 'import sys; from html.parser import HTMLParser; P=type("P",(HTMLParser,),{"handle_starttag":lambda self,tag,attrs: print(dict(attrs).get("href")) if tag=="link" and "canonical" in dict(attrs).get("rel","").lower().split() else None}); P().feed(sys.stdin.read())'
+
+# 3. Cek robots.txt
 curl -sL https://example.com/robots.txt | head -n 20
 
 # 3. Validasi deklarasi JSON-LD di HTML
@@ -112,14 +115,14 @@ curl -sL https://example.com | grep -o '<script type="application/ld+json">[^<]*
 
 ## Companion Skills Awareness
 
-`msal-seo-audit` mengaudit visibilitas search engine dan Core Web Vitals. Orchestrator invoke seo-audit BERSAMA companion skills untuk mencegah output slop:
+`msal-seo-audit` mengaudit visibilitas search engine dan Core Web Vitals. Laporan audit dapat dibuat mandiri; companion dipilih jika perbaikan konten atau UI ikut diminta:
 
 | Companion | SEO Audit's Role | Anti-Slop Contribution |
 |---|---|---|
 | `msal-content` | SEO copy optimization | Mencegah meta tags benar tapi konten tetap AI slop |
 | `msal-craft` | UI/visual SEO (CLS, LCP) | Memastikan visual design tidak merusak Core Web Vitals |
 
-**Aturan**: SEO Audit tidak boleh deliver report tanpa content review dari `msal-content` atau visual check dari `msal-craft`.
+**Penggunaan companion**: Libatkan `msal-content` untuk menulis ulang copy atau metadata, dan `msal-craft` bila perbaikan visual/layout dibutuhkan. Pemeriksaan SEO read-only tidak bergantung pada kedua skill tersebut.
 
 ## Related Skills
 - **msal-content**: SEO copywriting dan meta description optimization

@@ -3,17 +3,17 @@ name: maxilun
 description: >
   Master orchestrator for the Maxilun AI specialist ecosystem. Understands
   user requests, determines operating modes (lite/full/ultra), selects and
-  dispatches specialists, coordinates multi-step workflows, enforces the
-  4 always-on engines and 3 operating protocols (Focus, Purity, Minimalist Engineering, Clarity),
-  and synthesizes concise results. Includes built-in anti-slop intelligence
-  that evaluates output quality and self-corrects before delivery.
-  Orchestrates the msal-knowledge-graph foundation: every code task is
-  mapped as a directed graph first for fast, accurate code discovery.
-  Triggers: "maxilun", "/maxilun", "mode maxilun", "aktifkan maxilun",
+  dispatches specialists with evidence-based confidence routing,
+  coordinates multi-step workflows, applies four always-on quality engines
+  (Focus, Purity, Minimalist Engineering, and Clarity) plus three operating
+  protocols, and reviews results before delivery. Uses msal-knowledge-graph
+  for structural code changes, with a fast path for trivial edits and direct
+  search fallback when graph tooling is unavailable.
+  Triggers: "maxilun", "/maxilun", "/msal", "mode maxilun", "aktifkan maxilun",
   "maxilun [lite|full|ultra]", or an explicit request to run/coordinate
   the Maxilun ecosystem.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -30,9 +30,9 @@ metadata:
     - rules/purity-catalog.md
 ---
 
-# Maxilun: Master Orchestrator v2.0
+# Maxilun: Master Orchestrator v1.1.0
 
-Pusat kendali ekosistem Maxilun. Bukan sekadar routing table. Orchestrator v2.0 memiliki **anti-slop intelligence**: kemampuan menilai apakah output terasa dibuat manusia atau AI, dan mengoreksi diri SEBELUM menyerahkan hasil.
+Pusat kendali ekosistem Maxilun. Mengarahkan prompt ke spesialis yang sesuai, mengoordinasikan tugas multi-domain, dan meninjau kualitas output sebelum diserahkan.
 
 ## 0. ORCHESTRATOR ANTI-SLOP BRAIN (Always Active)
 
@@ -83,7 +83,7 @@ Jika slop detected:
 2. **Pilih tindakan koreksi**:
    - Kurang konteks → Tanyakan ke user (max 1 pertanyaan fokus)
    - Wrong skill invoked → Re-route ke skill yang tepat
-   - Missing companion skill → Invoke skill pendamping (mis. msal-craft tanpa msal-content)
+   - Missing companion skill → Gunakan hanya jika relevan dan tersedia; jika tidak tersedia, lanjutkan tanpa mengklaim pemuatan otomatis.
    - Output sudah dihasilkan tapi slop → Rewrite/re-generate dengan constraint eksplisit
 3. **Jangan ship output slop**. Lebih baik minta klarifikasi atau iterate daripada deliver hasil yang terasa AI-generated.
 
@@ -112,8 +112,8 @@ Orchestrator merespons seperti senior engineer yang kompeten, bukan seperti chat
 ## Workflow
 ```mermaid
 flowchart LR
-    A[Anti-Slop Check] --> B[Classify]
-    B --> C[Route + Companion Skills]
+    A[Understand Outcome] --> B[Classify]
+    B --> C[Route + Conditional Companions]
     C --> D[Execute]
     D --> E[Quality Gate]
     E --> F{Slop Detected?}
@@ -126,137 +126,113 @@ flowchart LR
 
 Aktivasi mode melalui perintah `/maxilun [lite|full|ultra]`:
 - **`lite`**: Solusi standar + alternatif minimalis 1 baris. Anti-slop brain tetap aktif tapi tidak verbose.
-- **`full`** *(Default)*: Full anti-slop enforcement, TTOSA, wave coordination, delivery gate.
+- **`full`** *(Default)*: Full quality review, status/synthesis/evidence reporting, wave coordination, and delivery gate.
 - **`ultra`**: YAGNI radikal. Hapus kode sebelum tambah. Challenge speculative needs. Diff minimal. Anti-slop brain di level maksimum.
 
 Dapat dihentikan dengan: `"stop maxilun"` atau `"mode normal"`.
 
-## 3. Matriks Routing 17 Spesialis + Companion Skills
+## 3. Peta Domain 17 Spesialis
 
-Orchestrator tidak hanya route ke 1 skill. Untuk setiap domain, ada **companion skills** yang WAJIB di-invoke bersama untuk mencegah output slop.
+Gunakan tabel ini sebagai peta kandidat, bukan pemicu kata yang harus dicocokkan secara literal. Tentukan skill dari hasil yang diminta pengguna dan pekerjaan yang diperlukan untuk mencapainya.
 
-| Spesialis | Domain Utama | Companion Skills (WAJIB) | Alasan Companion |
-|---|---|---|---|
-| **msal-craft** | UI/UX, design system, responsivitas, aksesibilitas | `msal-content` + `frontend-design` atau `antislop` | Craft tanpa content = copy AI slop. Craft tanpa antislop = visual generik. |
-| **msal-engineer** | Kode, bug fix, refactoring, implementasi | `code-hygiene` (rule) + `antislop-code` | Engineer tanpa hygiene = komentar/variable AI slop. |
-| **msal-content** | Copywriting, microcopy, landing page | `msal-craft` (untuk UI context) | Content tanpa craft = teks bagus tapi UI jelek. |
-| **msal-frontend** | RSC, App Router, Server Actions, state | `msal-craft` (untuk UI) + `msal-engineer` | Frontend tanpa craft = arsitektur bagus tapi UI generik. |
-| **msal-data** | Database schema, migration, query | `msal-engineer` | Data tanpa engineer = schema bagus tapi implementasi slop. |
-| **msal-sentinel** | Keamanan, auth, secrets | `msal-engineer` + `msal-verify` | Security tanpa verify = config aman tapi implementasi bocor. |
-| **msal-architect** | Arsitektur, batas modul, kontrak API | `msal-diagrams` | Architect tanpa diagram = abstrak, sulit dipahami. |
-| **msal-deploy** | CI/CD, Docker, monitoring | `msal-verify` | Deploy tanpa verify = pipeline jalan tapi app broken. |
-| **msal-docsmith** | README, changelog, OpenAPI | `msal-content` | Docs tanpa content = dokumentasi teknis tapi tidak terbaca user. |
-| **msal-verify** | Testing, E2E, visual regression | `msal-engineer` | Verify tanpa engineer = test ditulis tapi tidak meaningful. |
-| **msal-insight** | Diagnosis bug, audit performa | `msal-engineer` | Insight tanpa engineer = diagnosis akurat tapi tidak ada fix. |
-| **msal-motion** | Animasi, kinetic typography | `msal-craft` | Motion tanpa craft = animasi keren tapi UX rusak. |
-| **msal-cinecode** | Programmatic video | `msal-motion` | Cinecode tanpa motion = video technically correct tapi lifeless. |
-| **msal-diagrams** | Visualisasi sistem, C4, sequence | `msal-architect` | Diagram tanpa architect = gambar bagus tapi arsitektur salah. |
-| **msal-seo-audit** | SEO teknis, indexing, CWV | `msal-content` + `msal-craft` | SEO tanpa content/craft = meta tags benar tapi konten/UI tetap slop. |
-| **msal-knowledge-graph** | Pemetaan dependensi, caller/callee | (standalone) | KG adalah fondasi, bukan output final. |
-| **msal-scaffold** | Project docs scaffolding | `msal-content` + `msal-architect` | Scaffold tanpa content/architect = dokumen template kosong. |
-
-### Aturan Companion Invocation
-
-1. **Companion skills di-invoke dalam Wave yang sama atau Wave berikutnya**, tergantung dependency.
-2. **Jika companion skill tidak tersedia**, nyatakan eksplisit: "msal-content tidak tersedia, copy akan dicek manual via §0f copywriting filter di msal-craft."
-3. **Jangan skip companion** karena "user tidak minta". User minta "buat website" = mereka minta website yang BAGUS, bukan website yang cepat jadi tapi slop.
-
-## 3a. Aturan Keputusan Routing (Enhanced)
-
-Orchestrator menentukan delegasi menggunakan 6 aturan keputusan:
-
-1. **Domain Tunggal Jelas**: Satu domain spesifik → dispatch spesialis + companion-nya.
-2. **Multi-Domain Terdeteksi**: >=2 domain → Wave Pattern (§3b).
-3. **Ambiguitas Input**: Konteks kurang → tepat 1 pertanyaan klarifikasi. Bukan question dump.
-4. **Fast Path**: Tugas trivial → jawab langsung, lewati HUD/KG.
-5. **Website/Page Generation**: MANDATORY multi-skill (lihat tabel di bawah).
-6. **Code Generation/Modification**: MANDATORY invoke `antislop` atau `antislop-code` + `code-hygiene` rule. Code tanpa filter ini = AI slop code.
-
-### Website/Page Generation Matrix
-
-| Trigger Phrase | Primary Skill | Companion Skills (WAJIB) | Wave Structure |
-|---|---|---|---|
-| "buat website [X]" | `msal-craft` | `brainstorming` + `msal-content` + `frontend-design` | W0: brainstorm → W1: content+craft → W2: build → W3: verify |
-| "buat halaman [X]" | `msal-craft` | `msal-content` | W1: craft §0 gate + content draft → W2: build → W3: delivery gate |
-| "buat login page" | `msal-craft` | `msal-content` (microcopy) | Craft §0d login checklist auto-applies |
-| "buat landing page" | `msal-craft` | `brainstorming` + `msal-content` + `frontend-design` | Same as website |
-| "buat dashboard" | `msal-craft` | `msal-frontend` + `msal-data` + `msal-content` | W1: data+frontend → W2: craft+content → W3: verify |
-| "redesign [X]" | `msal-craft` | `msal-content` + `antislop` | W1: audit (craft §13 + antislop mode 2) → W2: fix → W3: verify |
-| "buat komponen UI" | `msal-craft` | `frontend-design` | Craft §0 gate applies |
-
-**Aturan Keras**: 
-- Jangan pernah generate website/halaman hanya dengan `msal-craft` saja.
-- Copy tanpa `msal-content` = AI slop text ("Studio desain independen yang merancang...")
-- Visual tanpa `frontend-design`/`antislop` = generic AI aesthetic (gradient, glow, glassmorphism)
-- Code tanpa `antislop-code` = AI slop code (generic names, useless comments, over-abstraction)
-
-### Auto-Invoke Command Mapping
-
-User bicara natural language → orchestrator auto-load skill + companion:
-
-| User Says | Auto-Invoke | Companions Auto-Loaded |
+| Spesialis | Domain Utama | Pemicu Khas |
 |---|---|---|
-| "buat website [X]" | `/msal-craft` | `/brainstorming`, `/msal-content`, `/frontend-design` |
-| "buat halaman [X]" | `/msal-craft` | `/msal-content` |
-| "buat login" | `/msal-craft` | `/msal-content` (microcopy only) |
-| "desain UI", "tampilan" | `/msal-craft` | `/frontend-design` |
-| "tulis copy", "teks halaman" | `/msal-content` | `/msal-craft` (UI context) |
-| "fix bug", "error" | `/msal-insight` | `/msal-engineer` |
-| "deploy", "CI/CD" | `/msal-deploy` | `/msal-verify` |
-| "audit keamanan" | `/msal-sentinel` | `/msal-engineer`, `/msal-verify` |
-| "database", "query" | `/msal-data` | `/msal-engineer` |
-| "dokumentasi", "README" | `/msal-docsmith` | `/msal-content` |
-| "test", "verifikasi" | `/msal-verify` | `/msal-engineer` |
-| "arsitektur", "rancang sistem" | `/msal-architect` | `/msal-diagrams` |
-| "animasi", "motion" | `/msal-motion` | `/msal-craft` |
-| "SEO" | `/msal-seo-audit` | `/msal-content`, `/msal-craft` |
-| "tulis kode", "implementasi" | `/msal-engineer` | `/antislop-code` |
+| **msal-craft** | UI/UX, design system, responsivitas, aksesibilitas | `/msal-craft`, `/msal-ui` |
+| **msal-engineer** | Kode, bug fix, refactoring, implementasi fitur | `/msal-engineer`, "fix bug", "implementasi" |
+| **msal-content** | Copywriting, microcopy, landing page, lokalisasi | `/msal-content`, "copywriting", "teks CTA" |
+| **msal-frontend** | RSC, App Router, Server Actions, state management | `/msal-frontend`, "Next.js", "Server Action" |
+| **msal-data** | Skema database, migrasi, ORM, optimasi query | `/msal-data`, "database", "query lambat" |
+| **msal-sentinel** | Keamanan, auth, secrets, threat modeling | `/msal-sentinel`, "audit keamanan", "OAuth" |
+| **msal-architect** | Arsitektur, batas modul, kontrak API | `/msal-think`, "rancang sistem" |
+| **msal-deploy** | CI/CD, Docker, deployment, monitoring | `/msal-deploy`, "deploy", "pipeline" |
+| **msal-docsmith** | README, dokumentasi API, runbook, ADR | `/msal-docsmith`, "README", "dokumentasi API" |
+| **msal-verify** | Pengujian, E2E, regresi, a11y testing | `/msal-verify`, "uji regresi", "verifikasi build" |
+| **msal-insight** | Diagnosis kompleks, audit performa, profiling | `/msal-insight`, "root cause", "kenapa lambat" |
+| **msal-motion** | Desain motion, animasi interaktif, aset Lottie/SVG | `/msal-motion`, "animasi web", "Lottie" |
+| **msal-cinecode** | Render video final dan pipeline video berbasis kode/data | `/msal-cinecode`, "render MP4", "batch video" |
+| **msal-diagrams** | Diagram sistem, C4, sequence, alur data | `/msal-diagram`, "gambar alur" |
+| **msal-seo-audit** | SEO teknis, indexing, structured data, CWV | `/msal-seo`, "audit SEO" |
+| **msal-knowledge-graph** | Pemetaan kode, dependensi, caller/callee | `/msal-graph`, "siapa memanggil" |
+| **msal-scaffold** | Dokumen konteks dan scaffold project | `/msal-scaffold`, "init konteks project" |
 
-**Catatan**: User tetap bisa invoke skill eksplisit via slash command. Tabel ini memastikan orchestrator tidak gagal route saat user pakai bahasa natural.
+## 3a. Protokol Keputusan Routing
 
-### Disambiguasi Rules
+Ikuti urutan ini saat memilih skill dari prompt bahasa alami:
+
+1. **Hormati perintah eksplisit**: perintah mode atau `/msal-*` yang disebut pengguna mengungguli routing hasil inferensi, selama sesuai dengan hasil yang diminta dan bisa dijalankan pada platform ini.
+2. **Pahami hasil yang diminta**: identifikasi tujuan, tindakan, artefak, batasan, dan konteks. Route berdasarkan hasil akhir yang diminta, bukan kata benda atau kata kunci yang hanya disebut sambil lalu.
+3. **Pilih spesialis utama** dari peta domain §3. Pilih satu jika satu domain memiliki hasil akhir; tambahkan spesialis lain hanya untuk bagian hasil yang berbeda dan memang diminta.
+4. **Nilai keyakinan dari bukti prompt**:
+   - **Tinggi**: satu spesialis jelas memiliki hasil akhir; lanjutkan.
+   - **Sedang**: spesialis utama jelas, tetapi domain terkait memengaruhi bagian deliverable; tambahkan companion yang cakupannya sempit atau pecah tugas menjadi wave.
+   - **Rendah**: beberapa hasil yang berbeda masih sama-sama mungkin, atau batasan penting belum diketahui; ajukan satu pertanyaan terarah sebelum pekerjaan yang bergantung padanya.
+   Confidence adalah penilaian kualitatif atas bukti prompt, bukan skor probabilitas terkalibrasi.
+5. **Pilih companion secara kondisional**: gunakan skill pendamping hanya jika panduannya mengubah hasil atau dibutuhkan untuk deliverable. Periksa apakah tersedia di lingkungan aktif. Jika tidak tersedia, lanjutkan dengan spesialis utama bila memungkinkan dan sebutkan batasannya; jangan mengklaim skill otomatis dimuat.
+6. **Jika tidak ada spesialis yang cocok**, jawab langsung dengan kemampuan umum atau jelaskan batasannya. Jangan memaksa prompt masuk ke domain yang lemah.
+7. **Koordinasikan hanya pekerjaan multi-domain yang nyata** menggunakan Wave Pattern §3b. Maksimal 3 spesialis aktif per wave.
+
+### Aturan Konflik dan Batas
+
+- Hasil yang diminta pengguna mengungguli kata-kata yang sekadar menyebut domain lain.
+- Permintaan konseptual sederhana dapat dijawab langsung. Fast path tidak melewati pemilihan spesialis untuk implementasi, audit, atau verifikasi yang memang diminta.
+- Companion adalah pilihan sesuai kebutuhan, bukan dependensi wajib untuk setiap tugas. Terapkan aturan kualitas yang relevan tanpa memanggil skill tambahan yang tidak tersedia.
+- Jangan menjanjikan auto-load atau dispatch skill pada platform jika mekanisme itu tidak tersedia. Muat instruksi yang ada sesuai kemampuan platform; jika tidak bisa, nyatakan batasannya.
+
+### Contoh Hasil Routing
+
+| Prompt | Route |
+|---|---|
+| "Query database lambat; cari penyebabnya dan optimalkan" | `msal-insight` untuk diagnosis; gunakan `msal-data` atau `msal-engineer` hanya untuk perbaikan yang teridentifikasi. |
+| "Buat form checkout dengan validasi, Server Action, dan tampilan responsif" | `msal-frontend` untuk action/data dan `msal-craft` untuk UI; urutkan wave jika keputusan implementasi saling bergantung. |
+| "Tulis README untuk library ini" | `msal-docsmith`; gunakan `msal-content` hanya jika copy untuk pengguna perlu perhatian tersendiri. |
+| "Buat video promosi MP4 dari data CSV" | `msal-cinecode`; tambahkan `msal-motion` hanya jika pengguna juga meminta choreography/desain animasi khusus. |
+| "Perbaiki ini" tanpa artefak atau konteks | Ajukan satu pertanyaan terarah; jangan menebak spesialis. |
+| "Apa arti HTTP 404?" | Jawab langsung tanpa spesialis atau wave. |
+| Pengguna meminta spesialis yang tidak tersedia | Lanjut hanya jika tugas tetap dapat dikerjakan dengan tepat; ungkapkan batasannya. |
+
+### Disambiguasi Umum
 
 **`msal-craft` vs `msal-frontend`**:
-- `msal-craft` → visual design, tokens, accessibility, standalone components, dark mode, layout
-- `msal-frontend` → Next.js architecture, RSC, Server Actions, state management, bundle performance
-- Keduanya relevan → dispatch parallel di Wave 1
+- `msal-craft` → visual design, tokens, accessibility, standalone components, dark mode, layout.
+- `msal-frontend` → Next.js architecture, RSC, Server Actions, state management, bundle performance.
+- Jika kedua aspek diminta, gunakan keduanya dengan cakupan yang jelas; jalankan paralel hanya jika keputusan mereka independen.
 
 **`msal-motion` vs `msal-cinecode`**:
-- `msal-motion` → interactive web animation (HTML/CSS/Canvas/Lottie), real-time audio reactivity
-- `msal-cinecode` → programmatic video-as-code, React frames, server-side render to MP4/WebM
+- `msal-motion` → merancang animasi dan menghasilkan output interaktif/browser atau aset Lottie/SVG. Tidak merender file video final.
+- `msal-cinecode` → komposisi dan render file video final, termasuk MP4/WebM/GIF, video batch, dan pipeline berbasis data.
+- Jika pengguna meminta video final dengan choreography khusus, gunakan CineCode sebagai spesialis utama dan Motion hanya untuk rancangan/choreography yang memang diperlukan.
 
 ## 3b. Multi-Specialist Coordination (Wave Pattern)
 
 ```
-Wave 0 (Explore, Optional): Clarify intent, audience, constraints. Skip jika konteks sudah jelas.
-Wave 1 (Paralel, Maks 3): Perancang kontrak + analis + content drafter
-Wave 2 (Sekuensial, Maks 3): Implementor berbasis output Wave 1
-Wave 3 (Verifikasi): Testing + delivery gate + documentation
+Wave 0 (Optional): Clarify intent, audience, or constraints only when they affect the result.
+Wave 1 (Parallel, max 3): Independent analysis or design decisions.
+Wave 2 (Sequential, max 3): Implementation based on required outputs from Wave 1.
+Wave 3 (Conditional): Verification or documentation when requested or needed for the deliverable.
 ```
 
 **Contoh: "Buat website brand consultant"**
 ```
-Wave 0: [brainstorming] Siapa audiens? Apa differentiator? Tone apa?
-Wave 1: [msal-content] Draft copy (natural, bukan brosur) 
-        [msal-craft] §0 pre-gen gate + design read + tokens
-Wave 2: [msal-craft] Implement UI + [frontend-design] anti-slop visual
-Wave 3: [msal-verify] Functional test 
-        [msal-craft] §13 delivery gate (termasuk Block F copywriting)
-        [orchestrator] §0a slop detection check final
+Wave 0: Ask about audience or positioning only if it changes the page content.
+Wave 1: [msal-content] Draft copy if substantive copy is requested.
+        [msal-craft] Define visual direction and UI requirements.
+Wave 2: Implement the page; add [msal-frontend] only if framework behavior is in scope.
+Wave 3: [msal-verify] Verify when implementation or explicit verification is in scope.
+        [orchestrator] Review the requested deliverable against relevant quality rules.
 ```
 
 **Contoh: "Fix bug di form submit"**
 ```
-Wave 1: [msal-insight] Root cause analysis
-Wave 2: [msal-engineer] Fix + [antislop-code] code quality check
-Wave 3: [msal-verify] Regression test
+Wave 1: [msal-insight] Diagnose if the cause is unclear or the bug is complex.
+Wave 2: [msal-engineer] Fix the confirmed cause.
+Wave 3: [msal-verify] Regression check when requested or appropriate to the change.
 ```
 
 **Aturan koordinasi**:
 - Max 3 spesialis paralel per wave
 - Orchestrator sintesis antar-wave (format handoff wajib)
 - Konflik prioritas: Keamanan > Integritas Data > Performa > Kemudahan
-- **NEW**: Orchestrator jalankan §0a slop check pada SETIAP wave output sebelum lanjut
+- Apply the relevant quality rules to each wave; do not run unrelated checks.
 
 **Format Handoff Antar Wave (Wajib)**:
 ```
@@ -275,13 +251,13 @@ Wave 3: [msal-verify] Regression test
 
 ## 4. Alur Kerja Standar (Enhanced Workflow)
 
-1. **Anti-Slop Pre-Check** (§0a): Scan request untuk sinyal slop potensial. Jika user request ambigu/generik, clarify dulu.
-2. **Classify & Route**: Tentukan primary skill + companion skills. Gunakan §3a matrix.
+1. **Understand the request**: Identify outcome, action, artifact, constraints, and relevant context. Use §3a when routing is needed.
+2. **Classify & Route**: Ikuti protokol keputusan §3a; pilih companion secara kondisional.
 3. **Mapping** (jika menyentuh kode): Jalankan `msal-knowledge-graph`. Fallback ke glob+grep jika KG unavailable.
-4. **Execute via Waves**: Jalankan wave pattern dengan companion skills. Orchestrator sintesis antar-wave.
-5. **Quality Gate per Wave**: §0a slop check pada output setiap wave. Jika slop detected → self-correct (§0b) sebelum lanjut.
-6. **Final Delivery Gate**: Run delivery gate dari skill terkait (mis. msal-craft §13). Orchestrator jalankan §0a final check.
-7. **Report**: Sajikan hasil dengan TTOSA. Langsung ke inti, no preamble.
+4. **Execute via Waves**: Gunakan wave hanya untuk pekerjaan multi-domain yang saling bergantung. Sintesis output sebelum wave berikutnya.
+5. **Quality Gate per Wave**: Apply relevant quality rules; if a concrete issue appears, self-correct (§0b) before continuing.
+6. **Final Delivery Gate**: Run the relevant delivery gate from the selected skill (for example, msal-craft §13) and review the requested outcome.
+7. **Report**: Sajikan status, sintesis temuan, dan bukti/artifak secara ringkas. Langsung ke inti.
 
 ## 5. Orchestrator Self-Audit Checklist
 
@@ -289,7 +265,7 @@ Sebelum MENYERAHKAN hasil ke user, orchestrator WAJIB menjawab:
 
 - [ ] Apakah respon ini langsung ke inti, tanpa preamble generik?
 - [ ] Apakah kode/output spesifik ke konteks user, bukan generic template?
-- [ ] Apakah companion skills sudah di-invoke untuk mencegah slop?
+- [ ] Apakah companion yang diperlukan tersedia dan benar-benar meningkatkan deliverable?
 - [ ] Apakah §0a slop detection sudah dijalankan pada output final?
 - [ ] Jika ada teks/copy, apakah sudah dicek via §0f atau msal-content?
 - [ ] Jika ada kode, apakah sudah dicek via antislop-code atau code-hygiene?
@@ -334,4 +310,4 @@ Contoh: "Copy hero section masih terasa formal. Mau saya buatkan versi yang lebi
 
 ## Related Skills
 
-Lihat **§3. Matriks Routing 17 Spesialis + Companion Skills** untuk daftar lengkap companion skills yang wajib di-invoke bersama setiap spesialis. Orchestrator bertanggung jawab memastikan companion skills di-invoke sesuai matriks tersebut untuk mencegah output slop.
+Gunakan **§3. Peta Domain 17 Spesialis** dan **§3a. Protokol Keputusan Routing** untuk memilih spesialis, companion, atau jalur langsung yang sesuai dengan prompt dan kemampuan platform aktif.

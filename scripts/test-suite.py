@@ -74,7 +74,7 @@ BANNED_WORDS = [
 #   writers what to avoid. The catalog of bad phrases must appear somewhere.
 # - msal-docsmith: may include example changelog or README templates that
 #   cite banned phrases as anti-patterns in documentation examples.
-PURE_EXEMPT_SKILLS = ["msal", "msal-content", "msal-docsmith"]
+PURE_EXEMPT_SKILLS = ["maxilun", "msal-content", "msal-docsmith"]
 
 
 def parse_frontmatter(content: str) -> str:
@@ -101,7 +101,7 @@ def test_skills_exist():
 
 
 def test_frontmatter():
-    print("\n🧪 Validating frontmatter schema & version consistency...")
+    print("\n🧪 Validating frontmatter schema & semantic version format...")
     passed = True
     for skill in EXPECTED_SKILLS:
         skill_file = SKILLS_DIR / skill / "SKILL.md"
@@ -124,8 +124,9 @@ def test_frontmatter():
             print(f"  ❌ {skill}: Missing 'description' in frontmatter")
             passed = False
 
-        if 'version: "1.0.0"' not in fm and "version: '1.0.0'" not in fm and "version: 1.0.0" not in fm:
-            print(f"  ❌ {skill}: Version is not 1.0.0")
+        version_match = re.search(r"^\s+version:\s*['\"]?(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)['\"]?\s*$", fm, re.MULTILINE)
+        if not version_match:
+            print(f"  ❌ {skill}: Missing or invalid semantic version")
             passed = False
 
         if "license: Maxilun-Source-Available-2.0" not in fm:

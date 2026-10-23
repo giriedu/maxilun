@@ -11,7 +11,7 @@ description: >
   "dampak perubahan", "/migration", "/tech-select", "capacity planning",
   "multi-tenant", or major structural decisions.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   maintainer: Maxilun Core Team
@@ -106,10 +106,10 @@ Sebelum memulai /msal-think, tentukan konteks:
 | Migration Strategies (#12) | Skip | Wajib |
 | Tech Debt Integration | Not applicable | Wajib di Tech Selection |
 | Data Migration Patterns | Schema design only | Expand-contract, dual-write, reconciliation |
-| Post-Incident Review (#17) | Not applicable | Wajib |
+| Post-Incident Review (#16) | Not applicable | Wajib bila keputusan arsitektur diturunkan dari insiden produksi |
 | Existing Code Reconciliation | N/A | ES output vs actual code gap analysis |
 
-**Decision tree**: Jika existing codebase > 6 bulan dan > 10k LOC → brownfield. Otherwise greenfield.
+**Decision tree**: Klasifikasikan sebagai brownfield jika ada sistem, data, atau kontrak yang harus dipertahankan atau dimigrasikan. Usia dan ukuran repo adalah petunjuk untuk investigasi, bukan ambang keputusan tunggal. Jika tidak ada batas kompatibilitas atau migrasi, perlakukan sebagai greenfield.
 
 ## 3. Protokol Penalaran Mendalam (/msal-think)
 
@@ -701,14 +701,14 @@ Untuk engineer baru join tim:
 
 ## Companion Skills Awareness
 
-`msal-architect` mendesain struktur sistem, batas modul, dan kontrak API. Orchestrator invoke architect BERSAMA companion skills untuk mencegah output slop:
+`msal-architect` mendesain struktur sistem, batas modul, dan kontrak API. Jalankan mandiri untuk keputusan arsitektur yang ruang lingkupnya jelas; pilih companion hanya saat hasilnya dibutuhkan:
 
 | Companion | Architect's Role | Anti-Slop Contribution |
 |---|---|---|
-| `msal-diagrams` | Visualisasi arsitektur (C4, Event Storming) | Mencegah diagram abstrak tanpa dasar arsitektur yang benar |
-| `msal-sentinel` | Threat modeling tingkat struktural (STRIDE) | Memastikan keputusan arsitektur tidak mengorbankan keamanan |
+| `msal-diagrams` | Visualisasi arsitektur (C4, Event Storming) | Gunakan bila diagram menjadi deliverable atau membantu komunikasi |
+| `msal-sentinel` | Threat modeling tingkat struktural (STRIDE) | Gunakan bila keputusan mengubah trust boundary atau postur keamanan |
 
-**Aturan**: Architect tidak boleh menghasilkan ADR tanpa validasi visual dari `msal-diagrams` atau threat assessment dari `msal-sentinel` untuk keputusan Type 1a/1b.
+**Penggunaan companion**: Gunakan `msal-sentinel` untuk threat assessment ketika keputusan Type 1a/1b mengubah trust boundary atau postur keamanan. Gunakan `msal-diagrams` bila diagram memang menjadi deliverable atau membantu menjelaskan keputusan; diagram bukan prasyarat untuk ADR.
 
 ## Related Skills — Integration Protocols
 
@@ -848,7 +848,7 @@ End-to-end walkthrough menerapkan skill ini pada kasus nyata.
 Brownfield e-commerce platform. Existing order service: monolithic PHP, shared database dengan inventory, 50k orders/hour peak, p99 latency 800ms. Business wants: separate order service, support flash sales (200k orders/hour burst), maintain zero data loss for payments.
 
 ### Step 1: Greenfield/Brownfield Assessment (#2)
-Existing codebase > 6 bulan, > 100k LOC → **brownfield mode**. Migration strategies wajib. Codebase-driven domain discovery sebelum Event Storming.
+Karena sistem ini sudah memiliki layanan dan data produksi yang harus dipertahankan, gunakan **brownfield mode**. Petakan batas kompatibilitas dan strategi migrasi berdasarkan dampak perubahan, bukan ambang LOC. Lakukan codebase-driven domain discovery sebelum Event Storming.
 
 ### Step 2: Knowledge Graph Mapping (#4)
 Jalankan `msal-knowledge-graph` pada existing codebase. Temuan:

@@ -7,7 +7,7 @@
 <br/>
 
 [![CI](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml/badge.svg)](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml)
-[![Version](https://img.shields.io/badge/version-1.0.0-7c3aed?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.1.0-7c3aed?style=flat-square)](CHANGELOG.md)
 [![Skills](https://img.shields.io/badge/skills-18_specialists-06b6d4?style=flat-square)](docs/SKILLS.md)
 [![License](https://img.shields.io/badge/license-Source_Available-22c55e?style=flat-square)](LICENSE)
 [![Platform](https://img.shields.io/badge/runs_on-Claude_·_Cursor_·_Codex_·_Antigravity_·_Zed_·_Termul-white?style=flat-square)](#platform-support)
@@ -41,7 +41,7 @@ Disusun berdasarkan siklus rekayasa perangkat lunak dari fondasi arsitektur hing
 
 | # | Skill | Fungsi Rekayasa | Pemicu Utama |
 |:--:|---|---|---|
-| 1 | `maxilun` | Master Orchestrator — confidence routing, koordinasi wave antar-spesialis | `/maxilun`, `/msal` |
+| 1 | `maxilun` | Master Orchestrator — routing berbasis bukti, confidence band, companion kondisional, koordinasi wave | `/maxilun`, `/msal` |
 | 2 | `msal-knowledge-graph` | Fondasi Penemuan Kode — AST parser mendalam & WebGL visualizer (Lens) | `/msal-graph`, `/msal-trace` |
 | 3 | `msal-scaffold` | Project Context Scaffolder — 10 dokumen konteks siap-baca AI di `docs/` | `/msal-scaffold`, `/msal-init` |
 | 4 | `msal-architect` | Arsitektur Sistem — C4 model, Event Storming, ADRs, penalaran `/msal-think` | `/msal-think`, `/msal-architect` |
@@ -54,8 +54,8 @@ Disusun berdasarkan siklus rekayasa perangkat lunak dari fondasi arsitektur hing
 | 11 | `msal-deploy` | Operasi & Cloud — pipeline CI/CD, Docker multi-stage, rollout zero-downtime | `/msal-deploy` |
 | 12 | `msal-docsmith` | Dokumentasi Teknis — OpenAPI/AsyncAPI, ADR, runbook, llms.txt | `/msal-docsmith`, `/msal-docs` |
 | 13 | `msal-craft` | Desain Sistem & UI/UX — palet warna OKLCH, kepatuhan WCAG AAA, grid 4px | `/msal-craft`, `/msal-ui` |
-| 14 | `msal-motion` | Desain Animasi — animasi web interaktif, kinetic typography, interaksi fisika | `/msal-motion` |
-| 15 | `msal-cinecode` | Programmatic Video — komponen React sebagai frame, rendering batch MP4/WebM | `/msal-cinecode` |
+| 14 | `msal-motion` | Desain motion — animasi browser interaktif, aset Lottie/SVG, kinetic typography | `/msal-motion` |
+| 15 | `msal-cinecode` | Render video final — MP4/WebM/GIF berbasis kode/data, pipeline batch | `/msal-cinecode` |
 | 16 | `msal-diagrams` | Visualisasi Sistem — diagram alur, sequence, C4 diagram via Mermaid/SVG | `/msal-diagram`, `/msal-diagrams` |
 | 17 | `msal-content` | Copywriting Pengguna — landing page, microcopy UI, brand voice, lokalisasi | `/msal-content`, `/msal-copy` |
 | 18 | `msal-seo-audit` | Audit SEO Teknis — Core Web Vitals, JSON-LD structured data, crawler readiness | `/msal-seo`, `/msal-seo-audit` |
@@ -85,7 +85,7 @@ Tiga protokol pendukung:
 
 ## Fondasi Knowledge Graph
 
-`msal-knowledge-graph` adalah pintu gerbang wajib yang dijalankan sebelum AI memodifikasi kode repositori:
+Gunakan `msal-knowledge-graph` untuk perubahan kode struktural atau lintas-file ketika tool graf tersedia. Perubahan teks kecil dan terisolasi boleh memakai jalur cepat; jika tool graf tidak tersedia, gunakan pencarian repo langsung dan nyatakan fallback tersebut:
 
 - **Python AST Scanner** — pemetaan sintaksis tingkat tinggi berbasis pohon sintaks nyata (bukan regex rapuh)
 - **TypeScript Scanner** — atribusi dependensi pemanggilan baris-ke-baris (*line-accurate CALLS*)

@@ -7,7 +7,7 @@ description: >
   Triggers: "/msal-verify", "/msal-test", "jalankan tes", "cek build", "type check",
   "lint kode", "uji regresi", "validasi perubahan", or verification before shipping.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -84,7 +84,7 @@ Sebelum perubahan kode disetujui, jalankan verifikasi berjenjang:
 
 ## 4. Strategi Pengujian Lanjutan (Advanced Testing Strategy)
 
-Strategi pengujian di luar unit test dasar untuk menjamin kualitas holistik: fungsional, visual, aksesibilitas, performa, dan kontrak API. Semua strategi wajib terintegrasi dalam CI pipeline.
+Pilih strategi pengujian berdasarkan risiko, jenis produk, tooling, dan kebutuhan pengguna. Strategi berikut adalah opsi untuk proyek yang relevan, bukan daftar kewajiban universal; integrasikan gate ke CI jika proyek sudah mendukungnya dan hasilnya memberi sinyal yang dapat ditindaklanjuti.
 
 ### 1. E2E Testing (Playwright)
 - **Test Structure**: Organisir per feature/page, bukan per component. Naming: `{feature}.spec.ts`. Gunakan Page Object Model untuk encapsulate interaksi UI dan mengurangi duplikasi selector.
@@ -94,18 +94,18 @@ Strategi pengujian di luar unit test dasar untuk menjamin kualitas holistik: fun
 
 ### 2. Visual Regression Testing
 - **Screenshot Baselines**: Ambil baseline screenshot pada branch utama/stable. Simpan di repository atau artifact storage terpisah. Update baseline hanya setelah review manual dan approval eksplisit.
-- **Diff Thresholds**: Set threshold per komponen/halaman: layout-critical (0% tolerance), decorative (≤2% pixel diff). Gunakan per-pixel comparison + structural diff untuk mengurangi false positive dari anti-aliasing/font rendering.
-- **CI Integration**: Jalankan visual regression di CI setelah build sukses. Fail pipeline jika diff melebihi threshold. Generate HTML diff report sebagai artifact. Cross-browser testing: minimal Chromium + Firefox + WebKit.
+- **Diff Thresholds**: Tetapkan toleransi berdasarkan stabilitas renderer, font, OS, dan kebutuhan halaman. Hindari 0% pixel tolerance kecuali lingkungan render deterministik; gunakan per-pixel atau structural diff dan tinjau perubahan yang melampaui baseline.
+- **CI Integration**: Jalankan visual regression di CI bila ada baseline stabil dan halaman berisiko visual. Simpan diff report; perluas cross-browser hanya untuk browser yang didukung produk.
 
 ### 3. Accessibility Automated Testing
 - **axe-core Integration**: Jalankan `@axe-core/playwright` atau `jest-axe` di setiap E2E/unit test suite. Scan seluruh halaman setelah render, bukan hanya komponen terisolasi.
 - **WCAG Automated Checks**: Target WCAG 2.2 Level AA minimum. Fokus pada checks yang bisa diotomasi: contrast ratio, missing alt text, form labels, ARIA validity, keyboard trap, focus order. Catat: ~30% WCAG criteria bisa dicek otomatis — sisanya butuh manual testing.
-- **Screen Reader Simulation**: Gunakan tools seperti `pa11y` atau `screen-reader-testing-library` untuk verifikasi reading order dan announcement. Test dengan NVDA/VoiceOver/TalkBack minimal sekali per release cycle.
+- **Screen Reader Review**: Gunakan alat otomatis untuk sinyal yang dapat diperiksa mesin, lalu lakukan review manual dengan pembaca layar yang relevan untuk alur penting atau sesuai kebijakan aksesibilitas proyek.
 
 ### 4. Performance Testing
-- **Lighthouse CI**: Integrasikan `@lhci/cli` di CI. Set performance budgets: LCP ≤ 2.5s, INP ≤ 200ms, CLS ≤ 0.1, TBT ≤ 300ms (Core Web Vitals). Fail build jika budget terlampaui. Track scores across commits untuk trend analysis.
-- **Synthetic Monitoring**: Jalankan Lighthouse cron job (setiap 6 jam) terhadap production URLs. Alert jika skor turun >10 points atau metric melampaui budget. Monitor Core Web Vitals via Real User Monitoring (RUM) sebagai ground truth.
-- **Performance Budgets in CI**: Definisikan budget di `lighthouserc.json` atau `performance-budget.json`. Bundle size budget: fail jika JS bundle naik >5% tanpa justifikasi. Image optimization check: warn jika gambar >500KB tanpa lazy loading.
+- **Lighthouse CI**: Untuk aplikasi web, pertimbangkan `@lhci/cli` dan budget berdasarkan baseline serta target pengguna. Gunakan ambang Core Web Vitals yang berlaku untuk proyek; jangan menganggap satu skor lab mewakili seluruh pengalaman produksi.
+- **Synthetic Monitoring**: Untuk layanan web yang memerlukannya, jadwalkan pemeriksaan URL produksi dan bandingkan dengan baseline. RUM memberi konteks pengalaman pengguna nyata bila tersedia.
+- **Performance Budgets in CI**: Tambahkan budget bundle atau aset hanya bila proyek memiliki baseline stabil dan mekanisme pengecualian/review yang jelas.
 
 ### 5. API Contract Testing
 - **Schema Validation**: Validasi setiap respon API terhadap OpenAPI/JSON Schema di test suite. Gunakan `chai-openapi-response-validator` atau `openapi-fetch` type-safe client. Catch drift antara spec dan implementasi sebelum deploy.
@@ -131,7 +131,7 @@ Strategi pengujian di luar unit test dasar untuk menjamin kualitas holistik: fun
 
 ## Companion Skills Awareness
 
-`msal-verify` adalah quality gate, bukan generator. Orchestrator invoke verify SETELAH skill lain menghasilkan kode/UI:
+`msal-verify` memeriksa keadaan repo dan deliverable yang diminta, termasuk tanpa output dari skill lain:
 
 | Companion | Verify's Role | Anti-Slop Contribution |
 |---|---|---|
@@ -140,7 +140,7 @@ Strategi pengujian di luar unit test dasar untuk menjamin kualitas holistik: fun
 | `msal-sentinel` | Security test setelah implementasi auth/crypto | Buktikan tidak ada vulnerability |
 | `msal-deploy` | CI pipeline validation | Pastikan build + test pass di environment target |
 
-**Aturan**: Verify tidak pernah jalan sendiri tanpa output dari skill lain. Jika di-invoke tanpa konteks perubahan, tanya: "Apa yang perlu diverifikasi? File/fitur mana?"
+**Aturan**: Jika pengguna meminta verifikasi status repo, inspeksi konfigurasi dan jalankan pemeriksaan yang sesuai pada keadaan saat ini. Tanyakan hanya jika target, lingkungan, atau batas pemeriksaan yang diminta memang ambigu; jangan menganggap harus ada perubahan baru.
 
 ## Related Skills
 - **msal-deploy**: CI test orchestration, pipeline integration, and sharding configuration

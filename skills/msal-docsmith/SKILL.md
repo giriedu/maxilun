@@ -7,7 +7,7 @@ description: >
   Triggers: "/msal-docsmith", "/msal-docs", "tulis README", "dokumentasi API", "buat changelog",
   "panduan migrasi", "spesifikasi teknis", or developer documentation tasks.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -111,8 +111,8 @@ Setiap service produksi wajib memiliki runbook di `docs/runbooks/{service-name}.
 - **Gejala**: HTTP 500 melonjak, log memuat `pool timeout`.
 - **Langkah Mitigasi**:
   1. Periksa active connections: `SELECT count(*) FROM pg_stat_activity;`
-  2. Identifikasi query menggantung: `SELECT pid, now() - query_start, query FROM pg_stat_activity WHERE state != 'idle';`
-  3. Terminate query terblokir: `SELECT pg_terminate_backend(pid);`
+  2. Identifikasi kandidat secara read-only: `SELECT pid, usename, application_name, client_addr, now() - query_start AS duration, wait_event_type, wait_event, query FROM pg_stat_activity WHERE state = 'active' ORDER BY duration DESC;`
+  3. Cocokkan satu PID dengan insiden, pemilik layanan, dan dampaknya; jangan terminate semua PID hasil query. Jika cukup, minta operator membatalkan query terpilih dengan `pg_cancel_backend(<pid>)`. Gunakan `pg_terminate_backend(<pid>)` hanya setelah target dipastikan aman, dampak dipahami, dan operator berwenang menyetujui tindakan.
   4. Skalakan replica atau naikkan pool max size jika beban traffic sah.
 
 ### Alert: High Memory Usage / OOM Crash
@@ -157,14 +157,14 @@ Menyediakan dokumentasi terstruktur yang siap diproses langsung oleh agen AI dan
 
 ## Companion Skills Awareness
 
-`msal-docsmith` menyusun dokumentasi teknis (README, API spec, changelog). Orchestrator invoke docsmith BERSAMA companion skills untuk mencegah output slop:
+`msal-docsmith` menyusun dokumentasi teknis (README, API spec, changelog). Jalankan mandiri untuk dokumen dengan konteks cukup; pilih companion hanya bila jenis review tambahan diperlukan:
 
 | Companion | Docsmith's Role | Anti-Slop Contribution |
 |---|---|---|
-| `msal-content` | Readability dan tone consistency | Mencegah docs technically accurate tapi tidak terbaca oleh user |
-| `msal-architect` | Technical accuracy validation | Memastikan dokumentasi arsitektur sesuai dengan keputusan ADR |
+| `msal-content` | Readability dan tone consistency | Gunakan untuk dokumen berorientasi pengguna yang perlu penyuntingan bahasa |
+| `msal-architect` | Technical accuracy validation | Gunakan untuk klaim arsitektur yang perlu dicocokkan dengan keputusan sistem |
 
-**Aturan**: Docsmith tidak boleh publish dokumentasi tanpa readability check dari `msal-content` atau technical review dari `msal-architect`.
+**Penggunaan companion**: Libatkan `msal-content` bila dokumen ditujukan untuk pengguna dan butuh review bahasa; libatkan `msal-architect` bila dokumen membuat klaim arsitektur yang perlu dicocokkan dengan keputusan sistem. Docsmith dapat menyelesaikan dokumen mandiri dengan konteks yang tersedia dan menandai klaim yang belum terverifikasi.
 
 ## Related Skills
 - **msal-seo-audit**: Validasi aksesibilitas `llms.txt` bagi bot dan perayap

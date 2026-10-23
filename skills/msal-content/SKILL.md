@@ -8,7 +8,7 @@ description: >
   Triggers: "/msal-content", "/msal-copy", "copywriting", "konten pemasaran", "microcopy",
   "teks tombol CTA", "pesan error UI", "brand voice", or product messaging tasks.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -91,7 +91,7 @@ Konten yang bagus untuk manusia seharusnya juga baik untuk mesin pencari — buk
 
 ## 5. Panduan Lokalisasi (Localization)
 
-- **String UI**: semua string yang terlihat pengguna wajib masuk ke file i18n (`en.json`, `id.json`, dst.) — tidak ada hardcode teks dalam komponen.
+- **String UI**: Jika proyek sudah memakai i18n atau brief meminta multi-locale, ikuti sistem lokalisasi yang ada dan hindari hardcode teks baru. Untuk prototipe atau aplikasi satu locale tanpa i18n, jangan menambahkan infrastruktur lokalisasi tanpa kebutuhan.
 - **Tone per pasar**: formal untuk B2B enterprise (Indonesia: "Anda"), kasual untuk consumer app ("kamu"). Tentukan tone guide per locale.
 - **Format angka & tanggal**: gunakan `Intl.NumberFormat` dan `Intl.DateTimeFormat` — tidak pernah format manual.
 - **Placeholder & error message**: lokalisasi juga. Error message dalam bahasa Inggris di UI berbahasa Indonesia adalah pengalaman yang buruk.
@@ -147,16 +147,16 @@ Copywriting Bahasa Indonesia punya pola slop spesifik yang berbeda dari English.
 
 ## Companion Skills Awareness
 
-`msal-content` menyusun copywriting produk dan microcopy UI. Orchestrator invoke content BERSAMA companion skills untuk mencegah output slop:
+`msal-content` menyusun copywriting produk dan microcopy UI. Jalankan mandiri untuk copy yang brief-nya cukup; pilih companion jika konteks tambahan mengubah hasil:
 
 | Companion | Content's Role | Anti-Slop Contribution |
 |---|---|---|
-| `msal-craft` | Konteks UI dan visual hierarchy | Mencegah copy bagus tapi tidak sesuai dengan layout/komponen |
-| `msal-frontend` | Konteks halaman dan routing | Memastikan copy terintegrasi dengan struktur page yang benar |
-| `msal-docsmith` | Readability dokumentasi teknis | Menjaga konsistensi tone antara marketing copy dan docs |
-| `msal-seo-audit` | SEO copy optimization | Mencegah copy natural tapi tidak discoverable oleh search engine |
+| `msal-craft` | Konteks UI dan visual hierarchy | Gunakan jika hierarki visual memengaruhi copy |
+| `msal-frontend` | Konteks halaman dan routing | Gunakan jika copy perlu ditempatkan dalam struktur halaman |
+| `msal-docsmith` | Readability dokumentasi teknis | Gunakan untuk dokumentasi teknis yang juga memerlukan penyelarasan bahasa |
+| `msal-seo-audit` | SEO copy optimization | Gunakan jika optimasi search masuk lingkup |
 
-**Aturan**: Content tidak boleh deliver copy landing page atau microcopy tanpa validasi UI context dari `msal-craft` atau integrasi page dari `msal-frontend`.
+**Penggunaan companion**: Libatkan `msal-craft` jika copy bergantung pada hierarki visual atau keadaan UI tertentu, dan `msal-frontend` jika copy harus dipasang ke struktur/routing halaman. Untuk teks mandiri, sampaikan copy serta asumsi yang relevan tanpa menahan hasil.
 
 ## Related Skills
 - **msal-craft**: UI/UX design system dan konteks visual untuk microcopy

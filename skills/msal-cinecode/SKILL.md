@@ -5,11 +5,15 @@ description: >
   components as frames, timeline composition, server-side rendering to MP4/WebM/GIF,
   audio sync, data-driven sequences, and batch export. No GUI editors. Videos are
   version-controlled, testable, and reproducible like application code.
+  Use this skill when the requested final deliverable is a rendered video file
+  or a repeatable video-rendering pipeline. Use msal-motion for interactive
+  browser animation or motion assets; combine them only when custom motion design
+  is also needed in the rendered video.
   Triggers: "/msal-cinecode", "buat video dari kode", "programmatic video", "render video",
   "video template", "data-driven video", "batch video", "server-side video render",
   "video component", "timeline composition", or any task involving video generation via code.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -69,7 +73,7 @@ flowchart LR
 3. **Timeline as Configuration**: Durasi, urutan, dan transisi didefinisikan sebagai data structure, bukan drag-and-drop.
 4. **Server-Side Rendering**: Render terjadi di Node.js/server environment, bukan browser recording. Output deterministik dan konsisten.
 5. **Data-Driven Sequences**: Konten video bisa di-bind langsung ke API, database, atau file. Update data = update video.
-6. **Performance Budget**: Frame budget 33ms/frame (30fps default), memory ceiling 512MB per render worker, automatic quality scaling.
+6. **Performance Budget**: Tetapkan target frame time, memori, dan concurrency berdasarkan resolusi, fps, durasi, aset, serta kapasitas mesin target. Contoh budget bukan jaminan enforcement; ukur render dan tambahkan guard hanya jika pipeline benar-benar mengimplementasikannya.
 
 ## 3. Arsitektur Sistem
 
@@ -465,6 +469,8 @@ interface RenderConfig {
 
 ### Project Script & Agent Commands
 
+Perintah `npm run ...` mengacu pada script scaffold CineCode setelah scaffold dibuat dan dependensinya dipasang. `/msal-cinecode ...` adalah prompt skill. Jangan menganggap executable global bernama `msal-cinecode` tersedia.
+
 ```bash
 # Preview in browser with hot reload
 npm run preview
@@ -562,10 +568,12 @@ Sebelum render production, jalankan validasi otomatis:
 ### Dengan msal-motion
 
 CineCode dan Motion saling melengkapi:
-- **msal-motion**: Interactive HTML animations, Lottie export, real-time browser playback
-- **msal-cinecode**: Server-rendered video output, batch generation, data-driven sequences
+- **msal-motion**: Interactive browser animation, motion concepts, and Lottie/SVG assets
+- **msal-cinecode**: Final MP4/WebM/GIF rendering, batch generation, and data-driven sequences
 
-Motion components bisa di-import sebagai CineCode scenes:
+Gunakan Motion hanya jika video membutuhkan rancangan/choreography animasi khusus atau aset motion dari skill tersebut. CineCode dapat membuat video tanpa companion Motion.
+
+Jika tersedia paket komponen motion yang kompatibel dengan runtime video, komponen tersebut bisa dipakai sebagai CineCode scenes. Jangan mengasumsikan paket ini terpasang; bila tidak tersedia, gunakan aset standar atau implementasikan transisi yang dibutuhkan langsung di scene:
 ```typescript
 import { LogoReveal } from '@maxilun/motion-components';
 
@@ -609,14 +617,16 @@ CI/CD integration untuk automated video generation:
 ```yaml
 # .github/workflows/render-videos.yml
 - name: Render weekly report videos
-  run: msal-cinecode batch --template weekly-report --data ./reports/latest.json
+  run: npm run batch -- --template weekly-report --data ./reports/latest.json
 - name: Upload to CDN
   run: aws s3 sync ./out/ s3://videos/reports/
 ```
 
 ## 11. Performance & Optimization
 
-### Frame Budget Enforcement
+### Contoh Bentuk Konfigurasi (Bukan Runtime Implementasi)
+
+Interface berikut hanya menunjukkan konfigurasi yang dapat ditambahkan ke pipeline. Repo atau proyek target belum tentu menegakkan budget atau menyesuaikan kualitas secara otomatis; periksa implementasi sebelum mengklaim enforcement.
 
 ```typescript
 interface PerformanceGate {
@@ -656,13 +666,15 @@ Frame: 150/450 (33%) | FPS: 29.8 ✓ | Frame Time: 31ms ✓
 Memory: 284MB / 512MB ✓ | Workers: 4/8 active
 Assets Cached: 23 images, 4 fonts, 2 audio | Cache Hit: 98%
 ─────────────────────────────────────────────────────
-⚠ Warning: Frame 142 took 48ms (auto quality → medium)
+⚠ Example warning: Frame 142 took 48ms (quality reduction only if implemented by the project)
 ✓ ETA: 12 seconds remaining
 ```
 
 ## 12. Accessibility Compliance
 
-### Mandatory Requirements
+### Checklist Aksesibilitas
+
+Terapkan item yang relevan dengan jenis konten, kanal distribusi, persyaratan pengguna, dan format ekspor. Bila item tidak berlaku, nyatakan alasannya.
 
 - [ ] Subtitle/caption track untuk semua spoken content
 - [ ] Audio description track untuk visual-only information
@@ -728,15 +740,17 @@ Assets Cached: 23 images, 4 fonts, 2 audio | Cache Hit: 98%
 
 ## Quick Start Command Reference
 
+Perintah terminal di bawah memakai project scaffold yang sudah dibuat. Perintah slash adalah prompt skill, bukan CLI global.
+
 ```
-msal-cinecode init                     # Scaffold new video project
-msal-cinecode preview                  # Live preview with hot reload
-msal-cinecode render                   # Render to default output
-msal-cinecode render --preset <name>   # Render with preset config
-msal-cinecode batch --data <file>      # Batch render with data variants
-msal-cinecode validate                 # Check project integrity
-msal-cinecode still --frame <n>        # Export single frame as image
-msal-cinecode list                     # List all compositions
+npm run setup                           # Prepare the scaffold project
+npm run preview                         # Live preview with hot reload
+npm run render                          # Render to default output
+npm run render -- --preset <name>      # Render with preset config
+npm run batch -- --data <file>         # Batch render with data variants
+npm run validate                        # Check project integrity
+npm run still -- --frame <n>            # Export single frame as image
+npm run list                            # List all compositions
 msal-cinecode benchmark                # Performance profiling
 msal-cinecode test                     # Run scene unit tests
 ```
@@ -745,20 +759,20 @@ msal-cinecode test                     # Run scene unit tests
 
 ## Companion Skills Awareness
 
-`msal-cinecode` membuat video melalui kode dengan rendering server-side. Orchestrator invoke cinecode BERSAMA companion skills untuk mencegah output slop:
+`msal-cinecode` membuat video melalui kode dengan rendering server-side. Companion bersifat opsional dan dipilih berdasarkan kebutuhan:
 
 | Companion | CineCode's Role | Anti-Slop Contribution |
 |---|---|---|
-| `msal-motion` | Animasi untuk scene video | Mencegah video technically correct tapi lifeless tanpa motion design |
-| `msal-engineer` | Code quality dan testing | Memastikan kode video mengikuti standar engineering, bukan script sekali pakai |
+| `msal-motion` | Konsep/choreography animasi atau aset motion khusus untuk scene video | Gunakan jika pendekatan visual-motion memang bagian dari permintaan. |
+| `msal-engineer` | Perubahan arsitektur atau kode aplikasi di luar komposisi/render video | Gunakan jika ada perubahan kode sistem yang cakupannya melampaui template/scene video. |
 
-**Aturan**: CineCode tidak boleh render production video tanpa review code quality dari `msal-engineer` atau integrasi animasi dari `msal-motion`.
+Untuk render video biasa, CineCode menangani komposisi, validasi, dan ekspor tanpa companion wajib. Jalankan pemeriksaan proyek dan preview/render sampel sesuai tooling yang tersedia; jangan mengklaim review dari skill lain jika tidak dilakukan.
 
 ## Related Skills
 - **msal-craft**: UI/UX, sistem desain token, dan aksesibilitas antarmuka
-- **msal-motion**: Animasi interaktif HTML, Lottie/SVG export, dan audio reactivity
+- **msal-motion**: Rancangan animasi interaktif, Lottie/SVG, atau choreography khusus bila diminta
 - **msal-engineer**: Implementasi kode, bug fixing, dan refactoring terukur
 
 ---
 
-*Maxilun CineCode v1.0.0 — Video creation as software engineering. Version-controlled, testable, reproducible, data-driven. Bukan video editor — video compiler.*
+*Maxilun CineCode v1.1.0 — Video creation as software engineering. Version-controlled, testable, reproducible, data-driven. Bukan video editor — video compiler.*

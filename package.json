@@ -1,7 +1,7 @@
 {
   "name": "maxilun",
-  "version": "1.0.0",
-  "description": "AI engineering co-pilot — 18 specialist skills, mandatory knowledge graph, confidence-based orchestration, zero AI slop.",
+  "version": "1.1.0",
+  "description": "AI engineering co-pilot — 18 specialist skills, graph-assisted code discovery, confidence-based orchestration.",
   "keywords": [
     "ai-skills",
     "claude-code",

@@ -5,7 +5,7 @@ param(
 #Requires -Version 5.1
 Write-Host ""
 Write-Host "  MAXILUN Specialist Ecosystem Installer" -ForegroundColor Cyan
-Write-Host "  ──────────────────────────────────────" -ForegroundColor DarkCyan
+Write-Host "  --------------------------------------" -ForegroundColor DarkCyan
 Write-Host ""
 
 $ScriptDir = Split-Path -Parent $PSScriptRoot
@@ -30,7 +30,7 @@ foreach ($cmd in $pythonCandidates) {
             $minor = [int]$Matches[2]
             if ($major -ge 3 -and $minor -ge 8) {
                 $PythonAvailable = $true
-                Write-Host "  Python ${major}.${minor} detected ($cmd) — Knowledge Graph visualizer ready." -ForegroundColor Green
+                Write-Host "  Python ${major}.${minor} detected ($cmd) -- Knowledge Graph visualizer ready." -ForegroundColor Green
                 break
             }
         }
@@ -160,9 +160,9 @@ Write-Host "  Type /msal to verify installation." -ForegroundColor Green
 
 # --- Post-Install Verification ---
 Write-Host ""
-Write-Host "  ──────────────────────────────────────" -ForegroundColor DarkCyan
+Write-Host "  --------------------------------------" -ForegroundColor DarkCyan
 Write-Host "  Post-Install Verification" -ForegroundColor Cyan
-Write-Host "  ──────────────────────────────────────" -ForegroundColor DarkCyan
+Write-Host "  --------------------------------------" -ForegroundColor DarkCyan
 $VerifyOk = $true
 foreach ($loc in $InstalledTo) {
     $parts = $loc.Split(":", 2)
@@ -173,7 +173,7 @@ foreach ($loc in $InstalledTo) {
     if ($count -ge 18) {
         Write-Host "    $platformLabel : ${count}/18 skills verified" -ForegroundColor Green
     } else {
-        Write-Host "    $platformLabel : Only ${count}/18 skills found — reinstall recommended" -ForegroundColor Red
+        Write-Host "    $platformLabel : Only ${count}/18 skills found -- reinstall recommended" -ForegroundColor Red
         $VerifyOk = $false
     }
 }

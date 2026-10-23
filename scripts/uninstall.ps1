@@ -1,7 +1,7 @@
 #Requires -Version 5.1
 Write-Host ""
 Write-Host "  MAXILUN Uninstaller" -ForegroundColor Cyan
-Write-Host "  ──────────────────────────────────────" -ForegroundColor DarkCyan
+Write-Host "  --------------------------------------" -ForegroundColor DarkCyan
 Write-Host ""
 Write-Host "  This will remove all Maxilun skills and rules from your system." -ForegroundColor Yellow
 Write-Host ""

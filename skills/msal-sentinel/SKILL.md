@@ -10,7 +10,7 @@ description: >
   "validasi input", "cegah sql injection", "xss", "csrf", "rahasia api",
   "kriptografi", "enkripsi", "AES", "hashing", "timing attack", "sertifikat TLS", or security tasks.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -51,7 +51,7 @@ flowchart LR
 ### 1. Autentikasi & Pengelolaan Sesi
 - **Token Storage**: Jangan pernah menyimpan token sensitif (JWT akses) di `localStorage` atau `sessionStorage` (rentan terhadap XSS). Gunakan cookie `HttpOnly`, `Secure`, `SameSite=Strict/Lax`.
 - **Rotasi & Kedaluwarsa**: Masa berlaku access token pendek (contoh: 15 menit), dipasangkan dengan mekanisme refresh token yang dirotasi.
-- **Hashing Password**: Menggunakan algoritma modern tahan GPU: Argon2id atau bcrypt (work factor ≥ 12). Jangan pernah menggunakan MD5, SHA1, atau SHA256 polos untuk password.
+- **Hashing Password**: Pilih parameter sesuai algoritma dan ukur waktu verifikasi di runtime target. Untuk aplikasi baru, utamakan Argon2id dengan konfigurasi memori/iterasi/paralelisme yang sesuai panduan terkini; bcrypt utamanya untuk sistem legacy dan gunakan cost yang aman bagi kapasitas server. Perhatikan batas input bcrypt. Jangan gunakan MD5, SHA-1, atau SHA-256 polos untuk password. Periksa panduan OWASP terbaru sebelum menetapkan parameter produksi.
 
 ### 2. Otorisasi & Kontrol Akses (RBAC / ABAC)
 - **Prinsip Hak Akses Terendah (Least Privilege)**: Tolak secara default (*deny by default*).
@@ -131,7 +131,7 @@ Panduan implementasi alur autentikasi modern yang aman dan sesuai standar indust
 - **Remember-Me**: Token remember-me memiliki expiry lebih panjang (30 hari) tapi tetap rotasi saat digunakan. Simpan metadata device/location. Bedakan level akses: remember-me tidak mengizinkan operasi sensitif (ganti password, transfer dana) tanpa re-authentication.
 
 ### 7. CSRF Protection untuk Cookie-Based Auth
-- **Double-Submit Cookie**: Set cookie CSRF token (`SameSite=Lax`) dan kirim token yang sama di custom header (`X-CSRF-Token`). Server membandingkan keduanya. Ini stateless dan cocok untuk arsitektur microservice.
+- **CSRF Token**: Untuk autentikasi berbasis cookie, utamakan synchronizer token atau signed double-submit token yang HMAC-nya terikat ke sesi. Jangan mengandalkan perbandingan token cookie dan header saja: pola naive double-submit dapat dibypass jika penyerang bisa menanam cookie pada domain. Bandingkan MAC secara constant-time dan jangan log token.
 - **SameSite Enforcement**: Set `SameSite=Strict` untuk sesi utama. Gunakan `SameSite=Lax` hanya jika navigasi cross-site ke aplikasi diperlukan (contoh: login dari email link). `SameSite=None` dilarang kecuali ada justifikasi kuat dan disertai `Secure`.
 - **Origin/Referer Validation**: Sebagai defense-in-depth, validasi header `Origin` atau `Referer` pada state-changing requests. Tolak request tanpa header ini dari browser modern.
 - **Custom Header Requirement**: Untuk API endpoints, require custom header (misal `X-Requested-With`) yang tidak bisa dikirim oleh form HTML biasa. Ini melengkapi double-submit cookie.
@@ -270,14 +270,14 @@ location /api/v1/auth/ {
 
 ## Companion Skills Awareness
 
-`msal-sentinel` melindungi aplikasi dari kerentanan keamanan. Orchestrator invoke sentinel BERSAMA companion skills untuk mencegah output slop:
+`msal-sentinel` melindungi aplikasi dari kerentanan keamanan. Jalankan audit dan rekomendasi mandiri; pilih companion bila implementasi atau tes juga diminta:
 
 | Companion | Sentinel's Role | Anti-Slop Contribution |
 |---|---|---|
-| `msal-engineer` | Implement security measures | Mencegah security config yang benar tapi implementasi bocor |
-| `msal-verify` | Security testing dan validation | Memastikan security measures teruji di CI pipeline |
+| `msal-engineer` | Implement security measures | Gunakan saat rekomendasi perlu diterapkan ke kode |
+| `msal-verify` | Security testing dan validation | Gunakan saat pemeriksaan otomatis atau tes regresi diminta |
 
-**Aturan**: Sentinel tidak boleh approve security implementation tanpa code review dari `msal-engineer` atau test coverage dari `msal-verify`.
+**Penggunaan companion**: Libatkan `msal-engineer` saat kontrol keamanan perlu diterapkan dan `msal-verify` saat pengujian keamanan atau regresi diminta. Bedakan temuan audit dari kontrol yang sudah diimplementasikan dan diuji.
 
 ## Related Skills
 - **msal-deploy**: Security monitoring, secret injection, SSL/TLS configuration, perimeter WAF, dan audit logging

@@ -3,7 +3,7 @@
 | No | Nama Skill | Fungsi Utama | Pemicu Khas |
 |:---:|---|---|---|
 | 1 | **maxilun** | Master Orchestrator. Memahami permintaan, menentukan mode kerja, memilih spesialis, mengatur alur eksekusi, dan merangkum hasil. | `/maxilun`, `/msal`, `mode maxilun` |
-| 2 | **msal-knowledge-graph** | Fondasi Pencarian Kode. WAJIB berjalan sebelum skill lain menyentuh kode: memetakan simbol, import, caller/callee, dan dependensi sebagai directed graph. Dilengkapi visualizer WebGL (Lens). | `/msal-knowledge-graph`, `/msal-graph`, `/msal-trace` |
+| 2 | **msal-knowledge-graph** | Fondasi pencarian kode untuk perubahan struktural atau lintas-file: memetakan simbol, import, caller/callee, dan dependensi sebagai directed graph. Dilengkapi visualizer WebGL (Lens). Tugas trivial dapat memakai jalur cepat; pencarian langsung menjadi fallback jika tool graf tidak tersedia. | `/msal-knowledge-graph`, `/msal-graph`, `/msal-trace` |
 | 3 | **msal-scaffold** | Project Context Scaffolder: generate 10 dokumen AI-readable (PRD, TECHSTACK, DESIGN, SECURITY, STYLEGUIDE, TASK, ARCHITECTURE, SKILLS, GLOSSARY, ONBOARDING) ke folder `docs/` sebelum coding dimulai. Update per milestone. | `/msal-scaffold`, `/msal-init`, `scaffold dokumen`, `buat docs project` |
 | 4 | **msal-architect** | Arsitektur Sistem: C4 Model, Event Storming, kontrak API, batas modul, analisis dampak dependensi, dan penalaran mendalam (/msal-think). | `/msal-architect`, `/msal-think` |
 | 5 | **msal-sentinel** | Keamanan Defensif: OWASP Top 10, autentikasi, otorisasi, threat modeling STRIDE, audit kriptografi (AES-GCM, timing-safe), validasi input, dan supply chain audit. | `/msal-sentinel`, `/msal-security`, `audit keamanan`, `enkripsi` |
@@ -23,7 +23,7 @@
 
 ## Catatan Integrasi
 
-- **Knowledge Graph sebagai Fondasi**: `msal-knowledge-graph` berjalan WAJIB pada langkah pertama setiap tugas kode (Fase Pemetaan). Skill eksekutor (engineer, architect, insight, verify) memakai hasil pemetaan `file:line` terkonfirmasi sebagai sumber kebenaran — tidak ada edit tanpa graf, tidak ada analisis ulang.
+- **Knowledge Graph sebagai Fondasi**: Gunakan `msal-knowledge-graph` untuk perubahan kode struktural atau lintas-file bila tersedia. Hasil `file:line` membantu mengarahkan inspeksi; tugas trivial boleh memakai jalur cepat dan pencarian langsung menjadi fallback bila indexer tidak tersedia.
 - **Panduan domain docsmith vs content**: Gunakan `msal-docsmith` untuk dokumen yang dibaca engineer (API spec, README, ADR). Gunakan `msal-content` untuk teks yang dibaca pengguna akhir (landing page, tombol, pesan error).
 - **SEO Audit**: Telah terintegrasi penuh sebagai spesialis resmi `msal-seo-audit`.
 - **Archify**: Terintegrasi secara opsional melalui `msal-diagrams`. Maxilun tetap mandiri menghasilkan diagram Mermaid dan standalone SVG/HTML tanpa ketergantungan mutlak pada tool eksternal.

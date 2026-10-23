@@ -12,7 +12,7 @@ description: >
   "bikin PRD", "setup dokumentasi project", or any request to bootstrap
   project context files before development begins.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -46,9 +46,9 @@ Tanpa konteks tertulis, setiap AI session dimulai dari nol. Dengan `docs/` yang 
 ## 1. Engine Overrides
 
 4 mesin inti dan 3 protokol operasi dari `rules/always-on.md` berlaku otomatis. Override scaffold:
-- **Purity**: Dokumen yang dihasilkan harus berisi fakta konkret project ini — bukan template generik yang copy-paste dari mana saja. Setiap placeholder `[...]` wajib diisi atau ditandai `[TBD: alasan]`.
+- **Purity**: Dokumen yang dihasilkan harus berisi fakta konkret project ini — bukan template generik yang copy-paste dari mana saja. Placeholder yang masih terbuka harus memakai `[TBD: alasan]`; dalam mode cepat, gunakan `[TBD: perlu konfirmasi pengguna]` lalu rangkum pertanyaan yang belum terjawab.
 - **Minimalist**: Tidak semua dokumen harus panjang. PRD 1 halaman lebih baik dari PRD 10 halaman yang tidak dibaca. Setiap bagian harus justify keberadaannya.
-- **Clarity**: Gunakan sinyal `[CONFIRMED]` untuk fakta yang sudah fix, `[TBD]` untuk yang belum diputuskan, `[ASSUMED]` untuk asumsi yang belum divalidasi.
+- **Clarity**: Gunakan `[CONFIRMED]` untuk fakta yang sudah dipastikan, `[TBD: alasan]` untuk hal yang belum diputuskan, dan `[ASSUMED]` untuk asumsi yang belum divalidasi.
 
 ## Workflow
 
@@ -90,7 +90,7 @@ Hanya tanya informasi yang **tidak bisa disimpulkan** dari scan. Format pertanya
 Jika sudah ada README yang jelas, lewati pertanyaan yang sudah terjawab.
 
 ### 2.3 Mode Cepat (`--quick`)
-Jika user menambah flag `--quick` atau `cepat`, skip interview — generate semua dokumen dengan placeholder `[TBD]` dan beri ringkasan apa yang perlu diisi manual.
+Jika user menambah flag `--quick` atau `cepat`, lewati interview — generate dokumen dengan placeholder `[TBD: perlu konfirmasi pengguna]` dan rangkum pertanyaan yang belum terjawab.
 
 ## 3. Output: 10 Dokumen di `docs/`
 
@@ -761,14 +761,14 @@ Jika project sudah berjalan dan butuh refresh docs:
 
 ## Companion Skills Awareness
 
-`msal-scaffold` menghasilkan dokumen konteks project (PRD, TECHSTACK, ARCHITECTURE). Orchestrator invoke scaffold BERSAMA companion skills untuk mencegah output slop:
+`msal-scaffold` menghasilkan dokumen konteks project (PRD, TECHSTACK, ARCHITECTURE). Jalankan mandiri; pilih companion untuk dokumen atau keputusan yang memerlukan review khusus:
 
 | Companion | Scaffold's Role | Anti-Slop Contribution |
 |---|---|---|
 | `msal-content` | Doc readability dan tone | Mencegah dokumen template kosong yang tidak terbaca user |
 | `msal-architect` | Architecture docs accuracy | Memastikan ARCHITECTURE.md sesuai dengan keputusan ADR nyata |
 
-**Aturan**: Scaffold tidak boleh generate dokumen tanpa readability check dari `msal-content` atau technical review dari `msal-architect`.
+**Penggunaan companion**: Libatkan `msal-content` jika brief meminta penyuntingan untuk audiens eksternal, dan `msal-architect` jika dokumen membuat keputusan atau klaim arsitektur. Scaffold dapat menghasilkan dokumen konteks mandiri dari informasi repo; tandai fakta yang belum diketahui sebagai TBD.
 
 ## 7. Aturan Kualitas Dokumen
 

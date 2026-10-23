@@ -3,12 +3,13 @@ name: msal-craft
 description: >
   Production UI/UX specialist for design systems, spatial rhythm, responsive
   layouts, WCAG accessibility, and interaction polish. Combines mathematical
-  scales (4px grid, OKLCH tokens) with native CSS minimalism and purity-engine visual gates.
-  Includes mandatory pre-generation anti-slop gate that blocks AI-generic output before coding starts.
+  scales (4px grid, OKLCH tokens) with native CSS minimalism and visual review.
+  Uses known project context and asks only for missing details that materially
+  affect the requested design.
   Triggers: "/msal-craft", "/msal-ui", "desain UI", "sistem desain", "tampilan antarmuka",
   "responsif", "aksesibilitas", "dark mode", "interaksi tombol", or any visual frontend task.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -29,22 +30,22 @@ metadata:
 
 Bertanggung jawab atas rekayasa visual tingkat produksi: sistem desain konsisten, tipografi matematis, palet warna aksesibel, tata letak responsif, dan interaksi pengguna yang hidup tanpa beban library berlebih.
 
-**Enhanced with Impeccable-inspired workflows**: Persistent product context (PRODUCT.md), 24 iterative design commands, live browser iteration, documented quality checks, and a **mandatory pre-generation anti-slop gate**.
+**Enhanced with Impeccable-inspired workflows**: Persistent product context (PRODUCT.md), iterative design prompts, optional browser-assisted review when tools are available, and documented quality checks.
 
-## 0. PRE-GENERATION ANTI-SLOP GATE (MANDATORY, NON-NEGOTIABLE)
+## 0. Design Context Check
 
-**Sebelum menulis satu baris kode UI apa pun**, jalankan gate ini. Jika gagal, STOP. Jangan lanjutkan ke §1 atau workflow apa pun sampai semua item PASS.
+Sebelum membuat desain atau implementasi UI, gunakan konteks proyek dan brief yang sudah tersedia. Minta klarifikasi hanya untuk informasi yang belum diketahui dan benar-benar mengubah keputusan desain. Jangan hentikan pekerjaan untuk menanyakan ulang informasi yang sudah diberikan atau bisa dipastikan dari proyek.
 
-### 0a. Context Gathering (Wajib Ditanyakan)
+### 0a. Context Gathering (Jika Diperlukan)
 
-Tanyakan kepada pengguna (dalam bahasa chat mereka) SEBELUM mulai:
+Jika konteks belum tersedia, tanyakan hanya hal yang diperlukan dari daftar berikut:
 
 1. **Produk/Aplikasi ini untuk siapa?** (audiens spesifik, bukan "semua orang")
 2. **Apa fungsi utama halaman/komponen ini?** (task konkret, bukan "tampilan bagus")
 3. **Apakah ada brand guideline, moodboard, atau referensi visual?** (jika tidak, tawarkan untuk buat direction singkat)
 4. **Nama aplikasi/fitur sudah ditentukan?** (jika belum, usulkan nama berdasarkan fungsi, bukan buzzword)
 
-Jika pengguna menolak menjawab atau bilang "terserah", nyatakan eksplisit: *"Tanpa konteks produk, output akan cenderung generik. Saya akan labeli sebagai DRAFT TANPA ARAH dan menggunakan dial minimal ENERGY 1 / RHYTHM 1 / MOTION 1."*
+Jika pengguna menyerahkan pilihan kepada Anda, buat asumsi minimum yang masuk akal, tandai arah sebagai draft, lalu lanjutkan.
 
 ### 0b. Anti-Slop Name & Label Check
 
@@ -115,7 +116,7 @@ Untuk tipe halaman umum, jalankan checklist tambahan SEBELUM coding:
 Setelah menjalankan §0a-0d, output status gate SEBELUM mulai coding:
 
 ```
-🔒 PRE-GENERATION ANTI-SLOP GATE
+🔒 DESIGN CONTEXT CHECK
 - Context gathered: ✅/❌ (jika ❌, labeled DRAFT TANPA ARAH)
 - Names/labels checked: ✅/❌ (list yang diganti)
 - Design Read declared: ✅ "Reading this as: ..."
@@ -162,13 +163,13 @@ Meskipun `msal-content` adalah spesialis copywriting, `msal-craft` WAJIB punya f
 ## 1. Engine Overrides
 
 4 mesin inti dan 3 protokol operasi dari `rules/always-on.md` berlaku otomatis. Override craft:
-- **Purity**: Tolak klise visual AI (gradien biru-ungu, glow semua border, glassmorphism bertumpuk). Purpose Gate wajib. Gunakan 61+ documented quality checks sebagai checklist review manual (§10). **Pre-generation gate (§0) wajib dijalankan sebelum eksekusi.**
+- **Purity**: Tolak klise visual AI (gradien biru-ungu, glow semua border, glassmorphism bertumpuk). Purpose Gate wajib. Gunakan documented quality checks yang relevan sebagai panduan review (§10). Periksa konteks desain dari brief dan proyek sebelum implementasi.
 - **Minimalist**: CSS native modern (Grid, `@container`, `oklch()`) > utility framework pihak ketiga.
 
 ## Workflow
 ```mermaid
 flowchart LR
-    A[§0 Anti-Slop Gate] --> B[PRODUCT.md Init]
+    A[§0 Context Check] --> B[PRODUCT.md Init]
     B --> C[Tokens]
     C --> D[Layout]
     D --> E[States]
@@ -250,7 +251,7 @@ Menjalankan interactive session untuk gather product context:
 
 ## 3. Iterative Design Commands (24 Commands)
 
-Terinspirasi dari Impeccable, diperkuat dengan Maxilun purity gates dan token system integration. Semua command accessible via `/msal-craft <command> <target>` untuk menghindari konflik namespace dengan skill lain.
+Terinspirasi dari Impeccable, diperkuat dengan Maxilun purity gates dan token system integration. Entri `/msal-craft <command> <target>` adalah prompt pola untuk skill, bukan executable CLI; gunakan hanya jika skill tersedia di sesi.
 
 ### Core Workflow Commands
 
@@ -675,35 +676,35 @@ Found 2 issues (1 error, 1 warning)
 
 ---
 
-## 11. Live Browser Iteration Mode
+## 11. Browser-Assisted Review (Jika Tool Tersedia)
 
-Live mode memungkinkan iterasi visual real-time langsung di browser tanpa manual code editing. Inspired by Impeccable, enhanced dengan Maxilun token system integration.
+Perintah di bawah adalah prompt pola untuk agen, bukan CLI atau kemampuan bawaan paket. Gunakan hanya jika sesi menyediakan browser yang dapat dioperasikan dan proyek lokal dapat diedit melalui tool yang tersedia. Tanpa tool tersebut, berikan saran atau perubahan kode biasa; jangan mengklaim telah mengubah, menyimpan, atau membuang state browser.
 
-### Entering Live Mode
+### Meminta Review Browser
 ```bash
 /msal-craft live                     # Enter live mode for current dev server
 /msal-craft live navbar              # Focus on specific element
 /msal-craft live --port 3000         # Specify dev server port
 ```
 
-### Live Mode Capabilities
+### Review yang Bisa Dibantu Browser
 
-1. **Visual Variant Generation**: Generate multiple design variants tanpa manual coding
+1. **Eksplorasi varian**: Usulkan varian visual; implementasikan hanya melalui kemampuan edit yang benar-benar tersedia.
    ```
    /msal-craft generate cta-button   # Generate 5 button variants in browser
    ```
 
-2. **Real-time Token Adjustment**: Edit design tokens, lihat perubahan instant
+2. **Penyesuaian token**: Tinjau token dan perubahan visual bila browser/tool edit tersedia.
    - Color adjustments (hue, saturation, lightness)
    - Spacing scale modifications
    - Typography size/weight changes
 
-3. **Element Selection & Isolation**: Click element di browser untuk isolate dan iterate
+3. **Pemilihan elemen**: Gunakan inspeksi browser hanya bila tool mendukung pemilihan elemen.
    - Auto-detect component boundaries
    - Show applicable tokens and constraints
    - Suggest improvements based on the documented review checklist
 
-4. **Before/After Comparison**: Toggle between original dan modified states
+4. **Perbandingan**: Tampilkan before/after hanya bila state kedua versi memang tersedia.
    - Side-by-side view
    - Onion skin overlay
    - Diff highlighting
@@ -712,10 +713,10 @@ Live mode memungkinkan iterasi visual real-time langsung di browser tanpa manual
 
 - **Local development only**: Never inject into production sites
 - **Trusted projects only**: Review `package.json` scripts before use
-- **Validation hook**: Runs `scripts["maxilun:manual-edit-validate"]` if defined
-- **Git tracking**: All changes tracked, easy rollback
+- **Validasi**: Jalankan pemeriksaan proyek yang tersedia setelah perubahan; jangan mengasumsikan hook khusus Maxilun ada.
+- **Penyimpanan**: Simpan atau buang perubahan hanya melalui kontrol/tool yang benar-benar tersedia dan sesuai permintaan pengguna.
 
-### Exiting Live Mode
+### Mengakhiri Review Browser
 ```bash
 /msal-craft live --stop              # Exit live mode
 /msal-craft live --save              # Save current state and exit
@@ -782,12 +783,12 @@ Surface briefs terpisah dari PRODUCT.md karena:
 
 Jalankan gate ini SETELAH coding selesai, SEBELUM menyerahkan hasil ke pengguna. Output status PASS/FAIL per item. Jika ada FAIL, perbaiki dulu, re-run, baru ship.
 
-### Block A: Pre-Generation Gate Verification
-- [ ] §0a Context gathering dilakukan atau labeled DRAFT TANPA ARAH?
+### Block A: Context Verification
+- [ ] Konteks yang tersedia sudah digunakan; klarifikasi hanya diminta untuk hal yang belum diketahui dan berdampak pada keputusan?
 - [ ] §0b Names/labels dicek terhadap tabel anti-slop?
 - [ ] §0c Design Read dideklarasikan sebelum coding?
 - [ ] §0d Page-type pre-check dijalankan untuk tipe halaman yang relevan?
-- [ ] §0e Gate status output ditampilkan sebelum mulai coding?
+- [ ] Asumsi atau batas konteks yang memengaruhi hasil dinyatakan?
 
 ### Block B: Purity Catalog Compliance (dari rules/purity-catalog.md)
 - [ ] Tidak ada gradient biru-ungu/purple-to-blue sebagai default dekoratif? (CLR-001)
@@ -879,7 +880,7 @@ Verdict: SHIP / FIX FIRST (jika FIX FIRST, list item yang harus diperbaiki)
 
 ## Companion Skills Awareness
 
-`msal-craft` adalah spesialis UI/visual. Orchestrator WAJIB invoke craft BERSAMA companion skills untuk mencegah output slop:
+`msal-craft` adalah spesialis UI/visual. Jalankan mandiri untuk desain yang ruang lingkupnya jelas; pilih companion jika bagian deliverable itu memang diminta:
 
 | Companion | Craft's Role | Anti-Slop Contribution |
 |---|---|---|
@@ -888,12 +889,12 @@ Verdict: SHIP / FIX FIRST (jika FIX FIRST, list item yang harus diperbaiki)
 | `msal-engineer` | Design spec untuk engineer implement | Spec yang jelas + code yang sesuai visual intent |
 | `frontend-design` / `antislop` | Filter visual anti-slop sebelum coding | Mencegah gradient, glow, glassmorphism generik |
 
-**ATURAN KERAS**: Craft TIDAK PERNAH jalan sendiri untuk website/page generation. Tanpa `msal-content`, copy akan jadi AI slop ("Studio desain independen yang merancang..."). Tanpa `frontend-design`/`antislop`, visual akan jadi generic AI aesthetic. Orchestrator yang invoke craft tanpa companion = kegagalan sistem.
+**Penggunaan companion**: Libatkan `msal-content` jika pengguna juga meminta copy atau bila copy perlu dikembangkan bersama desain. Libatkan `msal-frontend` atau `msal-engineer` untuk integrasi implementasi. `frontend-design` dan `antislop` opsional jika tersedia dan sesuai kebutuhan; tidak ada companion yang menjadi prasyarat untuk desain atau halaman sederhana.
 
 ## Related Skills
 - **msal-motion**: Animation, motion design, kinetic typography, and performance-gated motion
 - **msal-frontend**: RSC architecture, Server Actions, state management, type safety
-- **msal-content**: UX Copy, microcopy, error messages, onboarding text (MANDATORY companion untuk semua page/UI)
+- **msal-content**: UX copy, microcopy, error messages, onboarding text (gunakan saat penulisan atau review copy termasuk dalam lingkup)
 - **msal-verify**: Test generation and validation for craft outputs (runs §13 delivery gate)
 - **msal-engineer**: Code implementation (craft designs, engineer builds)
 - **antislop**: Core anti-slop filter (complementary; msal-craft extends with production enforcement)

@@ -7,7 +7,7 @@ description: >
   Triggers: "/msal-deploy", "CI/CD", "Docker", "pipeline", "monitoring", "deployment",
   "SSL", "backup database", "environment variables", or any DevOps/infra task.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -45,7 +45,7 @@ flowchart LR
 
 ## 2. Template Pipeline CI/CD
 
-> **Cakupan Platform**: Template primer menggunakan **GitHub Actions**. Untuk GitLab CI, CircleCI, Jenkins, atau non-Node runtimes, gunakan prinsip yang sama (quality gates → build → deploy → health check) dan adaptasi syntax sesuai platform. Konsultasikan dokumentasi resmi platform jika berbeda.
+> **Cakupan Platform**: Contoh menggunakan **GitHub Actions + Node.js/pnpm**. Untuk GitLab CI, CircleCI, Jenkins, atau stack lain, pertahankan prinsip quality gates → build → deploy → health check dan ganti setup serta perintah sesuai runtime/proyek. Konsultasikan dokumentasi resmi platform jika berbeda.
 
 ### Struktur Workflow Standar
 ```yaml
@@ -79,11 +79,8 @@ jobs:
       - run: pnpm build
 ```
 
-### Quality Gates Wajib
-1. **Lint + Typecheck**: Gagal = block merge. Zero warning policy.
-2. **Unit tests**: Coverage threshold minimum 80% lines, 70% branches.
-3. **Build verification**: Aplikasi berhasil build tanpa error.
-4. **Security scan**: Dependency audit (`pnpm audit --audit-level=high`). Optional: SAST (CodeQL/Semgrep).
+### Quality Gates
+Pilih gate berdasarkan stack, risiko perubahan, tooling, dan baseline proyek. Contoh untuk proyek Node.js: lint/typecheck, tes yang relevan, build, dan audit dependency. Tetapkan ambang coverage dari risiko dan baseline yang terukur; jangan menjadikan nol warning atau persentase coverage tertentu sebagai syarat universal. Pertahankan atau tingkatkan gate yang sudah disepakati proyek.
 
 ### Deployment Workflow
 ```yaml
@@ -256,14 +253,14 @@ CMD ["node", "server.js"]
 
 ## Companion Skills Awareness
 
-`msal-deploy` mengelola pipeline CI/CD, containerization, dan deployment. Orchestrator invoke deploy BERSAMA companion skills untuk mencegah output slop:
+`msal-deploy` mengelola pipeline CI/CD, containerization, dan deployment. Jalankan mandiri untuk rancangan atau review; pilih companion sesuai gate yang relevan:
 
 | Companion | Deploy's Role | Anti-Slop Contribution |
 |---|---|---|
-| `msal-verify` | CI test validation dan quality gates | Mencegah pipeline jalan tapi app broken di production |
-| `msal-sentinel` | Security dalam deployment (secrets, SSL) | Memastikan deployment tidak membocorkan credentials atau config aman |
+| `msal-verify` | CI test validation dan quality gates | Gunakan untuk memilih dan menjalankan verifikasi sesuai perubahan |
+| `msal-sentinel` | Security dalam deployment (secrets, SSL) | Gunakan bila perubahan berdampak pada konfigurasi atau risiko keamanan |
 
-**Aturan**: Deploy tidak boleh release ke production tanpa test pass dari `msal-verify` atau security review dari `msal-sentinel`.
+**Aturan rilis produksi**: Wajibkan verifikasi yang relevan terhadap perubahan sebelum rilis. Minta review `msal-sentinel` bila perubahan memengaruhi autentikasi, otorisasi, data sensitif, secret, jaringan, atau konfigurasi keamanan. Kedua pemeriksaan bukan pilihan yang saling menggantikan; tandai gate yang tidak relevan dan alasannya.
 
 ## Related Skills
 - **msal-architect**: Capacity planning dan infrastructure requirements

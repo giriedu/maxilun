@@ -4,7 +4,7 @@
   "groupings": [
     {
       "title": "Foundations & Orchestration",
-      "description": "Master orchestrator, mandatory knowledge graph scanner, and project context scaffolder.",
+      "description": "Master orchestrator, graph-assisted code discovery, and project context scaffolder.",
       "skills": [
         "maxilun",
         "msal-knowledge-graph",

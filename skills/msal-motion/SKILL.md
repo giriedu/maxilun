@@ -1,13 +1,14 @@
 ---
 name: msal-motion
 description: >
-  Motion design specialist untuk Maxilun ecosystem. Menghasilkan animasi HTML interaktif, 
-  Lottie/SVG export, dan video dengan physics-based motion, audio reactivity, dan performance 
-  budget enforcement. Gunakan ketika user meminta motion graphics, animated explainer, 
-  kinetic typography, particle system, scene transition, atau export animasi ke format apapun.
-  Triggers: "/msal-motion", "animasi", "motion graphics", "kinetic typography", "buat animasi".
+  Motion design specialist untuk animasi interaktif dan aset motion web seperti Lottie/SVG,
+  termasuk choreography, kinetic typography, dan audio reactivity. Gunakan saat hasil utama
+  berupa animasi di browser/UI atau aset motion. Untuk video final MP4/WebM/GIF, gunakan
+  msal-cinecode; tambahkan Motion hanya jika desain animasinya memang diminta.
+  Triggers: "/msal-motion", "animasi web", "interactive animation", "Lottie", "SVG animation",
+  "kinetic typography", "scroll animation", "audio-reactive animation".
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -31,10 +32,10 @@ metadata:
 Skill ini beroperasi **delta-only** terhadap `rules/always-on.md`. Semua aturan global Maxilun berlaku penuh. Override spesifik motion:
 
 - **Purity Gate Wajib**: Setiap elemen animasi HARUS lolos Purpose Gate sebelum di-render. Tidak ada decorative-only animation.
-- **Performance Budget Aktif**: Frame budget 16ms/frame (60fps), GPU memory ceiling 256MB, automatic LOD reduction saat threshold terlampaui.
+- **Performance**: Untuk animasi interaktif, targetkan gerak yang mulus pada perangkat sasaran dan ukur performa bila tooling tersedia. Jangan mengklaim automatic LOD atau batas GPU ditegakkan tanpa implementasi nyata.
 - **Accessibility First**: `prefers-reduced-motion` BUKAN afterthought — baked into setiap keyframe definition.
-- **Dual Output Mandate**: Setiap deliverable HARUS menghasilkan HTML (browser-playable) DAN minimal satu export format (Lottie/SVG/Video).
-- **Brand DNA Binding**: Motion personality HARUS diturunkan dari design token msal-craft, bukan manual style brief.
+- **Output Scope**: Hasilkan runtime atau format yang diminta saja. HTML interaktif, Lottie, dan SVG adalah target Motion; hasil video akhir berada di lingkup CineCode.
+- **Brand Context**: Gunakan design token `msal-craft` jika tersedia. Jika tidak, ikuti brief atau gaya proyek yang ada; jangan membuat token dependency baru tanpa kebutuhan.
 
 Referensi aturan lengkap: baca `rules/always-on.md`, `rules/purity-catalog.md`.
 
@@ -54,16 +55,16 @@ flowchart LR
 
 | Aspek | Slide/PPT | Bang-Motion | Maxilun Motion |
 |-------|-----------|-------------|----------------|
-| Output | Static slides | Single HTML | HTML + Lottie + SVG + Video |
+| Output | Static slides | Single HTML | Interactive HTML + Lottie/SVG assets |
 | Motion Model | Fade/slide transitions | GSAP easing curves | Physics-based spring dynamics |
 | Responsiveness | None | Basic viewport | Per-viewport choreography |
 | Accessibility | Manual | Afterthought | Baked-in reduced motion |
-| Performance | N/A | No budget | 16ms frame budget + LOD |
+| Performance | N/A | Basic viewport | Targeted to interactive runtime and device |
 | Audio | Background music | Voice-over sync | Beat detection + waveform reactive |
 | Reusability | Copy-paste | Monolithic | Composable motion components |
 | Brand Integration | Manual colors | Style brief | Auto-derived from design tokens |
 | Narrative | Linear slides | Linear timeline | Multi-scene graph with transitions |
-| Export | PPTX/PDF | MP4 via Puppeteer | PNG seq / MP4 / WebM / GIF / Lottie / SVG |
+| Export | PPTX/PDF | MP4 via Puppeteer | Lottie / Animated SVG / browser-ready assets |
 
 ### Prinsip Inti (Core Principles)
 
@@ -71,7 +72,7 @@ flowchart LR
 2. **Physics Over Easing**: Spring dynamics, inertia, friction > cubic-bezier curves. Gerak terasa natural, bukan mekanis.
 3. **Token-Driven**: Spacing scale → timing scale. Brand color → motion accent. Typography weight → kinetic intensity.
 4. **Composable Primitives**: Reveal, morph, orbit, cascade — building blocks yang bisa dikombinasikan seperti LEGO.
-5. **Performance is Feature**: 60fps bukan target, itu baseline. Automatic degradation lebih baik daripada jank.
+5. **Performance is Feature**: Tetapkan target sesuai runtime dan perangkat. Ukur bila tooling tersedia; jangan menjanjikan mekanisme optimasi yang belum ada.
 6. **Accessible by Default**: Reduced motion bukan mode terpisah — itu variant dari setiap animasi.
 
 ---
@@ -390,39 +391,14 @@ interface AudioReactiveController {
 
 ## 11. Gate Performa & Aksesibilitas (Performance & Accessibility Gates)
 
-### Penegakan Budget Performa (Performance Budget Enforcement)
+### Panduan Pengukuran Performa
 
-```typescript
-interface PerformanceGate {
-  // Frame budget
-  maxFrameTimeMs: 16; // 60fps
-  onBudgetExceeded: 'reduce-lod' | 'skip-frame' | 'warn';
-  
-  // GPU memory
-  maxTextureMemoryMB: 256;
-  maxParticleSystemCount: 10000;
-  
-  // Draw calls
-  maxDrawCallsPerFrame: 100;
-  
-  // Automatic LOD levels
-  lodLevels: [
-    { threshold: 14, quality: 'full' },
-    { threshold: 16, quality: 'medium' },  // reduce particles 50%
-    { threshold: 20, quality: 'low' },     // disable post-processing
-    { threshold: 30, quality: 'fallback' } // switch to CSS animations
-  ];
-}
-```
+- Tentukan target berdasarkan runtime dan perangkat yang diminta. Untuk animasi real-time pada layar 60Hz, gunakan sekitar 16.7ms per frame sebagai acuan, bukan jaminan.
+- Ukur frame time dan penggunaan resource dengan tooling yang benar-benar tersedia.
+- Terapkan LOD atau fallback hanya jika mekanismenya ada dan bisa diubah dalam implementasi. Jangan mengklaim monitoring atau auto-scaling yang belum dibuat.
+- Tetapkan batas GPU, partikel, dan draw call per proyek setelah mengetahui perangkat dan kompleksitas scene.
 
-### Dashboard Monitoring (Mode Dev)
-
-```
-FPS: 59.8 ✓ | Frame: 14.2ms ✓ | GPU Mem: 142MB ✓ | Draw Calls: 67 ✓
-Particles: 4,200 / 10,000 | Textures: 23 | LOD: full
-────────────────────────────────────────────────────────
-⚠ Warning: Frame spike detected at 2:14 (22ms) — auto LOD → medium
-```
+Contoh dashboard atau ambang angka bersifat ilustratif; tampilkan metrik hanya jika instrumen pengukurannya tersedia.
 
 ### Checklist Aksesibilitas (WAJIB)
 
@@ -458,27 +434,19 @@ Jika semua jawaban **TIDAK** → element DIHAPUS. Tidak ada exception.
 | **HTML** | Browser playback, interactive | Full | Medium | Self-contained, responsive |
 | **Lottie JSON** | App embedding, React Native | High | Small | Vector only, no 3D |
 | **Animated SVG** | Web embedding, email-safe | High | Small | Limited filter support |
-| **MP4 (H.264)** | Social media, presentations | High | Large | Universal compatibility |
-| **WebM (VP9)** | Web embedding, smaller size | High | Medium | Better compression than MP4 |
-| **GIF** | Legacy support, simple loops | Low | Large | 256 colors, no alpha |
-| **PNG Sequence** | Post-production, compositing | Lossless | Very Large | Frame-by-frame control |
 | **APNG** | Web, better than GIF | High | Large | Alpha support, limited browser |
 
 ### Konfigurasi Export (Export Configuration)
 
 ```typescript
 interface ExportConfig {
-  format: 'html' | 'lottie' | 'svg' | 'mp4' | 'webm' | 'gif' | 'png-sequence' | 'apng';
+  format: 'html' | 'lottie' | 'svg' | 'apng';
   resolution: { width: number; height: number };
   fps: number;
   quality: 'low' | 'medium' | 'high' | 'lossless';
   
   // Format-specific
-  mp4?: { codec: 'h264' | 'h265'; bitrate: number };
   lottie?: { includeAssets: boolean; compress: boolean };
-  gif?: { colors: number; dither: boolean; loop: number };
-  pngSequence?: { namingPattern: string; startFrame: number };
-  
   // Accessibility
   includeReducedMotionVariant: boolean;
   generateStaticFallback: boolean;
@@ -487,18 +455,16 @@ interface ExportConfig {
 
 ### Export Batch (Batch Export)
 
-Mendukung export multi-format dalam satu perintah:
+Export hanya format yang diminta; jangan hasilkan varian tambahan secara default:
 
 ```bash
-msal-motion export --formats html,lottie,mp4 --preset social-media
+msal-motion export --formats lottie,svg --preset web-embed
 ```
 
 Preset tersedia:
-- `social-media`: MP4 1080x1080 + WebM + GIF
 - `web-embed`: HTML + Lottie + Animated SVG
-- `post-production`: PNG Sequence + MP4 lossless
 - `app-integration`: Lottie + Animated SVG + APNG
-- `universal`: All formats dengan balanced quality
+- `interactive`: HTML + format aset yang kompatibel dan diminta
 
 ---
 
@@ -506,7 +472,7 @@ Preset tersedia:
 
 ### Fase 1: Penerimaan Brief (Brief Intake)
 
-1. Kumpulkan kebutuhan proyek (durasi, pesan, audiens, platform)
+1. Kumpulkan kebutuhan animasi (runtime/durasi, pesan, audiens, target surface)
 2. Identifikasi design token msal-craft yang ada (jika ada)
 3. Tentukan format export utama
 4. Tetapkan batasan performa (perangkat target, kondisi jaringan)
@@ -547,7 +513,7 @@ Preset tersedia:
 
 ### Fase 6: Pengiriman (Deliver)
 
-1. Hasilkan semua format export
+1. Hasilkan hanya format yang diminta dan didukung
 2. Buat dokumentasi implementasi
 3. Sediakan panduan integrasi untuk embedding Lottie/SVG
 4. Sertakan snippet monitoring performa untuk production
@@ -574,13 +540,9 @@ Preset tersedia:
 - Teruji dengan lottie-web, lottie-react-native, lottie-ios
 - SVG statis fallback disertakan
 
-### Output Video
+### Integrasi ke Video
 
-- MP4: H.264, audio AAC, progressive scan
-- WebM: VP9, audio Opus
-- Preset resolusi: 720p, 1080p, 4K
-- Rasio aspek: 16:9, 9:16, 1:1, 4:5
-- Pembuatan thumbnail disertakan
+Motion dapat memberikan konsep gerak, storyboard, atau aset yang kompatibel untuk scene video. Jika deliverable akhirnya MP4/WebM/GIF, `msal-cinecode` menangani komposisi timeline, rendering, dan ekspor.
 
 ### Standar Kualitas Kode (Code Quality Standards)
 
@@ -612,7 +574,9 @@ Direktori ini akan diisi seiring kematangan skill. Untuk sekarang, semua pengeta
 
 ---
 
-## Referensi Perintah Cepat (Quick Start Command Reference)
+## Prompt Pola untuk Workflow Motion
+
+Perintah berikut adalah contoh prompt untuk agen, bukan executable CLI yang disediakan skill ini. Gunakan workflow atau tool proyek yang benar-benar tersedia sebelum mengklaim proses build, export, verifikasi, atau benchmark telah berjalan.
 
 ```
 msal-motion init                    # Setup project dengan DNA extraction
@@ -621,7 +585,7 @@ msal-motion dna                     # Generate/refresh Motion DNA Profile
 msal-motion concept <style>         # Generate concept proposal
 msal-motion build                   # Build animation dari approved concept
 msal-motion verify                  # Run all gates (perf, a11y, purity)
-msal-motion export --format <fmt>   # Export ke specified format
+msal-motion export --format <html|lottie|svg|apng>   # Export aset interaktif/motion
 msal-motion export --preset <name>  # Export menggunakan preset
 msal-motion debug                   # Launch timeline editor
 msal-motion benchmark               # Performance stress test
@@ -629,20 +593,21 @@ msal-motion benchmark               # Performance stress test
 
 ## Companion Skills Awareness
 
-`msal-motion` membuat animasi HTML interaktif dan export video. Orchestrator invoke motion BERSAMA companion skills untuk mencegah output slop:
+`msal-motion` menangani rancangan dan implementasi animasi interaktif/aset motion. Tidak ada companion wajib:
 
 | Companion | Motion's Role | Anti-Slop Contribution |
 |---|---|---|
-| `msal-craft` | UX integration dan design tokens | Mencegah animasi keren tapi merusak UX atau tidak accessible |
-| `msal-frontend` | Framework integration (React/Next.js) | Memastikan animasi terintegrasi dengan component lifecycle yang benar |
+| `msal-craft` | UX integration dan design tokens | Gunakan jika animasi merupakan bagian dari UI atau visual tokens/accessibility perlu dirancang. |
+| `msal-frontend` | Framework integration (React/Next.js) | Gunakan jika perubahan menyentuh integrasi framework atau component lifecycle. |
+| `msal-cinecode` | Rendering video final | Gunakan jika animasi Motion perlu menjadi bagian dari MP4/WebM/GIF yang dirender. |
 
-**Aturan**: Motion tidak boleh deliver animasi tanpa UX review dari `msal-craft` atau framework integration check dari `msal-frontend`.
+Pilih companion hanya jika panduannya mengubah deliverable. Motion tidak merender video final; serahkan tahap itu ke CineCode bila diminta.
 
 ## Related Skills
 - **msal-craft**: UI/UX, sistem desain token, dan aksesibilitas antarmuka
-- **msal-cinecode**: Pembuatan video programatik, rendering server-side ke MP4/WebM/GIF, dan batch export
+- **msal-cinecode**: Render final MP4/WebM/GIF dan pipeline video berbasis kode/data
 - **msal-frontend**: React component integration dan Next.js optimization
 
 ---
 
-*Maxilun Motion v1.0.0 — Motion design yang purposeful, performant, dan accessible. Bukan sekadar animasi, tapi komunikasi yang bergerak.*
+*Maxilun Motion v1.1.0 — Motion design yang purposeful, performant, dan accessible. Bukan sekadar animasi, tapi komunikasi yang bergerak.*

@@ -8,7 +8,7 @@ description: >
   Triggers: "/msal-diagrams", "/msal-diagram", "buat diagram", "gambar arsitektur",
   "sequence diagram", "alur kerja", "data flow diagram", "archify diagram", or system visualization tasks.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -143,14 +143,14 @@ Sebelum menyerahkan diagram, validasi aturan sintaksis berikut untuk mencegah br
 
 ## Companion Skills Awareness
 
-`msal-diagrams` memvisualisasikan sistem teknis (arsitektur, workflow, sequence). Orchestrator invoke diagrams BERSAMA companion skills untuk mencegah output slop:
+`msal-diagrams` memvisualisasikan sistem teknis (arsitektur, workflow, sequence). Jalankan mandiri untuk diagram dari deskripsi atau sumber yang diberikan; pilih companion sesuai jenis pemeriksaan yang diperlukan:
 
 | Companion | Diagrams' Role | Anti-Slop Contribution |
 |---|---|---|
-| `msal-architect` | Architecture correctness validation | Mencegah diagram visual bagus tapi arsitektur salah atau misleading |
-| `msal-craft` | Visual clarity dan design consistency | Memastikan diagram mengikuti design system dan accessible |
+| `msal-architect` | Architecture correctness validation | Gunakan bila sumber atau batas arsitektur belum jelas |
+| `msal-craft` | Visual clarity dan design consistency | Opsional untuk keterbacaan, aksesibilitas, atau konsistensi visual |
 
-**Aturan**: Diagrams tidak boleh deliver diagram arsitektur tanpa validasi dari `msal-architect` atau review visual clarity dari `msal-craft`.
+**Penggunaan companion**: Untuk diagram yang menyatakan fakta arsitektur, validasi sumber dan asumsi; libatkan `msal-architect` bila kebenaran atau batas sistem belum jelas. `msal-craft` opsional untuk keterbacaan dan konsistensi visual, dan tidak menggantikan pemeriksaan kebenaran arsitektur.
 
 ## Related Skills
 - **msal-architect**: Validasi kebenaran arsitektur sebelum visualisasi

@@ -8,7 +8,7 @@ description: >
   Triggers: "/msal-insight", "/msal-audit", "diagnosis masalah", "kenapa ini lambat",
   "root cause", "analisis performa", "audit kode", "memory leak", or debugging investigations.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -194,19 +194,19 @@ Diagnosis langkah:
 2. Identifikasi query panjang: `SELECT pid, now() - query_start AS duration, query FROM pg_stat_activity WHERE state != 'idle' ORDER BY duration DESC;`
 3. Periksa pool config aplikasi vs `max_connections` PostgreSQL:
    - Pool max harus < `max_connections - 5` (sisakan untuk admin)
-   - Idealnya: `pool_max = (CPU cores × 2) + disk spindles`
+   - Tentukan `pool_max` dari concurrency aplikasi, jumlah replika, batas `max_connections`, dan hasil pengukuran; jangan gunakan formula tetap lintas workload.
 4. Jika semua koneksi dipakai tapi query singkat: bottleneck di application throughput, bukan query — scale horizontal atau tambah replica.
 
 ## Companion Skills Awareness
 
-`msal-insight` mendiagnosis akar masalah dan audit performa. Orchestrator invoke insight BERSAMA companion skills untuk mencegah output slop:
+`msal-insight` mendiagnosis akar masalah dan audit performa. Insight dapat menyampaikan temuan dan rekomendasi secara mandiri; companion digunakan untuk tindak lanjut yang diminta:
 
 | Companion | Insight's Role | Anti-Slop Contribution |
 |---|---|---|
-| `msal-engineer` | Fix setelah diagnosis | Mencegah diagnosis akurat tapi tidak ada implementasi fix |
-| `msal-verify` | Regression testing | Memastikan fix tidak menimbulkan bug baru di masa depan |
+| `msal-engineer` | Implementasi perbaikan setelah diagnosis | Gunakan bila implementasi diminta |
+| `msal-verify` | Regression testing | Gunakan bila perubahan perlu tes regresi |
 
-**Aturan**: Insight tidak boleh deliver diagnosis tanpa action plan dari `msal-engineer` atau regression test dari `msal-verify`.
+**Penggunaan companion**: Libatkan `msal-engineer` jika pengguna meminta implementasi perbaikan, dan `msal-verify` jika perubahan perlu pengujian regresi. Diagnosis read-only tidak mensyaratkan implementasi atau tes terlebih dahulu.
 
 ## Related Skills
 - **msal-data**: Database schema, migration, indexing, dan query optimization

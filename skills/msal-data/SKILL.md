@@ -7,7 +7,7 @@ description: >
   workflows and N+1 prevention. Triggers: "/msal-data", "skema database", "migrasi",
   "indeks query", "ORM", "optimasi database", "desain tabel", or any data layer task.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -121,7 +121,7 @@ Jangan pernah rename langsung di production database.
 
 ### Connection Pooling
 - Gunakan connection pooler (PgBouncer untuk PostgreSQL, ProxySQL untuk MySQL).
-- Pool size: mulai dari `CPU cores * 2 + disk spindles`. Monitor dan adjust berdasarkan usage.
+- Pool size: gunakan default yang didukung driver/pooler, lalu sesuaikan berdasarkan jumlah replika aplikasi, `max_connections`, concurrency, dan pengukuran beban. Jangan memakai rumus universal; jumlah semua pool harus menyisakan kapasitas untuk operasi admin dan proses lain.
 - Idle timeout: 60-300s. Max lifetime: 30-60 menit (untuk mencegah stale connections).
 - Health check query: `SELECT 1` setiap 30s.
 
@@ -137,7 +137,7 @@ Jangan pernah rename langsung di production database.
 Buat index hanya jika:
 1. Kolom muncul di WHERE, JOIN, ORDER BY, atau GROUP BY clause yang frequent.
 2. Kardinalitas memadai untuk menyaring baris secara signifikan (untuk nilai dengan kardinalitas rendah/skew, gunakan partial index).
-3. Tabel cukup besar (>10K rows) sehingga sequential scan membebani buffer pool.
+3. Rencana dan metrik query menunjukkan sequential scan menjadi bottleneck untuk pola akses yang relevan. Ukuran tabel saja bukan alasan untuk menambah index.
 4. Write overhead dapat ditoleransi (setiap index menambah beban write pada INSERT/UPDATE/DELETE).
 
 ### Composite Indexes
@@ -187,14 +187,12 @@ Buat index hanya jika:
 ## 8. Pola Performa (Performance Patterns)
 
 ### Query Analysis
-- Selalu jalankan `EXPLAIN ANALYZE` (bukan hanya `EXPLAIN`) untuk melihat actual execution plan + timing.
+- Mulai dengan `EXPLAIN` untuk meninjau rencana tanpa mengeksekusi query. `EXPLAIN ANALYZE` benar-benar menjalankan statement; gunakan hanya pada query read-only atau lingkungan/data yang aman. Untuk statement mutasi, gunakan staging atau prosedur transaksi rollback yang sudah dipastikan aman dan tidak memicu efek samping eksternal.
 - Perhatikan: Seq Scan pada tabel besar, Nested Loop dengan row estimate meleset, Sort/Merge Join yang bisa diganti Hash Join.
 - Bandingkan estimated rows vs actual rows. Discrepancy >10x = statistics outdated → jalankan `ANALYZE`.
 
 ### EXPLAIN Reading Guide
-- **Seq Scan** pada tabel >100K rows → pertimbangkan index.
-- **Nested Loop** dengan outer rows × inner rows >10K → pertimbangkan Hash Join atau index pada inner table.
-- **Sort** dengan rows >10K → pertimbangkan index yang cover ORDER BY.
+- **Seq Scan**, **Nested Loop**, dan **Sort** → nilai berdasarkan latensi, jumlah baris aktual, selectivity, biaya write, dan workload; jangan menyimpulkan index perlu hanya dari ukuran tabel atau threshold tetap.
 - **HashAggregate** dengan groups >> expected → cek GROUP BY cardinality.
 
 ### Batch Operations
@@ -240,14 +238,14 @@ SET LOCAL app.current_tenant_id = '11111111-2222-3333-4444-555555555555';
 
 ## Companion Skills Awareness
 
-`msal-data` mendesain skema database, migrasi, dan optimasi query. Orchestrator invoke data BERSAMA companion skills untuk mencegah output slop:
+`msal-data` mendesain skema database, migrasi, dan optimasi query. Jalankan mandiri untuk analisis atau rancangan; pilih companion bila implementasi atau tes memang masuk lingkup:
 
 | Companion | Data's Role | Anti-Slop Contribution |
 |---|---|---|
-| `msal-engineer` | Implementasi query dan migration code | Mencegah schema bagus tapi implementasi query N+1 atau migration broken |
-| `msal-verify` | Testing data layer dan migration | Memastikan migration reversible dan query performan di CI pipeline |
+| `msal-engineer` | Implementasi query dan migration code | Gunakan saat perubahan skema membutuhkan kode aplikasi/ORM |
+| `msal-verify` | Testing data layer dan migration | Gunakan saat tes migrasi atau query diminta/diperlukan |
 
-**Aturan**: Data tidak boleh approve schema change atau migration tanpa implementation review dari `msal-engineer` atau test coverage dari `msal-verify`.
+**Penggunaan companion**: Libatkan `msal-engineer` saat skema memerlukan implementasi aplikasi/ORM, dan `msal-verify` saat migrasi atau query perlu tes. Data dapat menyusun desain dan risiko secara mandiri; jangan menyebut perubahan sudah diterapkan atau diuji tanpa bukti.
 
 ## Related Skills
 - **msal-architect**: Pemilihan pola multi-tenant dan strategi partisi data

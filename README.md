@@ -7,7 +7,7 @@
 <br/>
 
 [![CI](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml/badge.svg)](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml)
-[![Version](https://img.shields.io/badge/version-1.0.0-7c3aed?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.1.0-7c3aed?style=flat-square)](CHANGELOG.md)
 [![Skills](https://img.shields.io/badge/skills-18_specialists-06b6d4?style=flat-square)](docs/SKILLS.md)
 [![License](https://img.shields.io/badge/license-Source_Available-22c55e?style=flat-square)](LICENSE)
 [![Platform](https://img.shields.io/badge/runs_on-Claude_·_Cursor_·_Codex_·_Antigravity_·_Zed_·_Termul-white?style=flat-square)](#platform-support)
@@ -21,7 +21,7 @@
 
 ---
 
-**Maxilun** is a production-grade ecosystem of 18 specialist AI skills designed for high-performing engineering teams. Rather than a loose bundle of prompts, Maxilun provides an integrated engineering co-pilot built on a **Knowledge Graph** foundation, **four Always-On Quality Engines and three Operating Protocols**, **anti-slop intelligence with self-correction and companion-skill guidance**, and documented quality checks.
+**Maxilun** is a production-grade ecosystem of 18 specialist AI skills designed for high-performing engineering teams. Rather than a loose bundle of prompts, Maxilun provides an integrated engineering co-pilot built on a **Knowledge Graph** foundation, **four Always-On Quality Engines and three Operating Protocols**, evidence-based specialist routing, conditional companion guidance, and documented quality checks.
 
 ## Quick Install
 
@@ -41,8 +41,8 @@ Structured by real-world software engineering lifecycle — from foundational ar
 
 | # | Skill | Engineering Domain | Primary Trigger |
 |:--:|---|---|---|
-| 1 | `maxilun` | Master Orchestrator — anti-slop brain, companion-skill enforcement, self-correction, wave coordination | `/maxilun`, `/msal` |
-| 2 | `msal-knowledge-graph` | Mandatory Code Discovery — high-precision AST parser & WebGL 3D/2D visualizer (Lens) | `/msal-graph`, `/msal-trace` |
+| 1 | `maxilun` | Master Orchestrator — evidence-based routing, confidence bands, conditional companions, wave coordination | `/maxilun`, `/msal` |
+| 2 | `msal-knowledge-graph` | Code Discovery — graph-based symbol and dependency mapping with WebGL visualizer (Lens) | `/msal-graph`, `/msal-trace` |
 | 3 | `msal-scaffold` | Project Context Scaffolder — generates 10 AI-readable architecture docs in `docs/` | `/msal-scaffold`, `/msal-init` |
 | 4 | `msal-architect` | System Architecture — C4 Model, Event Storming, ADRs, deep `/msal-think` reasoning | `/msal-think`, `/msal-architect` |
 | 5 | `msal-sentinel` | Defensive Security — OWASP Top 10, STRIDE threat modeling, crypto, supply chain audit | `/msal-sentinel`, `/msal-security` |
@@ -54,8 +54,8 @@ Structured by real-world software engineering lifecycle — from foundational ar
 | 11 | `msal-deploy` | Cloud & Operations — CI/CD pipelines, multi-stage Docker, zero-downtime rollouts | `/msal-deploy` |
 | 12 | `msal-docsmith` | Technical Documentation — OpenAPI/AsyncAPI contracts, architecture ADRs, runbooks | `/msal-docsmith`, `/msal-docs` |
 | 13 | `msal-craft` | Design Systems & UI/UX — OKLCH color palettes, WCAG AAA accessibility, 4px grid | `/msal-craft`, `/msal-ui` |
-| 14 | `msal-motion` | Web Motion Design — physics-based animations, Lottie/SVG, kinetic typography | `/msal-motion` |
-| 15 | `msal-cinecode` | Programmatic Video — React components as frames, batch headless MP4/WebM render | `/msal-cinecode` |
+| 14 | `msal-motion` | Motion design — interactive browser animation, Lottie/SVG assets, kinetic typography | `/msal-motion` |
+| 15 | `msal-cinecode` | Final video rendering — code-driven MP4/WebM/GIF, data-driven and batch pipelines | `/msal-cinecode` |
 | 16 | `msal-diagrams` | System Visualization — C4, sequence, Event Storming, data-flow diagrams via Mermaid | `/msal-diagram`, `/msal-diagrams` |
 | 17 | `msal-content` | User-Facing Copywriting — landing pages, UI microcopy, error states, brand voice | `/msal-content`, `/msal-copy` |
 | 18 | `msal-seo-audit` | Technical SEO — Core Web Vitals, JSON-LD structured data, crawler readiness | `/msal-seo`, `/msal-seo-audit` |
@@ -83,9 +83,9 @@ Three operating protocols support these engines:
 
 ---
 
-## Mandatory Knowledge Graph Foundation
+## Knowledge Graph Code Discovery
 
-`msal-knowledge-graph` runs as the mandatory first phase before any code modifications:
+Use `msal-knowledge-graph` for structural or multi-file code changes when its tooling is available. Trivial isolated edits can use the fast path; if graph tooling is unavailable, use direct repository search and state that fallback:
 
 - **Python AST Scanner** — semantic AST parsing for classes, methods, and relative imports (not brittle regex)
 - **TypeScript Scanner** — line-accurate CALLS and IMPORT relationship attribution

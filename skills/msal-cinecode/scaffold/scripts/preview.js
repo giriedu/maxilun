@@ -211,7 +211,7 @@ function generatePreviewHTML(fps, width, height, durationInFrames, bundleError) 
     ${bundleError ? `errorDiv.style.display = 'block';` : ''}
 
     function getFrameHTML(frame) {
-      return `<!DOCTYPE html><html><head><style>*{margin:0;padding:0;box-sizing:border-box}body{width:${width}px;height:${height}px;overflow:hidden;background:#000}#root{width:100%;height:100%;position:relative}</style></head><body><div id="root"></div><script type="module">
+      return \`<!DOCTYPE html><html><head><style>*{margin:0;padding:0;box-sizing:border-box}body{width:${width}px;height:${height}px;overflow:hidden;background:#000}#root{width:100%;height:100%;position:relative}</style></head><body><div id="root"></div><script type="module">
         window.__CINECODE_FRAME__=\${frame};window.__CINECODE_FPS__=\${fps};window.__CINECODE_WIDTH__=\${width};window.__CINECODE_HEIGHT__=\${height};window.__CINECODE_DURATION__=\${totalFrames};
         window.useCurrentFrame=()=>window.__CINECODE_FRAME__;
         window.useVideoConfig=()=>({fps:\${fps},width:\${width},height:\${height},durationInFrames:\${totalFrames}});

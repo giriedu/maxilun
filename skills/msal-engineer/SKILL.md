@@ -8,7 +8,7 @@ description: >
   Triggers: "/msal-engineer", "tulis kode", "buat fitur", "fix bug", "refactor kode",
   "implementasikan fungsi", or any direct coding task.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -181,17 +181,17 @@ Sebelum menyerahkan kode, cek terhadap pola-pola ini. Jika >=3 terdeteksi, rewri
 
 ## Companion Skills Awareness
 
-`msal-engineer` mengimplementasi kode, fix bug, dan refactor. Orchestrator invoke engineer BERSAMA companion skills untuk mencegah output slop:
+`msal-engineer` mengimplementasi kode, fix bug, dan refactor. Jalankan mandiri untuk perubahan yang terdefinisi; libatkan companion saat domain atau risiko perubahan membutuhkannya:
 
 | Companion | Engineer's Role | Anti-Slop Contribution |
 |---|---|---|
-| `msal-craft` | UI spec dan design tokens | Mencegah implementasi UI yang tidak sesuai design system |
-| `msal-frontend` | Framework patterns (RSC, App Router) | Memastikan kode mengikuti best practices Next.js/React |
-| `msal-data` | DB implementation dan query | Mencegah implementasi query N+1 atau migration broken |
-| `msal-sentinel` | Security code review | Memastikan kode tidak membocorkan secrets atau vulnerable |
-| `antislop-code` | Code quality enforcement | Mencegah AI slop code (generic names, useless comments) |
+| `msal-craft` | UI spec dan design tokens | Gunakan saat perubahan mengimplementasikan rancangan UI |
+| `msal-frontend` | Framework patterns (RSC, App Router) | Gunakan saat perubahan memakai pola Next.js/React khusus |
+| `msal-data` | DB implementation dan query | Gunakan untuk perubahan skema atau akses data |
+| `msal-sentinel` | Security code review | Gunakan untuk perubahan pada batas kepercayaan atau kontrol keamanan |
+| `antislop-code` | Code quality enforcement | Opsional bila skill tersedia dan review pola kode diminta |
 
-**Aturan**: Engineer tidak boleh deliver kode tanpa security review dari `msal-sentinel` atau code quality check dari `antislop-code`.
+**Penggunaan companion**: Libatkan `msal-sentinel` untuk perubahan yang menyentuh batas kepercayaan atau kontrol keamanan. Gunakan `antislop-code` bila tersedia dan relevan untuk review komentar atau pola kode. Keduanya tidak menjadi gate universal; sebutkan pemeriksaan yang benar-benar dilakukan.
 
 ## Related Skills
 - **msal-data**: Database schema, migration, query optimization, dan ORM patterns

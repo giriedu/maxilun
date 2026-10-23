@@ -7,7 +7,7 @@ Thank you for your interest in contributing to Maxilun. This document covers how
 ### 1. Create the skill directory
 
 ```
-skills/maxilun-<name>/SKILL.md
+skills/msal-<name>/SKILL.md
 ```
 
 ### 2. Frontmatter template
@@ -16,7 +16,7 @@ Every SKILL.md must start with this YAML frontmatter:
 
 ```yaml
 ---
-name: maxilun-<name>
+name: msal-<name>
 description: >
   One-paragraph description of what this specialist does.
   Include trigger keywords in natural language.
@@ -82,7 +82,7 @@ python scripts/test-suite.py
 ```
 
 The test suite validates:
-- Frontmatter YAML structure on all SKILL.md files
+- Frontmatter delimiters and required name, description, version, and license fields
 - All 18 skills present and loadable
 - Purity engine compliance (no banned cliches)
 - Installer integrity
@@ -95,7 +95,7 @@ PRs that fail the test suite will not be merged.
 - **Body text**: Indonesian (Bahasa Indonesia) for SKILL.md content and user-facing documentation.
 - **Technical terms**: English (e.g., "Server Components", "ORM", "CI/CD", "frontmatter").
 - **Code blocks**: English identifiers, comments in Indonesian only when explaining non-obvious logic.
-- **Naming**: `maxilun-<noun>` for specialists, kebab-case throughout.
+- **Naming**: `msal-<noun>` for specialists, kebab-case throughout.
 - **Comments**: Explain *why*, never *what*. Delete commented-out code.
 
 ## Changelog

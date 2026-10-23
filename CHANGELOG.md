@@ -6,6 +6,19 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.1.0] — 2026-10-23
+
+### Improved
+- Replaced phrase-first routing with an ordered, evidence-based protocol for explicit commands, requested outcomes, confidence bands, mixed-domain work, and unsupported prompts.
+- Made companion skills conditional on the requested deliverable and availability in the active environment.
+- Clarified platform capability boundaries and aligned orchestrator metadata with the release version.
+- Separated Motion's interactive animation/assets from CineCode's final video rendering; removed mandatory dual outputs and companion dispatch for both skills.
+- Corrected unsafe security/database guidance, made quality gates risk-based, clarified prompt examples versus executable project scripts, and aligned package/skill version validation.
+- Updated current skill examples and documentation names, and aligned Knowledge Graph usage with its trivial-task and no-indexer fallbacks.
+- Refined Knowledge Graph Visualizer (Lens): added semantic node geometries (circles for functions, hexagons for classes/types, squares for modules/files, diamonds for routes/endpoints), layered ink-blue surfaces, copper focus outlines, adaptive label density, and unified 2D canvas / WebGL visual styling.
+
+---
+
 ## [1.0.0] — 2026-10-22
 
 ### Initial Stable Release

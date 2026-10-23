@@ -2,11 +2,11 @@
 name: msal-knowledge-graph
 description: >
   Code discovery foundation. Maps symbols, imports, caller/callee as directed graph.
-  Mandatory before any code read/edit. Triggers: "/msal-knowledge-graph", "/msal-trace",
+  Use for code discovery and dependency mapping before structural or multi-file changes. For a small isolated text edit, use direct inspection; when graph tooling is unavailable, fall back to the repository's available search/read tools. Triggers: "/msal-knowledge-graph", "/msal-trace",
   "/msal-graph", "cari kode", "di mana fungsi", "petakan dependensi", "siapa panggil",
   "relasi modul", "analisis impor", codebase lookup, navigation, pre-edit mapping.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -40,9 +40,9 @@ flowchart LR
     C --> D[Tier3]
 ```
 
-## 2. Kontrak Fondasi (Wajib bagi Semua Skill Maxilun)
+## 2. Kontrak Fondasi (Untuk Perubahan Kode yang Memerlukannya)
 
-1. **Peta Sebelum Sentuh**: Sebelum membaca atau mengubah kode mana pun, skill eksekutor (engineer, architect, insight, verify, craft, sentinel) memanggil protokol ini lebih dulu.
+1. **Peta Perubahan Struktural**: Sebelum mengubah logika, API, atau beberapa modul, petakan simbol dan relasi yang terdampak terlebih dahulu. Untuk tugas trivial gunakan jalur cepat; jika indexer tidak tersedia, gunakan pencarian langsung dan nyatakan keterbatasannya.
 2. **Jawaban Hasil Graf = Sumber Kebenaran**: Lokasi `file:line` yang terkonfirmasi graf menjadi acuan langsung eksekusi. Skill eksekutor tidak membaca ulang seluruh file jika situs simbol sudah terpetakan.
 3. **Berhenti Saat Cukup**: Begitu sumber simbol + semua situs panggilan terkonfirmasi, pencarian selesai.
 4. **Jalur Cepat Tugas Trivial**: Untuk perbaikan kecil (typo, perbaikan teks/string tunggal, ubah satu baris terisolasi tanpa pergeseran API), tahap pemetaan graf penuh dapat dilewati demi kecepatan.
@@ -148,9 +148,9 @@ Pilih bentuk cepat untuk pencarian murni; bentuk lengkap hanya saat tugas memodi
 
 ## Companion Skills Awareness
 
-KG adalah fondasi discovery, bukan output final. Semua skill lain bergantung pada KG untuk code mapping. Orchestrator invoke KG SEBELUM skill eksekutor lainnya:
+KG adalah alat discovery untuk perubahan struktural atau lintas-file, bukan prasyarat universal. Companion tidak perlu dipanggil untuk tugas trivial atau ketika direct search menjadi fallback yang memadai:
 
-**Aturan**: KG tidak menghasilkan deliverable langsung — output KG (`file:line` terkonfirmasi) menjadi input bagi `msal-engineer`, `msal-architect`, `msal-insight`, dan skill eksekutor lainnya. Tanpa KG, skill lain bekerja buta.
+**Aturan**: KG tidak menghasilkan deliverable langsung. Saat digunakan, hasilnya membantu `msal-engineer`, `msal-architect`, `msal-insight`, dan skill eksekutor lain menemukan simbol serta relasi. Jika graph tooling tidak tersedia, lakukan pencarian langsung dan nyatakan tingkat kepastiannya.
 
 ## 8. Visualisasi Graf
 
