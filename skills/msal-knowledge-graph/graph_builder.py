@@ -242,19 +242,30 @@ class GraphBuilder:
 
         for proj_name, proj_graph in self.projects.items():
             proj_comm_offset = comm_offset
+            node_id_map = {
+                node['id']: f"{proj_name}:{node['id']}"
+                for node in proj_graph.get('nodes', [])
+            }
 
             for node in proj_graph.get('nodes', []):
                 merged_node = dict(node)
+                merged_node['id'] = node_id_map[node['id']]
+                merged_node['project'] = node.get('project') or proj_name
                 if 'community' in merged_node:
                     merged_node['community'] = int(merged_node['community']) + proj_comm_offset
                 all_nodes.append(merged_node)
 
             for edge in proj_graph.get('edges', []):
-                all_edges.append(dict(edge))
+                merged_edge = dict(edge)
+                if merged_edge.get('source') in node_id_map:
+                    merged_edge['source'] = node_id_map[merged_edge['source']]
+                if merged_edge.get('target') in node_id_map:
+                    merged_edge['target'] = node_id_map[merged_edge['target']]
+                all_edges.append(merged_edge)
 
             for cid, members in proj_graph.get('communities', {}).items():
                 new_cid = str(int(cid) + proj_comm_offset)
-                merged_communities[new_cid] = members
+                merged_communities[new_cid] = [node_id_map.get(member, member) for member in members]
                 original_label = proj_graph.get('community_labels', {}).get(cid, f"Cluster {cid}")
                 merged_labels[new_cid] = f"{proj_name}: {original_label}"
 

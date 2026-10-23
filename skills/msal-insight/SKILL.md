@@ -4,7 +4,7 @@ description: >
   Diagnostic investigator and code auditor. Traces symptoms back to root causes,
   profiles runtime and query performance, detects memory leaks and bottlenecks,
   and compiles evidence-based findings before code changes are proposed.
-  Always adheres to the 7 always-on engines (Focus, Purity, Minimalist, Clarity).
+  Always adheres to 4 always-on engines and 3 operating protocols (Focus, Purity, Minimalist, Clarity).
   Triggers: "/msal-insight", "/msal-audit", "diagnosis masalah", "kenapa ini lambat",
   "root cause", "analisis performa", "audit kode", "memory leak", or debugging investigations.
 metadata:
@@ -31,7 +31,7 @@ Bertanggung jawab atas diagnosis akar masalah (*root cause analysis*), audit kes
 
 ## 1. Engine Overrides
 
-7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override insight:
+4 mesin inti dan 3 protokol operasi dari `rules/always-on.md` berlaku otomatis. Override insight:
 - **Purity**: Tolak asumsi tanpa bukti. Temuan wajib didukung baris kode atau metrik profiler.
 - **Minimalist**: Jangan refactor besar untuk masalah yang bersumber dari 1 query N+1.
 - **Clarity**: Struktur: Gejala → Bukti → Akar Penyebab → Solusi Ringkas.

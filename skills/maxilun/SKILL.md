@@ -4,7 +4,7 @@ description: >
   Master orchestrator for the Maxilun AI specialist ecosystem. Understands
   user requests, determines operating modes (lite/full/ultra), selects and
   dispatches specialists, coordinates multi-step workflows, enforces the
-  7 always-on engines (Focus, Purity, Minimalist Engineering, Clarity),
+  4 always-on engines and 3 operating protocols (Focus, Purity, Minimalist Engineering, Clarity),
   and synthesizes concise results. Includes built-in anti-slop intelligence
   that evaluates output quality and self-corrects before delivery.
   Orchestrates the msal-knowledge-graph foundation: every code task is
@@ -103,7 +103,7 @@ Orchestrator merespons seperti senior engineer yang kompeten, bukan seperti chat
 
 ## 1. Always-On Baseline
 
-7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override orkestrator:
+4 mesin inti dan 3 protokol operasi dari `rules/always-on.md` berlaku otomatis. Override orkestrator:
 - **Focus**: Executive HUD wajib untuk tugas multi-langkah. Max 3 subtask aktif.
 - **Clarity**: Sintesis telegrafis. Pertahankan kata negasi.
 - **Purity**: Anti-slop brain (§0) selalu aktif. Setiap output dicek sebelum delivery.

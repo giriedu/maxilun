@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="assets/banner.jpg" alt="Maxilun — 18 Specialist Skills · Zero AI Slop · 7 Always-On Engines" width="100%">
+<img src="assets/banner.jpg" alt="Maxilun — 18 Specialist Skills · Zero AI Slop · Four Always-On Engines and Three Operating Protocols" width="100%">
 
 <br/>
 
@@ -21,7 +21,7 @@
 
 ---
 
-**Maxilun** is a production-grade ecosystem of 18 specialist AI skills designed for high-performing engineering teams. Rather than a loose bundle of prompts, Maxilun provides an integrated engineering co-pilot built on a mandatory **Knowledge Graph** foundation, **7 Always-On Quality Engines**, **anti-slop intelligence with self-correction and companion-skill enforcement**, and **zero tolerance for AI slop**.
+**Maxilun** is a production-grade ecosystem of 18 specialist AI skills designed for high-performing engineering teams. Rather than a loose bundle of prompts, Maxilun provides an integrated engineering co-pilot built on a **Knowledge Graph** foundation, **four Always-On Quality Engines and three Operating Protocols**, **anti-slop intelligence with self-correction and companion-skill guidance**, and documented quality checks.
 
 ## Quick Install
 
@@ -62,19 +62,24 @@ Structured by real-world software engineering lifecycle — from foundational ar
 
 ---
 
-## 7 Always-On Quality Engines
+## Four Always-On Quality Engines
 
-Enforced automatically across all 18 skills, non-overridable:
+Applied across the 18 skills:
 
 | Engine | Core Responsibility |
 |---|---|
 | **Focus Engine** | Executive HUD, task decomposition, persistent subtask tracking (max 3 concurrent) |
-| **Purity Engine** | Zero AI slop — automatically purges buzzwords, fabricated claims, and empty placeholders |
-| **Minimalist Engineering** | Dependency Decision Framework, cognitive load reduction, simplicity ladder |
+| **Purity Engine** | Review for generic output, unsupported claims, and empty placeholders |
+| **Minimalist Engineering** | Simplicity ladder, root-cause fixes, deletion over addition |
 | **Clarity Engine** | Explicit technical signaling: `[CONFIRMED]`, `[INFERRED]`, `[UNCERTAIN]`, `[UNVERIFIED]` |
-| **Dependency Decision Framework** | Stdlib-first evaluation, bundle size gating, maintenance viability check before adding any dependency |
-| **Cognitive Load Reduction** | Naming as documentation, file size ceiling, nesting depth limit, explicit over implicit |
-| **Proactive Communication** | Blocker reporting, no silent failures, explicit assumptions, scope change notification |
+
+Three operating protocols support these engines:
+
+| Protocol | Guidance |
+|---|---|
+| **Dependency Decision Framework** | Stdlib-first evaluation, bundle size, maintenance viability before adding a dependency |
+| **Cognitive Load Reduction** | Naming as documentation, file size and nesting guidance, explicit over implicit |
+| **Proactive Communication** | Report blockers, avoid silent failures, state assumptions, notify about scope changes |
 
 ---
 
@@ -113,7 +118,7 @@ Enforced automatically across all 18 skills, non-overridable:
 |---|---|
 | [docs/INSTALL.md](docs/INSTALL.md) | Comprehensive installation guides, one-line scripts & verification |
 | [docs/SKILLS.md](docs/SKILLS.md) | Exhaustive triggers, capabilities, and parameters for all 18 skills |
-| [docs/ENGINES.md](docs/ENGINES.md) | Architectural specification of the 7 Always-On Engines |
+| [docs/ENGINES.md](docs/ENGINES.md) | Four Always-On Engines and three Operating Protocols |
 | [docs/EXAMPLES.md](docs/EXAMPLES.md) | Real-world engineering scenarios & multi-specialist Wave Patterns |
 | [docs/RELEASE.md](docs/RELEASE.md) | Automated GitHub Releases, tag dispatch, and versioning protocols |
 | [CHANGELOG.md](CHANGELOG.md) | Semantic version release history |

@@ -41,11 +41,12 @@ async function startPreview(options = {}) {
   if (!fs.existsSync('.cinecode')) fs.mkdirSync('.cinecode', { recursive: true });
 
   const resolvedEntryPoint = path.resolve(entryPoint).replace(/\\/g, '/');
+  const entryPointLiteral = JSON.stringify(resolvedEntryPoint);
   const previewRunnerPath = path.resolve('.cinecode', 'preview-runner.js');
   fs.writeFileSync(previewRunnerPath, `
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import * as CompModule from '${resolvedEntryPoint}';
+import * as CompModule from ${entryPointLiteral};
 
 const Comp = CompModule.default || CompModule.MyVideo || Object.values(CompModule)[0];
 window.__mountCinecode = function(container) {
@@ -135,8 +136,8 @@ window.__mountCinecode = function(container) {
     ws.on('close', () => console.log('[PREVIEW] Client disconnected'));
   });
 
-  server.listen(port, () => {
-    console.log(`\n🎬 Preview ready: http://localhost:${port}`);
+  server.listen(port, '127.0.0.1', () => {
+    console.log(`\n🎬 Preview ready: http://127.0.0.1:${port}`);
     console.log('   Press Ctrl+C to stop\n');
   });
 
@@ -156,6 +157,9 @@ function generatePreviewHTML(fps, width, height, durationInFrames, bundleError) 
   const scale = 0.5; // Preview at 50% scale
   const previewWidth = Math.round(width * scale);
   const previewHeight = Math.round(height * scale);
+  const escapedBundleError = String(bundleError || '').replace(/[&<>"']/g, (char) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[char]));
 
   return `<!DOCTYPE html>
 <html>
@@ -177,7 +181,7 @@ function generatePreviewHTML(fps, width, height, durationInFrames, bundleError) 
   </style>
 </head>
 <body>
-  <div id="error">${bundleError || ''}</div>
+  <div id="error">${escapedBundleError}</div>
   <div id="viewport">
     <iframe id="frame" srcdoc=""></iframe>
   </div>

@@ -32,7 +32,7 @@ Bertanggung jawab atas pembuatan video melalui kode: komponen visual sebagai fra
 
 ## 1. Engine Overrides
 
-7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override cinecode:
+4 mesin inti dan 3 protokol operasi dari `rules/always-on.md` berlaku otomatis. Override cinecode:
 - **Purity**: Tolak video yang hanya estetis tanpa tujuan komunikasi. Setiap scene wajib menyampaikan informasi atau emosi yang terdefinisi.
 - **Minimalist**: Native CSS animations + Canvas API > heavy video libraries. Server-side rendering > browser recording. Komponen reusable > monolithic scenes.
 - **Clarity**: Video spec = kode + parameter eksplisit (durasi, fps, resolusi). Bukan deskripsi naratif ambigu.

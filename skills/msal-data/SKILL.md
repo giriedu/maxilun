@@ -30,7 +30,7 @@ Bertanggung jawab atas desain skema yang tahan evolusi, migrasi tanpa downtime, 
 
 ## 1. Override Engine (Engine Overrides)
 
-7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override data:
+4 mesin inti dan 3 protokol operasi dari `rules/always-on.md` berlaku otomatis. Override data:
 - **Purity**: Tolak over-engineering schema (normalisasi berlebihan untuk read-heavy workload, denormalisasi tanpa justifikasi performa). Setiap kolom dan tabel wajib punya alasan eksplisit.
 - **Minimalist**: Constraint database (FK, UNIQUE, CHECK) > validasi aplikasi redundan. Satu query efisien > tiga query terpisah.
 - **Clarity**: EXPLAIN output + metrik konkret (ms, rows scanned). Tanpa klaim performa tanpa bukti.

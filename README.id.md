@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="assets/banner.jpg" alt="Maxilun — 18 Specialist Skills · Zero AI Slop · 7 Always-On Engines" width="100%">
+<img src="assets/banner.jpg" alt="Maxilun — 18 Specialist Skills · Zero AI Slop · Four Always-On Engines and Three Operating Protocols" width="100%">
 
 <br/>
 
@@ -21,7 +21,7 @@
 
 ---
 
-**Maxilun** adalah ekosistem 18 skill AI spesialis tingkat produksi untuk tim rekayasa perangkat lunak. Bukan sekadar kumpulan prompt — melainkan sistem rekayasa terpadu dengan fondasi Knowledge Graph, 7 always-on engines, orkestrator dengan anti-slop intelligence dan companion-skill enforcement, serta toleransi nol terhadap AI slop.
+**Maxilun** adalah ekosistem 18 skill AI spesialis tingkat produksi untuk tim rekayasa perangkat lunak. Maxilun menggabungkan fondasi Knowledge Graph, empat engine kualitas yang selalu aktif, tiga protokol kerja, orkestrator, dan panduan pemeriksaan kualitas.
 
 ## Instalasi Cepat
 
@@ -62,16 +62,24 @@ Disusun berdasarkan siklus rekayasa perangkat lunak dari fondasi arsitektur hing
 
 ---
 
-## 7 Mesin Selalu Aktif (Always-On Engines)
+## Empat Engine Kualitas yang Selalu Aktif
 
-Aktif tanpa jeda di seluruh 18 skill dan tidak dapat diabaikan (*non-overridable*):
+Digunakan di seluruh 18 skill:
 
 | Mesin | Fungsi Utama |
 |---|---|
 | **Focus Engine** | Executive HUD, dekomposisi tugas hierarkis, pelacakan subtask persisten |
-| **Purity Engine** | Zero AI slop — eliminasi otomatis terhadap buzzword kosong, klaim tanpa bukti, dan placeholder |
-| **Minimalist Engineering** | Dependency Decision Framework, pencegahan over-engineering, pengurangan beban kognitif |
+| **Purity Engine** | Meninjau output generik, klaim tanpa bukti, dan placeholder kosong |
+| **Minimalist Engineering** | Tangga kesederhanaan, perbaikan akar masalah, hapus sebelum menambah |
 | **Clarity Engine** | Penandaan kepastian teknis eksplisit: `[CONFIRMED]`, `[INFERRED]`, `[UNCERTAIN]`, `[UNVERIFIED]` |
+
+Tiga protokol pendukung:
+
+| Protokol | Panduan |
+|---|---|
+| **Dependency Decision Framework** | Evaluasi stdlib, ukuran bundle, dan pemeliharaan sebelum menambah dependency |
+| **Cognitive Load Reduction** | Naming sebagai dokumentasi, panduan ukuran file dan nesting, explicit over implicit |
+| **Proactive Communication** | Laporkan blocker, hindari silent failure, nyatakan asumsi dan perubahan scope |
 
 ---
 
@@ -110,7 +118,7 @@ Aktif tanpa jeda di seluruh 18 skill dan tidak dapat diabaikan (*non-overridable
 |---|---|
 | [docs/INSTALL.md](docs/INSTALL.md) | Panduan instalasi multi-platform lengkap & integrasi CLI |
 | [docs/SKILLS.md](docs/SKILLS.md) | Detail mendalam, peran teknis, dan pemicu 18 spesialis |
-| [docs/ENGINES.md](docs/ENGINES.md) | Prinsip kerja Focus, Purity, Minimalist, dan Clarity Engines |
+| [docs/ENGINES.md](docs/ENGINES.md) | Empat engine kualitas dan tiga protokol operasi |
 | [docs/EXAMPLES.md](docs/EXAMPLES.md) | Contoh skenario rekayasa nyata & orkestrasi Wave Pattern |
 | [docs/RELEASE.md](docs/RELEASE.md) | Alur rilis GitHub Release otomatis & pembaruan metadata |
 | [CHANGELOG.md](CHANGELOG.md) | Riwayat pembaruan versi ekosistem |

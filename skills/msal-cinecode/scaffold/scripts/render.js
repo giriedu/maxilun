@@ -22,9 +22,25 @@ const DEFAULT_CONFIG = {
 
 async function bundleProject(entryPoint) {
   console.log('[BUNDLE] Compiling TypeScript/React project...');
+  const runnerPath = path.resolve('.cinecode/render-entry.js');
+  const entryModule = JSON.stringify(path.resolve(entryPoint).replace(/\\/g, '/'));
+  await mkdir(path.dirname(runnerPath), { recursive: true });
+  fs.writeFileSync(runnerPath, `
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import * as CompModule from ${entryModule};
+
+const Composition = CompModule.default || CompModule.MyVideo || Object.values(CompModule)[0];
+export function mountComposition(element, props) {
+  if (!Composition) throw new Error('No composition exported');
+  const root = createRoot(element);
+  root.render(React.createElement(Composition, props));
+  return root;
+}
+`);
 
   const result = await esbuild.build({
-    entryPoints: [entryPoint],
+    entryPoints: [runnerPath],
     bundle: true,
     platform: 'browser',
     format: 'esm',
@@ -47,7 +63,12 @@ async function bundleProject(entryPoint) {
 }
 
 function generateHTML(bundlePath, config) {
-  const propsJSON = JSON.stringify(config.props || {});
+  const propsJSON = JSON.stringify(config.props || {})
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
   const fileUrl = pathToFileURL(bundlePath).href;
   return `<!DOCTYPE html>
 <html>
@@ -62,9 +83,6 @@ function generateHTML(bundlePath, config) {
 <body>
   <div id="root"></div>
   <script type="module">
-    import React from 'react';
-    import { createRoot } from 'react-dom/client';
-
     // Injected by render pipeline
     window.__CINECODE_FRAME__ = 0;
     window.__CINECODE_FPS__ = ${config.fps};
@@ -83,15 +101,12 @@ function generateHTML(bundlePath, config) {
 
     // Load bundled composition
     const module = await import('${fileUrl}');
-    const Composition = module.default || module.MyVideo || Object.values(module)[0];
-
-    if (!Composition) {
-      document.getElementById('root').innerHTML = '<h1 style="color:red;padding:40px">No composition found. Export a default component or named "MyVideo".</h1>';
+    if (typeof module.mountComposition !== 'function') {
+      document.getElementById('root').textContent = 'No composition found. Export a default component or named "MyVideo".';
       throw new Error('No composition exported');
     }
 
-    const root = createRoot(document.getElementById('root'));
-    root.render(React.createElement(Composition, window.__CINECODE_PROPS__));
+    window.__CINECODE_ROOT__ = module.mountComposition(document.getElementById('root'), window.__CINECODE_PROPS__);
   </script>
 </body>
 </html>`;

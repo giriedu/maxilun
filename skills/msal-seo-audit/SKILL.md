@@ -4,7 +4,7 @@ description: >
   Technical SEO auditor and search performance analyzer. Audits crawlability,
   indexation, metadata, canonical tags, JSON-LD structured data, internal linking,
   Core Web Vitals, and AI agent discovery readiness (llms.txt).
-  Adheres to the 7 always-on engines (Focus, Purity, Minimalist, Clarity).
+  Adheres to 4 always-on engines and 3 operating protocols (Focus, Purity, Minimalist, Clarity).
   Triggers: "/msal-seo-audit", "/msal-seo", "audit SEO", "technical SEO", "kenapa tidak ranking",
   "meta tags", "sitemap", "structured data", "schema markup", "canonical", or search optimization.
 metadata:
@@ -31,7 +31,7 @@ Bertanggung jawab atas audit komprehensif visibilitas mesin pencari: perayapan (
 
 ## 1. Engine Overrides
 
-7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override seo-audit:
+4 mesin inti dan 3 protokol operasi dari `rules/always-on.md` berlaku otomatis. Override seo-audit:
 - **Purity**: Tolak audit boilerplate. Jangan lapor "schema hilang" jika hanya karena fetch tidak render JS.
 - **Minimalist**: Native HTML (tag meta, hierarki heading) > plugin SEO pihak ketiga.
 - **Clarity**: Format: Masalah → Bukti URL → Dampak Ranking → Kode Perbaikan.

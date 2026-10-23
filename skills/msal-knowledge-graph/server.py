@@ -58,9 +58,15 @@ class MaxilunServer:
             def _get_safe_cors_origin(self) -> Optional[str]:
                 origin = self.headers.get('Origin')
                 if not origin or origin == 'null':
-                    return '*'  # local file / same-origin file viewer
+                    return None
                 parsed = urlparse(origin)
-                if parsed.hostname in ('127.0.0.1', 'localhost', server_ref.host):
+                try:
+                    origin_port = parsed.port
+                except ValueError:
+                    return None
+                if (parsed.scheme == 'http'
+                        and origin_port == server_ref.port
+                        and parsed.hostname in ('127.0.0.1', 'localhost', server_ref.host)):
                     return origin
                 return None
 
@@ -115,11 +121,12 @@ class MaxilunServer:
 
                 # Prevent untrusted external sites from triggering scan
                 origin = self.headers.get('Origin')
-                if origin and origin != 'null':
-                    parsed_origin = urlparse(origin)
-                    if parsed_origin.hostname not in ('127.0.0.1', 'localhost', server_ref.host):
-                        self.send_error(403, "Forbidden: Untrusted origin")
-                        return
+                if origin == 'null':
+                    self.send_error(403, "Forbidden: Opaque origins are not allowed")
+                    return
+                if origin and self._get_safe_cors_origin() != origin:
+                    self.send_error(403, "Forbidden: Untrusted origin")
+                    return
 
                 parsed = urlparse(self.path)
 

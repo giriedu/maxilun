@@ -33,7 +33,7 @@ Bertanggung jawab atas arsitektur frontend modern: React Server Components, Next
 
 ## 1. Override Engine (Engine Overrides)
 
-7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override frontend:
+4 mesin inti dan 3 protokol operasi dari `rules/always-on.md` berlaku otomatis. Override frontend:
 - **Purity**: Tolak premature client components ("use client" tanpa interaktivitas nyata). Tolak state management library jika Context + server state cukup.
 - **Minimalist**: Server Component default. Client boundary sekecil mungkin. Framework-native patterns > third-party abstraction.
 - **Clarity**: Decision matrix untuk setiap pilihan arsitektural. Bukan "best practice" dogmatis, tapi trade-off analysis kontekstual.
@@ -223,11 +223,11 @@ Jika tidak pakai tRPC:
 
 ---
 
-## 8. Frontend Anti-Pattern Detection
+## 8. Frontend Quality Review
 
-Integrasi dengan purity-catalog.md v2.0 untuk automated detection of frontend-specific code smells and architectural issues.
+Gunakan daftar berikut sebagai checklist review agent untuk risiko frontend. Repository ini tidak menyertakan scanner otomatis untuk temuan-temuan ini.
 
-### React/Next.js Specific Detectors
+### React/Next.js Review Checks
 
 | ID | Rule | Severity | Context |
 |----|------|----------|---------|
@@ -248,37 +248,19 @@ Integrasi dengan purity-catalog.md v2.0 untuk automated detection of frontend-sp
 | HYD-001 | Date/time rendering tanpa hydration-safe pattern | WARNING | Use suppressHydrationWarning atau client-only |
 | HYD-002 | localStorage/window access tanpa client boundary | ERROR | Wrap in useEffect atau "use client" |
 
-### Integration dengan msal-craft Audit
+### Review with msal-craft
 
-Frontend detectors automatically included saat run `/msal-craft audit`:
-```bash
-/msal-craft audit src/app/           # Scan app directory for RSC issues
-/msal-craft audit --framework next   # Explicit framework detection
-/msal-craft audit --fix              # Auto-fix safe issues (imports, memoization)
-```
+Minta `/msal-craft audit` meninjau folder/source yang diberikan dan sertakan konteks Next.js. Temuan ini adalah hasil review agent, bukan hasil CLI scan.
 
-### CI Integration Example
+### CI Integration
 
-```yaml
-# .github/workflows/frontend-audit.yml
-- name: Frontend Architecture Audit
-  run: |
-    node scripts/audit.js src/ --strict --report github
-  env:
-    MAXILUN_FRAMEWORK: nextjs
-    MAXILUN_FAIL_ON_SEVERITY: ERROR
-```
+Belum tersedia executable atau workflow CI untuk menjalankan checklist ini. Tambahkan CI gate hanya setelah ada scanner terimplementasi dengan argumen dan keluaran yang terdokumentasi.
 
-### Auto-fix Capabilities
+### Fix Guidance
 
-Beberapa issues bisa di-auto-fix dengan `--fix`:
-- Convert useEffect data fetching → Server Component fetch
-- Add missing Suspense boundaries
-- Memoize inline functions/objects
-- Convert barrel imports → direct imports
-- Add missing accessibility attributes
+Temuan dapat disertai usulan perbaikan. Terapkan perubahan setelah pengguna meminta implementasi dan setelah memeriksa batasan arsitektur serta accessibility.
 
-Unsafe fixes require manual review.
+Perubahan yang mengubah batas Server/Client Component, data flow, atau perilaku pengguna memerlukan review manual.
 
 ---
 
@@ -296,7 +278,7 @@ Unsafe fixes require manual review.
 **Aturan**: Jika Anda di-invoke tanpa companion yang relevan, nyatakan: "Frontend architecture siap, tapi UI/copy perlu dicek via msal-craft/msal-content untuk mencegah slop." Jangan assume companion sudah jalan.
 
 ## Related Skills
-- **msal-craft**: UI/UX design systems, PRODUCT.md, iterative commands, detector integration
+- **msal-craft**: UI/UX design systems, PRODUCT.md, iterative commands, and agent-assisted quality review
 - **msal-motion**: Animation, motion design, kinetic typography
 - **msal-verify**: Test generation and validation for frontend implementations
 - **msal-content**: User-facing copy, microcopy, brand voice (companion untuk halaman dengan teks)

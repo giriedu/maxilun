@@ -30,7 +30,7 @@ Bertanggung jawab atas pipeline CI/CD yang reliabel, containerization efisien, m
 
 ## 1. Override Engine (Engine Overrides)
 
-7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override deploy:
+4 mesin inti dan 3 protokol operasi dari `rules/always-on.md` berlaku otomatis. Override deploy:
 - **Purity**: Tolak over-engineering infra (Kubernetes untuk single-server app, microservices CI untuk monorepo sederhana). Infra mengikuti kebutuhan aplikasi, bukan tren.
 - **Minimalist**: Pipeline stage minimal yang memenuhi quality gate. Image Docker sekecil mungkin. Secret injection via platform native, bukan file `.env` di image.
 - **Clarity**: Runbook operasional dengan langkah eksplisit. Alert message berisi konteks + aksi. Log structured dengan field konsisten.

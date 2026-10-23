@@ -17,8 +17,14 @@ Saat user trigger command di atas, AI agent HARUS menjalankan:
 # - Di workspace repo: python skills/maxilun-knowledge-graph/cli.py
 # - Di instalasi agen (~/.agents/skills atau ~/.claude/skills): python <skills_dir>/maxilun-knowledge-graph/cli.py
 
-# Single project (paling umum):
+# Scan folder project dan langsung tampilkan grafnya. Impor graph.json manual tidak diperlukan:
 python path/to/maxilun-knowledge-graph/cli.py scan . --view
+
+# Scan folder lain:
+python path/to/maxilun-knowledge-graph/cli.py scan "<project-folder>" --view
+
+# Tanpa argumen path, scan folder kerja saat ini:
+python path/to/maxilun-knowledge-graph/cli.py scan --view
 
 # Multi-project:
 python path/to/maxilun-knowledge-graph/cli.py scan ./proj1 ./proj2 --name "Combined" --view
@@ -30,7 +36,7 @@ python path/to/maxilun-knowledge-graph/cli.py scan . --view --port 9000
 > **Resolusi Path**: Gunakan path relatif terhadap lokasi folder skill (`cli.py` berada di dalam folder `maxilun-knowledge-graph/`), atau set `MAXILUN_KG_CLI` secara mandiri jika ingin memanggilnya berulang kali dalam sesi terminal.
 > Jika `cli.py` tidak ditemukan, pastikan Python 3.8+ terpasang dan Maxilun terinstall dengan benar.
 
-Browser akan otomatis terbuka di `http://127.0.0.1:8765`. Server berjalan hingga Ctrl+C.
+Browser akan otomatis terbuka di `http://127.0.0.1:8765` dan memuat graf hasil scan secara langsung. Server berjalan hingga Ctrl+C. Jangan membuka `lens.html` secara langsung untuk scan: browser tidak boleh membaca folder lokal tanpa proses CLI. Impor JSON hanya untuk graf yang sudah ada.
 
 ## API Endpoints (untuk integrasi programatik)
 | Endpoint | Method | Deskripsi |

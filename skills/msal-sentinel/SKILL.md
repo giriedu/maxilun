@@ -5,7 +5,7 @@ description: >
   implements hardened authentication (JWT/sessions) and authorization (RBAC/ABAC),
   enforces cryptographic integrity (AEAD encryption, KDF, constant-time checks),
   enforces input validation at trust boundaries, and safeguards secrets and privacy.
-  Always adheres to the 7 always-on engines (Focus, Purity, Minimalist, Clarity).
+  Always adheres to 4 always-on engines and 3 operating protocols (Focus, Purity, Minimalist, Clarity).
   Triggers: "/msal-sentinel", "/msal-security", "audit keamanan", "autentikasi", "otorisasi",
   "validasi input", "cegah sql injection", "xss", "csrf", "rahasia api",
   "kriptografi", "enkripsi", "AES", "hashing", "timing attack", "sertifikat TLS", or security tasks.
@@ -33,7 +33,7 @@ Bertanggung jawab atas postur keamanan aplikasi, arsitektur autentikasi & otoris
 
 ## 1. Engine Overrides
 
-7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override sentinel:
+4 mesin inti dan 3 protokol operasi dari `rules/always-on.md` berlaku otomatis. Override sentinel:
 - **Purity**: Tolak security theater (checklist generik tanpa relevansi codebase).
 - **Minimalist**: Kripto native (`crypto.subtle`, Web Crypto) > dependency wrapper berat.
 - **Clarity**: Format temuan: Nama Kerentanan → Dampak → Lokasi Baris → Kode Perbaikan.

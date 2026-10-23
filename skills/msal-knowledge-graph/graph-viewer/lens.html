@@ -389,6 +389,15 @@ canvas {
 .preset-section {
   margin-top: 24px; display: flex; flex-direction: column; gap: 8px; width: 100%;
 }
+.scan-command {
+  display: grid; gap: 6px; width: 100%; margin: 18px 0 2px;
+  padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px;
+  background: rgba(255,255,255,0.025); color: var(--text-dim); font-size: 11px;
+  text-align: left;
+}
+.scan-command code { color: #a5d8ff; font-family: ui-monospace, 'Cascadia Code', monospace; }
+.preset-count { color: var(--text-muted); font: 10px ui-monospace, 'Cascadia Code', monospace; white-space: nowrap; }
+.btn:disabled { cursor: not-allowed; opacity: 0.4; }
 .preset-btn {
   width: 100%; padding: 9px 14px; border-radius: 10px;
   border: 1px solid var(--border); background: rgba(255, 255, 255, 0.02);
@@ -493,7 +502,7 @@ canvas {
     <button class="btn" id="btn-walk" onclick="toggleWalkMode()">✈ Fly / Walkthrough</button>
     <button class="btn" id="btn-cruise" onclick="toggleCruiseMode()">▶ Autopilot Tour</button>
     <div class="v-sep"></div>
-    <button class="btn" id="btn-particles" onclick="toggleEdgeParticles()">✦ Particles: ON</button>
+    <button class="btn" id="btn-particles" onclick="toggleEdgeParticles()">✦ Particles: OFF</button>
     <button class="btn" id="btn-isolate" style="display:none;" onclick="clearIsolation()">✕ Clear Filter</button>
   </div>
 
@@ -551,31 +560,36 @@ canvas {
 <!-- DROP ZONE / PRESET SELECTOR -->
 <div id="drop-zone">
   <div class="glass drop-card interactive">
-    <div style="font-size:11px;letter-spacing:0.25em;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">Maxilun Ecosystem</div>
-    <div class="drop-title">MAXILUN</div>
-    <div class="drop-sub">Multi-Project Code Knowledge Graph Visualizer</div>
+    <div style="font-size:11px;letter-spacing:0.18em;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">Project graph</div>
+    <div class="drop-title">Open a codebase</div>
+    <div class="drop-sub">Scan a project folder with the Knowledge Graph CLI. The live result opens here automatically.</div>
+
+    <div class="scan-command">
+      <code>python skills/msal-knowledge-graph/cli.py scan . --view</code>
+      <span>Run from the repository root. Replace <code>.</code> with another folder to scan it.</span>
+    </div>
 
     <div class="drop-box" id="drop-target" onclick="document.getElementById('file-input').click()"
          ondrop="handleFileDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
       <div style="font-size:32px;margin-bottom:8px;color:var(--primary);">◈</div>
-      <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Drop .maxilun/graph.json here</div>
-      <div style="font-size:11px;color:var(--text-muted);">or click to browse • Multi-project supported</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Import an existing graph</div>
+      <div style="font-size:11px;color:var(--text-muted);">Drop a graph JSON file or click to browse</div>
     </div>
     <input type="file" id="file-input" accept=".json" multiple style="display:none" onchange="handleFileSelectMulti(event)">
 
     <div class="preset-section">
-      <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted);margin-bottom:2px;">Built-in Architectures</div>
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted);margin-bottom:2px;">Sample data · not a project scan</div>
       <button class="preset-btn" onclick="loadPreset('maxilun')">
         <span>🚀 <strong>Maxilun Core Engine</strong></span>
-        <span style="font-family:ui-monospace,'Cascadia Code',monospace;font-size:10px;color:var(--cyan);">18 nodes · 28 edges</span>
+        <span class="preset-count" id="preset-count-maxilun"></span>
       </button>
       <button class="preset-btn" onclick="loadPreset('ecommerce')">
         <span>⚡ <strong>Microservices E-Commerce</strong></span>
-        <span style="font-family:ui-monospace,'Cascadia Code',monospace;font-size:10px;color:var(--amber);">24 nodes · 42 edges</span>
+        <span class="preset-count" id="preset-count-ecommerce"></span>
       </button>
       <button class="preset-btn" onclick="loadPreset('agent')">
         <span>🧠 <strong>Autonomous Agent Memory</strong></span>
-        <span style="font-family:ui-monospace,'Cascadia Code',monospace;font-size:10px;color:var(--primary);">20 nodes · 35 edges</span>
+        <span class="preset-count" id="preset-count-agent"></span>
       </button>
     </div>
   </div>
@@ -612,11 +626,11 @@ const EDGE_COLORS = {
 // ═══════════════════════════════════════════════════════════════════
 let GRAPH = null;
 let PROJECTS = []; // Multi-project support
-let currentMode = '3d'; // '3d' or '2d'
+let currentMode = '2d'; // '3d' or '2d'
 let selectedNode = null;
 let hoveredNode = null;
 let activeIsolationCluster = null;
-let particlesEnabled = true;
+let particlesEnabled = false;
 
 // 3D Camera State
 let camOrbit = { rx: 0.35, ry: 0.1, dist: 12.0, tx: 0, ty: 0, autoRotate: true };
@@ -1535,6 +1549,8 @@ function render2D(timeSec) {
   });
 
   // 3. Draw Nodes
+  const labelDegreeCutoff = cam2D.zoom >= 2.1 ? 1 : cam2D.zoom >= 1.35 ? 4 : 8;
+
   GRAPH.nodes.forEach(n => {
     const isSel = selectedNode && selectedNode.id === n.id;
     const [r, g, b] = n._col || [0.55, 0.36, 0.96];
@@ -1558,6 +1574,9 @@ function render2D(timeSec) {
     ctx2D.beginPath();
     ctx2D.arc(n._x2, n._y2, radius, 0, Math.PI * 2);
     ctx2D.fill();
+
+    const isHovered = hoveredNode && hoveredNode.id === n.id;
+    if(!isSel && !isHovered && (n.degree || 0) < labelDegreeCutoff) return;
 
     // Node Label
     ctx2D.globalCompositeOperation = 'source-over';
@@ -1621,7 +1640,7 @@ function normalizeGraphData(raw, projectName) {
       degree: n.degree || 0,
       confidence: n.confidence || 'EXTRACTED',
       snippet: n.snippet || generateMockSnippet(n.label || id, n.type || 'function'),
-      project: projName,
+      project: n.project || projName,
       _x: 0, _y: 0, _z: 0,
       _x2: 0, _y2: 0, _vx2: 0, _vy2: 0,
       _r: 0.065, _col: null, _glow: 0.7
@@ -1849,7 +1868,7 @@ function updateLabels3D() {
   labelLayer.style.display = 'block';
 
   const W = cv3D.width, H = cv3D.height;
-  const maxLabels = 60;
+  const maxLabels = camOrbit.dist < 7 ? 20 : 10;
   const projected = [];
 
   GRAPH.nodes.forEach(n => {
@@ -1885,7 +1904,7 @@ function updateLabels3D() {
     el.style.opacity = p.isSelected || p.isHovered ? '1' : String(Math.max(0.3, Math.min(0.85, 1.0 - p.priority * 0.0001)));
     el.classList.toggle('selected', p.isSelected);
 
-    if(p.node.project) {
+    if(p.node.project && document.getElementById('st-projects-pill').style.display !== 'none' && (p.isSelected || p.isHovered)) {
       el.textContent = p.node.label.slice(0, 20) + ' ';
       const tag = document.createElement('span');
       tag.className = 'project-tag';
@@ -2072,6 +2091,9 @@ function setMode(m) {
     document.getElementById('btn-mode-3d').className = 'btn btn-active';
     document.getElementById('btn-mode-2d').className = 'btn';
   } else {
+    camWalk.active = false;
+    document.getElementById('flight-hud').classList.remove('active');
+    document.getElementById('btn-walk').classList.remove('btn-active');
     cv3D.style.display = 'none';
     cv2D.style.display = 'block';
     document.getElementById('btn-mode-3d').className = 'btn';
@@ -2081,6 +2103,7 @@ function setMode(m) {
 }
 
 function toggleWalkMode() {
+  if(currentMode !== '3d') setMode('3d');
   camWalk.active = !camWalk.active;
   document.getElementById('btn-walk').classList.toggle('btn-active', camWalk.active);
   document.getElementById('flight-hud').classList.toggle('active', camWalk.active);
@@ -2424,7 +2447,11 @@ function updateStatsUI() {
 
 function loadGraph(raw) {
   PROJECTS = [];
+  selectedNode = null;
+  hoveredNode = null;
   addProjectGraph(raw, raw.name || 'Default Project');
+  hideDropZone();
+  setMode('2d');
 }
 
 function isolateCluster(cid, el) {
@@ -2607,6 +2634,14 @@ const PRESET_AGENT = {
   ]
 };
 
+function updatePresetCounts() {
+  const presets = { maxilun: PRESET_MAXILUN, ecommerce: PRESET_ECOMMERCE, agent: PRESET_AGENT };
+  Object.entries(presets).forEach(([key, graph]) => {
+    const count = document.getElementById(`preset-count-${key}`);
+    if(count) count.textContent = `${graph.nodes.length} nodes · ${graph.edges.length} edges`;
+  });
+}
+
 // ═══════════════════════════════════════════════════════════════════
 //  MAIN ANIMATION ENGINE
 // ═══════════════════════════════════════════════════════════════════
@@ -2628,7 +2663,9 @@ function masterLoop() {
 // BOOT ENGINE
 initGL();
 
-// Try loading from API first (when served via server.py), fallback to preset
+// Load a scanned graph when the CLI server provides one. Examples stay opt-in.
+setMode('2d');
+updatePresetCounts();
 (async function bootLoad() {
   try {
     const resp = await fetch('/api/graph');
@@ -2641,7 +2678,7 @@ initGL();
       }
     }
   } catch(e) {}
-  loadPreset('maxilun');
+  showToast('No scanned graph found. Run the CLI command shown to scan a project folder.');
 })();
 
 requestAnimationFrame(masterLoop);

@@ -1,6 +1,6 @@
-# Tujuh Mesin Wajib (Always-On Engines)
+# Four Always-On Engines and Three Operating Protocols
 
-Ketujuh mesin ini **bukan skill opsional yang harus dipanggil secara terpisah**, melainkan fondasi aturan yang otomatis berjalan di setiap respon dan di seluruh spesialis Maxilun.
+Empat engine pertama adalah fondasi kualitas. Tiga bagian berikutnya adalah protokol kerja pendukung; semuanya tercantum di `rules/always-on.md`.
 
 ## 1. Focus Engine
 
@@ -27,13 +27,13 @@ Ketujuh mesin ini **bukan skill opsional yang harus dipanggil secara terpisah**,
 
 ---
 
-## Engine 5-7: Protokol Pendukung
+## Three Operating Protocols
 
-Selain engine 1-4 di atas, terdapat 3 engine tambahan (5-7) yang juga aktif otomatis:
+Bagian ini menetapkan kebiasaan kerja pendukung dan bukan engine terpisah:
 
-- **5. Dependency Decision Framework** — Checklist 5 langkah sebelum menambah dependency baru.
-- **6. Cognitive Load Reduction** — Batas ukuran file, kedalaman nesting, dan naming convention.
-- **7. Proactive Communication Rules** — Laporkan blocker segera, no silent failures, asumsi eksplisit.
+- **Dependency Decision Framework** — Checklist 5 langkah sebelum menambah dependency baru.
+- **Cognitive Load Reduction** — Batas ukuran file, kedalaman nesting, dan naming convention.
+- **Proactive Communication Rules** — Laporkan blocker segera, no silent failures, asumsi eksplisit.
 
 ---
 

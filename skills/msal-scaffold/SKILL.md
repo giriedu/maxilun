@@ -45,7 +45,7 @@ Tanpa konteks tertulis, setiap AI session dimulai dari nol. Dengan `docs/` yang 
 
 ## 1. Engine Overrides
 
-7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override scaffold:
+4 mesin inti dan 3 protokol operasi dari `rules/always-on.md` berlaku otomatis. Override scaffold:
 - **Purity**: Dokumen yang dihasilkan harus berisi fakta konkret project ini — bukan template generik yang copy-paste dari mana saja. Setiap placeholder `[...]` wajib diisi atau ditandai `[TBD: alasan]`.
 - **Minimalist**: Tidak semua dokumen harus panjang. PRD 1 halaman lebih baik dari PRD 10 halaman yang tidak dibaca. Setiap bagian harus justify keberadaannya.
 - **Clarity**: Gunakan sinyal `[CONFIRMED]` untuk fakta yang sudah fix, `[TBD]` untuk yang belum diputuskan, `[ASSUMED]` untuk asumsi yang belum divalidasi.

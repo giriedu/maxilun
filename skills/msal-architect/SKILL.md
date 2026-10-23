@@ -6,7 +6,7 @@ description: >
   migration strategies, multi-tenancy, technology selection, threat modeling,
   capacity planning, and evolutionary architecture validation. Powered by deep
   multi-hypothesis reasoning (/msal-think) with strict boundary enforcement.
-  Adheres to the 7 always-on engines. Triggers: "/msal-architect", "/msal-think",
+  Adheres to 4 always-on engines and 3 operating protocols. Triggers: "/msal-architect", "/msal-think",
   "rancang arsitektur", "analisis dependensi", "kontrak API", "batas modul",
   "dampak perubahan", "/migration", "/tech-select", "capacity planning",
   "multi-tenant", or major structural decisions.
@@ -66,7 +66,7 @@ Tidak semua keputusan butuh /msal-think penuh:
 
 ## 1. Engine Overrides
 
-7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override arsitek:
+4 mesin inti dan 3 protokol operasi dari `rules/always-on.md` berlaku otomatis. Override arsitek:
 - **Purity**: Tolak buzzword architecture. Event-sourcing hanya jika invarian audit/replay terpenuhi sesuai kriteria Bagian 10. Microservices hanya jika friction nyata muncul sesuai anti-pattern catalog.
 - **Minimalist**: Tolak folder berjenjang 5 lapis untuk logika yang muat 1 berkas. **Counterweight eksplisit**: jika Minimalist bertentangan dengan Security Posture atau Multi-Tenancy isolation, keamanan menang. Document trade-off di ADR.
 - **Clarity**: Tabel perbandingan + matriks trade-off. Tanpa narasi berbunga-bunga. Skill ini sendiri harus mengikuti prinsip ini — gunakan tabel ringkas wherever possible.

@@ -27,7 +27,9 @@ $Targets = @(
 foreach ($target in $Targets) {
     if (Test-Path $target.SkillsPath) {
         $skillsDirs = Get-ChildItem -Path $target.SkillsPath -Directory -ErrorAction SilentlyContinue | Where-Object {
-            $_.Name -like "maxilun*" -or $_.Name -like "msal*"
+            ($_.Name -eq "maxilun" -or $_.Name -like "maxilun-*" -or $_.Name -like "msal-*") -and
+            (Test-Path (Join-Path $_.FullName "SKILL.md")) -and
+            ((Get-Content (Join-Path $_.FullName "SKILL.md") -Raw -ErrorAction SilentlyContinue) -match '(?m)^  ecosystem:\s*maxilun\s*$')
         }
         if ($skillsDirs) {
             foreach ($dir in $skillsDirs) {
@@ -40,12 +42,18 @@ foreach ($target in $Targets) {
 
     if ($target.RulesPath -and (Test-Path $target.RulesPath)) {
         $ruleFiles = Get-ChildItem -Path $target.RulesPath -File -ErrorAction SilentlyContinue | Where-Object {
-            $_.Name -match "maxilun|always-on|code-hygiene|purity-catalog"
+            $_.Name -in @("always-on.md", "code-hygiene.md", "purity-catalog.md")
         }
         if ($ruleFiles) {
             foreach ($file in $ruleFiles) {
                 $content = Get-Content -Path $file.FullName -Raw -ErrorAction SilentlyContinue
-                if ($content -match "(?i)(maxilun|msal)") {
+                $ownedRule = switch ($file.Name) {
+                    "always-on.md" { $content -match '(?m)^# (Tujuh Mesin Wajib Maxilun|Four Always-On Engines and Three Operating Protocols|Maxilun Always-On)' }
+                    "code-hygiene.md" { $content -match '(?m)^# Maxilun Code Hygiene Rules' }
+                    "purity-catalog.md" { $content -match '(?m)^# Maxilun Purity Catalog' }
+                    default { $false }
+                }
+                if ($ownedRule) {
                     Remove-Item -Path $file.FullName -Force
                 }
             }

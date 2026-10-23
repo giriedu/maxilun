@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "🌑 Installing Maxilun Skill Ecosystem (16 Specialists + 4 Always-On Engines)..."
+echo "🌑 Installing Maxilun Skill Ecosystem (18 Specialist Skills + 4 Always-On Engines)..."
 echo ""
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -36,7 +36,7 @@ check_python() {
     done
     echo "⚠️  Python 3.8+ not found. Knowledge Graph visualizer (/graph) will be unavailable."
     echo "   Install Python from https://www.python.org/downloads/ and re-run this installer."
-    echo "   All other 16 skills work without Python."
+    echo "   Other Maxilun skills work without Python."
     return 1
 }
 check_python || true
@@ -150,7 +150,7 @@ verify_ok=true
 for loc_entry in "${installed_to[@]}"; do
     target_dir="${loc_entry#*: }"
     platform_label="${loc_entry%%:*}"
-    skill_count=$(find "$target_dir" -maxdepth 2 -path "*/msal*/SKILL.md" 2>/dev/null | wc -l)
+    skill_count=$(find "$target_dir" -maxdepth 2 \( -path "*/maxilun/SKILL.md" -o -path "*/msal-*/SKILL.md" \) 2>/dev/null | wc -l)
     if [ "$skill_count" -ge 18 ]; then
         echo "  ✅ ${platform_label}: ${skill_count}/18 skills verified"
     else

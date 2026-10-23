@@ -3,7 +3,7 @@ name: msal-verify
 description: >
   Quality assurance and verification specialist. Executes automated testing,
   linting, type-checking, build validation, regression testing, and verification proofs.
-  Ensures tasks are completed with concrete evidence, not assumptions. Adheres to the 7 always-on engines.
+  Ensures tasks are completed with concrete evidence, not assumptions. Adheres to 4 always-on engines and 3 operating protocols.
   Triggers: "/msal-verify", "/msal-test", "jalankan tes", "cek build", "type check",
   "lint kode", "uji regresi", "validasi perubahan", or verification before shipping.
 metadata:
@@ -30,7 +30,7 @@ Bertanggung jawab atas pembuktian kebenaran kode: menjalankan tes otomatis, peme
 
 ## 1. Engine Overrides
 
-7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override verify:
+4 mesin inti dan 3 protokol operasi dari `rules/always-on.md` berlaku otomatis. Override verify:
 - **Purity**: Dilarang klaim "kode benar" tanpa eksekusi tes. Tes palsu = pelanggaran.
 - **Minimalist**: 3 tes edge case > 50 tes boilerplate.
 - **Clarity**: Output langsung ke pesan error, stack trace, exit code.

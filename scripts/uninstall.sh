@@ -27,26 +27,36 @@ for entry in "${targets[@]}"; do
     IFS=':' read -r name skills_dir rules_dir <<< "$entry"
     
     if [ -d "$skills_dir" ]; then
-        maxilun_skills=$(find "$skills_dir" -maxdepth 1 -type d \( -name "maxilun*" -o -name "msal*" \) 2>/dev/null)
-        if [ -n "$maxilun_skills" ]; then
-            for skill_path in $maxilun_skills; do
-                rm -rf "$skill_path"
-            done
+        removed_skills=0
+        while IFS= read -r -d '' skill_path; do
+            if [ -f "$skill_path/SKILL.md" ] && grep -Eq '^  ecosystem:[[:space:]]*maxilun[[:space:]]*$' "$skill_path/SKILL.md"; then
+                rm -rf -- "$skill_path"
+                removed_skills=$((removed_skills + 1))
+            fi
+        done < <(find "$skills_dir" -mindepth 1 -maxdepth 1 -type d \( -name "maxilun" -o -name "maxilun-*" -o -name "msal-*" \) -print0 2>/dev/null)
+        if [ "$removed_skills" -gt 0 ]; then
             removed+=("$name (skills): $skills_dir")
-            echo "  Removed Maxilun/MSAL skills from: $skills_dir"
+            echo "  Removed $removed_skills owned Maxilun skill(s) from: $skills_dir"
         fi
     fi
     
     if [ -n "$rules_dir" ] && [ -d "$rules_dir" ]; then
-        maxilun_rules=$(find "$rules_dir" -maxdepth 1 -name "*maxilun*" -o -name "always-on.md" -o -name "code-hygiene.md" -o -name "purity-catalog.md" 2>/dev/null)
-        if [ -n "$maxilun_rules" ]; then
-            for rule_file in $maxilun_rules; do
-                if grep -qi "maxilun" "$rule_file" 2>/dev/null; then
-                    rm -f "$rule_file"
-                fi
-            done
+        removed_rules=0
+        while IFS= read -r -d '' rule_file; do
+            case "$(basename "$rule_file")" in
+                always-on.md) marker='^# (Tujuh Mesin Wajib Maxilun|Four Always-On Engines and Three Operating Protocols|Maxilun Always-On)' ;;
+                code-hygiene.md) marker='^# Maxilun Code Hygiene Rules' ;;
+                purity-catalog.md) marker='^# Maxilun Purity Catalog' ;;
+                *) continue ;;
+            esac
+            if grep -Eq "$marker" "$rule_file" 2>/dev/null; then
+                rm -f -- "$rule_file"
+                removed_rules=$((removed_rules + 1))
+            fi
+        done < <(find "$rules_dir" -maxdepth 1 -type f \( -name "always-on.md" -o -name "code-hygiene.md" -o -name "purity-catalog.md" \) -print0 2>/dev/null)
+        if [ "$removed_rules" -gt 0 ]; then
             removed+=("$name (rules): $rules_dir")
-            echo "  Removed Maxilun rules from: $rules_dir"
+            echo "  Removed $removed_rules owned Maxilun rule file(s) from: $rules_dir"
         fi
     fi
 done

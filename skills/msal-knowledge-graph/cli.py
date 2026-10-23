@@ -3,7 +3,7 @@
 Maxilun Knowledge Graph CLI
 
 Usage:
-    python cli.py scan <path> [<path2> ...] [--name NAME] [--view] [-o <output.json>]
+    python cli.py scan [<path> ...] [--name NAME] [--view] [-o <output.json>]
     python cli.py query <operator> <symbol> [--json] [--graph <graph.json>] [--path <path>]
     python cli.py serve [--port PORT] [--open] [--graph <graph.json>]
     python cli.py export <path> <output.json>
@@ -295,7 +295,7 @@ def main():
 
     # scan
     scan_parser = subparsers.add_parser('scan', help='Scan codebase and build knowledge graph')
-    scan_parser.add_argument('paths', nargs='+', help='Project path(s) to scan')
+    scan_parser.add_argument('paths', nargs='*', default=['.'], help='Project path(s) to scan (default: current folder)')
     scan_parser.add_argument('--name', '-n', help='Name for the first project')
     scan_parser.add_argument('--view', '-v', action='store_true', help='Open visualizer in browser')
     scan_parser.add_argument('--port', '-p', type=int, default=8765, help='Server port (default: 8765)')

@@ -3,7 +3,7 @@ name: msal-docsmith
 description: >
   Technical documentation specialist for READMEs, API specifications (OpenAPI/Swagger),
   changelogs, operational runbooks, and migration guides. Writes precise, authoritative,
-  no-fluff documentation designed for engineers. Adheres to the 7 always-on engines.
+  no-fluff documentation designed for engineers. Adheres to 4 always-on engines and 3 operating protocols.
   Triggers: "/msal-docsmith", "/msal-docs", "tulis README", "dokumentasi API", "buat changelog",
   "panduan migrasi", "spesifikasi teknis", or developer documentation tasks.
 metadata:
@@ -30,7 +30,7 @@ Bertanggung jawab atas penyusunan dokumentasi teknis berkualitas tinggi: README 
 
 ## 1. Engine Overrides
 
-7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override docsmith:
+4 mesin inti dan 3 protokol operasi dari `rules/always-on.md` berlaku otomatis. Override docsmith:
 - **Purity**: Tolak basa-basi promosi di dokumen teknis. Tunduk pada `rules/purity-catalog.md`.
 - **Minimalist**: 1 baris perintah cukup jelas = tidak perlu narasi 3 paragraf.
 

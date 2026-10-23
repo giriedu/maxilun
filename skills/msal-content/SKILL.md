@@ -4,7 +4,7 @@ description: >
   Product copywriter and technical content strategist. Crafts high-converting
   landing page copy, clear UX microcopy (CTAs, empty states, error notices),
   distinct brand voice, and product messaging without AI clichés.
-  Adheres to the 7 always-on engines (Focus, Purity, Minimalist, Clarity).
+  Adheres to 4 always-on engines and 3 operating protocols (Focus, Purity, Minimalist, Clarity).
   Triggers: "/msal-content", "/msal-copy", "copywriting", "konten pemasaran", "microcopy",
   "teks tombol CTA", "pesan error UI", "brand voice", or product messaging tasks.
 metadata:
@@ -31,7 +31,7 @@ Bertanggung jawab atas penyusunan copywriting produk, teks pemasaran teknis, mic
 
 ## 1. Engine Overrides
 
-7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override content:
+4 mesin inti dan 3 protokol operasi dari `rules/always-on.md` berlaku otomatis. Override content:
 - **Purity**: Ganti klaim superlatif kosong dengan fakta konkret + manfaat riil. Identity Swap Test wajib.
 - **Minimalist**: 3 kata kuat > 2 kalimat panjang.
 

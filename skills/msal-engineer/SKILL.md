@@ -4,7 +4,7 @@ description: >
   Senior engineer for implementation, bug fixing, feature development,
   and measured refactoring. Enforces the Simplicity Ladder (stdlib first,
   deletion over addition), code comment hygiene, and root-cause solutions.
-  Always adheres to the 7 always-on engines (Focus, Purity, Minimalist, Clarity).
+  Always adheres to 4 always-on engines and 3 operating protocols (Focus, Purity, Minimalist, Clarity).
   Triggers: "/msal-engineer", "tulis kode", "buat fitur", "fix bug", "refactor kode",
   "implementasikan fungsi", or any direct coding task.
 metadata:
@@ -31,7 +31,7 @@ Bertanggung jawab atas penulisan kode tingkat produksi, resolusi bug pada akar m
 
 ## 1. Engine Overrides
 
-7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override engineer:
+4 mesin inti dan 3 protokol operasi dari `rules/always-on.md` berlaku otomatis. Override engineer:
 - **Purity**: Tolak abstraksi spekulatif (interface dengan 1 implementor). Wrapper kosong = hapus.
 - **Minimalist**: Diff terkecil yang valid. Reuse helper existing > layer baru.
 

@@ -29,7 +29,7 @@ metadata:
 
 Bertanggung jawab atas rekayasa visual tingkat produksi: sistem desain konsisten, tipografi matematis, palet warna aksesibel, tata letak responsif, dan interaksi pengguna yang hidup tanpa beban library berlebih.
 
-**Enhanced with Impeccable-inspired workflows**: Persistent product context (PRODUCT.md), 24 iterative design commands, live browser iteration, automated detector integration, and **mandatory pre-generation anti-slop gate**.
+**Enhanced with Impeccable-inspired workflows**: Persistent product context (PRODUCT.md), 24 iterative design commands, live browser iteration, documented quality checks, and a **mandatory pre-generation anti-slop gate**.
 
 ## 0. PRE-GENERATION ANTI-SLOP GATE (MANDATORY, NON-NEGOTIABLE)
 
@@ -161,8 +161,8 @@ Meskipun `msal-content` adalah spesialis copywriting, `msal-craft` WAJIB punya f
 
 ## 1. Engine Overrides
 
-7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override craft:
-- **Purity**: Tolak klise visual AI (gradien biru-ungu, glow semua border, glassmorphism bertumpuk). Purpose Gate wajib. Enhanced dengan 61+ deterministic detector rules (§10). **Pre-generation gate (§0) wajib dijalankan sebelum eksekusi.**
+4 mesin inti dan 3 protokol operasi dari `rules/always-on.md` berlaku otomatis. Override craft:
+- **Purity**: Tolak klise visual AI (gradien biru-ungu, glow semua border, glassmorphism bertumpuk). Purpose Gate wajib. Gunakan 61+ documented quality checks sebagai checklist review manual (§10). **Pre-generation gate (§0) wajib dijalankan sebelum eksekusi.**
 - **Minimalist**: CSS native modern (Grid, `@container`, `oklch()`) > utility framework pihak ketiga.
 
 ## Workflow
@@ -173,7 +173,7 @@ flowchart LR
     C --> D[Layout]
     D --> E[States]
     E --> F[Purity Gate]
-    F --> G[Detector Audit]
+    F --> G[Quality Review]
     G --> H[Delivery Gate]
 ```
 
@@ -260,7 +260,7 @@ Terinspirasi dari Impeccable, diperkuat dengan Maxilun purity gates dan token sy
 | `/msal-craft shape` | Plan UX/UI structure sebelum coding | Early design phase |
 | `/msal-craft build` | Execute implementation dari approved shape | Implementation phase |
 | `/msal-craft polish` | Final pass: alignment, consistency, shipping readiness | Pre-launch |
-| `/msal-craft audit` | Run all detectors + accessibility + performance checks | Quality gate |
+| `/msal-craft audit` | Agent-assisted accessibility, visual, and performance review | Quality gate |
 | `/msal-craft critique` | LLM-powered UX design review (hierarchy, clarity, emotion) | Design feedback |
 | `/msal-craft document` | Generate DESIGN.md dari existing codebase | Legacy projects |
 | `/msal-craft extract` | Pull reusable components/tokens ke design system | System maturation |
@@ -296,7 +296,7 @@ Terinspirasi dari Impeccable, diperkuat dengan Maxilun purity gates dan token sy
 | `/msal-craft pin <cmd>` | Create shortcut alias (e.g., `pin audit` → `/audit`) | Personalized workflow |
 | `/msal-craft live` | Enter live browser iteration mode | Real-time visual editing |
 | `/msal-craft generate <element>` | Generate variants in browser, no manual picking | Rapid exploration |
-| `/msal-craft detect <path/url>` | Run standalone detector scan | CI/standalone validation |
+| `/msal-craft detect <path>` | Agent-assisted review of supplied source files | Focused quality review |
 
 ### Command Usage Examples
 ```bash
@@ -579,48 +579,27 @@ Pola interaksi khusus perangkat sentuh. Semua pola wajib mematuhi target sentuh 
 - **Manifest**: `manifest.json` dengan name, short_name, icons (192px + 512px), theme_color, background_color, display: standalone.
 - **Update flow**: Deteksi service worker update. Tampilkan notifikasi "Versi baru tersedia" dengan tombol refresh. Jangan force-update tanpa persetujuan pengguna.
 
-## 10. Detector Integration & Automated Validation
+## 10. Quality Review Protocol
 
-Maxilun Craft integrates dengan purity-catalog.md v2.0 untuk automated design quality enforcement. Detectors bisa dijalankan via command, hook, atau CI pipeline.
+Maxilun Craft memakai `purity-catalog.md` sebagai panduan review visual. Repository ini belum menyertakan executable detector, hook otomatis, atau `scripts/audit.js`; jalankan review sebagai alur kerja agent dan jangan mengklaim hasilnya berasal dari pemindaian otomatis.
 
-### Running Detectors
+### Agent-Assisted Review
 
-**Via Command:**
-```bash
-/msal-craft audit                    # Full audit (detectors + critique)
-/msal-craft audit --strict           # Fail on WARNING+ (default: ERROR only)
-/msal-craft audit --fix              # Auto-fix what's possible
-/msal-craft audit --report json      # Machine-readable output
-/msal-craft detect src/components/   # Scan specific directory
-/msal-craft detect https://site.com  # Scan live URL (requires browser)
+**Via Skill Request (agent-assisted review):**
+```text
+/msal-craft audit                    # Review supplied source or an open local project
+/msal-craft audit --strict           # Report only actionable WARNING/ERROR findings
+/msal-craft audit --fix              # Apply safe, user-requested fixes after review
+/msal-craft detect src/components/   # Inspect a supplied local path
 ```
 
-**Via Hook (Automatic):**
-Design hook runs detectors on file save/edit di supported tools:
-- Claude Code, Cursor, GitHub Copilot, Codex, Grok Build
-- Findings surface immediately in agent flow
-- Prevents slop before commit
+These are agent prompts, not shell executables. URL review requires an available browser tool and explicit URL access.
 
-**Via CI/CD:**
-```yaml
-# .github/workflows/maxilun-audit.yml
-name: Design Quality Gate
-on: [pull_request]
+No file-save hook or CI workflow is included. Add CI enforcement only after a detector executable and its supported flags exist in the target project.
 
-jobs:
-  audit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Maxilun Purity Audit
-        run: node scripts/audit.js --strict --report github
-        env:
-          MAXILUN_FAIL_ON_SEVERITY: ERROR
-```
+### Example Configuration Shape
 
-### Detector Configuration
-
-Project-level config di `.maxilun/config.json`:
+Example configuration shape only; no current tool in this repository reads `.maxilun/config.json`:
 ```json
 {
   "detector": {
@@ -656,7 +635,7 @@ Untuk pengecualian yang justified:
 
 Waiver wajib disertai alasan. Unjustified waivers = tech debt.
 
-### Detector Output Format
+### Review Findings Format
 
 **Human-readable (stderr):**
 ```
@@ -666,7 +645,7 @@ src/components/Hero.tsx:42
   
 src/styles/buttons.css:18
   WARNING ANI-006: transition: all causes performance issues
-  → Auto-fix available: Run with --fix to expand to specific properties
+  → Suggested fix: Expand the transition to specific properties if the user asks for a fix
 
 Found 2 issues (1 error, 1 warning)
 ```
@@ -722,7 +701,7 @@ Live mode memungkinkan iterasi visual real-time langsung di browser tanpa manual
 3. **Element Selection & Isolation**: Click element di browser untuk isolate dan iterate
    - Auto-detect component boundaries
    - Show applicable tokens and constraints
-   - Suggest improvements based on detectors
+   - Suggest improvements based on the documented review checklist
 
 4. **Before/After Comparison**: Toggle between original dan modified states
    - Side-by-side view

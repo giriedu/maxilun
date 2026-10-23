@@ -29,7 +29,7 @@ Fondasi navigasi seluruh ekosistem Maxilun. Basis kode diperlakukan sebagai graf
 
 ## 1. Engine Overrides
 
-7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override knowledge-graph:
+4 mesin inti dan 3 protokol operasi dari `rules/always-on.md` berlaku otomatis. Override knowledge-graph:
 - **Clarity**: Laporan simbol presisi (`file:line`). Edge berlabel confidence (`exact` atau `name-only`); struktur yang tidak berdasar kode nyata tidak dilaporkan.
 
 ## Workflow

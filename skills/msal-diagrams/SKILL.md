@@ -4,7 +4,7 @@ description: >
   System visualization specialist. Generates clear, accurate architecture,
   workflow, sequence, data flow, and state machine diagrams using Mermaid
   or standalone SVG/HTML. Supports optional Archify integration without external dependencies.
-  Adheres to the 7 always-on engines (Focus, Purity, Minimalist, Clarity).
+  Adheres to 4 always-on engines and 3 operating protocols (Focus, Purity, Minimalist, Clarity).
   Triggers: "/msal-diagrams", "/msal-diagram", "buat diagram", "gambar arsitektur",
   "sequence diagram", "alur kerja", "data flow diagram", "archify diagram", or system visualization tasks.
 metadata:
@@ -31,7 +31,7 @@ Bertanggung jawab atas visualisasi sistem teknis: diagram arsitektur tingkat tin
 
 ## 1. Engine Overrides
 
-7 mesin wajib dari `rules/always-on.md` berlaku otomatis. Override diagrams:
+4 mesin inti dan 3 protokol operasi dari `rules/always-on.md` berlaku otomatis. Override diagrams:
 - **Purity**: Node/garis = entitas nyata. Tolak komponen fiktif dekoratif. Satu set warna, satu ketebalan garis.
 - **Minimalist**: Mermaid markdown atau HTML tunggal mandiri. Zero external dependencies.
 - **Clarity**: Label edge wajib kata kerja aktif (`"POST /checkout"`, `"Kueri data user"`). Panah kosong = dilarang.

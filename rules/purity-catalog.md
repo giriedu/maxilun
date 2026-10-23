@@ -5,14 +5,14 @@
   last_updated: "2026-10-22"
   sync_target: "scripts/test-suite.py:BANNED_BUZZWORDS"
   inspiration: "Impeccable Design Language (pbakaus/impeccable)"
-  enhancement: "Deterministic Detector Rules + LLM Critique Checks"
+  enhancement: "Documented Review Checklist + LLM Critique Checks"
 -->
 
-Katalog penolakan *AI slop* yang mengikat seluruh skill Maxilun. Tiga domain: **Konten/Teks**, **Desain Website**, dan **Teknis/Automated**. Aturan ini bersifat menolak (*reject-only*): setiap elemen yang cocok dengan ciri di bawah wajib dihapus atau diganti, bukan sekadar dirapikan.
+Katalog penolakan *AI slop* yang mengikat seluruh skill Maxilun. Tiga domain: **Konten/Teks**, **Desain Website**, dan **Teknis**. Aturan ini menjadi panduan review agent; repository ini tidak menyertakan executable detector untuk daftar di bawah. Setiap temuan harus dinilai dalam konteks sebelum dihapus atau diganti.
 
 > **Sinkronisasi Test Suite**: Daftar kata terlarang di bawah ini terikat langsung dengan `BANNED_BUZZWORDS` di `scripts/test-suite.py`. Setiap penambahan kosakata terlarang baru wajib diperbarui serentak di dokumen ini dan di test suite untuk menjaga kepatuhan CI.
 
-> **Enhanced from Impeccable**: Katalog ini mengadopsi dan memperluas 61 deterministic detector rules dari Impeccable design language, ditambah LLM-only critique checks yang tidak bisa diotomatisasi. Maxilun implementation adds stricter gates, Indonesian context awareness, and integration with maxilun-craft token system.
+> **Inspired by Impeccable**: Katalog ini mengadaptasi heuristik review desain dan menambahkan pemeriksaan kritik berbasis konteks. Daftar ini bukan klaim jumlah rule yang dijalankan secara otomatis.
 
 ---
 
@@ -108,12 +108,12 @@ Jika salah satu absen → hapus. No exceptions.
 
 ---
 
-## C. Deterministic Detector Rules (Automated Validation)
+## C. Documented Quality Checks (Agent-Assisted Review)
 
-Rules ini bisa divalidasi secara otomatis via tooling (CLI, pre-commit, CI). Setiap rule memiliki ID unik untuk tracking dan waiver management.
+Gunakan ID berikut untuk menyebut temuan secara konsisten. Nilai source, preview, dan konteks produk; jangan menyatakan pemeriksaan otomatis lulus atau gagal. Tidak ada CLI, pre-commit hook, CI job, waiver parser, atau auto-fix yang disediakan katalog ini.
 
-### C1. Typography Detectors
-| ID | Rule | Severity | Auto-fix |
+### C1. Typography Checks
+| ID | Check | Severity | Suggested action |
 |----|------|----------|----------|
 | TYPO-001 | Overused font family detected (Arial, Inter, Roboto, system-ui) | ERROR | ❌ |
 | TYPO-002 | Gray text (#666, #888, #999) on colored background | ERROR | ✅ Suggest tinted alternative |
@@ -123,8 +123,8 @@ Rules ini bisa divalidasi secara otomatis via tooling (CLI, pre-commit, CI). Set
 | TYPO-006 | Missing font-smoothing for light-on-dark | WARNING | ✅ Add antialiased |
 | TYPO-007 | Font size <16px on mobile inputs | ERROR | ✅ Set min 16px |
 
-### C2. Color & Contrast Detectors
-| ID | Rule | Severity | Auto-fix |
+### C2. Color & Contrast Checks
+| ID | Check | Severity | Suggested action |
 |----|------|----------|----------|
 | CLR-001 | Purple-to-blue gradient (#667eea→#764ba2 pattern) | ERROR | ❌ |
 | CLR-002 | Text contrast ratio <4.5:1 (WCAG AA) | ERROR | ✅ Suggest compliant color |
@@ -134,8 +134,8 @@ Rules ini bisa divalidasi secara otomatis via tooling (CLI, pre-commit, CI). Set
 | CLR-006 | More than 3 hue families without system | ERROR | ❌ |
 | CLR-007 | Dark mode without color-scheme: dark | ERROR | ✅ Add declaration |
 
-### C3. Layout & Spacing Detectors
-| ID | Rule | Severity | Auto-fix |
+### C3. Layout & Spacing Checks
+| ID | Check | Severity | Suggested action |
 |----|------|----------|----------|
 | LAY-001 | Card nesting >2 levels deep | WARNING | ❌ |
 | LAY-002 | Plain text wrapped in card container | WARNING | ❌ |
@@ -145,8 +145,8 @@ Rules ini bisa divalidasi secara otomatis via tooling (CLI, pre-commit, CI). Set
 | LAY-006 | Element misaligned from baseline grid >2px | WARNING | ❌ |
 | LAY-007 | Text truncation without ellipsis/title attribute | WARNING | ✅ Add overflow handling |
 
-### C4. Component Detectors
-| ID | Rule | Severity | Auto-fix |
+### C4. Component Checks
+| ID | Check | Severity | Suggested action |
 |----|------|----------|----------|
 | CMP-001 | Breadcrumb on page without hierarchy depth ≥3 | WARNING | ❌ |
 | CMP-002 | Badge with marketing adjective ("Powerful", "New") | ERROR | ❌ |
@@ -160,8 +160,8 @@ Rules ini bisa divalidasi secara otomatis via tooling (CLI, pre-commit, CI). Set
 | CMP-010 | Generic menu name ("Dashboard", "Settings", "Profile") without product context | WARNING | ❌ |
 | CMP-011 | Breadcrumb on login/register/404/single-form page | ERROR | ❌ |
 
-### C5. Animation & Performance Detectors
-| ID | Rule | Severity | Auto-fix |
+### C5. Animation & Performance Checks
+| ID | Check | Severity | Suggested action |
 |----|------|----------|----------|
 | ANI-001 | Bounce/elastic easing detected | WARNING | ✅ Suggest spring/ease-out |
 | ANI-002 | Animating layout properties (top/left/width/height) | ERROR | ✅ Convert to transform |
@@ -171,8 +171,8 @@ Rules ini bisa divalidasi secara otomatis via tooling (CLI, pre-commit, CI). Set
 | ANI-006 | transition: all (performance anti-pattern) | WARNING | ✅ List specific properties |
 | ANI-007 | Animation duration >1000ms for micro-interactions | WARNING | ✅ Cap at 300ms |
 
-### C6. Accessibility Detectors
-| ID | Rule | Severity | Auto-fix |
+### C6. Accessibility Checks
+| ID | Check | Severity | Suggested action |
 |----|------|----------|----------|
 | A11Y-001 | Interactive element missing accessible name | ERROR | ❌ |
 | A11Y-002 | Image without alt text or aria-label | ERROR | ❌ |
@@ -182,7 +182,7 @@ Rules ini bisa divalidasi secara otomatis via tooling (CLI, pre-commit, CI). Set
 | A11Y-006 | Link text "click here" or "read more" without context | WARNING | ✅ Make descriptive |
 | A11Y-007 | Color contrast fail in :hover/:focus states | ERROR | ✅ Increase contrast |
 
-### Detector Configuration
+### Example Configuration Shape (Not Read by This Repository)
 ```json
 {
   "detector": {
@@ -201,8 +201,8 @@ Rules ini bisa divalidasi secara otomatis via tooling (CLI, pre-commit, CI). Set
 }
 ```
 
-### Inline Waiver Syntax
-Untuk pengecualian per-file atau per-line:
+### Example Waiver Comments (Not Parsed Automatically)
+Komentar berikut hanya mendokumentasikan alasan pengecualian bagi reviewer:
 ```css
 /* maxilun-disable CLR-001: brand identity requires this gradient */
 .hero-background {
@@ -215,9 +215,9 @@ Untuk pengecualian per-file atau per-line:
 
 ---
 
-## D. LLM-Only Critique Checks (Non-Automatable)
+## D. Contextual Critique Checks
 
-Checks ini memerlukan human/AI judgment, tidak bisa dideteksi secara deterministik:
+Checks ini memerlukan human/AI judgment dan harus dilaporkan sebagai review, bukan hasil pemindaian:
 
 1. **Emotional resonance** — Does the design evoke appropriate feeling for brand/audience?
 2. **Cultural appropriateness** — Are symbols/colors/language appropriate for target locale?
@@ -228,8 +228,8 @@ Checks ini memerlukan human/AI judgment, tidak bisa dideteksi secara determinist
 7. **Contextual relevance** — Does design serve specific use case, not generic template?
 8. **Long-term maintainability** — Can team extend this system without breaking coherence?
 
-### Critique Command Integration
-Gunakan `/craft critique <target>` untuk menjalankan LLM critique checks dengan structured output format.
+### Critique Workflow
+Minta review melalui skill `/msal-craft critique <target>` saat tersedia. Ini adalah instruksi untuk agent, bukan executable CLI.
 
 ---
 
@@ -238,41 +238,22 @@ Gunakan `/craft critique <target>` untuk menjalankan LLM critique checks dengan 
 Sebelum menyerahkan hasil konten atau UI, jawab cepat:
 - Terasa dibuat untuk **algoritma** atau untuk **manusia**? Jika demi algoritma → tulis ulang.
 - Adakah satu elemen yang bisa dihapus tanpa kehilangan informasi/fungsi? Jika ada → hapus.
-- Apakah semua automated detectors pass (severity ERROR = 0)?
+- Apakah semua temuan severity ERROR sudah diperbaiki atau dijustifikasi?
 - Apakah LLM critique checks menunjukkan no critical issues?
 
-### Pre-Submit Validation Command
-```bash
-maxilun-craft audit --strict          # Run all detectors + critique
-maxilun-craft audit --fix             # Auto-fix what's possible
-maxilun-craft audit --report json     # Machine-readable output for CI
-```
+### Pre-Submit Review
+Minta agent meninjau source/preview, rangkum temuan dengan ID, severity, lokasi, alasan, dan usulan perubahan. Perbaikan hanya diterapkan setelah diminta pengguna.
 
 ---
 
 ## F. Integration dengan Maxilun Ecosystem
 
 ### Token System Binding
-Detector rules automatically validate against `.maxilun/design-tokens.json`:
+Review checklist may be compared manually against `.maxilun/design-tokens.json` when that file exists:
 - Spacing values checked against defined spatial scale
 - Colors validated against semantic color system
 - Typography checked against modular scale
 - Border radius validated against nested hierarchy rules
 
-### CI/CD Integration
-```yaml
-# .github/workflows/maxilun-audit.yml
-- name: Run Maxilun Purity Audit
-  run: |
-    node scripts/audit.js --strict --report github
-  env:
-    MAXILUN_FAIL_ON_SEVERITY: ERROR
-```
-
-### Hook Integration
-Design hook runs detectors on file save/edit:
-- Claude Code: `.claude/settings.local.json`
-- Cursor: `.cursor/hooks.json`
-- GitHub Copilot: `.github/hooks/maxilun.json`
-
-Findings surface immediately in agent flow, preventing slop before commit.
+### Automation Status
+Repository ini belum menyediakan audit executable, CI workflow, atau file-save hook untuk katalog ini. Jangan menambahkan konfigurasi yang memanggil `scripts/audit.js` sebelum tool tersebut benar-benar tersedia.

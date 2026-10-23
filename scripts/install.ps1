@@ -41,7 +41,7 @@ foreach ($cmd in $pythonCandidates) {
 if (-not $PythonAvailable) {
     Write-Host "  Python 3.8+ not found. Knowledge Graph visualizer (/graph) will be unavailable." -ForegroundColor Yellow
     Write-Host "  Install Python from https://www.python.org/downloads/ and re-run this installer." -ForegroundColor Yellow
-    Write-Host "  All other 16 skills work without Python." -ForegroundColor Gray
+    Write-Host "  Other Maxilun skills work without Python." -ForegroundColor Gray
 }
 
 if ($Project) {
@@ -85,8 +85,12 @@ foreach ($target in $Targets) {
         if (-not (Test-Path $target.Path)) {
             New-Item -ItemType Directory -Path $target.Path -Force | Out-Null
         }
-        # Clean old maxilun* before copying
-        Get-ChildItem -Path $target.Path -Directory -Filter "maxilun*" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
+        # Clean previously installed Maxilun-owned folders before copying
+        Get-ChildItem -Path $target.Path -Directory -ErrorAction SilentlyContinue | Where-Object {
+            ($_.Name -eq "maxilun" -or $_.Name -like "maxilun-*" -or $_.Name -like "msal-*") -and
+            (Test-Path (Join-Path $_.FullName "SKILL.md")) -and
+            ((Get-Content (Join-Path $_.FullName "SKILL.md") -Raw -ErrorAction SilentlyContinue) -match '(?m)^  ecosystem:\s*maxilun\s*$')
+        } | Remove-Item -Recurse -Force
         Copy-Item -Path "$SkillsSrc\*" -Destination $target.Path -Recurse -Force
         $InstalledTo += "  $($target.Name): $($target.Path)"
 
@@ -164,7 +168,7 @@ foreach ($loc in $InstalledTo) {
     $parts = $loc.Split(":", 2)
     $platformLabel = $parts[0].Trim()
     $targetDir = $parts[1].Trim()
-    $skillFiles = Get-ChildItem -Path $targetDir -Filter "SKILL.md" -Recurse -Depth 2 -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match "msal" }
+    $skillFiles = Get-ChildItem -Path $targetDir -Filter "SKILL.md" -Recurse -Depth 2 -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match '[\\/](maxilun|msal-[^\\/]+)[\\/]SKILL\.md$' }
     $count = if ($skillFiles) { @($skillFiles).Count } else { 0 }
     if ($count -ge 18) {
         Write-Host "    $platformLabel : ${count}/18 skills verified" -ForegroundColor Green
