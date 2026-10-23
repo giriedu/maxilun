@@ -15,8 +15,8 @@ npx skills add giriedu/maxilun -g -y
 npx skills add giriedu/maxilun -a claude-code
 
 # 4. Pasang skill spesifik tertentu:
-npx skills add giriedu/maxilun --skill msal-engineer
-npx skills add giriedu/maxilun --skill msal-architect
+npx skills add giriedu/maxilun --skill maxilun-engineer
+npx skills add giriedu/maxilun --skill maxilun-architect
 ```
 
 > [!TIP]
@@ -68,6 +68,19 @@ npm run update-skills
 ## Manual Copy
 
 Salin folder `skills/*` ke direktori skill platform Anda (misal: `~/.claude/skills/` atau `~/.agents/skills/`).
+
+Tidak ada folder `rules/` yang perlu disalin. Aturan inti tertanam di setiap `SKILL.md` sebagai blok `CORE-RULES`, dan materi lengkap ada di `skills/maxilun/references/`. Jika Anda menyalin satu skill saja, skill itu tetap membawa aturannya sendiri.
+
+## Upgrade dari v1 ke v2
+
+v1 menaruh aturan di `rules/` pada root repo. `npx skills add` hanya menyalin folder skill, sehingga aturan itu tidak pernah ikut terpasang. v2 memindahkannya ke dalam skill.
+
+1. Jalankan ulang instalasi: `npx skills add giriedu/maxilun -g -y` (atau `npm run update-skills`).
+2. Installer v2 menghapus sisa file aturan v1 di luar folder skill secara otomatis, hanya jika file tersebut membawa penanda Maxilun.
+3. Verifikasi: setiap `SKILL.md` harus memuat blok `<!-- CORE-RULES:START -->`, dan `skills/maxilun/references/engines.md` harus ada.
+
+Jika Anda memakai skill di luar ekosistem ini, hapus rujukan ke `antislop`, `antislop-code`, `frontend-design`, atau `brainstorming`: v2 tidak bergantung pada skill eksternal.
+
 
 ## Kompatibilitas Multi-Platform
 

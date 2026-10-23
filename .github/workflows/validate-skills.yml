@@ -29,24 +29,25 @@ jobs:
 
       - name: Verify KG Python files compile
         run: |
-          python -m py_compile skills/msal-knowledge-graph/cli.py
-          python -m py_compile skills/msal-knowledge-graph/graph_builder.py
-          python -m py_compile skills/msal-knowledge-graph/server.py
-          python -m py_compile skills/msal-knowledge-graph/scanner/base_scanner.py
-          python -m py_compile skills/msal-knowledge-graph/scanner/python_scanner.py
-          python -m py_compile skills/msal-knowledge-graph/scanner/typescript_scanner.py
-          python -m py_compile skills/msal-knowledge-graph/scanner/generic_scanner.py
+          python -m py_compile skills/maxilun-knowledge-graph/cli.py
+          python -m py_compile skills/maxilun-knowledge-graph/graph_builder.py
+          python -m py_compile skills/maxilun-knowledge-graph/server.py
+          python -m py_compile skills/maxilun-knowledge-graph/scanner/base_scanner.py
+          python -m py_compile skills/maxilun-knowledge-graph/scanner/python_scanner.py
+          python -m py_compile skills/maxilun-knowledge-graph/scanner/typescript_scanner.py
+          python -m py_compile skills/maxilun-knowledge-graph/scanner/generic_scanner.py
           echo "All Python files compile OK"
 
-      - name: Count skills and rules
+      - name: Count skills and bundled references
         run: |
           SKILL_COUNT=$(find skills -maxdepth 2 -name "SKILL.md" | wc -l)
-          RULE_COUNT=$(find rules -maxdepth 1 -name "*.md" | wc -l)
+          REF_COUNT=$(find skills/maxilun/references -maxdepth 1 -name "*.md" | wc -l)
           echo "Skills: $SKILL_COUNT"
-          echo "Rules: $RULE_COUNT"
+          echo "Bundled references: $REF_COUNT"
           [ "$SKILL_COUNT" -ge 18 ] || (echo "ERROR: Expected 18 skills, found $SKILL_COUNT" && exit 1)
-          [ "$RULE_COUNT" -ge 4 ] || (echo "ERROR: Expected 4 rules, found $RULE_COUNT" && exit 1)
-          echo "Skill and rule counts OK"
+          [ "$REF_COUNT" -ge 4 ] || (echo "ERROR: Expected 4 bundled references, found $REF_COUNT" && exit 1)
+          [ ! -d rules ] || (echo "ERROR: root rules/ must not exist; rules live in skills/maxilun/references/" && exit 1)
+          echo "Skill and reference counts OK"
 
   validate-windows:
     runs-on: windows-latest
@@ -93,13 +94,13 @@ jobs:
         shell: pwsh
         run: |
           $files = @(
-            "skills/msal-knowledge-graph/cli.py",
-            "skills/msal-knowledge-graph/graph_builder.py",
-            "skills/msal-knowledge-graph/server.py",
-            "skills/msal-knowledge-graph/scanner/base_scanner.py",
-            "skills/msal-knowledge-graph/scanner/python_scanner.py",
-            "skills/msal-knowledge-graph/scanner/typescript_scanner.py",
-            "skills/msal-knowledge-graph/scanner/generic_scanner.py"
+            "skills/maxilun-knowledge-graph/cli.py",
+            "skills/maxilun-knowledge-graph/graph_builder.py",
+            "skills/maxilun-knowledge-graph/server.py",
+            "skills/maxilun-knowledge-graph/scanner/base_scanner.py",
+            "skills/maxilun-knowledge-graph/scanner/python_scanner.py",
+            "skills/maxilun-knowledge-graph/scanner/typescript_scanner.py",
+            "skills/maxilun-knowledge-graph/scanner/generic_scanner.py"
           )
           foreach ($f in $files) {
             python -m py_compile $f

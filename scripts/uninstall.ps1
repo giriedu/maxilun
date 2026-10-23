@@ -3,7 +3,7 @@ Write-Host ""
 Write-Host "  MAXILUN Uninstaller" -ForegroundColor Cyan
 Write-Host "  --------------------------------------" -ForegroundColor DarkCyan
 Write-Host ""
-Write-Host "  This will remove all Maxilun skills and rules from your system." -ForegroundColor Yellow
+Write-Host "  This will remove all Maxilun skills, plus legacy rule files left by v1 installs." -ForegroundColor Yellow
 Write-Host ""
 
 $confirm = Read-Host "  Are you sure you want to continue? [y/N]"
@@ -42,12 +42,13 @@ foreach ($target in $Targets) {
 
     if ($target.RulesPath -and (Test-Path $target.RulesPath)) {
         $ruleFiles = Get-ChildItem -Path $target.RulesPath -File -ErrorAction SilentlyContinue | Where-Object {
-            $_.Name -in @("always-on.md", "code-hygiene.md", "purity-catalog.md")
+            $_.Name -in @("always-on.md", "maxilun-global.md", "code-hygiene.md", "purity-catalog.md")
         }
         if ($ruleFiles) {
             foreach ($file in $ruleFiles) {
                 $content = Get-Content -Path $file.FullName -Raw -ErrorAction SilentlyContinue
                 $ownedRule = switch ($file.Name) {
+                    "maxilun-global.md" { $content -match '(?m)^# Aturan Global Maxilun' }
                     "always-on.md" { $content -match '(?m)^# (Tujuh Mesin Wajib Maxilun|Four Always-On Engines and Three Operating Protocols|Maxilun Always-On)' }
                     "code-hygiene.md" { $content -match '(?m)^# Maxilun Code Hygiene Rules' }
                     "purity-catalog.md" { $content -match '(?m)^# Maxilun Purity Catalog' }
@@ -57,8 +58,8 @@ foreach ($target in $Targets) {
                     Remove-Item -Path $file.FullName -Force
                 }
             }
-            $Removed += "$($target.Name) (rules): $($target.RulesPath)"
-            Write-Host "  Removed Maxilun rules from: $($target.RulesPath)" -ForegroundColor Green
+            $Removed += "$($target.Name) (legacy rules): $($target.RulesPath)"
+            Write-Host "  Removed legacy Maxilun rule files from: $($target.RulesPath)" -ForegroundColor Green
         }
     }
 }

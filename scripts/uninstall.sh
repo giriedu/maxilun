@@ -45,6 +45,7 @@ for entry in "${targets[@]}"; do
         while IFS= read -r -d '' rule_file; do
             case "$(basename "$rule_file")" in
                 always-on.md) marker='^# (Tujuh Mesin Wajib Maxilun|Four Always-On Engines and Three Operating Protocols|Maxilun Always-On)' ;;
+                maxilun-global.md) marker='^# Aturan Global Maxilun' ;;
                 code-hygiene.md) marker='^# Maxilun Code Hygiene Rules' ;;
                 purity-catalog.md) marker='^# Maxilun Purity Catalog' ;;
                 *) continue ;;
@@ -53,10 +54,10 @@ for entry in "${targets[@]}"; do
                 rm -f -- "$rule_file"
                 removed_rules=$((removed_rules + 1))
             fi
-        done < <(find "$rules_dir" -maxdepth 1 -type f \( -name "always-on.md" -o -name "code-hygiene.md" -o -name "purity-catalog.md" \) -print0 2>/dev/null)
+        done < <(find "$rules_dir" -maxdepth 1 -type f \( -name "always-on.md" -o -name "maxilun-global.md" -o -name "code-hygiene.md" -o -name "purity-catalog.md" \) -print0 2>/dev/null)
         if [ "$removed_rules" -gt 0 ]; then
-            removed+=("$name (rules): $rules_dir")
-            echo "  Removed $removed_rules owned Maxilun rule file(s) from: $rules_dir"
+            removed+=("$name (legacy rules): $rules_dir")
+            echo "  Removed $removed_rules legacy Maxilun rule file(s) from: $rules_dir"
         fi
     fi
 done

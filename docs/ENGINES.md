@@ -1,6 +1,6 @@
 # Four Always-On Engines and Three Operating Protocols
 
-Empat engine pertama adalah fondasi kualitas. Tiga bagian berikutnya adalah protokol kerja pendukung; semuanya tercantum di `rules/always-on.md`.
+Empat engine pertama adalah fondasi kualitas. Tiga bagian berikutnya adalah protokol kerja pendukung. Versi lengkap ada di `skills/maxilun/references/engines.md`, dan ringkasannya tertanam sebagai blok `CORE-RULES` di setiap SKILL.md.
 
 ## 1. Focus Engine
 
@@ -37,4 +37,4 @@ Bagian ini menetapkan kebiasaan kerja pendukung dan bukan engine terpisah:
 
 ---
 
-Selengkapnya lihat [`rules/always-on.md`](../rules/always-on.md).
+Selengkapnya lihat [`skills/maxilun/references/engines.md`](../skills/maxilun/references/engines.md).

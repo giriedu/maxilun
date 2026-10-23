@@ -36,6 +36,9 @@ build/
 .cursor/
 .opencode/
 .gemini/
+.trae/
+.windsurf/
+.codebuddy/
 skills-lock.json
 .maxilun/
 

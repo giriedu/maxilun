@@ -1,21 +1,24 @@
 #!/usr/bin/env python3
 """
-Maxilun Specialist Skill Ecosystem Test Suite
-Comprehensive functional and structural validation:
-- All 18 skills existence & YAML frontmatter
+Maxilun Skill Ecosystem Test Suite
+
+Structural and functional validation:
+- 18 skills exist with valid frontmatter and one shared version
+- Every skill embeds the identical CORE-RULES block (drift detection)
+- Every referenced file inside a skill resolves from that skill's folder
+- No references to external skills or to the removed root rules/ layout
+- Section numbering is unique and sequential
 - Banned vocabulary purity self-check
-- Knowledge Graph scanner functional verification (AST, import resolution, hidden dir check)
-- Cross-references, internal path integrity, and license consistency
+- Knowledge Graph scanner functional verification
+- Cross-references between specialists
 """
 
 import os
 import sys
 import re
 import tempfile
-import json
 from pathlib import Path
 
-# Ensure UTF-8 output on Windows consoles
 if sys.platform == "win32":
     try:
         sys.stdout.reconfigure(encoding="utf-8")
@@ -25,29 +28,36 @@ if sys.platform == "win32":
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SKILLS_DIR = REPO_ROOT / "skills" if (REPO_ROOT / "skills").exists() else REPO_ROOT / ".agents" / "skills"
-RULES_DIR = REPO_ROOT / "rules"
+ORCHESTRATOR = SKILLS_DIR / "maxilun"
 
-sys.path.insert(0, str(REPO_ROOT / "skills" / "msal-knowledge-graph"))
+sys.path.insert(0, str(SKILLS_DIR / "maxilun-knowledge-graph"))
 
 EXPECTED_SKILLS = [
     "maxilun",
-    "msal-knowledge-graph",
-    "msal-scaffold",
-    "msal-architect",
-    "msal-sentinel",
-    "msal-engineer",
-    "msal-data",
-    "msal-frontend",
-    "msal-verify",
-    "msal-insight",
-    "msal-deploy",
-    "msal-docsmith",
-    "msal-craft",
-    "msal-motion",
-    "msal-cinecode",
-    "msal-diagrams",
-    "msal-content",
-    "msal-seo-audit",
+    "maxilun-knowledge-graph",
+    "maxilun-scaffold",
+    "maxilun-architect",
+    "maxilun-sentinel",
+    "maxilun-engineer",
+    "maxilun-data",
+    "maxilun-frontend",
+    "maxilun-verify",
+    "maxilun-insight",
+    "maxilun-deploy",
+    "maxilun-docsmith",
+    "maxilun-craft",
+    "maxilun-motion",
+    "maxilun-cinecode",
+    "maxilun-diagrams",
+    "maxilun-content",
+    "maxilun-seo-audit",
+]
+
+REQUIRED_REFERENCES = [
+    "engines.md",
+    "discovery.md",
+    "purity-catalog.md",
+    "code-hygiene.md",
 ]
 
 BANNED_WORDS = [
@@ -65,16 +75,13 @@ BANNED_WORDS = [
     r"\bdive in\b",
 ]
 
-# Exemption rationale:
-# - maxilun: orchestrator content references specialist names and trigger phrases
-#   (e.g., "msal-content") that may lexically match banned pattern substrings.
-#   The orchestrator itself does not produce user-facing content, so slop rules
-#   apply to its outputs at runtime, not its static trigger documentation.
-# - msal-content: legitimately documents *examples* of banned phrases to teach
-#   writers what to avoid. The catalog of bad phrases must appear somewhere.
-# - msal-docsmith: may include example changelog or README templates that
-#   cite banned phrases as anti-patterns in documentation examples.
-PURE_EXEMPT_SKILLS = ["maxilun", "msal-content", "msal-docsmith"]
+PURE_EXEMPT_SKILLS = ["maxilun", "maxilun-content", "maxilun-docsmith"]
+
+FORBIDDEN_EXTERNAL = ["antislop", "frontend-design", "brainstorming", "superpowers"]
+FORBIDDEN_LAYOUT = ["rules/always-on.md", "rules/maxilun-global.md", "rules/code-hygiene.md", "rules/purity-catalog.md"]
+
+CORE_START = "<!-- CORE-RULES:START -->"
+CORE_END = "<!-- CORE-RULES:END -->"
 
 
 def parse_frontmatter(content: str) -> str:
@@ -84,16 +91,27 @@ def parse_frontmatter(content: str) -> str:
     return ""
 
 
+def skill_path(skill: str) -> Path:
+    return SKILLS_DIR / skill / "SKILL.md"
+
+
+def read_skill(skill: str) -> str:
+    return skill_path(skill).read_text(encoding="utf-8")
+
+
+def extract_core_block(content: str) -> str:
+    m = re.search(re.escape(CORE_START) + r"(.*?)" + re.escape(CORE_END), content, re.DOTALL)
+    if not m:
+        return ""
+    return re.sub(r"\s+", " ", m.group(1)).strip()
+
+
 def test_skills_exist():
     print("🧪 Checking 18 skills existence...")
-    missing = []
-    for skill in EXPECTED_SKILLS:
-        skill_file = SKILLS_DIR / skill / "SKILL.md"
-        if not skill_file.exists():
-            missing.append(skill)
-        else:
-            print(f"  ✅ Found {skill}/SKILL.md")
-    
+    missing = [s for s in EXPECTED_SKILLS if not skill_path(s).exists()]
+    for s in EXPECTED_SKILLS:
+        if skill_path(s).exists():
+            print(f"  ✅ Found {s}/SKILL.md")
     if missing:
         print(f"  ❌ Missing skills: {', '.join(missing)}")
         return False
@@ -101,67 +119,138 @@ def test_skills_exist():
 
 
 def test_frontmatter():
-    print("\n🧪 Validating frontmatter schema & semantic version format...")
+    print("\n🧪 Validating frontmatter schema and version consistency...")
     passed = True
+    versions = set()
     for skill in EXPECTED_SKILLS:
-        skill_file = SKILLS_DIR / skill / "SKILL.md"
-        content = skill_file.read_text(encoding="utf-8")
-        fm = parse_frontmatter(content)
-        
+        fm = parse_frontmatter(read_skill(skill))
         if not fm:
-            print(f"  ❌ {skill}: Missing or invalid frontmatter (--- delimiter)")
+            print(f"  ❌ {skill}: Missing or invalid frontmatter")
             passed = False
             continue
-            
         name_match = re.search(r"^name:\s*([^\s]+)", fm, re.MULTILINE)
         if not name_match or name_match.group(1).strip() != skill:
-            print(f"  ❌ {skill}: 'name' field missing or does not match directory name")
+            print(f"  ❌ {skill}: 'name' does not match directory")
             passed = False
-        else:
-            print(f"  ✅ {skill}: Valid name")
-            
         if "description:" not in fm:
-            print(f"  ❌ {skill}: Missing 'description' in frontmatter")
+            print(f"  ❌ {skill}: Missing 'description'")
             passed = False
-
-        version_match = re.search(r"^\s+version:\s*['\"]?(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)['\"]?\s*$", fm, re.MULTILINE)
+        version_match = re.search(r"^\s+version:\s*['\"]?(\d+\.\d+\.\d+)['\"]?\s*$", fm, re.MULTILINE)
         if not version_match:
             print(f"  ❌ {skill}: Missing or invalid semantic version")
             passed = False
-
+        else:
+            versions.add(version_match.group(1))
         if "license: Maxilun-Source-Available-2.0" not in fm:
             print(f"  ❌ {skill}: License is not Maxilun-Source-Available-2.0")
             passed = False
-            
+        if not re.search(r"^  ecosystem:\s*maxilun\s*$", fm, re.MULTILINE):
+            print(f"  ❌ {skill}: Missing ecosystem: maxilun marker")
+            passed = False
+    if len(versions) == 1:
+        print(f"  ✅ All skills report version {versions.pop()}")
+    else:
+        print(f"  ❌ Version drift across skills: {sorted(versions)}")
+        passed = False
     return passed
 
 
-def test_frontmatter_rules_field():
-    print("\n🧪 Validating frontmatter rules auto-load field...")
+def test_core_rules_block():
+    print("\n🧪 Validating embedded CORE-RULES block...")
     passed = True
-    expected_rules = [
-        "rules/always-on.md",
-        "rules/maxilun-global.md",
-        "rules/code-hygiene.md",
-        "rules/purity-catalog.md",
-    ]
+    blocks = {}
     for skill in EXPECTED_SKILLS:
-        skill_file = SKILLS_DIR / skill / "SKILL.md"
-        content = skill_file.read_text(encoding="utf-8")
-        fm = parse_frontmatter(content)
-        
-        if not fm or "rules:" not in fm:
-            print(f"  ❌ {skill}: Missing 'rules:' field in frontmatter")
+        content = read_skill(skill)
+        block = extract_core_block(content)
+        if not block:
+            print(f"  ❌ {skill}: Missing CORE-RULES block")
             passed = False
             continue
-        
-        missing = [rule for rule in expected_rules if rule not in fm]
-        if missing:
-            print(f"  ⚠️  {skill}: Missing rules entries: {', '.join(missing)}")
-            passed = False
+        blocks[skill] = block
+    if not blocks:
+        return False
+    unique = set(blocks.values())
+    if len(unique) == 1:
+        print(f"  ✅ Identical CORE-RULES block in all {len(blocks)} skills")
+    else:
+        print(f"  ❌ CORE-RULES drift: {len(unique)} distinct variants")
+        canonical = blocks.get("maxilun")
+        for skill, block in blocks.items():
+            if block != canonical:
+                print(f"     differs: {skill}")
+        passed = False
+    return passed
+
+
+def test_references_present():
+    print("\n🧪 Validating bundled references...")
+    passed = True
+    for ref in REQUIRED_REFERENCES:
+        p = ORCHESTRATOR / "references" / ref
+        if p.exists() and p.stat().st_size > 500:
+            print(f"  ✅ references/{ref}")
         else:
-            print(f"  ✅ {skill}: All 4 rules referenced")
-    
+            print(f"  ❌ Missing or empty references/{ref}")
+            passed = False
+    return passed
+
+
+def test_reference_paths_resolve():
+    print("\n🧪 Resolving every file path referenced inside skills...")
+    passed = True
+    pattern = re.compile(r"`((?:\.\./[\w.-]+/)*references/[\w.-]+\.md)`")
+    for skill in EXPECTED_SKILLS:
+        content = read_skill(skill)
+        for rel in set(pattern.findall(content)):
+            target = (SKILLS_DIR / skill / rel).resolve()
+            if target.exists():
+                print(f"  ✅ {skill}: {rel}")
+            else:
+                print(f"  ❌ {skill}: {rel} does not resolve to a file")
+                passed = False
+    return passed
+
+
+def test_no_external_or_legacy_refs():
+    print("\n🧪 Checking for external-skill and legacy rules references...")
+    passed = True
+    for skill in EXPECTED_SKILLS:
+        content = read_skill(skill)
+        for token in FORBIDDEN_EXTERNAL:
+            if token in content:
+                print(f"  ❌ {skill}: references external skill '{token}'")
+                passed = False
+        for token in FORBIDDEN_LAYOUT:
+            if token in content:
+                print(f"  ❌ {skill}: references removed layout '{token}'")
+                passed = False
+    if passed:
+        print("  ✅ No external-skill or legacy rules references")
+    return passed
+
+
+def test_section_numbering():
+    print("\n🧪 Validating section numbering...")
+    passed = True
+    for skill in EXPECTED_SKILLS:
+        lines = read_skill(skill).splitlines()
+        fence = False
+        nums = []
+        for line in lines:
+            if line.strip().startswith("```"):
+                fence = not fence
+                continue
+            m = re.match(r"^## (\d+)\. ", line)
+            if m and not fence:
+                nums.append(int(m.group(1)))
+        dupes = sorted({n for n in nums if nums.count(n) > 1})
+        if dupes:
+            print(f"  ❌ {skill}: duplicate section numbers {dupes}")
+            passed = False
+        elif nums and nums != list(range(nums[0], nums[0] + len(nums))):
+            print(f"  ⚠️  {skill}: non-sequential numbering {nums}")
+    if passed:
+        print("  ✅ No duplicate section numbers")
     return passed
 
 
@@ -169,68 +258,74 @@ def test_purity_self_check():
     print("\n🧪 Running purity self-check on skills...")
     clean = True
     for skill in EXPECTED_SKILLS:
-        skill_file = SKILLS_DIR / skill / "SKILL.md"
-        content = skill_file.read_text(encoding="utf-8")
-
+        if skill in PURE_EXEMPT_SKILLS:
+            continue
+        content = read_skill(skill)
         for pattern in BANNED_WORDS:
-            matches = list(re.finditer(pattern, content, re.IGNORECASE))
-            if matches:
-                if skill in PURE_EXEMPT_SKILLS:
-                    continue
-                print(f"  ⚠️  {skill}: Contains banned word '{pattern}'")
+            if re.search(pattern, content, re.IGNORECASE):
+                print(f"  ⚠️  {skill}: contains banned word '{pattern}'")
                 clean = False
-
     if clean:
-        print("  ✅ All skills free of forbidden buzzwords (frontmatter + body)")
+        print("  ✅ All non-exempt skills free of forbidden buzzwords")
     return clean
 
 
 def test_no_foreign_characters():
-    print("\n🧪 Checking for stray foreign/CJK characters...")
+    print("\n🧪 Checking for stray CJK characters...")
     clean = True
     for skill in EXPECTED_SKILLS:
-        skill_file = SKILLS_DIR / skill / "SKILL.md"
-        content = skill_file.read_text(encoding="utf-8")
-        for i, line in enumerate(content.splitlines(), 1):
-            if re.search(r'[\u4e00-\u9fff]', line):
-                print(f"  ⚠️  {skill}: Line {i} contains foreign character: {line}")
+        for i, line in enumerate(read_skill(skill).splitlines(), 1):
+            if re.search(r"[\u4e00-\u9fff]", line):
+                print(f"  ⚠️  {skill}:{i} contains CJK characters")
                 clean = False
     if clean:
-        print("  ✅ All skill documents clean of non-Latin CJK characters")
+        print("  ✅ No CJK characters found")
     return clean
+
+
+def test_size_budget():
+    print("\n🧪 Checking skill size budget...")
+    warn = False
+    hard_fail = False
+    for skill in EXPECTED_SKILLS:
+        lines = len(read_skill(skill).splitlines())
+        if lines > 1000:
+            print(f"  ❌ {skill}: {lines} lines (hard limit 1000) — split into references/")
+            hard_fail = True
+        elif lines > 400:
+            print(f"  ⚠️  {skill}: {lines} lines — candidate for references/ split")
+            warn = True
+    if not hard_fail:
+        print("  ✅ All skills within hard size limit" + (" (warnings above)" if warn else ""))
+    return not hard_fail
 
 
 def test_foundation_integration():
     print("\n🧪 Testing knowledge-graph foundation integration...")
     passed = True
-
-    kg_file = SKILLS_DIR / "msal-knowledge-graph" / "SKILL.md"
-    kg_content = kg_file.read_text(encoding="utf-8")
+    kg_content = read_skill("maxilun-knowledge-graph")
     for marker in ["Kontrak Fondasi", "Tangga Pencarian", "Symbol Query Grammar", "callsIn:"]:
         if marker not in kg_content:
-            print(f"  ❌ msal-knowledge-graph: Missing foundation marker '{marker}'")
+            print(f"  ❌ maxilun-knowledge-graph: missing marker '{marker}'")
             passed = False
     if passed:
-        print("  ✅ msal-knowledge-graph: Foundation markers present")
-
-    for consumer in ["maxilun", "msal-engineer"]:
-        content = (SKILLS_DIR / consumer / "SKILL.md").read_text(encoding="utf-8")
-        if "msal-knowledge-graph" in content:
-            print(f"  ✅ {consumer}: References msal-knowledge-graph")
+        print("  ✅ maxilun-knowledge-graph: foundation markers present")
+    for consumer in ["maxilun", "maxilun-engineer"]:
+        if "maxilun-knowledge-graph" in read_skill(consumer):
+            print(f"  ✅ {consumer}: references maxilun-knowledge-graph")
         else:
-            print(f"  ❌ {consumer}: Does not reference msal-knowledge-graph")
+            print(f"  ❌ {consumer}: does not reference maxilun-knowledge-graph")
             passed = False
-
     return passed
 
 
 def test_referenced_paths():
-    print("\n🧪 Verifying referenced paths and files exist...")
+    print("\n🧪 Verifying repository paths...")
     paths_to_verify = [
-        RULES_DIR / "always-on.md",
-        RULES_DIR / "maxilun-global.md",
-        RULES_DIR / "code-hygiene.md",
-        RULES_DIR / "purity-catalog.md",
+        ORCHESTRATOR / "references" / "engines.md",
+        ORCHESTRATOR / "references" / "discovery.md",
+        ORCHESTRATOR / "references" / "purity-catalog.md",
+        ORCHESTRATOR / "references" / "code-hygiene.md",
         REPO_ROOT / "scripts" / "install.sh",
         REPO_ROOT / "scripts" / "install.ps1",
         REPO_ROOT / "scripts" / "uninstall.sh",
@@ -243,24 +338,22 @@ def test_referenced_paths():
         REPO_ROOT / "docs" / "EXAMPLES.md",
         REPO_ROOT / "docs" / "RELEASE.md",
         REPO_ROOT / "docs" / "decisions" / "README.md",
-        REPO_ROOT / "skills" / "msal-motion" / "references" / "motion-components.md",
-        REPO_ROOT / "skills" / "msal-knowledge-graph" / "LENS.md",
-        REPO_ROOT / "skills" / "msal-knowledge-graph" / "graph-viewer" / "lens.html",
+        SKILLS_DIR / "maxilun-motion" / "references" / "motion-components.md",
+        SKILLS_DIR / "maxilun-knowledge-graph" / "LENS.md",
+        SKILLS_DIR / "maxilun-knowledge-graph" / "graph-viewer" / "lens.html",
         REPO_ROOT / "README.md",
         REPO_ROOT / "README.id.md",
         REPO_ROOT / "LICENSE",
         REPO_ROOT / "package.json",
         REPO_ROOT / "skills.sh.json",
     ]
-
     all_ok = True
     for p in paths_to_verify:
         if not p.exists():
-            print(f"  ❌ Missing referenced path: {p.relative_to(REPO_ROOT)}")
+            print(f"  ❌ Missing path: {p.relative_to(REPO_ROOT)}")
             all_ok = False
         else:
-            print(f"  ✅ Verified path: {p.relative_to(REPO_ROOT)}")
-
+            print(f"  ✅ {p.relative_to(REPO_ROOT)}")
     return all_ok
 
 
@@ -270,72 +363,61 @@ def test_kg_scanner_functional():
         import importlib
         importlib.import_module("scanner.python_scanner")
         importlib.import_module("scanner.typescript_scanner")
-        graph_builder_module = importlib.import_module("graph_builder")
-        GraphBuilder = graph_builder_module.GraphBuilder
+        GraphBuilder = importlib.import_module("graph_builder").GraphBuilder
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            # Simulate a project inside a hidden folder path (e.g., /tmp/.hidden/proj)
             hidden_root = Path(tmpdir) / ".hidden_env" / "sample_project"
             hidden_root.mkdir(parents=True)
 
-            # Create Python files with method inside class and relative import
-            mod_b = hidden_root / "b.py"
-            mod_b.write_text("def helper():\n    return 42\n", encoding="utf-8")
-
-            mod_a = hidden_root / "a.py"
-            mod_a.write_text(
+            (hidden_root / "b.py").write_text("def helper():\n    return 42\n", encoding="utf-8")
+            (hidden_root / "a.py").write_text(
                 "from .b import helper\n\n"
                 "class Base:\n"
                 "    def run(self):\n"
                 "        return helper()\n\n"
                 "def run_top():\n"
                 "    return Base().run()\n",
-                encoding="utf-8"
+                encoding="utf-8",
             )
-
-            # Create TypeScript file
-            mod_ts = hidden_root / "service.ts"
-            mod_ts.write_text(
+            (hidden_root / "service.ts").write_text(
                 "export function compute(x: number): number {\n"
                 "    return x * 2;\n"
                 "}\n"
                 "export const handler = (y: number) => {\n"
                 "    return compute(y);\n"
                 "};\n",
-                encoding="utf-8"
+                encoding="utf-8",
             )
 
-            builder = GraphBuilder()
-            graph = builder.scan_project(str(hidden_root))
-
+            graph = GraphBuilder().scan_project(str(hidden_root))
             nodes = graph.get("nodes", [])
             edges = graph.get("edges", [])
 
-            # Test 1: Hidden parent folder does NOT yield 0 nodes
             if len(nodes) == 0:
                 print("  ❌ Scanner returned 0 nodes for project in hidden parent directory")
                 return False
 
-            # Test 2: Methods are NOT double-counted as top-level functions
             node_ids = {n["id"] for n in nodes}
             if "func:a.py:run" in node_ids and "func:a.py:Base.run" in node_ids:
-                print("  ❌ Python method was double-counted as top-level function!")
+                print("  ❌ Python method was double-counted as top-level function")
                 return False
 
-            # Test 3: Relative import is resolved to local file, not external module
             import_edges = [e for e in edges if e.get("type") == "IMPORTS"]
-            has_resolved_rel = any(e.get("target") == "file:b.py" for e in import_edges)
-            if not has_resolved_rel:
-                print("  ❌ Relative import 'from .b import helper' failed to resolve to file:b.py")
+            if not any(e.get("target") == "file:b.py" for e in import_edges):
+                print("  ❌ Relative import 'from .b import helper' failed to resolve")
                 return False
 
-            # Test 4: TypeScript declaration does NOT generate false self-call
-            self_calls = [e for e in edges if e.get("type") == "CALLS" and e.get("source") == "func:service.ts:compute" and "compute" in e.get("target")]
+            self_calls = [
+                e for e in edges
+                if e.get("type") == "CALLS"
+                and e.get("source") == "func:service.ts:compute"
+                and "compute" in e.get("target")
+            ]
             if self_calls:
-                print("  ❌ TS function definition matched as call to itself!")
+                print("  ❌ TS function definition matched as call to itself")
                 return False
 
-            print(f"  ✅ Functional KG Scanner passed ({len(nodes)} nodes, {len(edges)} edges, relative imports resolved)")
+            print(f"  ✅ Functional KG Scanner passed ({len(nodes)} nodes, {len(edges)} edges)")
             return True
 
     except Exception as e:
@@ -347,70 +429,25 @@ def test_kg_scanner_functional():
 
 def test_cross_references():
     print("\n🧪 Checking cross-references between skills...")
+    checks = [
+        ("maxilun-engineer", ["maxilun-data", "maxilun-frontend"]),
+        ("maxilun-craft", ["maxilun-motion"]),
+        ("maxilun-architect", ["maxilun-data"]),
+        ("maxilun-sentinel", ["maxilun-deploy"]),
+        ("maxilun-data", ["maxilun-architect"]),
+        ("maxilun-docsmith", ["maxilun-engineer", "maxilun-architect"]),
+        ("maxilun-motion", ["maxilun-cinecode"]),
+        ("maxilun-cinecode", ["maxilun-motion"]),
+        ("maxilun", ["maxilun-scaffold"]),
+    ]
     passed = True
-    engineer_content = (SKILLS_DIR / "msal-engineer" / "SKILL.md").read_text(encoding="utf-8")
-    if "msal-data" in engineer_content or "msal-frontend" in engineer_content:
-        print("  ✅ engineer references msal-data or msal-frontend")
-    else:
-        print("  ❌ engineer does not reference msal-data or msal-frontend")
-        passed = False
-
-    craft_content = (SKILLS_DIR / "msal-craft" / "SKILL.md").read_text(encoding="utf-8")
-    if "msal-motion" in craft_content:
-        print("  ✅ craft references msal-motion")
-    else:
-        print("  ❌ craft does not reference msal-motion")
-        passed = False
-
-    architect_content = (SKILLS_DIR / "msal-architect" / "SKILL.md").read_text(encoding="utf-8")
-    if "msal-data" in architect_content:
-        print("  ✅ architect references msal-data")
-    else:
-        print("  ❌ architect does not reference msal-data")
-        passed = False
-
-    sentinel_content = (SKILLS_DIR / "msal-sentinel" / "SKILL.md").read_text(encoding="utf-8")
-    if "msal-deploy" in sentinel_content:
-        print("  ✅ sentinel references msal-deploy")
-    else:
-        print("  ❌ sentinel does not reference msal-deploy")
-        passed = False
-
-    data_content = (SKILLS_DIR / "msal-data" / "SKILL.md").read_text(encoding="utf-8")
-    if "msal-architect" in data_content:
-        print("  ✅ data references msal-architect")
-    else:
-        print("  ❌ data does not reference msal-architect")
-        passed = False
-
-    docsmith_content = (SKILLS_DIR / "msal-docsmith" / "SKILL.md").read_text(encoding="utf-8")
-    if "msal-engineer" in docsmith_content or "msal-architect" in docsmith_content:
-        print("  ✅ docsmith references msal-engineer or msal-architect")
-    else:
-        print("  ❌ docsmith does not reference msal-engineer or msal-architect")
-        passed = False
-
-    motion_content = (SKILLS_DIR / "msal-motion" / "SKILL.md").read_text(encoding="utf-8")
-    if "msal-cinecode" in motion_content:
-        print("  ✅ motion references msal-cinecode")
-    else:
-        print("  ❌ motion does not reference msal-cinecode")
-        passed = False
-
-    cinecode_content = (SKILLS_DIR / "msal-cinecode" / "SKILL.md").read_text(encoding="utf-8")
-    if "msal-motion" in cinecode_content:
-        print("  ✅ cinecode references msal-motion")
-    else:
-        print("  ❌ cinecode does not reference msal-motion")
-        passed = False
-
-    orchestrator_content = (SKILLS_DIR / "maxilun" / "SKILL.md").read_text(encoding="utf-8")
-    if "msal-scaffold" in orchestrator_content:
-        print("  ✅ maxilun orchestrator references msal-scaffold")
-    else:
-        print("  ❌ maxilun orchestrator does not reference msal-scaffold")
-        passed = False
-
+    for skill, targets in checks:
+        content = read_skill(skill)
+        if any(t in content for t in targets):
+            print(f"  ✅ {skill} references {' or '.join(targets)}")
+        else:
+            print(f"  ❌ {skill} does not reference {' or '.join(targets)}")
+            passed = False
     return passed
 
 
@@ -419,22 +456,26 @@ def main():
     results = [
         test_skills_exist(),
         test_frontmatter(),
-        test_frontmatter_rules_field(),
+        test_core_rules_block(),
+        test_references_present(),
+        test_reference_paths_resolve(),
+        test_no_external_or_legacy_refs(),
+        test_section_numbering(),
         test_purity_self_check(),
         test_no_foreign_characters(),
+        test_size_budget(),
         test_foundation_integration(),
         test_referenced_paths(),
         test_kg_scanner_functional(),
         test_cross_references(),
     ]
-    
+
     print("\n" + "=" * 48)
     if all(results):
-        print("🎉 ALL VALIDATION SUITES PASSED! Maxilun ecosystem successfully verified.\n")
+        print("🎉 ALL VALIDATION SUITES PASSED. Maxilun ecosystem verified.\n")
         sys.exit(0)
-    else:
-        print("❌ SOME TESTS FAILED! Please inspect errors above.\n")
-        sys.exit(1)
+    print("❌ SOME TESTS FAILED. Inspect errors above.\n")
+    sys.exit(1)
 
 
 if __name__ == "__main__":

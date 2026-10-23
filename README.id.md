@@ -2,13 +2,13 @@
 
 <div align="center">
 
-<img src="assets/banner.jpg" alt="Maxilun — 18 Specialist Skills · Zero AI Slop · Four Always-On Engines and Three Operating Protocols" width="100%">
+<img src="assets/banner.jpg" alt="Maxilun — 18 Skill: 1 Orchestrator + 17 Spesialis · Zero AI Slop · Empat Engine" width="100%">
 
 <br/>
 
 [![CI](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml/badge.svg)](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml)
-[![Version](https://img.shields.io/badge/version-1.1.0-7c3aed?style=flat-square)](CHANGELOG.md)
-[![Skills](https://img.shields.io/badge/skills-18_specialists-06b6d4?style=flat-square)](docs/SKILLS.md)
+[![Version](https://img.shields.io/badge/version-2.1.0-7c3aed?style=flat-square)](CHANGELOG.md)
+[![Skills](https://img.shields.io/badge/skills-18_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
 [![License](https://img.shields.io/badge/license-Source_Available-22c55e?style=flat-square)](LICENSE)
 [![Platform](https://img.shields.io/badge/runs_on-Claude_·_Cursor_·_Codex_·_Antigravity_·_Zed_·_Termul-white?style=flat-square)](#platform-support)
 [![skills.sh](https://skills.sh/b/giriedu/maxilun?style=flat-square)](https://skills.sh/giriedu/maxilun)
@@ -21,7 +21,7 @@
 
 ---
 
-**Maxilun** adalah ekosistem 18 skill AI spesialis tingkat produksi untuk tim rekayasa perangkat lunak. Maxilun menggabungkan fondasi Knowledge Graph, empat engine kualitas yang selalu aktif, tiga protokol kerja, orkestrator, dan panduan pemeriksaan kualitas.
+**Maxilun** adalah ekosistem 18 skill AI untuk tim rekayasa perangkat lunak: satu orchestrator dan 17 spesialis. Setiap skill membawa blok **Core Rules** yang sama, sehingga empat engine kualitas ikut terpasang bersama skill, bukan tertinggal di folder terpisah. Orchestrator menambahkan routing berbasis hasil, protokol discovery untuk brief kabur, koordinasi wave, dan gate delivery berbasis bukti. Materi mendalam (detail engine, katalog anti-slop, higienitas kode, discovery) ada di `references/` dalam skill orchestrator dan hanya dimuat saat dibutuhkan.
 
 ## Instalasi Cepat
 
@@ -35,30 +35,30 @@ npx skills add giriedu/maxilun
 
 ---
 
-## 18 Skill Spesialis
+## 18 Skill: 1 Orchestrator + 17 Spesialis
 
 Disusun berdasarkan siklus rekayasa perangkat lunak dari fondasi arsitektur hingga eksekusi kreatif:
 
 | # | Skill | Fungsi Rekayasa | Pemicu Utama |
 |:--:|---|---|---|
-| 1 | `maxilun` | Master Orchestrator — routing berbasis bukti, confidence band, companion kondisional, koordinasi wave | `/maxilun`, `/msal` |
-| 2 | `msal-knowledge-graph` | Fondasi Penemuan Kode — AST parser mendalam & WebGL visualizer (Lens) | `/msal-graph`, `/msal-trace` |
-| 3 | `msal-scaffold` | Project Context Scaffolder — 10 dokumen konteks siap-baca AI di `docs/` | `/msal-scaffold`, `/msal-init` |
-| 4 | `msal-architect` | Arsitektur Sistem — C4 model, Event Storming, ADRs, penalaran `/msal-think` | `/msal-think`, `/msal-architect` |
-| 5 | `msal-sentinel` | Keamanan Defensif — OWASP Top 10, STRIDE threat modeling, kriptografi, secrets | `/msal-sentinel`, `/msal-security` |
-| 6 | `msal-engineer` | Implementasi Kode — TDD, pemecahan bug 5-WHY, refaktoring modular | `/msal-engineer` |
-| 7 | `msal-data` | Lapisan Database — desain skema, migrasi zero-downtime, optimasi query | `/msal-data` |
-| 8 | `msal-frontend` | Rekayasa Frontend — React Server Components, Next.js App Router, Server Actions | `/msal-frontend` |
-| 9 | `msal-verify` | Jaminan Kualitas — E2E (Playwright), visual regression, a11y, contract testing | `/msal-verify`, `/msal-test` |
-| 10 | `msal-insight` | Diagnostik Performa — profiling CPU/memori/database, distributed tracing | `/msal-insight`, `/msal-audit` |
-| 11 | `msal-deploy` | Operasi & Cloud — pipeline CI/CD, Docker multi-stage, rollout zero-downtime | `/msal-deploy` |
-| 12 | `msal-docsmith` | Dokumentasi Teknis — OpenAPI/AsyncAPI, ADR, runbook, llms.txt | `/msal-docsmith`, `/msal-docs` |
-| 13 | `msal-craft` | Desain Sistem & UI/UX — palet warna OKLCH, kepatuhan WCAG AAA, grid 4px | `/msal-craft`, `/msal-ui` |
-| 14 | `msal-motion` | Desain motion — animasi browser interaktif, aset Lottie/SVG, kinetic typography | `/msal-motion` |
-| 15 | `msal-cinecode` | Render video final — MP4/WebM/GIF berbasis kode/data, pipeline batch | `/msal-cinecode` |
-| 16 | `msal-diagrams` | Visualisasi Sistem — diagram alur, sequence, C4 diagram via Mermaid/SVG | `/msal-diagram`, `/msal-diagrams` |
-| 17 | `msal-content` | Copywriting Pengguna — landing page, microcopy UI, brand voice, lokalisasi | `/msal-content`, `/msal-copy` |
-| 18 | `msal-seo-audit` | Audit SEO Teknis — Core Web Vitals, JSON-LD structured data, crawler readiness | `/msal-seo`, `/msal-seo-audit` |
+| 1 | `maxilun` | Orchestrator — routing berbasis hasil, protokol discovery, koordinasi wave, gate bukti | `/maxilun`, `mode maxilun` |
+| 2 | `maxilun-knowledge-graph` | Fondasi Penemuan Kode — AST parser mendalam & WebGL visualizer (Lens) | `/maxilun-graph`, `/msal-trace` |
+| 3 | `maxilun-scaffold` | Project Context Scaffolder — 10 dokumen konteks siap-baca AI di `docs/` | `/maxilun-scaffold`, `/msal-init` |
+| 4 | `maxilun-architect` | Arsitektur Sistem — C4 model, Event Storming, ADRs, penalaran `/maxilun-think` | `/maxilun-think`, `/maxilun-architect` |
+| 5 | `maxilun-sentinel` | Keamanan Defensif — OWASP Top 10, STRIDE threat modeling, kriptografi, secrets | `/maxilun-sentinel`, `/msal-security` |
+| 6 | `maxilun-engineer` | Implementasi Kode — TDD, pemecahan bug 5-WHY, refaktoring modular | `/maxilun-engineer` |
+| 7 | `maxilun-data` | Lapisan Database — desain skema, migrasi zero-downtime, optimasi query | `/maxilun-data` |
+| 8 | `maxilun-frontend` | Rekayasa Frontend — React Server Components, Next.js App Router, Server Actions | `/maxilun-frontend` |
+| 9 | `maxilun-verify` | Jaminan Kualitas — E2E (Playwright), visual regression, a11y, contract testing | `/maxilun-verify`, `/msal-test` |
+| 10 | `maxilun-insight` | Diagnostik Performa — profiling CPU/memori/database, distributed tracing | `/maxilun-insight`, `/msal-audit` |
+| 11 | `maxilun-deploy` | Operasi & Cloud — pipeline CI/CD, Docker multi-stage, rollout zero-downtime | `/maxilun-deploy` |
+| 12 | `maxilun-docsmith` | Dokumentasi Teknis — OpenAPI/AsyncAPI, ADR, runbook, llms.txt | `/maxilun-docsmith`, `/msal-docs` |
+| 13 | `maxilun-craft` | Desain Sistem & UI/UX — palet warna OKLCH, kepatuhan WCAG AAA, grid 4px | `/maxilun-craft`, `/msal-ui` |
+| 14 | `maxilun-motion` | Desain motion — animasi browser interaktif, aset Lottie/SVG, kinetic typography | `/maxilun-motion` |
+| 15 | `maxilun-cinecode` | Render video final — MP4/WebM/GIF berbasis kode/data, pipeline batch | `/maxilun-cinecode` |
+| 16 | `maxilun-diagrams` | Visualisasi Sistem — diagram alur, sequence, C4 diagram via Mermaid/SVG | `/maxilun-diagram`, `/maxilun-diagrams` |
+| 17 | `maxilun-content` | Copywriting Pengguna — landing page, microcopy UI, brand voice, lokalisasi | `/maxilun-content`, `/msal-copy` |
+| 18 | `maxilun-seo-audit` | Audit SEO Teknis — Core Web Vitals, JSON-LD structured data, crawler readiness | `/maxilun-seo`, `/maxilun-seo-audit` |
 
 ---
 
@@ -85,7 +85,7 @@ Tiga protokol pendukung:
 
 ## Fondasi Knowledge Graph
 
-Gunakan `msal-knowledge-graph` untuk perubahan kode struktural atau lintas-file ketika tool graf tersedia. Perubahan teks kecil dan terisolasi boleh memakai jalur cepat; jika tool graf tidak tersedia, gunakan pencarian repo langsung dan nyatakan fallback tersebut:
+Gunakan `maxilun-knowledge-graph` untuk perubahan kode struktural atau lintas-file ketika tool graf tersedia. Perubahan teks kecil dan terisolasi boleh memakai jalur cepat; jika tool graf tidak tersedia, gunakan pencarian repo langsung dan nyatakan fallback tersebut:
 
 - **Python AST Scanner** — pemetaan sintaksis tingkat tinggi berbasis pohon sintaks nyata (bukan regex rapuh)
 - **TypeScript Scanner** — atribusi dependensi pemanggilan baris-ke-baris (*line-accurate CALLS*)
@@ -94,7 +94,7 @@ Gunakan `msal-knowledge-graph` untuk perubahan kode struktural atau lintas-file 
 
 ```bash
 # Jalankan langsung dari dalam sesi AI Anda:
-/msal-graph
+/maxilun-graph
 ```
 
 ---

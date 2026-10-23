@@ -1,7 +1,7 @@
 {
   "name": "maxilun",
-  "version": "1.1.0",
-  "description": "AI engineering co-pilot — 18 specialist skills, graph-assisted code discovery, confidence-based orchestration.",
+  "version": "2.1.0",
+  "description": "AI engineering co-pilot — 18 skills (1 orchestrator + 17 specialists), bundled rules, graph-assisted code discovery, evidence-based orchestration.",
   "keywords": [
     "ai-skills",
     "claude-code",
@@ -42,7 +42,6 @@
   },
   "files": [
     "skills/",
-    "rules/",
     "scripts/",
     "docs/",
     "README.md",
