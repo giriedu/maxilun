@@ -21,7 +21,7 @@
 
 ---
 
-**Maxilun** is an ecosystem of 18 AI skills for software engineering teams: one orchestrator and 17 specialists. Every skill carries the same **Core Rules** block, so the four quality engines travel with the skill instead of living in a separate folder. The orchestrator adds outcome-based routing, a discovery protocol for unclear briefs, wave coordination, and evidence-based delivery gates. Deeper material (engine detail, anti-slop catalog, code hygiene, discovery) lives in `references/` inside the orchestrator skill and is loaded only when needed.
+**Maxilun** is an ecosystem of 18 AI skills for software engineering teams: one orchestrator and 17 specialists. Every skill carries the same **Core Rules** block, so the four quality engines travel with the skill instead of living in a separate folder. The orchestrator adds outcome-based routing, a discovery protocol for unclear briefs, wave coordination, and evidence-based delivery gates. Deeper material (engine detail, anti-slop catalog, code hygiene, discovery) lives in `references/` inside each skill and is loaded only when needed.
 
 ## Quick Install
 
@@ -37,23 +37,21 @@ npx skills add giriedu/maxilun
 
 ## Why Engineers Choose Maxilun (Proof, Not Promises)
 
-Most AI skill repositories are thin text wrappers that repeat generic advice (*"write clean code, make it modern"*). Maxilun is built as **verifiable engineering infrastructure** — see full side-by-side comparisons in [**docs/BENCHMARKS.md**](docs/BENCHMARKS.md):
-
+Most AI skill repositories are thin text wrappers that repeat generic advice (*"write clean code, make it modern"*). Maxilun is built as **verifiable engineering infrastructure** — see full side-by-side code and UI comparisons in [**docs/BENCHMARKS.md**](docs/BENCHMARKS.md):
 
 <p align="center">
   <img src="assets/raw-vs-maxilun-proof.svg" alt="Raw Unconstrained AI vs Maxilun v2.3 Production Engineering" width="100%">
 </p>
+
 | What Usually Goes Wrong with Raw AI | What Maxilun Ships inside the Repo to Fix It |
 |---|---|
-| **Generic "AI Slop" UI** (purple-blue gradients, uniform border-radius, jittery numbers, missing empty/error states) | **`84 Real Brand Design Systems`** in [`skills/maxilun-craft/references/design-md/`](skills/maxilun-craft/references/design-md/index.md) (Stripe, Linear, Vercel, Wise, Apple, etc.) + mandatory **4-State UI Matrix** (Skeleton, Empty+CTA, Populated `tabular-nums`, Error+Recovery) |
+| **Generic "AI Slop" UI** (purple-blue gradients, uniform border-radius, jittery numbers, missing empty/error states) | **84 Real Brand Design Systems** in [`skills/maxilun-craft/references/design-md/`](skills/maxilun-craft/references/design-md/index.md) (Stripe, Linear, Vercel, Wise, Apple, etc.) + mandatory **4-State UI Matrix** (Skeleton, Empty+CTA, Populated `tabular-nums`, Error+Recovery) |
 | **Blind Multi-File Edits** (reading 20 whole files into context and breaking callers) | **Executable AST Knowledge Graph & 3D WebGL Lens** in [`skills/maxilun-knowledge-graph/`](skills/maxilun-knowledge-graph/SKILL.md) (`cli.py` + Python/TS/Polyglot AST scanners returning exact `file:line` `defOf:` / `callsIn:` in `< 1s`) |
 | **Vulnerable Auth & Webhooks** (`!==` timing leaks, float currency drift, ad-hoc error JSON) | **Cryptographic & API Contract Playbooks** in [`maxilun-sentinel`](skills/maxilun-sentinel/references/security-playbook.md) & [`maxilun-docsmith`](skills/maxilun-docsmith/references/openapi-contracts.md) (`timingSafeEqual`, Argon2id, `BIGINT` minor units, OpenAPI 3.1 + RFC 9457 `application/problem+json`) |
 | **Stiff, Unreadable AI Videos** (CSS transition drift, tiny 14px fonts, 30-word paragraphs) | **5-Skill Programmatic Video Studio** in [`maxilun-cinecode`](skills/maxilun-cinecode/references/video-production-pipeline.md) + [`maxilun-motion`](skills/maxilun-motion/references/choreography-styles.md) (React frame compiler, analytical damped springs, 14 style signatures, 22 hooks, FFmpeg `yuv420p`) |
 | **Context Window Bloat** (2,000-line prompt files that degrade LLM reasoning) | **Strict `< 400 Line` Cognitive Ceiling** on all 18 `SKILL.md` files with on-demand `references/` — verified on every commit by [`scripts/test-suite.py`](scripts/test-suite.py) (16 automated validation suites) |
 
 ---
-
-## 18 Skills: 1 Orchestrator + 17 Specialists
 
 ## System Architecture & Multi-Wave Orchestration
 
@@ -66,15 +64,15 @@ Most AI skill repositories are thin text wrappers that repeat generic advice (*"
 ```mermaid
 flowchart LR
     Prompt["User Request"] --> KG{"Touches Code?"}
-    KG -->|Yes: Structural| Graph["maxilun-knowledge-graph\n(AST defOf: / callsIn: file:line)"]
-    KG -->|New Project| Scaf["maxilun-scaffold\n(10 Context Docs + UI Seeding)"]
-    Graph --> Route["/maxilun Orchestrator\n(1-Primary + Conditional Companions)"]
+    KG -->|"Yes (Structural)"| Graph["maxilun-knowledge-graph<br/>AST defOf: / callsIn: file:line"]
+    KG -->|"New Project"| Scaf["maxilun-scaffold<br/>10 Context Docs + UI Seeding"]
+    Graph --> Route["/maxilun Orchestrator<br/>1-Primary + Conditional Companions"]
     Scaf --> Route
 
-    Route --> W1["Wave 1: Design & Contracts\n(architect · craft · data · sentinel)"]
-    W1 --> W2["Wave 2: Implementation\n(engineer · frontend · motion · cinecode)"]
-    W2 --> W3["Wave 3: 5-Tier Verification\n(verify · docsmith · deploy)"]
-    W3 --> Ship(["Verified Deliverable\n(Exit Code 0 + Evidence)"])
+    Route --> W1["Wave 1: Design & Contracts<br/>architect · craft · data · sentinel"]
+    W1 --> W2["Wave 2: Implementation<br/>engineer · frontend · motion · cinecode"]
+    W2 --> W3["Wave 3: 5-Tier Verification<br/>verify · docsmith · deploy"]
+    W3 --> Ship(["Verified Deliverable<br/>Exit Code 0 + Evidence"])
 ```
 
 ### 5-Specialist Studio Pipeline for Programmatic Motion Video
@@ -83,13 +81,15 @@ When building product launch videos, UI demos, or data-driven MP4/WebM reports, 
 
 ```mermaid
 flowchart LR
-    Craft["1. maxilun-craft\n84 Brand Design Refs\n1080p Type Scale & OKLCH"] --> Motion["2. maxilun-motion\nMotion DNA Extraction\n14 Styles · 22 Hooks · Beat Grid"]
-    Content["3. maxilun-content\n4-Beat Video Script\n(<= 8 words/scene + .vtt)"] --> Motion
-    Motion --> Cine["4. maxilun-cinecode\nDeterministic React Frames\n<Sequence> · <Spring> · FFmpeg"]
-    Cine --> Verify["5. maxilun-verify\nVitest Frame Math\nStill Check f0/Mid/End"]
+    Craft["1. maxilun-craft<br/>84 Brand Design Refs<br/>1080p Type Scale & OKLCH"] --> Motion["2. maxilun-motion<br/>Motion DNA Extraction<br/>14 Styles · 22 Hooks · Beat Grid"]
+    Content["3. maxilun-content<br/>4-Beat Video Script<br/>Max 8 words/scene + .vtt"] --> Motion
+    Motion --> Cine["4. maxilun-cinecode<br/>Deterministic React Frames<br/>Sequence · Spring · FFmpeg"]
+    Cine --> Verify["5. maxilun-verify<br/>Vitest Frame Math<br/>Still Check f0/Mid/End"]
 ```
 
 ---
+
+## 18 Skills: 1 Orchestrator + 17 Specialists
 
 Structured by real-world software engineering lifecycle — from foundational architecture to production delivery:
 
@@ -107,11 +107,11 @@ Structured by real-world software engineering lifecycle — from foundational ar
 | 10 | `maxilun-insight` | Performance Diagnostics — CPU/memory/DB profiling, distributed tracing, leak detection | `/maxilun-insight`, `/msal-audit` |
 | 11 | `maxilun-deploy` | Cloud & Operations — CI/CD pipelines, multi-stage Docker, zero-downtime rollouts | `/maxilun-deploy` |
 | 12 | `maxilun-docsmith` | Technical Specs & Documentation — Feature PRDs/RFCs, OpenAPI 3.1/AsyncAPI contracts, ADRs, runbooks, `llms.txt` | `/maxilun-docsmith`, `/msal-docs` |
-| 13 | `maxilun-craft` | Design Systems & UI/UX — OKLCH color palettes, WCAG AAA accessibility, 4px grid | `/maxilun-craft`, `/msal-ui` |
-| 14 | `maxilun-motion` | Motion design — interactive browser animation, Lottie/SVG assets, kinetic typography | `/maxilun-motion` |
-| 15 | `maxilun-cinecode` | Final video rendering — code-driven MP4/WebM/GIF, data-driven and batch pipelines | `/maxilun-cinecode` |
+| 13 | `maxilun-craft` | Design Systems & UI/UX — OKLCH color palettes, WCAG AAA accessibility, 4px grid, 84 brand references | `/maxilun-craft`, `/msal-ui` |
+| 14 | `maxilun-motion` | Motion Design — interactive browser animation, Lottie/SVG assets, kinetic typography, choreography | `/maxilun-motion` |
+| 15 | `maxilun-cinecode` | Programmatic Video — code-driven MP4/WebM/GIF, React frame compiler, data-driven batch pipelines | `/maxilun-cinecode` |
 | 16 | `maxilun-diagrams` | System Visualization — C4, sequence, Event Storming, data-flow diagrams via Mermaid | `/maxilun-diagram`, `/maxilun-diagrams` |
-| 17 | `maxilun-content` | User-Facing Copywriting — landing pages, UI microcopy, error states, brand voice | `/maxilun-content`, `/msal-copy` |
+| 17 | `maxilun-content` | User-Facing Copywriting — landing pages, UI microcopy, video script beats, error states, brand voice | `/maxilun-content`, `/msal-copy` |
 | 18 | `maxilun-seo-audit` | Technical SEO — Core Web Vitals, JSON-LD structured data, crawler readiness | `/maxilun-seo`, `/maxilun-seo-audit` |
 
 ---
