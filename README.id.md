@@ -35,7 +35,61 @@ npx skills add giriedu/maxilun
 
 ---
 
+## Mengapa Engineer Memilih Maxilun (Bukti Nyata, Bukan Klaim Kosong)
+
+Banyak repositori skill AI hanya berisi prompt tipis (*"tulis kode bersih, buat tampilan modern"*). Maxilun dibangun sebagai **infrastruktur rekayasa yang dapat diverifikasi** — lihat perbandingan kode & UI berdampingan di [**docs/BENCHMARKS.md**](docs/BENCHMARKS.md):
+
+
+<p align="center">
+  <img src="assets/raw-vs-maxilun-proof.svg" alt="Perbandingan Output AI Biasa vs Rekayasa Produksi Maxilun v2.3" width="100%">
+</p>
+| Masalah Umum Output AI Mentah (Raw LLM) | Artefak Nyata di Dalam Repositori Maxilun |
+|---|---|
+| **UI "AI Slop" Generik** (gradien ungu-biru, radius seragam, angka tabel bergoyang, tanpa state loading/error) | **`84 Analisis Design System Brand Nyata`** di [`skills/maxilun-craft/references/design-md/`](skills/maxilun-craft/references/design-md/index.md) (Stripe, Linear, Vercel, Wise, Apple, dll.) + kewajiban **Matriks 4 State UI** (Skeleton, Empty+CTA, Populated `tabular-nums`, Error+Recovery) |
+| **Edit Lintas-File Buta** (membaca puluhan file penuh ke context window dan merusak pemanggil fungsi) | **Executable AST Knowledge Graph & 3D WebGL Lens** di [`skills/maxilun-knowledge-graph/`](skills/maxilun-knowledge-graph/SKILL.md) (`cli.py` + AST scanner Python/TS/Polyglot yang mengembalikan `file:line` `defOf:` / `callsIn:` presisi) |
+| **Celah Keamanan & Kontrak API Rapuh** (timing attack `!==`, uang memakai `float`, format error acak) | **Playbook Kriptografi & Kontrak OpenAPI 3.1** di [`maxilun-sentinel`](skills/maxilun-sentinel/references/security-playbook.md) & [`maxilun-docsmith`](skills/maxilun-docsmith/references/openapi-contracts.md) (`timingSafeEqual`, Argon2id, `BIGINT` satuan terkecil, RFC 9457 `application/problem+json`) |
+| **Video Programatik Kaku & Tak Terbaca** (drift CSS transition, font kecil 14px, teks paragraf panjang) | **Pipeline Studio Video 5-Spesialis** di [`maxilun-cinecode`](skills/maxilun-cinecode/references/video-production-pipeline.md) + [`maxilun-motion`](skills/maxilun-motion/references/choreography-styles.md) (kompilator frame React, pegas teredam analitik, 14 style signature, 22 hook, FFmpeg `yuv420p`) |
+| **Context Window Bengkak** (prompt ribuan baris yang menurunkan akurasi penalaran model) | **Batas Keras `< 400 Baris`** di seluruh 18 `SKILL.md` dengan `references/` on-demand — diverifikasi otomatis oleh [`scripts/test-suite.py`](scripts/test-suite.py) (16 suite pengujian CI) |
+
+---
+
 ## 18 Skill: 1 Orchestrator + 17 Spesialis
+
+## Arsitektur Sistem & Orkestrasi Multi-Wave
+
+<p align="center">
+  <img src="assets/architecture-overview.svg" alt="Arsitektur 3-Lapis Ekosistem Maxilun v2.3" width="100%">
+</p>
+
+### Alur Routing & Koordinasi Tugas Rekayasa Kompleks
+
+```mermaid
+flowchart LR
+    Prompt["Permintaan User"] --> KG{"Menyentuh Kode?"}
+    KG -->|Ya: Struktural| Graph["maxilun-knowledge-graph\n(AST defOf: / callsIn: file:line)"]
+    KG -->|Proyek Baru| Scaf["maxilun-scaffold\n(10 Dokumen Konteks + UI Seeding)"]
+    Graph --> Route["/maxilun Orchestrator\n(1-Primary + Companion Kondisional)"]
+    Scaf --> Route
+
+    Route --> W1["Wave 1: Desain & Kontrak\n(architect · craft · data · sentinel)"]
+    W1 --> W2["Wave 2: Implementasi\n(engineer · frontend · motion · cinecode)"]
+    W2 --> W3["Wave 3: Verifikasi 5-Tier\n(verify · docsmith · deploy)"]
+    W3 --> Ship(["Deliverable Terbukti\n(Exit Code 0 + Bukti Nyata)"])
+```
+
+### Pipeline Studio 5-Spesialis untuk Programmatic Motion Video
+
+Saat membuat video peluncuran produk, demo UI, atau laporan data MP4/WebM, Maxilun menghubungkan 5 spesialis secara deterministik:
+
+```mermaid
+flowchart LR
+    Craft["1. maxilun-craft\n84 Referensi Brand Nyata\nSkala Font 1080p & OKLCH"] --> Motion["2. maxilun-motion\nEkstraksi Motion DNA\n14 Style · 22 Hook · Beat Grid"]
+    Content["3. maxilun-content\nNaskah Video 4-Beat\n(<= 8 kata/scene + .vtt)"] --> Motion
+    Motion --> Cine["4. maxilun-cinecode\nFrame React Deterministik\n<Sequence> · <Spring> · FFmpeg"]
+    Cine --> Verify["5. maxilun-verify\nVitest Matematika Frame\nCek Still f0/Mid/End"]
+```
+
+---
 
 Disusun berdasarkan siklus rekayasa perangkat lunak dari fondasi arsitektur hingga eksekusi kreatif:
 
@@ -121,6 +175,7 @@ Gunakan `maxilun-knowledge-graph` untuk perubahan kode struktural atau lintas-fi
 | [docs/ENGINES.md](docs/ENGINES.md) | Empat engine kualitas dan tiga protokol operasi |
 | [docs/EXAMPLES.md](docs/EXAMPLES.md) | Contoh skenario rekayasa nyata & orkestrasi Wave Pattern |
 | [docs/SKILL-CONTRACTS.md](docs/SKILL-CONTRACTS.md) | Ownership, mode standalone, input, output, dan handoff setiap skill |
+| [docs/BENCHMARKS.md](docs/BENCHMARKS.md) | Bukti perbandingan berdampingan Raw LLM vs Maxilun (UI, Keamanan API, Graf Kode, Video) |
 | [docs/ROUTING-MATRIX.md](docs/ROUTING-MATRIX.md) | Routing primary owner dan batas trigger yang bertabrakan |
 | [docs/ANTI-SLOP.md](docs/ANTI-SLOP.md) | Anti-slop distribution-safe dan gate berbasis bukti |
 | [docs/RELEASE.md](docs/RELEASE.md) | Alur rilis GitHub Release otomatis & pembaruan metadata |

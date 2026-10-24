@@ -20,6 +20,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - **Expanded Test Suite Verification** (`scripts/test-suite.py`): validates all newly bundled reference files and cross-skill handoff links across `docsmith`, `scaffold`, `motion`, `cinecode`, `architect`, and `craft`.
 - Bumped ecosystem version to `2.3.0` across all 18 skills, `package.json`, `install.sh`, `install.ps1`, `README.md`, `README.id.md`, and `docs/RELEASE.md`.
 
+### Security & Compliance
+- **Eliminated Pipe-to-Interpreter False Positives (`skills.sh` Security Scanner)**: removed `curl ... | python -c` from `maxilun-seo-audit/SKILL.md` and `curl ... | sh/bash` snippets from `maxilun-craft/references/design-md/` (`ollama.md`, `opencode.ai.md`), and added an automated `test_no_pipe_to_interpreter` gate in `scripts/test-suite.py`.
+
 ## [2.2.0] — 2026-10-24
 
 ### Changed

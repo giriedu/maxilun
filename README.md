@@ -35,7 +35,61 @@ npx skills add giriedu/maxilun
 
 ---
 
+## Why Engineers Choose Maxilun (Proof, Not Promises)
+
+Most AI skill repositories are thin text wrappers that repeat generic advice (*"write clean code, make it modern"*). Maxilun is built as **verifiable engineering infrastructure** — see full side-by-side comparisons in [**docs/BENCHMARKS.md**](docs/BENCHMARKS.md):
+
+
+<p align="center">
+  <img src="assets/raw-vs-maxilun-proof.svg" alt="Raw Unconstrained AI vs Maxilun v2.3 Production Engineering" width="100%">
+</p>
+| What Usually Goes Wrong with Raw AI | What Maxilun Ships inside the Repo to Fix It |
+|---|---|
+| **Generic "AI Slop" UI** (purple-blue gradients, uniform border-radius, jittery numbers, missing empty/error states) | **`84 Real Brand Design Systems`** in [`skills/maxilun-craft/references/design-md/`](skills/maxilun-craft/references/design-md/index.md) (Stripe, Linear, Vercel, Wise, Apple, etc.) + mandatory **4-State UI Matrix** (Skeleton, Empty+CTA, Populated `tabular-nums`, Error+Recovery) |
+| **Blind Multi-File Edits** (reading 20 whole files into context and breaking callers) | **Executable AST Knowledge Graph & 3D WebGL Lens** in [`skills/maxilun-knowledge-graph/`](skills/maxilun-knowledge-graph/SKILL.md) (`cli.py` + Python/TS/Polyglot AST scanners returning exact `file:line` `defOf:` / `callsIn:` in `< 1s`) |
+| **Vulnerable Auth & Webhooks** (`!==` timing leaks, float currency drift, ad-hoc error JSON) | **Cryptographic & API Contract Playbooks** in [`maxilun-sentinel`](skills/maxilun-sentinel/references/security-playbook.md) & [`maxilun-docsmith`](skills/maxilun-docsmith/references/openapi-contracts.md) (`timingSafeEqual`, Argon2id, `BIGINT` minor units, OpenAPI 3.1 + RFC 9457 `application/problem+json`) |
+| **Stiff, Unreadable AI Videos** (CSS transition drift, tiny 14px fonts, 30-word paragraphs) | **5-Skill Programmatic Video Studio** in [`maxilun-cinecode`](skills/maxilun-cinecode/references/video-production-pipeline.md) + [`maxilun-motion`](skills/maxilun-motion/references/choreography-styles.md) (React frame compiler, analytical damped springs, 14 style signatures, 22 hooks, FFmpeg `yuv420p`) |
+| **Context Window Bloat** (2,000-line prompt files that degrade LLM reasoning) | **Strict `< 400 Line` Cognitive Ceiling** on all 18 `SKILL.md` files with on-demand `references/` — verified on every commit by [`scripts/test-suite.py`](scripts/test-suite.py) (16 automated validation suites) |
+
+---
+
 ## 18 Skills: 1 Orchestrator + 17 Specialists
+
+## System Architecture & Multi-Wave Orchestration
+
+<p align="center">
+  <img src="assets/architecture-overview.svg" alt="Maxilun v2.3 3-Layer Ecosystem Architecture" width="100%">
+</p>
+
+### How Maxilun Routes & Coordinates Complex Engineering Tasks
+
+```mermaid
+flowchart LR
+    Prompt["User Request"] --> KG{"Touches Code?"}
+    KG -->|Yes: Structural| Graph["maxilun-knowledge-graph\n(AST defOf: / callsIn: file:line)"]
+    KG -->|New Project| Scaf["maxilun-scaffold\n(10 Context Docs + UI Seeding)"]
+    Graph --> Route["/maxilun Orchestrator\n(1-Primary + Conditional Companions)"]
+    Scaf --> Route
+
+    Route --> W1["Wave 1: Design & Contracts\n(architect · craft · data · sentinel)"]
+    W1 --> W2["Wave 2: Implementation\n(engineer · frontend · motion · cinecode)"]
+    W2 --> W3["Wave 3: 5-Tier Verification\n(verify · docsmith · deploy)"]
+    W3 --> Ship(["Verified Deliverable\n(Exit Code 0 + Evidence)"])
+```
+
+### 5-Specialist Studio Pipeline for Programmatic Motion Video
+
+When building product launch videos, UI demos, or data-driven MP4/WebM reports, Maxilun chains five specialists so visuals, physics, and frame encoding never drift:
+
+```mermaid
+flowchart LR
+    Craft["1. maxilun-craft\n84 Brand Design Refs\n1080p Type Scale & OKLCH"] --> Motion["2. maxilun-motion\nMotion DNA Extraction\n14 Styles · 22 Hooks · Beat Grid"]
+    Content["3. maxilun-content\n4-Beat Video Script\n(<= 8 words/scene + .vtt)"] --> Motion
+    Motion --> Cine["4. maxilun-cinecode\nDeterministic React Frames\n<Sequence> · <Spring> · FFmpeg"]
+    Cine --> Verify["5. maxilun-verify\nVitest Frame Math\nStill Check f0/Mid/End"]
+```
+
+---
 
 Structured by real-world software engineering lifecycle — from foundational architecture to production delivery:
 
@@ -121,6 +175,7 @@ Use `maxilun-knowledge-graph` for structural or multi-file code changes when its
 | [docs/ENGINES.md](docs/ENGINES.md) | Four Always-On Engines and three Operating Protocols |
 | [docs/EXAMPLES.md](docs/EXAMPLES.md) | Real-world engineering scenarios & multi-specialist Wave Patterns |
 | [docs/SKILL-CONTRACTS.md](docs/SKILL-CONTRACTS.md) | Ownership, standalone behavior, inputs, outputs, and handoffs for every skill |
+| [docs/BENCHMARKS.md](docs/BENCHMARKS.md) | Side-by-side Raw LLM vs. Maxilun code/UI/video proofs & token efficiency metrics |
 | [docs/ROUTING-MATRIX.md](docs/ROUTING-MATRIX.md) | Primary-owner routing and trigger collision boundaries |
 | [docs/ANTI-SLOP.md](docs/ANTI-SLOP.md) | Distribution-safe anti-slop and evidence gate |
 | [docs/RELEASE.md](docs/RELEASE.md) | Automated GitHub Releases, tag dispatch, and versioning protocols |

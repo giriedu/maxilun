@@ -406,7 +406,7 @@ There is no photography. Visual elements are limited to:
 
 **`install-snippet`** — the home page's signature install code block
 - Background `{colors.surface-card}` (`#f1eeee`), text `{colors.ink}` rendered in `{typography.body-md}` (already monospaced — Berkeley Mono), padding `12px 16px`, rounded `{rounded.sm}`.
-- Contains the literal `curl -fsSL https://opencode.ai/install | bash` command with a small copy-icon at the right edge. Sits below the install-method tab strip.
+- Contains a single-line CLI install command (`npm i -g opencode-ai`) with a small copy-icon at the right edge. Sits below the install-method tab strip.
 
 ### Cards & Containers
 

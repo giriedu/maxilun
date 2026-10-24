@@ -417,7 +417,7 @@ There is no photography. The only image-like elements are:
 
 **`install-snippet`** — the signature install pill
 - Background `{colors.surface-soft}`, text `{colors.ink}` rendered in `{typography.code-md}`, padding `12px 20px`, height `48px`, rounded `{rounded.full}`.
-- Contains the literal `curl -fsSL https://ollama.com/install.sh | sh` install command with a small copy-icon at the right edge. Sits directly below the hero headline as the page's most prominent "CTA."
+- Contains a single-line CLI install command (`ollama run llama3.2`) with a small copy-icon at the right edge. Sits directly below the hero headline as the page's most prominent "CTA."
 
 **`command-tag`** — small inline command chip
 - Background `{colors.surface-soft}`, text `{colors.ink}` in `{typography.code-sm}`, padding `6px 12px`, rounded `{rounded.full}`.

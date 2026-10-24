@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080b12"/>
+      <stop offset="50%" stop-color="#0d1322"/>
+      <stop offset="100%" stop-color="#090d18"/>
+    </linearGradient>
+    <linearGradient id="accentCyan" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="accentCopper" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+    <linearGradient id="accentEmerald" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#1e293b" stroke-width="0.6" stroke-opacity="0.55"/>
+    </pattern>
+    <marker id="arrowCyan" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8"/>
+    </marker>
+    <marker id="arrowAmber" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#f59e0b"/>
+    </marker>
+    <marker id="arrowEmerald" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#10b981"/>
+    </marker>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1120" height="560" rx="14" fill="url(#bgGrad)" stroke="#1e293b" stroke-width="1.5"/>
+  <rect width="1120" height="560" rx="14" fill="url(#grid)"/>
+
+  <!-- Header Bar -->
+  <rect x="28" y="22" width="1064" height="54" rx="8" fill="#0f172a" stroke="#1e293b" stroke-width="1"/>
+  <circle cx="52" cy="49" r="6" fill="#06b6d4"/>
+  <text x="68" y="45" fill="#f8fafc" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="16" font-weight="700" letter-spacing="0.5">MAXILUN v2.3 ARCHITECTURE — 1 ORCHESTRATOR + 17 SPECIALISTS</text>
+  <text x="68" y="64" fill="#94a3b8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5">Identical CORE-RULES Engine Block · &lt;400 Line Cognitive Ceiling · On-Demand Reference Corpora</text>
+  <rect x="928" y="34" width="148" height="30" rx="6" fill="#042f2e" stroke="#10b981" stroke-width="1"/>
+  <text x="1002" y="53" text-anchor="middle" fill="#34d399" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5" font-weight="700">16/16 CI SUITES PASS</text>
+
+  <!-- Tier 1: Foundation & Orchestrator -->
+  <g transform="translate(28, 96)">
+    <rect width="310" height="436" rx="10" fill="#0b1120" stroke="#334155" stroke-width="1.2"/>
+    <rect width="310" height="6" rx="3" fill="url(#accentCyan)"/>
+    <text x="20" y="32" fill="#38bdf8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700" letter-spacing="1.2">LAYER 1 · CONTROL &amp; DISCOVERY</text>
+
+    <!-- Node: Master Orchestrator -->
+    <rect x="18" y="48" width="274" height="108" rx="8" fill="#111c33" stroke="#0284c7" stroke-width="1.2"/>
+    <text x="32" y="72" fill="#f8fafc" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" font-weight="700">/maxilun (Orchestrator)</text>
+    <text x="32" y="92" fill="#cbd5e1" font-family="system-ui, -apple-system, sans-serif" font-size="12">• Wave 0 Discovery Protocol</text>
+    <text x="32" y="110" fill="#cbd5e1" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 1-Primary Outcome Routing</text>
+    <text x="32" y="128" fill="#cbd5e1" font-family="system-ui, -apple-system, sans-serif" font-size="12">• Parallel Wave Dispatch (max 3)</text>
+    <text x="32" y="146" fill="#38bdf8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5">refs: engines · purity · hygiene</text>
+
+    <!-- Node: Knowledge Graph -->
+    <rect x="18" y="172" width="274" height="114" rx="8" fill="#0f172a" stroke="#475569" stroke-width="1"/>
+    <text x="32" y="196" fill="#f8fafc" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13.5" font-weight="700">maxilun-knowledge-graph</text>
+    <text x="32" y="216" fill="#cbd5e1" font-family="system-ui, -apple-system, sans-serif" font-size="12">• AST Scanners (Py / TS / Polyglot)</text>
+    <text x="32" y="234" fill="#cbd5e1" font-family="system-ui, -apple-system, sans-serif" font-size="12">• Exact file:line defOf: / callsIn:</text>
+    <text x="32" y="252" fill="#cbd5e1" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 3D WebGL &amp; 2D Matrix (Maxilun Lens)</text>
+    <text x="32" y="272" fill="#f59e0b" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5">bin: cli.py · server.py · lens.html</text>
+
+    <!-- Node: Scaffold -->
+    <rect x="18" y="302" width="274" height="114" rx="8" fill="#0f172a" stroke="#475569" stroke-width="1"/>
+    <text x="32" y="326" fill="#f8fafc" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13.5" font-weight="700">maxilun-scaffold</text>
+    <text x="32" y="346" fill="#cbd5e1" font-family="system-ui, -apple-system, sans-serif" font-size="12">• Bootstraps 10 AI Docs in docs/</text>
+    <text x="32" y="364" fill="#cbd5e1" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 5 Domain Archetypes (Fintech, SaaS…)</text>
+    <text x="32" y="382" fill="#cbd5e1" font-family="system-ui, -apple-system, sans-serif" font-size="12">• Seeds DESIGN.md from Craft Corpus</text>
+    <text x="32" y="402" fill="#38bdf8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5">refs: prd-archetypes · doc-templates</text>
+  </g>
+
+  <!-- Tier 2: Specialist Execution Clusters -->
+  <g transform="translate(366, 96)">
+    <rect width="452" height="436" rx="10" fill="#0b1120" stroke="#334155" stroke-width="1.2"/>
+    <rect width="452" height="6" rx="3" fill="url(#accentCopper)"/>
+    <text x="20" y="32" fill="#f59e0b" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700" letter-spacing="1.2">LAYER 2 · 15 DOMAIN SPECIALISTS &amp; BUNDLED CORPORA</text>
+
+    <!-- Cluster A: Architecture, Security & Data -->
+    <rect x="18" y="48" width="416" height="90" rx="8" fill="#131c31" stroke="#334155" stroke-width="1"/>
+    <text x="30" y="68" fill="#fbbf24" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5" font-weight="700">ARCHITECTURE, SECURITY &amp; PERSISTENCE</text>
+    <text x="30" y="88" fill="#f8fafc" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12.5" font-weight="600">architect · sentinel · data</text>
+    <text x="30" y="108" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="11.5">/msal-think 4-Phase Matrix · Outbox &amp; Saga · STRIDE &amp; OWASP Playbook</text>
+    <text x="30" y="125" fill="#38bdf8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5">PostgreSQL RLS · Expand-Contract Zero-Downtime Migrations · AES-256-GCM</text>
+
+    <!-- Cluster B: Core Engineering & Runtime -->
+    <rect x="18" y="150" width="416" height="84" rx="8" fill="#131c31" stroke="#334155" stroke-width="1"/>
+    <text x="30" y="170" fill="#fbbf24" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5" font-weight="700">IMPLEMENTATION, NEXT.JS RSC &amp; DIAGNOSTICS</text>
+    <text x="30" y="190" fill="#f8fafc" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12.5" font-weight="600">engineer · frontend · insight · deploy</text>
+    <text x="30" y="210" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="11.5">Simplicity Ladder · TDD · Server Actions · CPU/Heap/SQL Profiling · Docker</text>
+
+    <!-- Cluster C: Design System, Motion & Video Studio -->
+    <rect x="18" y="246" width="416" height="92" rx="8" fill="#17152b" stroke="#6366f1" stroke-width="1.2"/>
+    <text x="30" y="266" fill="#a5b4fc" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5" font-weight="700">UI/UX DESIGN CORPUS &amp; PROGRAMMATIC VIDEO STUDIO</text>
+    <text x="30" y="286" fill="#f8fafc" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12.5" font-weight="600">craft · motion · cinecode · content</text>
+    <text x="30" y="306" fill="#cbd5e1" font-family="system-ui, -apple-system, sans-serif" font-size="11.5">84 Real Brand Design Systems · OKLCH Tokens · 4 Mandatory UI States</text>
+    <text x="30" y="324" fill="#38bdf8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5">14 Motion Signatures · 22 Hooks · React Frame Compiler → FFmpeg MP4/WebM</text>
+
+    <!-- Cluster D: Specs, Diagrams & Search -->
+    <rect x="18" y="350" width="416" height="68" rx="8" fill="#131c31" stroke="#334155" stroke-width="1"/>
+    <text x="30" y="370" fill="#fbbf24" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5" font-weight="700">SPECS, CONTRACTS, DIAGRAMS &amp; TECHNICAL SEO</text>
+    <text x="30" y="390" fill="#f8fafc" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12.5" font-weight="600">docsmith · diagrams · seo-audit</text>
+    <text x="30" y="407" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="11.5">Feature PRD/RFC · OpenAPI 3.1 (RFC 9457) · Runbooks · C4 Mermaid · llms.txt</text>
+  </g>
+
+  <!-- Tier 3: Verification & Delivery Gate -->
+  <g transform="translate(846, 96)">
+    <rect width="246" height="436" rx="10" fill="#0b1120" stroke="#334155" stroke-width="1.2"/>
+    <rect width="246" height="6" rx="3" fill="url(#accentEmerald)"/>
+    <text x="18" y="32" fill="#34d399" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700" letter-spacing="1.2">LAYER 3 · EVIDENCE GATE</text>
+
+    <!-- Verify Node -->
+    <rect x="16" y="48" width="214" height="178" rx="8" fill="#09221e" stroke="#10b981" stroke-width="1.2"/>
+    <text x="28" y="72" fill="#f8fafc" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13.5" font-weight="700">maxilun-verify</text>
+    <text x="28" y="96" fill="#a7f3d0" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5">Tier 1: Static &amp; Types</text>
+    <text x="28" y="116" fill="#a7f3d0" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5">Tier 2: Unit &amp; Boundary</text>
+    <text x="28" y="136" fill="#a7f3d0" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5">Tier 3: Production Build</text>
+    <text x="28" y="156" fill="#a7f3d0" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5">Tier 4: E2E &amp; Regression</text>
+    <text x="28" y="176" fill="#a7f3d0" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5">Tier 5: STRIDE Security</text>
+    <text x="28" y="204" fill="#34d399" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="600">No Pass Without Output Proof</text>
+
+    <!-- 4 Always-On Engines Box -->
+    <rect x="16" y="242" width="214" height="174" rx="8" fill="#0f172a" stroke="#475569" stroke-width="1"/>
+    <text x="28" y="266" fill="#38bdf8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5" font-weight="700">4 ALWAYS-ON ENGINES</text>
+    <text x="28" y="290" fill="#f8fafc" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600">1. Focus Engine</text>
+    <text x="42" y="306" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="11">HUD + max 3 active tasks</text>
+    <text x="28" y="326" fill="#f8fafc" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600">2. Purity Engine</text>
+    <text x="42" y="342" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="11">Zero AI slop / fake claims</text>
+    <text x="28" y="362" fill="#f8fafc" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600">3. Minimalist Engine</text>
+    <text x="42" y="378" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="11">Stdlib first · file &lt;= 300 ln</text>
+    <text x="28" y="398" fill="#f8fafc" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600">4. Clarity Engine</text>
+  </g>
+
+  <!-- Connectors between Layers -->
+  <line x1="338" y1="195" x2="362" y2="195" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrowCyan)"/>
+  <line x1="338" y1="315" x2="362" y2="315" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrowCyan)"/>
+  <line x1="818" y1="245" x2="842" y2="245" stroke="#10b981" stroke-width="2" marker-end="url(#arrowEmerald)"/>
+</svg>

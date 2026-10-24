@@ -60,7 +60,7 @@ REQUIRED_REFERENCES = [
     "code-hygiene.md",
 ]
 
-REQUIRED_PUBLIC_DOCS = ["SKILL-CONTRACTS.md", "ROUTING-MATRIX.md", "ANTI-SLOP.md"]
+REQUIRED_PUBLIC_DOCS = ["SKILL-CONTRACTS.md", "ROUTING-MATRIX.md", "ANTI-SLOP.md", "BENCHMARKS.md"]
 
 BANNED_WORDS = [
     r"\bdelve\b",
@@ -231,6 +231,21 @@ def test_no_external_or_legacy_refs():
     return passed
 
 
+def test_no_pipe_to_interpreter():
+    print("\n🧪 Checking skills for pipe-to-interpreter patterns (skills.sh security audit)...")
+    passed = True
+    pipe_pattern = re.compile(r"\b(?:curl|wget)\b[^\n]*\|\s*(?:sh|bash|zsh|python|python3|node|perl|ruby|pwsh|powershell)\b", re.IGNORECASE)
+    for md_file in SKILLS_DIR.rglob("*.md"):
+        content = md_file.read_text(encoding="utf-8")
+        m = pipe_pattern.search(content)
+        if m:
+            print(f"  ❌ {md_file.relative_to(REPO_ROOT)}: pipe-to-interpreter pattern '{m.group(0)}'")
+            passed = False
+    if passed:
+        print("  ✅ Zero pipe-to-interpreter patterns across all skills and references")
+    return passed
+
+
 def test_section_numbering():
     print("\n🧪 Validating section numbering...")
     passed = True
@@ -363,6 +378,9 @@ def test_referenced_paths():
         SKILLS_DIR / "maxilun-cinecode" / "references" / "video-production-pipeline.md",
         SKILLS_DIR / "maxilun-knowledge-graph" / "LENS.md",
         SKILLS_DIR / "maxilun-knowledge-graph" / "graph-viewer" / "lens.html",
+        REPO_ROOT / "assets" / "banner.jpg",
+        REPO_ROOT / "assets" / "architecture-overview.svg",
+        REPO_ROOT / "assets" / "raw-vs-maxilun-proof.svg",
         REPO_ROOT / "README.md",
         REPO_ROOT / "README.id.md",
         REPO_ROOT / "LICENSE",
@@ -513,6 +531,7 @@ def main():
         test_skill_contracts(),
         test_kg_scanner_functional(),
         test_cross_references(),
+        test_no_pipe_to_interpreter(),
     ]
 
     print("\n" + "=" * 48)

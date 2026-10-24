@@ -48,6 +48,28 @@ flowchart TD
    - `maxilun-verify`: Menulis uji integrasi Playwright dan suite unit test untuk seluruh cabang error.
    - `maxilun-docsmith`: Menulis spesifikasi OpenAPI 3.1 dan memperbarui `docs/api.md` serta `llms.txt`.
 
+
+### Skenario 2: "Membuat Motion Video Peluncuran Produk Kelas Studio (12 Detik, 1080p)"
+
+```mermaid
+flowchart LR
+    subgraph W1["Wave 1: Direction, Script & Choreography"]
+        C["maxilun-craft\n(Token & Referensi Brand)"]
+        CNT["maxilun-content\n(4-Beat Script <=8 kata/scene)"]
+        M["maxilun-motion\n(Motion DNA & Frame Spec)"]
+    end
+    W1 --> W2["Wave 2: maxilun-cinecode\n(Kompilasi React <Sequence> & <Spring>)"]
+    W2 --> W3["Wave 3: maxilun-verify\n(Cek Still f0/Mid/End & Render MP4 yuv420p)"]
+```
+
+1. **Wave 1 (Arah Visual, Naskah & Koreografi Paralel)**:
+   - `maxilun-craft`: Memilih referensi `vercel.md` / `linear.app.md` dari `references/design-md/`, menetapkan skala tipografi kanvas 1080p (Headline `72px`, angka `tabular-nums`, safe margin `96px/80px`).
+   - `maxilun-content`: Menyusun 4 beat naskah (`<= 8 kata per layar`): Hook masalah (`0–3s`), mekanisme solusi (`3–8s`), bukti metrik (`8–11.5s`), dan perintah CLI CTA (`11.5–14s`).
+   - `maxilun-motion`: Menurunkan *Motion DNA* (`stiffness: 170, damping: 19`), memilih hook *Grid Construct + Type Scramble*, dan menyusun tabel koreografi per frame.
+2. **Wave 2 (Kompilasi Frame Deterministik)**:
+   - `maxilun-cinecode`: Membangun komponen React murni berbasis `useCurrentFrame()` (tanpa drift CSS `transition`), menyelaraskan potongan scene ke beat audio, dan menyertakan track `.vtt`.
+3. **Wave 3 (Verifikasi Frame & Encoding)**:
+   - `maxilun-verify` + `maxilun-cinecode`: Menguji unit matematika frame dengan Vitest, memeriksa tangkapan gambar pada `frame 0` (thumbnail), dan merender MP4 (`libx264`, `yuv420p`).
 ---
 
 ## 2. Contoh Prompt Spesifik per Spesialis
@@ -98,9 +120,9 @@ flowchart TD
 - `"Rancang pipeline GitHub Actions untuk deployment preview otomatis per pull request dengan zero-downtime rollback."`
 
 ### 12. maxilun-docsmith
+- `"Buat PRD & Engineering RFC untuk fitur Pembayaran QRIS Dinamis lengkap dengan kriteria Gherkin, matriks 4 state UI (merujuk maxilun-craft), dan kontrak OpenAPI 3.1 + RFC 9457."`
 - `"Tulis panduan migrasi komprehensif dari v1 ke v2 untuk SDK publik ini dengan format Keep a Changelog."`
 - `"Buat file llms.txt dan llms-full.txt yang memetakan dokumentasi teknis repositori ini untuk agen AI."`
-
 ### 13. maxilun-craft
 - `"Buat sistem token warna berbasis OKLCH dengan kontras rasio minimal WCAG AAA untuk mode terang dan mode gelap."`
 - `"Rancang komponen data table responsif yang otomatis berubah menjadi kartu hierarkis pada layar mobile tanpa JavaScript berat."`

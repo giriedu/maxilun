@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 440" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgProof" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080b12"/>
+      <stop offset="100%" stop-color="#0d1322"/>
+    </linearGradient>
+    <linearGradient id="slopGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </linearGradient>
+    <linearGradient id="craftGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1120" height="440" rx="14" fill="url(#bgProof)" stroke="#1e293b" stroke-width="1.5"/>
+
+  <!-- Left Panel: Raw Unconstrained LLM -->
+  <g transform="translate(28, 24)">
+    <rect width="516" height="392" rx="10" fill="#160f18" stroke="#7f1d1d" stroke-width="1.2"/>
+    <rect width="516" height="6" rx="3" fill="url(#slopGrad)"/>
+    <rect x="20" y="20" width="144" height="24" rx="4" fill="#450a0a" stroke="#dc2626" stroke-width="0.8"/>
+    <text x="92" y="36" text-anchor="middle" fill="#fca5a5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700">RAW AI / THIN SKILL</text>
+    <text x="176" y="37" fill="#f8fafc" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="700">What Typical AI Prompts Produce</text>
+
+    <!-- Item 1 -->
+    <rect x="20" y="58" width="476" height="72" rx="6" fill="#1f121d" stroke="#3f1d2b" stroke-width="1"/>
+    <text x="34" y="80" fill="#f87171" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700">1. UI &amp; Design: Generic Purple-Blue Slop</text>
+    <text x="34" y="100" fill="#cbd5e1" font-family="system-ui, -apple-system, sans-serif" font-size="12">• Default purple gradient hero, uniform 12px radius, fake "AI-Powered" badges</text>
+    <text x="34" y="118" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="11.5">• Only codes happy path — crashes or renders blank div on loading / API error</text>
+
+    <!-- Item 2 -->
+    <rect x="20" y="140" width="476" height="72" rx="6" fill="#1f121d" stroke="#3f1d2b" stroke-width="1"/>
+    <text x="34" y="162" fill="#f87171" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700">2. Security &amp; API: Vulnerable Happy-Path Code</text>
+    <text x="34" y="182" fill="#cbd5e1" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5">if (sig !== expected) // Timing attack + float money drift!</text>
+    <text x="34" y="200" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="11.5">• Missing Idempotency-Key, OFFSET pagination on 5M rows, inconsistent error JSON</text>
+
+    <!-- Item 3 -->
+    <rect x="20" y="222" width="476" height="72" rx="6" fill="#1f121d" stroke="#3f1d2b" stroke-width="1"/>
+    <text x="34" y="244" fill="#f87171" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700">3. Multi-File Refactor: Blind Grep &amp; Token Bloat</text>
+    <text x="34" y="264" fill="#cbd5e1" font-family="system-ui, -apple-system, sans-serif" font-size="12">• Reads 20+ whole files into context window, misses transitive callers</text>
+    <text x="34" y="282" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="11.5">• Claims "all tests pass" without executing compiler or test runner</text>
+
+    <!-- Item 4 -->
+    <rect x="20" y="304" width="476" height="72" rx="6" fill="#1f121d" stroke="#3f1d2b" stroke-width="1"/>
+    <text x="34" y="326" fill="#f87171" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700">4. Motion &amp; Video: Unreadable Frame Drift</text>
+    <text x="34" y="346" fill="#cbd5e1" font-family="system-ui, -apple-system, sans-serif" font-size="12">• Uses CSS transition: all 0.5s inside headless video capture (frame desync)</text>
+    <text x="34" y="364" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="11.5">• Tiny 14px web font on 1080p canvas + 30-word marketing paragraphs</text>
+  </g>
+
+  <!-- Right Panel: Maxilun v2.3 Engineered Output -->
+  <g transform="translate(576, 24)">
+    <rect width="516" height="392" rx="10" fill="#09191f" stroke="#0d9488" stroke-width="1.2"/>
+    <rect width="516" height="6" rx="3" fill="url(#craftGrad)"/>
+    <rect x="20" y="20" width="152" height="24" rx="4" fill="#042f2e" stroke="#10b981" stroke-width="0.8"/>
+    <text x="96" y="36" text-anchor="middle" fill="#34d399" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700">MAXILUN v2.3 ENGINE</text>
+    <text x="184" y="37" fill="#f8fafc" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="700">Verifiable Production Engineering</text>
+
+    <!-- Item 1 -->
+    <rect x="20" y="58" width="476" height="72" rx="6" fill="#0d2329" stroke="#115e59" stroke-width="1"/>
+    <text x="34" y="80" fill="#34d399" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700">1. Grounded in 84 Real Brand Systems (design-md/)</text>
+    <text x="34" y="100" fill="#e2e8f0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• Adapts Stripe / Linear / Vercel hierarchy, semantic OKLCH &amp; tabular-nums</text>
+    <text x="34" y="118" fill="#38bdf8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11">• Enforces 4 UI States: Skeleton (CLS=0) · Empty+CTA · Populated · Error+Retry</text>
+
+    <!-- Item 2 -->
+    <rect x="20" y="140" width="476" height="72" rx="6" fill="#0d2329" stroke="#115e59" stroke-width="1"/>
+    <text x="34" y="162" fill="#34d399" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700">2. Hardened Contracts &amp; Cryptographic Integrity</text>
+    <text x="34" y="182" fill="#e2e8f0" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5">timingSafeEqual(a, b) + 300s window + BIGINT minor units</text>
+    <text x="34" y="200" fill="#38bdf8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11">• OpenAPI 3.1 + RFC 9457 ProblemDetails + PostgreSQL RLS + Outbox Pattern</text>
+
+    <!-- Item 3 -->
+    <rect x="20" y="222" width="476" height="72" rx="6" fill="#0d2329" stroke="#115e59" stroke-width="1"/>
+    <text x="34" y="244" fill="#34d399" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700">3. AST Knowledge Graph + 5-Tier Verification</text>
+    <text x="34" y="264" fill="#e2e8f0" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5">python cli.py query callsIn: validateToken → exact file:line</text>
+    <text x="34" y="282" fill="#38bdf8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11">• All 18 SKILL.md &lt; 400 lines · Evidence Gate requires real CLI exit code 0</text>
+
+    <!-- Item 4 -->
+    <rect x="20" y="304" width="476" height="72" rx="6" fill="#0d2329" stroke="#115e59" stroke-width="1"/>
+    <text x="34" y="326" fill="#34d399" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700">4. 5-Skill Studio Motion Video Pipeline</text>
+    <text x="34" y="346" fill="#e2e8f0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• Craft (1080p scale) + Motion (14 styles, damped springs) + Content (&lt;=8w/scene)</text>
+    <text x="34" y="364" fill="#38bdf8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11">• CineCode deterministic React frames → FFmpeg libx264 yuv420p + .vtt</text>
+  </g>
+</svg>

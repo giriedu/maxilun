@@ -94,21 +94,24 @@ flowchart LR
 ### 5. Kesiapan Perayapan Agen AI (AI Search & Agent Readiness)
 - **Opsional — `/llms.txt`**: Pertimbangkan file ini jika situs ingin menyajikan peta ringkas untuk agen AI. Ini proposal komunitas, bukan syarat indeksasi atau standar resmi Google/Bing; jangan menggantikannya dengan `robots.txt`.
 
-### 6. Alat Verifikasi Cepat (Fast Audit Commands)
-Gunakan verifikasi baris perintah berikut sebelum audit mendalam:
-```bash
-# 1. Cek response header (canonical diperiksa di HTML, bukan header)
-curl -sI https://example.com | grep -iE 'http\/|x-robots|content-type'
+### 6. Pemeriksaan Cepat Metadata & Direktif Indeks
+Saat memeriksa halaman secara lokal atau dari hasil build/render (`dist/`, `out/`, atau respons HTML yang sudah disimpan ke file lokal `page.html`), periksa elemen berikut secara read-only:
+```html
+<!-- 1. Pastikan tepat satu self-referencing canonical tag di dalam <head> -->
+<link rel="canonical" href="https://example.com/products/shoes" />
 
-# 2. Ambil HTML dan periksa elemen link canonical memakai parser HTML.
-# Contoh Python stdlib satu baris:
-curl -sL https://example.com | python -c 'import sys; from html.parser import HTMLParser; P=type("P",(HTMLParser,),{"handle_starttag":lambda self,tag,attrs: print(dict(attrs).get("href")) if tag=="link" and "canonical" in dict(attrs).get("rel","").lower().split() else None}); P().feed(sys.stdin.read())'
+<!-- 2. Pastikan direktif robots tidak konflik dengan robots.txt -->
+<meta name="robots" content="index, follow" />
 
-# 3. Cek robots.txt
-curl -sL https://example.com/robots.txt | head -n 20
-
-# 3. Validasi deklarasi JSON-LD di HTML
-curl -sL https://example.com | grep -o '<script type="application/ld+json">[^<]*</script>' | head -n 3
+<!-- 3. Pastikan JSON-LD valid dan sesuai konten yang terlihat di halaman -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Example App",
+  "applicationCategory": "DeveloperApplication"
+}
+</script>
 ```
 
 ### 7. Arsitektur Internal Linking & Navigasi
