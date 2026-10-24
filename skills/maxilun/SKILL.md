@@ -123,6 +123,8 @@ Total ekosistem: 18 skill = 1 orchestrator + 17 spesialis.
 
 ## 3. Protokol Routing
 
+**Pre-step: Context inheritance.** Sebelum routing, cek apakah knowledge graph sudah tersedia (sesi aktif, `.maxilun/graph.json`, atau CodeGraph/LSP). Jika ya, semua wave yang menyentuh kode wajib menggunakannya — jangan re-analyze. Detail di §6 "Context inheritance".
+
 Urutan keputusan, berhenti di aturan pertama yang menjawab:
 
 1. **Perintah eksplisit menang.** `/msal-*` yang disebut pengguna dipakai, selama hasilnya sesuai dan tool-nya tersedia. Jika tidak tersedia, nyatakan dan tawarkan jalur lain — jangan diam-diam mengganti.
@@ -225,6 +227,19 @@ Routing tanpa mekanisme eksekusi hanya saran. Ikuti tabel ini sesuai platform.
 2. Jika tersedia → muat `SKILL.md`-nya sebelum mengeksekusi bagian itu.
 3. Jika tidak tersedia → nyatakan satu baris: `"<skill> tidak tersedia; bagian X dikerjakan inline dengan Core Rules."` Lalu kerjakan sebisanya.
 4. Jangan pernah mengklaim skill termuat jika belum dimuat.
+
+**Context inheritance (wajib dicek sebelum wave apa pun yang menyentuh kode):**
+
+Orchestrator TIDAK boleh memulai analisis kode dari nol jika knowledge graph sudah tersedia. Cek berurutan:
+
+1. **Sesi aktif**: Apakah `maxilun-knowledge-graph` sudah dipetakan dalam percakapan ini? Jika ya, gunakan hasil yang ada (Tier 0). Jangan re-scan.
+2. **Cache file**: Apakah `.maxilun/graph.json` ada di root project? Jika ya, load via CLI (`python cli.py query`) sebagai Tier 1. Jangan re-scan kecuali cache invalidation trigger terpenuhi.
+3. **CodeGraph MCP / LSP**: Apakah environment menyediakan index simbol? Jika ya, gunakan sebagai Tier 1.
+4. **Baru scan**: Hanya jika tidak ada satupun di atas, jalankan pemetaan penuh via `maxilun-knowledge-graph`.
+
+Aturan keras: **jangan duplikasi pekerjaan yang sudah selesai**. Jika user sebelumnya menjalankan `/maxilun-knowledge-graph` atau `/maxilun-graph`, hasilnya adalah aset sesi yang wajib dipakai ulang. Orchestrator yang mengabaikan konteks yang sudah ada dan memulai analisis ulang adalah kegagalan efisiensi.
+
+Cache invalidation hanya jika: file baru/dihapus, refactor besar yang mengubah nama publik, >3 file diedit dalam satu sesi, atau user eksplisit minta re-scan.
 
 **Progressive disclosure:** `references/` hanya dibaca saat relevan. `engines.md` untuk detail aturan, `discovery.md` untuk brief kabur, `purity-catalog.md` untuk audit copy/visual, `code-hygiene.md` untuk review komentar dan naming. Jangan memuat keempatnya sekaligus.
 

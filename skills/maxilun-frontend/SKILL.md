@@ -59,6 +59,8 @@ flowchart LR
     C --> D[Test]
 ```
 
+**Sebelum implementasi frontend**: Cek apakah knowledge graph sudah tersedia (sesi aktif, `.maxilun/graph.json`, atau CodeGraph/LSP). Jika ya, gunakan untuk memahami struktur RSC, route, dan dependensi yang ada — jangan re-analyze dari nol. Lihat orchestrator §6 "Context inheritance".
+
 ## 2. React Server Components (RSC)
 
 ### Decision Matrix: Server vs Client Component

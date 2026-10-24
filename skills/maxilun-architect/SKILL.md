@@ -109,6 +109,8 @@ flowchart LR
     G -- Type 1 --> I[Full ADR + Handoff]
 ```
 
+**Sebelum analisis arsitektur**: Cek apakah knowledge graph sudah tersedia (sesi aktif, `.maxilun/graph.json`, atau CodeGraph/LSP). Jika ya, gunakan untuk impact analysis dan dependency mapping — jangan re-analyze dari nol. Lihat orchestrator §6 "Context inheritance".
+
 ## 2. Greenfield vs Brownfield Assessment
 
 Sebelum memulai /msal-think, tentukan konteks:

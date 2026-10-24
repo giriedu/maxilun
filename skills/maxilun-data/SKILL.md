@@ -56,6 +56,8 @@ flowchart LR
     C --> D[Optimize]
 ```
 
+**Sebelum perubahan skema atau query**: Cek apakah knowledge graph sudah tersedia (sesi aktif, `.maxilun/graph.json`, atau CodeGraph/LSP). Jika ya, gunakan untuk memahami relasi model dan dependensi query yang ada — jangan re-analyze dari nol. Lihat orchestrator §6 "Context inheritance".
+
 ## 2. Prinsip Desain Skema (Schema Design Principles)
 
 ### Konvensi Penamaan

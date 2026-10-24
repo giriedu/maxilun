@@ -191,6 +191,8 @@ flowchart LR
     G --> H[Delivery Gate]
 ```
 
+**Sebelum desain atau implementasi UI**: Cek apakah knowledge graph sudah tersedia (sesi aktif, `.maxilun/graph.json`, atau CodeGraph/LSP). Jika ya, gunakan untuk memahami struktur komponen dan dependensi yang ada — jangan re-analyze dari nol. Lihat orchestrator §6 "Context inheritance".
+
 ---
 
 ## 2. PRODUCT.md: Persistent Product Context
