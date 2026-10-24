@@ -4,9 +4,9 @@ Gunakan referensi ini saat menulis **PRD (Product Requirements Document)** tingk
 
 ---
 
-## 1. Prinsip Anti-Slop untuk PRD & RFC
+## 1. Prinsip Purity untuk PRD & RFC
 
-| DILARANG (Slop PRD/RFC) | WAJIB DIGANTI DENGAN (Presisi Produksi) |
+| DILARANG (PRD/RFC Generik) | WAJIB DIGANTI DENGAN (Presisi Produksi) |
 |---|---|
 | "Meningkatkan pengalaman pengguna dan efisiensi operasional" | Metrik terukur: "Menurunkan waktu rekonsiliasi invoice dari rata-rata 14 menit menjadi <90 detik per transaksi" |
 | User story generik: "Sebagai user, saya ingin login agar bisa masuk" | Kriteria penerimaan deterministik (Given/When/Then) beserta batas input, rate limit, dan kode error |

@@ -168,7 +168,7 @@ Setiap keputusan Type 1a/1b wajib menghasilkan ADR mengikuti struktur di `../max
 
 ## Companion Skills Awareness
 
-| Companion | Architect's Role | Anti-Slop Contribution |
+| Companion | Architect's Role | Purity & Quality Contribution |
 |---|---|---|
 | `maxilun-knowledge-graph` | Memetakan impact radius dan dependensi simbol aktual sebelum merancang perubahan | Mencegah desain arsitektur mengawang-awang yang bertabrakan dengan struktur kode nyata |
 | `maxilun-sentinel` | Mengintegrasikan invarian keamanan STRIDE ke dalam batas layanan | Mencegah celah otorisasi/IDOR struktural sejak tahap desain |

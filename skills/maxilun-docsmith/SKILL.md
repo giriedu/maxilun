@@ -161,7 +161,7 @@ Sebelum menyerahkan dokumen kepada pengguna, jalankan pemeriksaan berikut:
 
 `maxilun-docsmith` bekerja mandiri ketika konteks repositori sudah cukup. Libatkan companion hanya bila bagian deliverable memerlukan keputusan atau validasi lintas-domain:
 
-| Companion | Docsmith's Role | Anti-Slop Contribution |
+| Companion | Docsmith's Role | Purity & Quality Contribution |
 |---|---|---|
 | `maxilun-craft` | Merujuk `../maxilun-craft/references/design-md/index.md` untuk spesifikasi UI & 4 state di PRD/RFC | Mencegah bagian UI di dalam PRD berisi deskripsi kabur tanpa state dan referensi nyata |
 | `maxilun-architect` | Memvalidasi batas modul, state machine, dan trade-off di ADR/RFC | Memastikan klaim arsitektur dan kontrak sistem akurat secara struktural |
@@ -170,7 +170,7 @@ Sebelum menyerahkan dokumen kepada pengguna, jalankan pemeriksaan berikut:
 
 ## Related Skills
 - **maxilun-scaffold**: Bootstrap awal 10 dokumen konteks proyek di `docs/` (`../maxilun-scaffold/references/doc-templates.md`)
-- **maxilun-craft**: Sistem desain UI/UX, 4 state komponen, dan 84 referensi brand di `../maxilun-craft/references/design-md/`
+- **maxilun-craft**: Sistem desain UI/UX, 4 state komponen, dan 100 referensi brand di `../maxilun-craft/references/design-md/`
 - **maxilun-architect**: Penyusunan keputusan struktural, batas modul, dan ADR
 - **maxilun-engineer**: Penyelarasan implementasi kode dengan kontrak API dan spesifikasi teknis
 - **maxilun-seo-audit**: Validasi aksesibilitas `/llms.txt` dan structured data bagi perayap/agen

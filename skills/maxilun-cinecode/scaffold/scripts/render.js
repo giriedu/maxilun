@@ -76,7 +76,7 @@ function generateHTML(bundlePath, config) {
   <meta charset="utf-8">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { width: ${config.width}px; height: ${config.height}px; overflow: hidden; background: #000; }
+    body { width: ${config.width}px; height: ${config.height}px; overflow: hidden; background: ${config.transparent ? 'transparent' : '#000'}; }
     #root { width: 100%; height: 100%; position: relative; }
   </style>
 </head>
@@ -185,25 +185,26 @@ async function captureFrames(config) {
   let lastReportTime = startTime;
 
   for (let frame = 0; frame < config.durationInFrames; frame++) {
-    // Set current frame
-    await page.evaluate((f) => {
+    // Set current frame and wait for any async media/video seeks
+    await page.evaluate(async (f) => {
+      window.__CINECODE_PENDING_PROMISES__ = [];
       window.__CINECODE_FRAME__ = f;
-      // Trigger React re-render by dispatching custom event
       window.dispatchEvent(new CustomEvent('cinecode:frame', { detail: { frame: f } }));
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      if (Array.isArray(window.__CINECODE_PENDING_PROMISES__) && window.__CINECODE_PENDING_PROMISES__.length > 0) {
+        await Promise.allSettled(window.__CINECODE_PENDING_PROMISES__);
+      }
     }, frame);
 
     // Wait for render to settle
     await page.waitForFunction(() => document.readyState === 'complete', { timeout: 5000 });
 
-    // Small delay to allow React to process
-    await new Promise(resolve => setTimeout(resolve, 16));
-
-    // Capture screenshot
+    // Capture screenshot (supports alpha transparency for overlaying onto existing videos)
     const framePath = path.join(framesDir, `frame-${String(frame).padStart(6, '0')}.png`);
     await page.screenshot({
       path: framePath,
       type: 'png',
-      omitBackground: false,
+      omitBackground: Boolean(config.transparent),
     });
 
     // Progress reporting every 5 seconds
@@ -275,6 +276,7 @@ if (require.main === module) {
     if (args[i] === '--width' && args[i + 1]) options.width = parseInt(args[++i]);
     if (args[i] === '--height' && args[i + 1]) options.height = parseInt(args[++i]);
     if (args[i] === '--output' && args[i + 1]) options.outputDir = args[++i];
+    if (args[i] === '--transparent') options.transparent = true;
   }
 
   render(options)

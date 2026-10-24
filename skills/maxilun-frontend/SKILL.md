@@ -293,15 +293,15 @@ Perubahan yang mengubah batas Server/Client Component, data flow, atau perilaku 
 
 | Companion | Kapan dipakai | Peran |
 |---|---|---|
-| `maxilun-craft` | Setiap kali frontend menghasilkan UI/page | Visual design, tokens, accessibility, anti-slop visual gate |
-| `maxilun-engineer` | Implementasi kode | Code hygiene, naming conventions, anti-slop code patterns |
+| `maxilun-craft` | Setiap kali frontend menghasilkan UI/page | Visual design, tokens, accessibility, visual Purity Gate |
+| `maxilun-engineer` | Implementasi kode | Code hygiene, naming conventions, code Purity patterns |
 | `maxilun-content` | Halaman dengan user-facing text | Copy natural, bukan AI-generated marketing speak |
 
-**Aturan**: Jika Anda di-invoke tanpa companion yang relevan, nyatakan: "Frontend architecture siap, tapi UI/copy perlu dicek via maxilun-craft/maxilun-content untuk mencegah slop." Jangan assume companion sudah jalan.
+**Aturan**: Jika Anda di-invoke tanpa companion yang relevan, nyatakan: "Frontend architecture siap, tapi UI/copy perlu dicek via maxilun-craft/maxilun-content untuk menjaga standar Purity." Jangan assume companion sudah jalan.
 
 ## Related Skills
 - **maxilun-craft**: UI/UX design systems, PRODUCT.md, iterative commands, and agent-assisted quality review
 - **maxilun-motion**: Animation, motion design, kinetic typography
 - **maxilun-verify**: Test generation and validation for frontend implementations
 - **maxilun-content**: User-facing copy, microcopy, brand voice (companion untuk halaman dengan teks)
-- **maxilun-engineer**: Code implementation, anti-slop code patterns (companion untuk semua kode)
+- **maxilun-engineer**: Code implementation, code Purity patterns (companion untuk semua kode)

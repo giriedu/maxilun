@@ -16,7 +16,7 @@ Maxilun solves this by enforcing a **strict `< 400 line` ceiling on every `SKILL
 | Specialist Skill | Active `SKILL.md` Size | On-Demand Bundled Corpus (`references/` & `scaffold/`) | What Loads Only When Needed |
 |---|---:|---|---|
 | `maxilun` (Orchestrator) | `343 lines` | `4 files` (`engines.md`, `discovery.md`, `purity-catalog.md`, `code-hygiene.md`) | Wave 0 discovery protocol, 4 engines detail, banned vocabulary catalog |
-| `maxilun-craft` | `213 lines` | **`85 files`** (`references/design-md/*.md` + `component-mobile-patterns.md`) | 84 real brand design analyses (Stripe, Linear, Vercel, Wise, Apple, etc.), 20 art directions, mobile touch & 4-state UI rules |
+| `maxilun-craft` | `214 lines` | **`101 files`** (`references/design-md/*.md` + `component-mobile-patterns.md`) | 100 real brand design analyses (Stripe, Linear, Vercel, GitHub, Wise, Apple, etc.), 20 art directions, mobile touch & 4-state UI rules |
 | `maxilun-architect` | `202 lines` | `3 files` (`api-distributed-patterns.md`, `migration-operations-playbook.md`) | `/msal-think` 4-phase matrix, Outbox/Saga, Strangler Fig, RLS Multi-Tenancy, DR RPO/RTO, Fitness Functions |
 | `maxilun-docsmith` | `177 lines` | `5 files` (`prd-rfc-specs.md`, `openapi-contracts.md`, `runbooks-adr.md`, `llms-txt-spec.md`) | Gherkin PRD/RFC templates, OpenAPI 3.1 + RFC 9457 `ProblemDetails`, production runbooks, `/llms.txt` |
 | `maxilun-scaffold` | `219 lines` | `3 files` (`prd-archetypes.md`, `doc-templates.md`, `index.md`) | 5 domain archetypes (Fintech, B2B SaaS, DevTools, Commerce, Media) & 10 canonical `docs/` templates |
@@ -33,7 +33,7 @@ Maxilun solves this by enforcing a **strict `< 400 line` ceiling on every `SKILL
 
 **Prompt**: *"Build a transaction history table and payout card for a B2B payment dashboard."*
 
-| Dimension | Raw LLM Default (Typical Slop) | Maxilun (`maxilun-craft` + `references/design-md/stripe.md`) |
+| Dimension | Raw LLM Default (Generic AI Clichés) | Maxilun (`maxilun-craft` + `references/design-md/stripe.md`) |
 |---|---|---|
 | **Color & Surface** | Decorative purple-to-blue gradient header (`linear-gradient(135deg, #667eea, #764ba2)`), stacked glassmorphism cards | Semantic OKLCH tokens (`--surface-base: oklch(98.5% 0.004 250)`), `1px` high-contrast hairline borders, zero decorative gradients (`CLR-001` enforced) |
 | **Typography & Numbers** | Proportional font on currency column (digits jitter horizontally when values change) | `font-variant-numeric: tabular-nums` right-aligned on all monetary, timestamp, and ID columns |

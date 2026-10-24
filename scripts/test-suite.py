@@ -60,7 +60,7 @@ REQUIRED_REFERENCES = [
     "code-hygiene.md",
 ]
 
-REQUIRED_PUBLIC_DOCS = ["SKILL-CONTRACTS.md", "ROUTING-MATRIX.md", "ANTI-SLOP.md", "BENCHMARKS.md"]
+REQUIRED_PUBLIC_DOCS = ["SKILL-CONTRACTS.md", "ROUTING-MATRIX.md", "PURITY-GATE.md", "BENCHMARKS.md"]
 
 BANNED_WORDS = [
     r"\bdelve\b",
@@ -79,7 +79,7 @@ BANNED_WORDS = [
 
 PURE_EXEMPT_SKILLS = ["maxilun", "maxilun-content", "maxilun-docsmith"]
 
-FORBIDDEN_EXTERNAL = ["antislop", "frontend-design", "brainstorming", "superpowers"]
+FORBIDDEN_EXTERNAL = ["antislop", "anti-slop", "frontend-design", "brainstorming", "superpowers", "impeccable", "pbakaus", "bang-motion", "archify", "ui-ux-pro-max"]
 FORBIDDEN_LAYOUT = ["rules/always-on.md", "rules/maxilun-global.md", "rules/code-hygiene.md", "rules/purity-catalog.md"]
 
 CORE_START = "<!-- CORE-RULES:START -->"
@@ -216,15 +216,18 @@ def test_reference_paths_resolve():
 def test_no_external_or_legacy_refs():
     print("\n🧪 Checking for external-skill and legacy rules references...")
     passed = True
-    for skill in EXPECTED_SKILLS:
-        content = read_skill(skill)
+    for md_file in SKILLS_DIR.rglob("*.md"):
+        if "design-md" in md_file.parts:
+            continue
+        content = md_file.read_text(encoding="utf-8").lower()
+        rel_name = str(md_file.relative_to(REPO_ROOT))
         for token in FORBIDDEN_EXTERNAL:
             if token in content:
-                print(f"  ❌ {skill}: references external skill '{token}'")
+                print(f"  ❌ {rel_name}: references external skill '{token}'")
                 passed = False
         for token in FORBIDDEN_LAYOUT:
             if token in content:
-                print(f"  ❌ {skill}: references removed layout '{token}'")
+                print(f"  ❌ {rel_name}: references removed layout '{token}'")
                 passed = False
     if passed:
         print("  ✅ No external-skill or legacy rules references")
@@ -373,6 +376,10 @@ def test_referenced_paths():
         SKILLS_DIR / "maxilun-motion" / "references" / "index.md",
         SKILLS_DIR / "maxilun-motion" / "references" / "motion-components.md",
         SKILLS_DIR / "maxilun-motion" / "references" / "choreography-styles.md",
+        SKILLS_DIR / "maxilun-motion" / "assets" / "starter-opener.html",
+        SKILLS_DIR / "maxilun-motion" / "assets" / "starter-explainer.html",
+        SKILLS_DIR / "maxilun-cinecode" / "scaffold" / "src" / "components" / "Effects.tsx",
+        SKILLS_DIR / "maxilun-cinecode" / "scaffold" / "src" / "components" / "VideoClip.tsx",
         SKILLS_DIR / "maxilun-cinecode" / "references" / "index.md",
         SKILLS_DIR / "maxilun-cinecode" / "references" / "composition-api.md",
         SKILLS_DIR / "maxilun-cinecode" / "references" / "video-production-pipeline.md",

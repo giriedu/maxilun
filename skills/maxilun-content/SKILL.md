@@ -90,7 +90,7 @@ Jika ya, copywriting tersebut masih generik. Tulis ulang dengan menonjolkan fitu
 
 ## 3. Gerbang Purity Konten (Reject-Only, Non-Negotiable)
 
-Rujukan lengkap: `../maxilun/references/purity-catalog.md`. Konten dinyatakan slop bila cocok salah satu di bawah — tulis ulang, bukan dirapikan:
+Rujukan lengkap: `../maxilun/references/purity-catalog.md`. Konten wajib ditulis ulang bila cocok salah satu di bawah:
 
 1. **Generik tanpa jangkar** — bisa dipakai topik apa pun tanpa berubah. Wajib jangkar spesifik (nama, angka, audiens, kasus).
 2. **Panjang, poin sedikit** — setiap kalimat wajib menambah satu fakta/keputusan baru.
@@ -118,13 +118,13 @@ Konten yang bagus untuk manusia seharusnya juga baik untuk mesin pencari — buk
 - **Placeholder & error message**: lokalisasi juga. Error message dalam bahasa Inggris di UI berbahasa Indonesia adalah pengalaman yang buruk.
 - **RTL (Arabic, Hebrew)**: jika target pasar mencakup bahasa RTL, gunakan CSS logical properties (`margin-inline-start`) sejak awal — refactor RTL di akhir sangat mahal.
 
-## 6. Pola Bahasa Indonesia Natural vs AI Slop
+## 6. Pola Bahasa Indonesia Natural vs Klise Generik
 
-Copywriting Bahasa Indonesia punya pola slop spesifik yang berbeda dari English. Gunakan tabel ini sebagai filter.
+Copywriting Bahasa Indonesia memiliki pola klise terjemahan yang berbeda dari bahasa Inggris. Gunakan tabel ini sebagai filter Purity.
 
-### Tabel Konversi Slop → Natural (Bahasa Indonesia)
+### Tabel Konversi Klise → Natural (Bahasa Indonesia)
 
-| AI Slop (DILARANG) | Natural (GUNAKAN) | Kenapa Slop? |
+| Klise Generik (DILARANG) | Natural (GUNAKAN) | Alasan Ditolak |
 |---|---|---|
 | "Studio desain independen yang merancang identitas visual, arsitektur jenama, dan sistem desain digital" | "Kami membantu brand membangun identitas visual yang konsisten" | Kalimat >25 kata, tumpuk jargon, terasa seperti brosur |
 | "Dilengkapi portal tracking progres proyek dan verifikasi invoice digital transparan" | "Pantau progres proyek dan cek invoice kapan saja" | Buzzword stacking ("portal", "digital", "transparan") |
@@ -181,7 +181,7 @@ Saat menulis teks untuk animasi interaktif (`maxilun-motion`) atau video produk 
 
 `maxilun-content` menyusun copywriting produk dan microcopy UI. Jalankan mandiri untuk copy yang brief-nya cukup; pilih companion jika konteks tambahan mengubah hasil:
 
-| Companion | Content's Role | Anti-Slop Contribution |
+| Companion | Content's Role | Purity & Quality Contribution |
 |---|---|---|
 | `maxilun-craft` | Konteks UI dan visual hierarchy | Gunakan jika hierarki visual memengaruhi copy |
 | `maxilun-frontend` | Konteks halaman dan routing | Gunakan jika copy perlu ditempatkan dalam struktur halaman |

@@ -33,7 +33,7 @@ Tugas 1-langkah, tanya-jawab langsung, dan perbaikan trivial tidak memakai HUD.
 2. **Purpose Gate** — setiap baris kode, teks UI, dan elemen visual harus menjawab: apa fungsi nyatanya? Jika jawabannya hanya "bawaan template" atau "biar terlihat keren", hapus.
 3. **Komentar bernilai** — hanya menjelaskan MENGAPA. Dilarang mengulang kode, banner dekoratif, atau narasi langkah.
 4. **Tanpa placeholder palsu** — dilarang Lorem Ipsum, metrik karangan ("10k+ pengguna"), atau klaim performa tanpa pengukuran.
-5. **Katalog penolakan** — daftar lengkap pola slop ada di `references/purity-catalog.md`. Elemen yang cocok dihapus, bukan dirapikan.
+5. **Katalog penolakan** — daftar lengkap pola yang ditolak ada di `references/purity-catalog.md`. Elemen yang cocok dihapus, bukan dirapikan.
 
 ---
 

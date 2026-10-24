@@ -1,6 +1,6 @@
 # Daftar 18 Skill Maxilun (1 Orchestrator + 17 Spesialis)
 
-Contract ownership dan routing lintas-skill ada di [SKILL-CONTRACTS.md](SKILL-CONTRACTS.md) dan [ROUTING-MATRIX.md](ROUTING-MATRIX.md). Aturan anti-slop publik ada di [ANTI-SLOP.md](ANTI-SLOP.md).
+Contract ownership dan routing lintas-skill ada di [SKILL-CONTRACTS.md](SKILL-CONTRACTS.md) dan [ROUTING-MATRIX.md](ROUTING-MATRIX.md). Aturan Purity Gate publik ada di [PURITY-GATE.md](PURITY-GATE.md).
 
 | No | Nama Skill | Fungsi Utama | Pemicu Khas |
 |:---:|---|---|---|
@@ -28,7 +28,7 @@ Contract ownership dan routing lintas-skill ada di [SKILL-CONTRACTS.md](SKILL-CO
 - **Knowledge Graph sebagai Fondasi**: Gunakan `maxilun-knowledge-graph` untuk perubahan kode struktural atau lintas-file bila tersedia. Hasil `file:line` membantu mengarahkan inspeksi; tugas trivial boleh memakai jalur cepat dan pencarian langsung menjadi fallback bila indexer tidak tersedia.
 - **Panduan domain docsmith vs content**: Gunakan `maxilun-docsmith` untuk dokumen yang dibaca engineer (API spec, README, ADR). Gunakan `maxilun-content` untuk teks yang dibaca pengguna akhir (landing page, tombol, pesan error).
 - **SEO Audit**: Telah terintegrasi penuh sebagai spesialis resmi `maxilun-seo-audit`.
-- **Archify**: Terintegrasi secara opsional melalui `maxilun-diagrams`. Maxilun tetap mandiri menghasilkan diagram Mermaid dan standalone SVG/HTML tanpa ketergantungan mutlak pada tool eksternal.
+- **Diagram Mandiri**: `maxilun-diagrams` menghasilkan diagram Mermaid serta berkas standalone SVG/HTML secara mandiri tanpa ketergantungan pada tool eksternal.
 
 ## Roadmap Skill (Belum Tersedia)
 

@@ -4,21 +4,21 @@
   version: "2.0.0"
   last_updated: "2026-10-22"
   sync_target: "scripts/test-suite.py:BANNED_BUZZWORDS"
-  inspiration: "Impeccable Design Language (pbakaus/impeccable)"
-  enhancement: "Documented Review Checklist + LLM Critique Checks"
+  origin: "Maxilun Purity Engine"
+  enhancement: "Documented Review Checklist + Contextual Critique Checks"
 -->
 
-Katalog penolakan *AI slop* yang mengikat seluruh skill Maxilun. Tiga domain: **Konten/Teks**, **Desain Website**, dan **Teknis**. Aturan ini menjadi panduan review agent; repository ini tidak menyertakan executable detector untuk daftar di bawah. Setiap temuan harus dinilai dalam konteks sebelum dihapus atau diganti.
+Katalog penolakan pola generik (*Purity Catalog*) yang mengikat seluruh skill Maxilun. Tiga domain: **Konten/Teks**, **Desain Website**, dan **Teknis**. Aturan ini menjadi panduan review agent; repository ini tidak menyertakan executable detector untuk daftar di bawah. Setiap temuan harus dinilai dalam konteks sebelum dihapus atau diganti.
 
 > **Sinkronisasi Test Suite**: Daftar kata terlarang di bawah ini terikat langsung dengan `BANNED_BUZZWORDS` di `scripts/test-suite.py`. Setiap penambahan kosakata terlarang baru wajib diperbarui serentak di dokumen ini dan di test suite untuk menjaga kepatuhan CI.
 
-> **Inspired by Impeccable**: Katalog ini mengadaptasi heuristik review desain dan menambahkan pemeriksaan kritik berbasis konteks. Daftar ini bukan klaim jumlah rule yang dijalankan secara otomatis.
+> **Maxilun Purity Engine**: Katalog ini menetapkan heuristik review kualitas konten, desain, dan kode berbasis konteks. Daftar ini adalah panduan review agen, bukan klaim jumlah rule yang dijalankan oleh pemindai biner otomatis.
 
 ---
 
-## A. Ciri AI Slop pada Konten & Teks
+## A. Pola Klise Generik pada Konten & Teks
 
-Konten dinyatakan slop bila memenuhi salah satu (menolak jika ≥1 cocok):
+Konten wajib ditulis ulang bila memenuhi salah satu kriteria di bawah (menolak jika ≥1 cocok):
 
 1. **Generik tanpa jangkar** — bisa berlaku untuk topik apa pun tanpa berubah. Wajib ada entitas spesifik (nama produk, angka, audiens, kasus).
 2. **Panjang, poin sedikit** — banyak kata, sedikit informasi. Rasio: setiap kalimat harus menambah satu fakta/keputusan baru, jika tidak, hapus.
@@ -38,7 +38,7 @@ Sebelum menyerahkan teks, jawab 3 pertanyaan; satu gagal = tulis ulang:
 
 ---
 
-## B. Ciri AI Slop pada Desain Website (Visual Anti-Patterns)
+## B. Pola Klise Visual pada Desain Website (Visual Anti-Patterns)
 
 Setiap elemen berikut dilarang ditambahkan tanpa fungsi nyata. Jika muncul tanpa alasan desain, hapus.
 
@@ -68,7 +68,7 @@ Setiap elemen berikut dilarang ditambahkan tanpa fungsi nyata. Jika muncul tanpa
 19. **Overflow issues** — horizontal scroll unintended, text truncation tanpa ellipsis, content clipping.
 
 ### B4. Component & Pattern Issues
-20. **Breadcrumb overuse** — breadcrumbs pada simple pages tanpa hierarchical navigation. Only for deep taxonomies (≥3 levels). Login, register, 404, single-page forms TIDAK pakai breadcrumb.
+20. **Breadcrumb Navigation (AI-Generated Web Tell — DILARANG DEFAULT)** — `Home > Section > Page` atau `Dashboard / Settings / Profile` di bagian atas halaman adalah salah satu sinyal terkuat bahwa sebuah website di-generate oleh template AI. **DILARANG merender komponen breadcrumb secara default** pada landing page, SaaS dashboard, form, login/register, 404, maupun aplikasi web modern. Gunakan navigasi kembali kontekstual (`← Kembali ke Daftar Tagihan`), command palette (`Cmd+K`), atau tab/header langsung. Pengecualian hanya jika pengguna secara eksplisit meminta breadcrumb untuk katalog e-commerce/dokumentasi bersarang `>= 4` level.
 21. **Badge inflation** — badges labeled "Powerful", "AI-Powered", "New" tanpa factual basis. Badges only for status (version, count, state).
 22. **Emoji as icons** — emoji menggantikan professional icon set. Icons wajib dari satu family (Lucide, Phosphor, etc.) dengan consistent weight.
 23. **Uniform border radius** — semua elements rounded sama (e.g., all 8px). Nested radii: child ≤ parent, concentric hierarchy.
@@ -148,7 +148,7 @@ Gunakan ID berikut untuk menyebut temuan secara konsisten. Nilai source, preview
 ### C4. Component Checks
 | ID | Check | Severity | Suggested action |
 |----|------|----------|----------|
-| CMP-001 | Breadcrumb on page without hierarchy depth ≥3 | WARNING | ❌ |
+| CMP-001 | Breadcrumb rendered by default (strong AI-generated website tell; use contextual back link `← Back to [Parent]` instead) | ERROR | ❌ Remove breadcrumb |
 | CMP-002 | Badge with marketing adjective ("Powerful", "New") | ERROR | ❌ |
 | CMP-003 | Emoji used as functional icon | ERROR | ✅ Replace with icon component |
 | CMP-004 | Uniform border-radius across all elements | WARNING | ❌ |
@@ -158,7 +158,7 @@ Gunakan ID berikut untuk menyebut temuan secara konsisten. Nilai source, preview
 | CMP-008 | Login/register page with decorative gradient background | WARNING | ❌ |
 | CMP-009 | Login/register page with marketing copy or testimonials | ERROR | ❌ |
 | CMP-010 | Generic menu name ("Dashboard", "Settings", "Profile") without product context | WARNING | ❌ |
-| CMP-011 | Breadcrumb on login/register/404/single-form page | ERROR | ❌ |
+| CMP-011 | `Home > ...` or `Dashboard / ...` trail on landing, app, auth, or dashboard screen | ERROR | ❌ Remove breadcrumb |
 
 ### C5. Animation & Performance Checks
 | ID | Check | Severity | Suggested action |

@@ -276,7 +276,7 @@ CMD ["node", "server.js"]
 
 `maxilun-deploy` mengelola pipeline CI/CD, containerization, dan deployment. Jalankan mandiri untuk rancangan atau review; pilih companion sesuai gate yang relevan:
 
-| Companion | Deploy's Role | Anti-Slop Contribution |
+| Companion | Deploy's Role | Purity & Quality Contribution |
 |---|---|---|
 | `maxilun-verify` | CI test validation dan quality gates | Gunakan untuk memilih dan menjalankan verifikasi sesuai perubahan |
 | `maxilun-sentinel` | Security dalam deployment (secrets, SSL) | Gunakan bila perubahan berdampak pada konfigurasi atau risiko keamanan |

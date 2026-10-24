@@ -1,7 +1,7 @@
 {
   "name": "maxilun",
   "version": "2.3.0",
-  "description": "AI engineering co-pilot — 18 specialist skills, bundled reference corpora (84 UI systems, OpenAPI/PRD specs, motion choreography), graph code discovery & programmatic video.",
+  "description": "AI engineering co-pilot — 18 specialist skills, bundled reference corpora (100 UI systems, OpenAPI/PRD specs, motion choreography), graph code discovery & programmatic video.",
   "keywords": [
     "ai-skills",
     "claude-code",
@@ -28,7 +28,7 @@
     "project-scaffold",
     "context-docs",
     "skill-routing",
-    "anti-slop",
+    "purity-gate",
     "design-reference-corpus"
   ],
   "author": "Maxilun Architecture",

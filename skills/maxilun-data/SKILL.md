@@ -263,7 +263,7 @@ SET LOCAL app.current_tenant_id = '11111111-2222-3333-4444-555555555555';
 
 `maxilun-data` mendesain skema database, migrasi, dan optimasi query. Jalankan mandiri untuk analisis atau rancangan; pilih companion bila implementasi atau tes memang masuk lingkup:
 
-| Companion | Data's Role | Anti-Slop Contribution |
+| Companion | Data's Role | Purity & Quality Contribution |
 |---|---|---|
 | `maxilun-engineer` | Implementasi query dan migration code | Gunakan saat perubahan skema membutuhkan kode aplikasi/ORM |
 | `maxilun-verify` | Testing data layer dan migration | Gunakan saat tes migrasi atau query diminta/diperlukan |

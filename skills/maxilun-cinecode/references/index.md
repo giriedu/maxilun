@@ -9,7 +9,7 @@ This directory is a bundled reference library for `maxilun-cinecode`. It documen
 | `references/composition-api.md` | Complete API reference for `<AbsoluteFill>`, `<Sequence>`, `<Series>`, `<Spring>`, `interpolate`, `<Audio>`, `<Subtitle>`, dynamic data binding, FFmpeg render presets, and Vitest frame unit tests | Always read before building or editing a CineCode video composition or render pipeline |
 | `references/video-production-pipeline.md` | Multi-skill production blueprint: how to combine `maxilun-craft` (`../maxilun-craft/references/design-md/index.md`), `maxilun-motion` (`../maxilun-motion/references/choreography-styles.md`), `maxilun-content`, and `maxilun-cinecode` for studio-grade product videos, launch teasers, and data reports | Read whenever generating a complete promo/demo/explainer video to maximize visual, kinetic, and narrative quality |
 | `../maxilun-motion/references/choreography-styles.md` | 14 Motion Style Signatures, 22 Opener/Promo Hooks, Beat Grid Math, and Spring DNA | Read when translating motion choreography into frame-accurate `<Sequence>` and `<Spring>` code |
-| `../maxilun-craft/references/design-md/index.md` | 84 Production Design Systems (Stripe, Linear, Vercel, Apple, Nike, etc.) | Read to style video scenes with authentic typography scales, `tabular-nums`, and OKLCH/hex palettes |
+| `../maxilun-craft/references/design-md/index.md` | 100 Production Design Systems (Stripe, Linear, Vercel, GitHub, Apple, Nike, etc.) | Read to style video scenes with authentic typography scales, `tabular-nums`, and OKLCH/hex palettes |
 
 ## Evidence & Render Contract
 

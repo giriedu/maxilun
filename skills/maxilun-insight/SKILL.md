@@ -222,7 +222,7 @@ Diagnosis langkah:
 
 `maxilun-insight` mendiagnosis akar masalah dan audit performa. Insight dapat menyampaikan temuan dan rekomendasi secara mandiri; companion digunakan untuk tindak lanjut yang diminta:
 
-| Companion | Insight's Role | Anti-Slop Contribution |
+| Companion | Insight's Role | Purity & Quality Contribution |
 |---|---|---|
 | `maxilun-engineer` | Implementasi perbaikan setelah diagnosis | Gunakan bila implementasi diminta |
 | `maxilun-verify` | Regression testing | Gunakan bila perubahan perlu tes regresi |

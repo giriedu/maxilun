@@ -70,6 +70,19 @@ flowchart LR
 3. **Wave 3 (Verifikasi Frame & Encoding)**:
    - `maxilun-verify` + `maxilun-cinecode`: Menguji unit matematika frame dengan Vitest, memeriksa tangkapan gambar pada `frame 0` (thumbnail), dan merender MP4 (`libx264`, `yuv420p`).
 
+
+### Skenario 3: "Membuat Brand Identity Lengkap: Logo SVG Matematis + PDF Brand Guidelines + Video Motion Logo Reveal"
+
+```mermaid
+flowchart LR
+    C["1. maxilun-craft<br/>Konstruksi 6 Varian SVG Logo<br/>& Sistem Token OKLCH"] --> PDF["2. maxilun-craft<br/>Render 8-Page Vektor PDF<br/>(Brand-Guidelines.pdf)"]
+    C --> M["3. maxilun-motion<br/>Animated SVG / Lottie<br/>(Stroke Trace + Spring)"]
+    M --> V["4. maxilun-cinecode<br/>Render <LogoReveal> ke<br/>MP4 1080p & WebM Alpha"]
+```
+
+1. **Konsep & Geometri Logo (`maxilun-craft` — `references/brand-logo-guidelines.md`)**: Merancang simbol di atas grid matematis `64x64` (lulus *1-Bit Monochrome Test*), menghasilkan `logo-mark.svg`, `logo-horizontal.svg`, `logo-mono.svg`, dan `favicon.svg`.
+2. **Sistem Visual PDF (`Brand-Guidelines.pdf`)**: Menyusun 8 halaman standar studio (Cover, Filosofi Bentuk, Blueprint Grid & Clearspace, Aturan Larangan Penggunaan, Swatch OKLCH/Hex/WCAG, Tipografi, Komponen UI, dan Storyboard Motion) lalu mengekspornya ke PDF vektor via Chromium `page.pdf()`.
+3. **Motion Logo Interaktif & Video Stinger (`maxilun-motion` + `maxilun-cinecode`)**: Menganimasikan path logo dengan `stroke-dashoffset` + pegas teredam analitik di `<LogoReveal>` (`LogoReveal.tsx`) untuk menghasilkan aset web (`logo-animated.svg`) sekaligus video intro/outro (`logo-reveal.mp4` & `logo-stinger-alpha.webm`).
 ---
 ## 2. Contoh Prompt Spesifik per Spesialis
 

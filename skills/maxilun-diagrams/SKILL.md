@@ -3,10 +3,10 @@ name: maxilun-diagrams
 description: >
   System visualization specialist. Generates clear, accurate architecture,
   workflow, sequence, data flow, and state machine diagrams using Mermaid
-  or standalone SVG/HTML. Supports optional Archify integration without external dependencies.
+  or standalone SVG/HTML without external dependencies.
   Adheres to 4 always-on engines and 3 operating protocols (Focus, Purity, Minimalist, Clarity).
   Triggers: "/maxilun-diagrams", "/msal-diagram", "buat diagram", "gambar arsitektur",
-  "sequence diagram", "alur kerja", "data flow diagram", "archify diagram", or system visualization tasks.
+  "sequence diagram", "alur kerja", "data flow diagram", or system visualization tasks.
 metadata:
   version: "2.3.0"
   ecosystem: maxilun
@@ -25,7 +25,7 @@ metadata:
 
 # Maxilun Diagrams: System Visualization & Flow Mapping
 
-Bertanggung jawab atas visualisasi sistem teknis: diagram arsitektur tingkat tinggi, alur kerja proses (*workflows*), siklus pertukaran pesan (*sequence diagrams*), pipa data (*data pipelines*), dan mesin status (*state machines*). Mendukung sintaksis Mermaid bawaan, SVG/HTML interaktif standalone, dan integrasi opsional dengan Archify.
+Bertanggung jawab atas visualisasi sistem teknis: diagram arsitektur tingkat tinggi, alur kerja proses (*workflows*), siklus pertukaran pesan (*sequence diagrams*), pipa data (*data pipelines*), dan mesin status (*state machines*). Mendukung sintaksis Mermaid bawaan dan berkas SVG/HTML interaktif mandiri.
 
 ## Skill Contract
 
@@ -166,7 +166,7 @@ Sebelum menyerahkan diagram, validasi aturan sintaksis berikut untuk mencegah br
 
 `maxilun-diagrams` memvisualisasikan sistem teknis (arsitektur, workflow, sequence). Jalankan mandiri untuk diagram dari deskripsi atau sumber yang diberikan; pilih companion sesuai jenis pemeriksaan yang diperlukan:
 
-| Companion | Diagrams' Role | Anti-Slop Contribution |
+| Companion | Diagrams' Role | Purity & Quality Contribution |
 |---|---|---|
 | `maxilun-architect` | Architecture correctness validation | Gunakan bila sumber atau batas arsitektur belum jelas |
 | `maxilun-craft` | Visual clarity dan design consistency | Opsional untuk keterbacaan, aksesibilitas, atau konsistensi visual |
@@ -178,10 +178,9 @@ Sebelum menyerahkan diagram, validasi aturan sintaksis berikut untuk mencegah br
 - **maxilun-craft**: Design tokens dan visual clarity untuk diagram yang konsisten
 - **maxilun-docsmith**: Integrasi diagram ke dalam dokumentasi teknis
 
-## 5. Dukungan Ekspor & Integrasi Archify (Opsional)
+## 5. Dukungan Ekspor Mandiri (Standalone SVG/HTML & JSON Graph)
 
 1. **Standalone Interaktif (HTML/SVG)**:
-   Jika platform tidak merender Mermaid bawaan, hasilkan berkas `.html` tunggal mandiri yang menyematkan SVG inline, variabel tema gelap/terang, dan kapabilitas zoom/pan interaktif.
-2. **Integrasi Archify**:
-   - Jika workspace memiliki ekstensi atau tooling Archify, Maxilun dapat mengekspor spesifikasi arsitektur JSON untuk diimpor ke kanvas interaktif Archify.
-   - **Kemandirian**: Maxilun tidak memiliki ketergantungan wajib pada Archify. Jika Archify tidak tersedia, sistem tetap menghasilkan diagram Mermaid dan SVG/HTML yang teruji secara mandiri.
+   Jika platform tidak merender Mermaid bawaan, hasilkan berkas `.html` tunggal mandiri yang menyematkan SVG inline, variabel tema gelap/terang, dan kapabilitas zoom/pan interaktif tanpa dependensi eksternal.
+2. **Ekspor Spesifikasi JSON**:
+   Jika dibutuhkan untuk integrasi dengan visualizer eksternal atau `maxilun-knowledge-graph` (Maxilun Lens), hasilkan representasi node dan edge dalam format JSON terstruktur secara mandiri.

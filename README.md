@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="assets/banner.jpg" alt="Maxilun — 18 Skills: 1 Orchestrator + 17 Specialists · Zero AI Slop · Four Always-On Engines" width="100%">
+<img src="assets/banner.jpg" alt="Maxilun — 18 Skills: 1 Orchestrator + 17 Specialists · Purity Engine · Four Always-On Engines" width="100%">
 
 <br/>
 
@@ -21,7 +21,7 @@
 
 ---
 
-**Maxilun** is an ecosystem of 18 AI skills for software engineering teams: one orchestrator and 17 specialists. Every skill carries the same **Core Rules** block, so the four quality engines travel with the skill instead of living in a separate folder. The orchestrator adds outcome-based routing, a discovery protocol for unclear briefs, wave coordination, and evidence-based delivery gates. Deeper material (engine detail, anti-slop catalog, code hygiene, discovery) lives in `references/` inside each skill and is loaded only when needed.
+**Maxilun** is an ecosystem of 18 AI skills for software engineering teams: one orchestrator and 17 specialists. Every skill carries the same **Core Rules** block, so the four quality engines travel with the skill instead of living in a separate folder. The orchestrator adds outcome-based routing, a discovery protocol for unclear briefs, wave coordination, and evidence-based delivery gates. Deeper material (engine detail, purity catalog, code hygiene, discovery, and reference corpora) lives in `references/` inside each skill and is loaded only when needed.
 
 ## Quick Install
 
@@ -45,7 +45,7 @@ Most AI skill repositories are thin text wrappers that repeat generic advice (*"
 
 | What Usually Goes Wrong with Raw AI | What Maxilun Ships inside the Repo to Fix It |
 |---|---|
-| **Generic "AI Slop" UI** (purple-blue gradients, uniform border-radius, jittery numbers, missing empty/error states) | **84 Real Brand Design Systems** in [`skills/maxilun-craft/references/design-md/`](skills/maxilun-craft/references/design-md/index.md) (Stripe, Linear, Vercel, Wise, Apple, etc.) + mandatory **4-State UI Matrix** (Skeleton, Empty+CTA, Populated `tabular-nums`, Error+Recovery) |
+| **Generic AI Template UI** (purple-blue gradients, uniform border-radius, automatic breadcrumbs, missing empty/error states) | **100 Real Brand Design Systems** in [`skills/maxilun-craft/references/design-md/`](skills/maxilun-craft/references/design-md/index.md) (Stripe, Linear, Vercel, GitHub, Wise, Apple, etc.) + mandatory **4-State UI Matrix** (Skeleton, Empty+CTA, Populated `tabular-nums`, Error+Recovery) |
 | **Blind Multi-File Edits** (reading 20 whole files into context and breaking callers) | **Executable AST Knowledge Graph & 3D WebGL Lens** in [`skills/maxilun-knowledge-graph/`](skills/maxilun-knowledge-graph/SKILL.md) (`cli.py` + Python/TS/Polyglot AST scanners returning exact `file:line` `defOf:` / `callsIn:` in `< 1s`) |
 | **Vulnerable Auth & Webhooks** (`!==` timing leaks, float currency drift, ad-hoc error JSON) | **Cryptographic & API Contract Playbooks** in [`maxilun-sentinel`](skills/maxilun-sentinel/references/security-playbook.md) & [`maxilun-docsmith`](skills/maxilun-docsmith/references/openapi-contracts.md) (`timingSafeEqual`, Argon2id, `BIGINT` minor units, OpenAPI 3.1 + RFC 9457 `application/problem+json`) |
 | **Stiff, Unreadable AI Videos** (CSS transition drift, tiny 14px fonts, 30-word paragraphs) | **5-Skill Programmatic Video Studio** in [`maxilun-cinecode`](skills/maxilun-cinecode/references/video-production-pipeline.md) + [`maxilun-motion`](skills/maxilun-motion/references/choreography-styles.md) (React frame compiler, analytical damped springs, 14 style signatures, 22 hooks, FFmpeg `yuv420p`) |
@@ -81,7 +81,7 @@ When building product launch videos, UI demos, or data-driven MP4/WebM reports, 
 
 ```mermaid
 flowchart LR
-    Craft["1. maxilun-craft<br/>84 Brand Design Refs<br/>1080p Type Scale & OKLCH"] --> Motion["2. maxilun-motion<br/>Motion DNA Extraction<br/>14 Styles · 22 Hooks · Beat Grid"]
+    Craft["1. maxilun-craft<br/>100 Brand Design Refs<br/>1080p Type Scale & OKLCH"] --> Motion["2. maxilun-motion<br/>Motion DNA Extraction<br/>14 Styles · 22 Hooks · Beat Grid"]
     Content["3. maxilun-content<br/>4-Beat Video Script<br/>Max 8 words/scene + .vtt"] --> Motion
     Motion --> Cine["4. maxilun-cinecode<br/>Deterministic React Frames<br/>Sequence · Spring · FFmpeg"]
     Cine --> Verify["5. maxilun-verify<br/>Vitest Frame Math<br/>Still Check f0/Mid/End"]
@@ -107,7 +107,7 @@ Structured by real-world software engineering lifecycle — from foundational ar
 | 10 | `maxilun-insight` | Performance Diagnostics — CPU/memory/DB profiling, distributed tracing, leak detection | `/maxilun-insight`, `/msal-audit` |
 | 11 | `maxilun-deploy` | Cloud & Operations — CI/CD pipelines, multi-stage Docker, zero-downtime rollouts | `/maxilun-deploy` |
 | 12 | `maxilun-docsmith` | Technical Specs & Documentation — Feature PRDs/RFCs, OpenAPI 3.1/AsyncAPI contracts, ADRs, runbooks, `llms.txt` | `/maxilun-docsmith`, `/msal-docs` |
-| 13 | `maxilun-craft` | Design Systems & UI/UX — OKLCH color palettes, WCAG AAA accessibility, 4px grid, 84 brand references | `/maxilun-craft`, `/msal-ui` |
+| 13 | `maxilun-craft` | Design Systems & UI/UX — OKLCH color palettes, WCAG AAA accessibility, 4px grid, 100 brand references | `/maxilun-craft`, `/msal-ui` |
 | 14 | `maxilun-motion` | Motion Design — interactive browser animation, Lottie/SVG assets, kinetic typography, choreography | `/maxilun-motion` |
 | 15 | `maxilun-cinecode` | Programmatic Video — code-driven MP4/WebM/GIF, React frame compiler, data-driven batch pipelines | `/maxilun-cinecode` |
 | 16 | `maxilun-diagrams` | System Visualization — C4, sequence, Event Storming, data-flow diagrams via Mermaid | `/maxilun-diagram`, `/maxilun-diagrams` |
@@ -177,7 +177,7 @@ Use `maxilun-knowledge-graph` for structural or multi-file code changes when its
 | [docs/SKILL-CONTRACTS.md](docs/SKILL-CONTRACTS.md) | Ownership, standalone behavior, inputs, outputs, and handoffs for every skill |
 | [docs/BENCHMARKS.md](docs/BENCHMARKS.md) | Side-by-side Raw LLM vs. Maxilun code/UI/video proofs & token efficiency metrics |
 | [docs/ROUTING-MATRIX.md](docs/ROUTING-MATRIX.md) | Primary-owner routing and trigger collision boundaries |
-| [docs/ANTI-SLOP.md](docs/ANTI-SLOP.md) | Distribution-safe anti-slop and evidence gate |
+| [docs/PURITY-GATE.md](docs/PURITY-GATE.md) | Distribution-safe Purity Gate and evidence delivery rules |
 | [docs/RELEASE.md](docs/RELEASE.md) | Automated GitHub Releases, tag dispatch, and versioning protocols |
 | [CHANGELOG.md](CHANGELOG.md) | Semantic version release history |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution standards, test-suite validation, and code hygiene |

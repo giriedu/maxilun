@@ -156,12 +156,12 @@ Saat AI (termasuk agen ini) menghasilkan kode, terapkan **CEFR Verification**:
 
 **Prinsip**: Kode AI-generated bukan kode yang selesai. Kode selesai = kode yang sudah melewati CEFR.
 
-## 6. Anti-Slop Code Patterns (Mandatory Self-Check)
+## 6. Code Purity Patterns (Mandatory Self-Check)
 
 Sebelum menyerahkan kode, cek terhadap pola-pola ini. Jika >=3 terdeteksi, rewrite sebelum deliver.
 
-### Naming Slop
-| Slop Pattern | Human Pattern |
+### Naming Purity
+| Generic Pattern (Forbidden) | Specific Pattern (Required) |
 |---|---|
 | `data`, `info`, `temp`, `result`, `response` | `invoiceList`, `userProfile`, `parsedConfig`, `authToken` |
 | `handleClick`, `processData`, `doSomething` | `submitLoginForm`, `validateInvoiceTotal`, `parseUserCSV` |
@@ -169,21 +169,21 @@ Sebelum menyerahkan kode, cek terhadap pola-pola ini. Jika >=3 terdeteksi, rewri
 | `container`, `wrapper`, `content`, `box` | `invoiceCardContainer`, `loginFormWrapper`, `sidebarNavContent` |
 | `utils`, `helpers`, `common` | `dateFormatters`, `validationRules`, `apiEndpoints` |
 
-### Structure Slop
+### Structural Purity
 - Over-abstraction: wrapper function yang hanya memanggil 1 fungsi lain tanpa added value → inline
 - Premature DRY: extract ke helper sebelum ada 2+ caller yang sama → tunggu sampai duplikasi nyata
 - Config object bloat: parameter object dengan 8+ properties → split jadi beberapa fungsi atau use builder
 - Barrel file re-export everything: `index.ts` yang export 50+ items → import langsung dari source file
 - Comment yang menjelaskan WHAT (`// set user name`) → hapus atau ganti WHY (`// name required for audit trail per regulation X`)
 
-### CSS/UI Code Slop
+### CSS/UI Code Purity
 - Inline styles untuk static properties → pindahkan ke CSS/token
 - Magic numbers: `padding: 13px`, `margin: 7px` → snap ke 4px grid token
 - Raw hex colors: `#667eea`, `#333` → semantic token `--brand-primary`, `--text-muted`
 - `className="flex items-center justify-between p-4"` tanpa konteks → named class atau component
 - Semua elemen rounded sama (`rounded-lg` everywhere) → varied radius per hierarchy
 
-### Response/Communication Slop
+### Response/Communication Purity
 - Preamble: "Baik, saya akan membuatkan..." → langsung kode/jawaban
 - Over-explanation: jelaskan apa itu React/state/hook ke user yang jelas sudah tahu → trust their level
 - Hedging: "Mungkin bisa dipertimbangkan untuk..." → "Gunakan X karena Y"
@@ -213,7 +213,7 @@ Sebelum menyerahkan kode, cek terhadap pola-pola ini. Jika >=3 terdeteksi, rewri
 | `maxilun-data` | DB implementation dan query | Gunakan untuk perubahan skema atau akses data |
 | `maxilun-sentinel` | Security code review | Gunakan untuk perubahan pada batas kepercayaan atau kontrol keamanan |
 
-**Penggunaan companion**: Libatkan `maxilun-sentinel` untuk perubahan yang menyentuh batas kepercayaan atau kontrol keamanan. Higienitas komentar dan pola anti-slop kode sudah menjadi bagian skill ini (§6) dan `../maxilun/references/code-hygiene.md`.
+**Penggunaan companion**: Libatkan `maxilun-sentinel` untuk perubahan yang menyentuh batas kepercayaan atau kontrol keamanan. Higienitas komentar dan pola Purity kode sudah menjadi bagian skill ini (§6) dan `../maxilun/references/code-hygiene.md`.
 
 ## Related Skills
 - **maxilun-data**: Database schema, migration, query optimization, dan ORM patterns

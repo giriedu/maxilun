@@ -75,6 +75,7 @@ async function encode(options) {
     width,
     height,
     audioSrc,
+    bgVideo,
   } = options;
 
   const ffmpegPath = findFFmpeg();
@@ -102,19 +103,40 @@ async function encode(options) {
 
   let args = [];
 
-  // Input
-  args.push('-framerate', String(fps));
-  args.push('-i', framePattern);
-
-  // Audio (optional)
-  if (audioSrc && fs.existsSync(audioSrc)) {
-    args.push('-i', audioSrc);
-    args.push('-map', '0:v');
-    args.push('-map', '1:a?');
+  // Input 0: Rendered PNG sequence (or background video when compositing)
+  if (bgVideo && fs.existsSync(bgVideo)) {
+    // Input 0: Local source video from user's folder
+    args.push('-i', bgVideo);
+    // Input 1: Transparent PNG motion overlay frames
+    args.push('-framerate', String(fps));
+    args.push('-i', framePattern);
+    if (audioSrc && fs.existsSync(audioSrc)) {
+      args.push('-i', audioSrc);
+    }
+    const scaleFilter = width && height ? `[0:v]scale=${width}:${height}[bg];[bg][1:v]overlay=0:0:shortest=1[outv]` : `[0:v][1:v]overlay=0:0:shortest=1[outv]`;
+    args.push('-filter_complex', scaleFilter);
+    args.push('-map', '[outv]');
+    if (audioSrc && fs.existsSync(audioSrc)) {
+      args.push('-map', '2:a?');
+    } else {
+      // Preserve original audio from the background video if present
+      args.push('-map', '0:a?');
+    }
     args.push('-shortest');
-    console.log(`[ENCODE] Audio: ${audioSrc}`);
-  }
+    console.log(`[ENCODE] Compositing motion overlay onto source video: ${bgVideo}`);
+  } else {
+    args.push('-framerate', String(fps));
+    args.push('-i', framePattern);
 
+    // Audio (optional)
+    if (audioSrc && fs.existsSync(audioSrc)) {
+      args.push('-i', audioSrc);
+      args.push('-map', '0:v');
+      args.push('-map', '1:a?');
+      args.push('-shortest');
+      console.log(`[ENCODE] Audio: ${audioSrc}`);
+    }
+  }
   // Codec-specific args
   if (preset === 'gif') {
     // GIF requires two-pass palette generation
@@ -157,8 +179,8 @@ async function encode(options) {
       args.push(...presetConfig.extraArgs);
     }
 
-    // Scale if specified
-    if (width && height) {
+    // Scale if specified (and not already scaled in filter_complex)
+    if (width && height && !(bgVideo && fs.existsSync(bgVideo))) {
       args.push('-vf', `scale=${width}:${height}`);
     }
 
@@ -226,10 +248,11 @@ if (require.main === module) {
     if (args[i] === '--width' && args[i + 1]) options.width = parseInt(args[++i]);
     if (args[i] === '--height' && args[i + 1]) options.height = parseInt(args[++i]);
     if (args[i] === '--audio' && args[i + 1]) options.audioSrc = args[++i];
+    if (args[i] === '--bg-video' && args[i + 1]) options.bgVideo = args[++i];
   }
 
   if (!options.framesDir) {
-    console.error('Usage: node encode.js --frames <dir> [--output <file>] [--preset mp4-h264|mp4-h265|webm-vp9|gif] [--fps 30] [--audio <file>]');
+    console.error('Usage: node encode.js --frames <dir> [--bg-video <source.mp4>] [--output <file>] [--preset mp4-h264|mp4-h265|webm-vp9|gif] [--fps 30] [--audio <file>]');
     process.exit(1);
   }
 

@@ -13,7 +13,7 @@ flowchart TB
     Brief["User Request: Buat Motion Video / Product Promo"] --> Wave1
     
     subgraph Wave1["Wave 1: Direction, Script & Choreography (Paralel)"]
-        Craft["maxilun-craft\nPilih 1-2 referensi dari 84 design-md\nTetapkan palet OKLCH/Hex, font, & layout UI"]
+        Craft["maxilun-craft\nPilih 1-2 referensi dari 100 design-md\nTetapkan palet OKLCH/Hex, font, & layout UI"]
         Content["maxilun-content\nSusun Hook 3 detik pertama, narasi bebas buzzword,\n& teks caption pendek (< 8 kata/scene)"]
         Motion["maxilun-motion\nTurunkan Motion DNA, pilih 1 dari 14 Style Signature,\n& buat tabel Frame Choreography Spec"]
     end

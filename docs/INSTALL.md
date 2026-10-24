@@ -79,7 +79,7 @@ v1 menaruh aturan di `rules/` pada root repo. `npx skills add` hanya menyalin fo
 2. Installer v2 menghapus sisa file aturan v1 di luar folder skill secara otomatis, hanya jika file tersebut membawa penanda Maxilun.
 3. Verifikasi: setiap `SKILL.md` harus memuat blok `<!-- CORE-RULES:START -->`, dan `skills/maxilun/references/engines.md` harus ada.
 
-Jika Anda memakai skill di luar ekosistem ini, hapus rujukan ke `antislop`, `antislop-code`, `frontend-design`, atau `brainstorming`: v2 tidak bergantung pada skill eksternal.
+Jika Anda memakai skill di luar ekosistem ini, hapus rujukan ke paket eksternal di luar 18 skill Maxilun: v2 berdiri mandiri sepenuhnya tanpa dependensi skill pihak ketiga.
 
 
 ## Kompatibilitas Multi-Platform

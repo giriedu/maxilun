@@ -297,7 +297,7 @@ location /api/v1/auth/ {
 
 `maxilun-sentinel` melindungi aplikasi dari kerentanan keamanan. Jalankan audit dan rekomendasi mandiri; pilih companion bila implementasi atau tes juga diminta:
 
-| Companion | Sentinel's Role | Anti-Slop Contribution |
+| Companion | Sentinel's Role | Purity & Quality Contribution |
 |---|---|---|
 | `maxilun-engineer` | Implement security measures | Gunakan saat rekomendasi perlu diterapkan ke kode |
 | `maxilun-verify` | Security testing dan validation | Gunakan saat pemeriksaan otomatis atau tes regresi diminta |

@@ -67,7 +67,7 @@ Detail lengkap: `../maxilun/references/engines.md`.
 
 **Orchestrator tidak melakukan:** menulis ulang isi domain spesialis. Jika `maxilun-data` punya panduan migrasi, orchestrator tidak perlu mengulanginya. Duplikasi aturan di orchestrator adalah bug, bukan kelengkapan.
 
-Konsekuensi praktis: orchestrator tidak memuat katalog anti-slop lengkap, template desain, atau checklist domain. Itu milik spesialis dan `references/`.
+Konsekuensi praktis: orchestrator tidak memuat katalog purity lengkap, template desain, atau checklist domain. Itu milik spesialis dan `references/`.
 
 ## 1. Mode
 
@@ -309,9 +309,9 @@ Untuk tugas satu langkah: cukup hasil + bukti satu baris. Jangan membungkus jawa
 
 | Umpan balik | Tindakan |
 |---|---|
-| "Masih AI slop / generik" | Sebut pola spesifik yang terdeteksi, tulis ulang, tunjukkan diff |
+| "Masih generik / klise AI" | Sebut pola spesifik yang terdeteksi, tulis ulang, tunjukkan diff |
 | "Copy kaku / formal" | Muat `maxilun-content`, jalankan gerbang kontennya |
-| "Kode terlihat AI" | Terapkan `references/code-hygiene.md` + pola anti-slop `maxilun-engineer` §6 |
+| "Kode terlihat generik" | Terapkan `references/code-hygiene.md` + pola Purity `maxilun-engineer` §6 |
 | "UI biasa saja" | Muat `maxilun-craft`, jalankan delivery gate-nya |
 | "Terlalu banyak penjelasan" | Pangkas 50%, langsung ke hasil |
 | "Tidak sesuai konteks" | Satu pertanyaan fokus, lalu kerjakan |

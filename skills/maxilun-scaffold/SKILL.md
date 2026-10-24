@@ -5,7 +5,7 @@ description: >
   project documents (PRD, TECHSTACK, DESIGN, SECURITY, STYLEGUIDE, TASK,
   ARCHITECTURE, SKILLS, GLOSSARY, ONBOARDING) into a single `docs/` folder
   before coding begins. Grounds PRD invariants in domain archetypes and seeds
-  DESIGN.md from the 84 production UI/UX references in maxilun-craft.
+  DESIGN.md from the 100 production UI/UX references in maxilun-craft.
   Ensures every AI assistant — Claude, Antigravity, Codex, Cursor, Grok, or any
   other — has instant shared context without re-reading the codebase.
   Triggers: "/maxilun-scaffold", "/msal-init", "scaffold dokumen", "buat docs project",
@@ -193,7 +193,7 @@ Jika project sudah berjalan dan butuh sinkronisasi dokumen terhadap perubahan ko
 
 `maxilun-scaffold` menghasilkan 10 dokumen konteks project secara mandiri. Pilih companion hanya bila bagian deliverable membutuhkan keputusan spesialis:
 
-| Companion | Scaffold's Role | Anti-Slop Contribution |
+| Companion | Scaffold's Role | Purity & Quality Contribution |
 |---|---|---|
 | `maxilun-craft` | Menggunakan `../maxilun-craft/references/design-md/index.md` untuk `DESIGN.md` | Mencegah `DESIGN.md` berisi token kosong atau estetika AI generik |
 | `maxilun-docsmith` | Handoff untuk Feature RFC, OpenAPI spec, `README.md`, dan `llms.txt` | Memastikan kontrak API dan dokumentasi engineer akurat hingga level skema |
@@ -213,7 +213,7 @@ Sebelum menyerahkan hasil `docs/` ke pengguna, verifikasi seluruh checklist ini:
 
 ## Related Skills
 - **maxilun-docsmith**: Spesifikasi fitur/RFC mendalam, kontrak OpenAPI/AsyncAPI, runbook, ADR, dan `llms.txt`
-- **maxilun-craft**: Pemilik utama sistem desain UI/UX dan penyedia 84 referensi di `../maxilun-craft/references/design-md/`
+- **maxilun-craft**: Pemilik utama sistem desain UI/UX dan penyedia 100 referensi di `../maxilun-craft/references/design-md/`
 - **maxilun-architect**: Desain arsitektur mendalam, kontrak antar-modul, dan ADR
 - **maxilun-sentinel**: Audit keamanan aplikasi dan threat modeling STRIDE
 - **maxilun-content**: Copywriting produk dan microcopy antarmuka

@@ -43,7 +43,7 @@ GitHub "About" (deskripsi di sidebar) **tidak bisa diset via file** — harus ma
 1. Buka: https://github.com/giriedu/maxilun
 2. Klik ikon ⚙️ (gear) di sebelah kanan "About"
 3. Isi form:
-   - **Description**: `AI engineering co-pilot — 18 specialist skills, 84 UI design references, graph code discovery, programmatic motion video & evidence-based orchestration`
+   - **Description**: `AI engineering co-pilot — 18 specialist skills, 100 UI design references, graph code discovery, programmatic motion video & evidence-based orchestration`
    - **Website**: `https://skills.sh/giriedu/maxilun`
    - **Topics**: `ai-skills`, `claude-code`, `antigravity`, `cursor`, `codex`, `zed`, `termul`, `knowledge-graph`, `purity-engine`, `motion-design`, `programmatic-video`, `design-system`, `openapi`, `project-scaffold`
 4. Klik "Save changes"
@@ -55,7 +55,7 @@ GitHub "About" (deskripsi di sidebar) **tidak bisa diset via file** — harus ma
 | Tag | Tanggal | Highlights |
 |---|---|---|
 | v2.3.0 | 2026-10-24 | Multi-specialist Motion Video Studio pipeline (Craft + Motion + Content + CineCode), Docsmith & Scaffold reference corpora with UI reference seeding, Architect deep-dive playbooks, and <400-line modularization across all 18 skills |
-| v2.2.0 | 2026-10-24 | Standalone ownership contracts, routing boundaries, distribution-safe Anti-Slop v2, craft design-md reference workflow, repository validation |
+| v2.2.0 | 2026-10-24 | Standalone ownership contracts, routing boundaries, distribution-safe Purity Gate v2, craft design-md reference workflow, repository validation |
 | v2.1.0 | 2026-10-23 | Namespace unification to maxilun-*, sentinel security playbook, verify tier 5, craft design reference corpus |
 | v2.0.0 | 2026-10-23 | Rules bundled inside the orchestrator skill, identical CORE-RULES block in all 18 skills, discovery protocol, evidence-based delivery gates, real tool binding per platform, external skill dependencies removed |
 | v1.1.0 | 2026-10-23 | Skill routing, conditional companions, Motion/CineCode boundaries, Knowledge Graph Lens visual polish |

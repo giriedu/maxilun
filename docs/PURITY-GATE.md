@@ -1,6 +1,6 @@
-# Maxilun Anti-Slop v2
+# Maxilun Purity Gate v2
 
-Anti-slop is a delivery constraint, not a writing style. It applies to skill instructions, generated artifacts, code, copy, diagrams, and verification reports.
+The **Maxilun Purity Gate** is an engineering delivery constraint, not a writing style. It applies to skill instructions, generated artifacts, code, copy, diagrams, and verification reports.
 
 ## Universal rules
 

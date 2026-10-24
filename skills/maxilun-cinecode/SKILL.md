@@ -3,7 +3,7 @@ name: maxilun-cinecode
 description: >
   Programmatic video creation specialist. Build studio-grade videos with code — React/TypeScript
   components as deterministic frames, timeline composition, server-side rendering to MP4/WebM/GIF,
-  audio beat sync, data-driven sequences, and batch export. Integrates maxilun-craft (84 brand
+  audio beat sync, data-driven sequences, and batch export. Integrates maxilun-craft (100 brand
   design references), maxilun-motion (physics choreography & 22 hooks), and maxilun-content
   (tight script beats) for maximum production quality.
   Triggers: "/maxilun-cinecode", "/msal-cinecode", "buat video dari kode", "programmatic video",
@@ -92,13 +92,19 @@ Acuan lengkap: `references/video-production-pipeline.md`. Saat membangun video p
 
 Detail API lengkap dan contoh kode multi-scene tersedia di `references/composition-api.md`.
 
-### 3.1 Komponen Inti yang Tersedia di `scaffold/src/components/`
-- **`<AbsoluteFill>`**: Container full-frame (`position: absolute; inset: 0`) untuk menumpuk latar, konten utama, dan overlay HUD.
-- **`<Sequence from={number} durationInFrames={number} name={string}>`**: Mengisolasi rentang waktu scene; di dalam `<Sequence>`, `useCurrentFrame()` otomatis dimulai dari `0`.
-- **`<Spring frame={number} fps={number} config={{ stiffness, damping, mass }}>`**: Komponen pegas teredam analitik yang menghasilkan pergerakan organik tanpa keyframe manual.
-- **`interpolate(frame, [inStart, inEnd], [outStart, outEnd], 'clamp')`**: Pemetaan nilai deterministik untuk opasitas, posisi (`translate3d`), skala, atau penghitung angka.
-- **`<Audio>` & `<Subtitle>`**: Pengelolaan track audio (mendukung fungsi volume dinamis per frame untuk *audio ducking*) dan overlay takarir yang mengekspor file `.srt` / `.vtt`.
-
+### 3.1 Komponen Inti & Efek Sinematik di `scaffold/src/components/`
+- **Layout & Timeline**: `<AbsoluteFill>` (full-frame layer container) dan `<Sequence from={number} durationInFrames={number} name={string}>` (isolasi rentang frame scene).
+- **Fisika & Interpolasi**: `<Spring frame={number} fps={number} config={{ stiffness, damping, mass }}>` dan `interpolate(frame, [inStart, inEnd], [outStart, outEnd], 'clamp')`.
+- **Efek Visual, Kamera & Transisi (`Effects.tsx`)**:
+  - `<SceneTransition type="iris | wipe-right | wipe-up | zoom-through | fade">` — transisi masuk/keluar scene berbasis `clip-path` & `scale` deterministik.
+  - `<CameraRig fromScale={1} toScale={1.06} fromX={0} toX={-24}>` — rig kamera virtual 2.5D (`dolly`, `pan`, `tilt`) per frame.
+  - `<RackFocusBlur fromBlurPx={8} toBlurPx={0}>` — perpindahan fokus kedalaman (*depth-of-field*) antar-layer.
+  - `<ColorGrade contrast={1.04} saturate={1.05} vignetteOpacity={0.28}>` — koreksi warna sinematik + *radial vignette*.
+  - `<FilmGrainOverlay frame={frame} opacity={0.04} />` — *fractal noise* SVG per frame (mencegah *color banding* pada latar gelap MP4).
+  - `<KineticScrambleText text="..." frame={frame} durationInFrames={24} />` — efek dekode karakter teks monospace deterministik.
+  - `<VideoClip src="./input.mp4" trimStartSeconds={1.5} borderRadius={16} />` — menyematkan dan memotong file video lokal dari folder pengguna dengan sinkronisasi `seeked` per frame (`VideoClip.tsx`).
+  - `<LogoReveal brandName="..." tagline="..." outerPathD="..." innerPathD="..." />` — komponen animasi *Motion Logo Reveal* 4 tahap (blueprint grid + SVG `stroke-dashoffset` trace + spring core assembly + wordmark reveal) untuk video intro/outro MP4 & WebM Alpha (`LogoReveal.tsx`).
+- **Audio & Takarir**: `<Audio>` (mendukung fungsi kurva volume per frame untuk *audio ducking*) dan `<Subtitle>` (overlay takarir + ekspor `.srt` / `.vtt`).
 ### 3.2 Preset Resolusi & Target Distribusi
 | Preset | Resolusi | FPS | Codec Rekomendasi | Safe Area Margin |
 |---|---|---|---|---|
@@ -127,6 +133,10 @@ npm run still -- --frame 120 --output ./out/check-mid.png
 # 4. Render komposisi penuh ke MP4/WebM atau jalankan batch dari data CSV/JSON
 npm run render -- --composition main --output ./out/video.mp4
 npm run batch -- --template promo --data ./variants.json --output ./out/
+
+# 5. Edit Video Lokal di Folder: Render motion transparan lalu tempelkan di atas video asli (--bg-video)
+node scripts/render.js --entry ./src/compositions/Overlay.tsx --duration 300 --transparent --output ./out
+node scripts/encode.js --frames ./out/frames --bg-video ./input-footage.mp4 --output ./out/edited-video.mp4
 ```
 *(Catatan: jalankan perintah di atas hanya di dalam proyek yang sudah menyalin atau menginisialisasi `scaffold/`).*
 
@@ -142,16 +152,16 @@ Sebelum menyerahkan hasil render atau kode komposisi video ke pengguna, pastikan
 
 ## Companion Skills Awareness
 
-| Companion | CineCode's Role | Anti-Slop Contribution |
+| Companion | CineCode's Role | Purity & Quality Contribution |
 |---|---|---|
 | `maxilun-motion` | Menerjemahkan *Motion DNA*, 14 *Style Signatures*, dan 22 *Hooks* (`../maxilun-motion/references/choreography-styles.md`) ke dalam `<Sequence>` & `<Spring>` | Menghilangkan animasi linear kaku dan memberikan koreografi fisika kelas studio |
-| `maxilun-craft` | Menggunakan token warna OKLCH, skala tipografi, dan 84 referensi `../maxilun-craft/references/design-md/index.md` | Mencegah tampilan scene video terlihat seperti template presentasi murahan |
+| `maxilun-craft` | Menggunakan token warna OKLCH, skala tipografi, dan 100 referensi `../maxilun-craft/references/design-md/index.md` | Mencegah tampilan scene video terlihat seperti template presentasi murahan |
 | `maxilun-content` | Menyusun narasi pendek (`<= 8 kata/scene`), hook 3 detik pertama, dan CTA tajam | Menghapus kalimat panjang dan jargon marketing yang tidak terbaca di video |
 | `maxilun-data` | Menyediakan query dan skema bersih untuk *data-driven batch video* | Memastikan metrik dan grafik di dalam video akurat dari sumber data nyata |
 
 ## Related Skills
 - **maxilun-motion**: Koreografi gerak berbasis fisika, *Motion DNA*, dan aset Lottie/SVG (`../maxilun-motion/references/index.md`)
-- **maxilun-craft**: Sistem desain UI/UX, token OKLCH, dan 84 referensi brand (`../maxilun-craft/references/design-md/index.md`)
+- **maxilun-craft**: Sistem desain UI/UX, token OKLCH, dan 100 referensi brand (`../maxilun-craft/references/design-md/index.md`)
 - **maxilun-content**: Penulisan naskah video pendek, hook, dan CTA
 - **maxilun-verify**: Verifikasi snapshot frame, pengujian unit scene, dan validasi build
 - **maxilun-engineer**: Implementasi pipeline data dan otomasi rendering

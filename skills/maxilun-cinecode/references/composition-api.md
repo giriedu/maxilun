@@ -46,6 +46,13 @@ export interface CompositionProps {
 | `<Spring frame={f} fps={fps} config={{ stiffness, damping, mass }}>` | Simulasi pegas teredam analitik yang mulus tanpa keyframe manual | Kemunculan kartu UI, pergerakan kursor, atau pop-in badge metrik |
 | `<Audio src="..." startFrom={0} volume={(f) => ...} />` | Track musik latar atau voice-over dengan kurva fade-in/fade-out per frame | Ducking volume BGM dari `0.35` ke `0.12` saat narator berbicara |
 | `<Subtitle segments={[...]} />` | Overlay teks takarir beserta ekspor sidecar `.srt` / `.vtt` | Aksesibilitas wajib untuk video dengan narasi suara |
+| `<SceneTransition type="iris\|wipe-right\|wipe-up\|zoom-through\|fade">` | Transisi masuk/keluar scene berbasis `clip-path` & `scale` deterministik (`Effects.tsx`) | Membuka scene baru dengan *Portal Iris Wipe* atau *Zoom-Through* |
+| `<CameraRig fromScale={1} toScale={1.06} fromX={0} toX={-24}>` | Rig kamera 2.5D virtual (`dolly`, `pan`, `tilt`) per frame (`Effects.tsx`) | Gerakan kamera sinematik halus tanpa memicu mabuk visual |
+| `<RackFocusBlur fromBlurPx={8} toBlurPx={0}>` | Efek kedalaman bidang (*depth-of-field rack focus*) deterministik (`Effects.tsx`) | Memindahkan fokus mata penonton dari latar ke kartu UI utama |
+| `<ColorGrade contrast={1.04} saturate={1.05} vignetteOpacity={0.28}>` | Koreksi warna studio + *radial vignette* halus (`Effects.tsx`) | Menjaga atmosfer warna sinematik yang konsisten di seluruh video |
+| `<FilmGrainOverlay frame={frame} opacity={0.04} />` | Tekstur *fractal noise* SVG dengan `seed` per frame (`Effects.tsx`) | Mencegah *color banding* pada latar gelap saat di-encode ke MP4 H.264 |
+| `<KineticScrambleText text="..." frame={frame} durationInFrames={24} />` | Efek dekode karakter monospace deterministik per frame (`Effects.tsx`) | Reveal judul teknologi, metrik angka, atau perintah CLI |
+| `<VideoClip src="./footage.mp4" startFrom={0} trimStartSeconds={2.5} />` | Menyematkan, memotong (*trim*), dan menyinkronkan file video lokal frame-demi-frame (`VideoClip.tsx`) | Menampilkan rekaman layar/footage produk di dalam bingkai UI atau layar penuh dengan overlay motion |
 
 ---
 
@@ -118,6 +125,63 @@ export const ReleaseVideo: React.FC<ReleaseVideoProps> = ({
 | `web-optimized` | `1280x720` | `16:9` | `30` | WebM VP9 (`libvpx-vp9`, `-b:v 0 -crf 28`) | Embed dokumentasi ringan |
 | `transparent` | `1920x1080` | `16:9` | `30` | WebM VP9 dengan Alpha (`yuva420p`) | Overlay komponen di atas halaman web |
 | `high-quality` | `3840x2160` | `16:9` | `60` | MP4 H.265 (`libx265`, `-crf 16`) | Master arsip / layar pameran 4K |
+
+---
+
+## 6. Mengedit & Menambahkan Motion Overlay pada File Video di Folder Lokal
+
+Jika pengguna sudah memiliki file video di dalam folder proyek (misal `./assets/raw-recording.mp4` atau `./demo.mp4`) dan ingin menambahkan desain motion (headline pegas, callout zoom, lower-third, grafik metrik, atau takarir), tersedia **2 metode produksi**:
+
+### Metode A: Komposisi di Dalam Scene via `<VideoClip>` (Mendukung Zoom Kamera, Split-Screen & Bingkai Mockup)
+Gunakan `<VideoClip>` di dalam komposisi React. Renderer `render.js` secara otomatis menunggu event `seeked` pada `<video>` di setiap frame sebelum mengambil gambar, sehingga video lokal dan animasi React 100% sinkron tanpa drop frame:
+
+```tsx
+import React from 'react';
+import { AbsoluteFill } from '../scaffold/src/components/AbsoluteFill';
+import { VideoClip } from '../scaffold/src/components/VideoClip';
+import { CameraRig, ColorGrade, KineticScrambleText } from '../scaffold/src/components/Effects';
+import { useCurrentFrame } from '../scaffold/src/hooks';
+
+export const AnnotatedDemoVideo: React.FC = () => {
+  const frame = useCurrentFrame();
+  return (
+    <AbsoluteFill style={{ backgroundColor: '#090d16' }}>
+      <ColorGrade contrast={1.05} vignetteOpacity={0.25}>
+        {/* Zoom kamera halus ke arah rekaman video lokal pada frame 30..90 */}
+        <CameraRig frame={frame} startFrame={30} endFrame={90} fromScale={0.88} toScale={1.0}>
+          <VideoClip
+            src="./assets/screen-recording.mp4"
+            trimStartSeconds={1.5}
+            borderRadius={16}
+            style={{ boxShadow: '0 24px 64px rgba(0,0,0,0.6)' }}
+          />
+        </CameraRig>
+      </ColorGrade>
+
+      {/* Layer Motion Design Overlay di atas video */}
+      <div style={{ position: 'absolute', top: 56, left: 80 }}>
+        <KineticScrambleText
+          text="LATENSI TURUN 10X: 38ms"
+          frame={frame}
+          durationInFrames={20}
+          style={{ fontSize: 48, fontWeight: 700, color: '#38bdf8' }}
+        />
+      </div>
+    </AbsoluteFill>
+  );
+};
+```
+
+### Metode B: Transparent Motion Overlay langsung via FFmpeg `--bg-video` (Zero Re-Decode Blur)
+Jika ingin kualitas piksel video asli 100% utuh beserta suara aslinya, dan hanya menempelkan layer desain motion transparan (lower-third, HUD, callout badge, subtitle) di atasnya:
+
+```bash
+# 1. Render komponen motion dengan latar belakang transparan (--transparent)
+node scripts/render.js --entry ./src/compositions/MotionOverlay.tsx --duration 300 --transparent --output ./out
+
+# 2. Gabungkan (composite) frame motion transparan langsung di atas video lokal + pertahankan audio asli
+node scripts/encode.js --frames ./out/frames --bg-video ./assets/input-video.mp4 --output ./out/final-edited.mp4
+```
 
 ---
 

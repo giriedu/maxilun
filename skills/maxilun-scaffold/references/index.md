@@ -8,7 +8,7 @@ This directory is a bundled reference library for `maxilun-scaffold`. It provide
 |---|---|---|
 | `references/doc-templates.md` | Full canonical templates for all 10 documents in `docs/` (`PRD.md`, `TECHSTACK.md`, `DESIGN.md`, `SECURITY.md`, `STYLEGUIDE.md`, `TASK.md`, `ARCHITECTURE.md`, `SKILLS.md`, `GLOSSARY.md`, `ONBOARDING.md`) | Always read before generating or updating `docs/` files |
 | `references/prd-archetypes.md` | Domain-specific archetypes (Fintech, B2B SaaS, DevTools/AI, Commerce/Booking, Media/Docs) mapping product category to PRD invariants, STRIDE threats, data rules, and `maxilun-craft` design references | Read during Discovery/Generation to populate concrete domain facts instead of generic placeholders |
-| `../maxilun-craft/references/design-md/index.md` | 84 Production UI/UX Design Systems (Stripe, Linear, Vercel, Wise, Figma, etc.) | Read when generating `docs/DESIGN.md` and UI constraints in `docs/PRD.md` to seed real OKLCH tokens, typography scales, and component rules |
+| `../maxilun-craft/references/design-md/index.md` | 100 Production UI/UX Design Systems (Stripe, Linear, Vercel, GitHub, Wise, Figma, etc.) | Read when generating `docs/DESIGN.md` and UI constraints in `docs/PRD.md` to seed real OKLCH tokens, typography scales, and component rules |
 
 ## Reference Selection & Evidence Contract
 

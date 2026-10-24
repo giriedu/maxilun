@@ -97,7 +97,7 @@
     <rect x="18" y="246" width="416" height="92" rx="8" fill="#17152b" stroke="#6366f1" stroke-width="1.2"/>
     <text x="30" y="266" fill="#a5b4fc" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5" font-weight="700">UI/UX DESIGN CORPUS &amp; PROGRAMMATIC VIDEO STUDIO</text>
     <text x="30" y="286" fill="#f8fafc" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12.5" font-weight="600">craft · motion · cinecode · content</text>
-    <text x="30" y="306" fill="#cbd5e1" font-family="system-ui, -apple-system, sans-serif" font-size="11.5">84 Real Brand Design Systems · OKLCH Tokens · 4 Mandatory UI States</text>
+    <text x="30" y="306" fill="#cbd5e1" font-family="system-ui, -apple-system, sans-serif" font-size="11.5">100 Real Brand Design Systems · OKLCH Tokens · 4 Mandatory UI States</text>
     <text x="30" y="324" fill="#38bdf8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5">14 Motion Signatures · 22 Hooks · React Frame Compiler → FFmpeg MP4/WebM</text>
 
     <!-- Cluster D: Specs, Diagrams & Search -->
@@ -129,7 +129,7 @@
     <text x="28" y="290" fill="#f8fafc" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600">1. Focus Engine</text>
     <text x="42" y="306" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="11">HUD + max 3 active tasks</text>
     <text x="28" y="326" fill="#f8fafc" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600">2. Purity Engine</text>
-    <text x="42" y="342" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="11">Zero AI slop / fake claims</text>
+    <text x="42" y="342" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="11">Zero generic clichés / fake claims</text>
     <text x="28" y="362" fill="#f8fafc" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600">3. Minimalist Engine</text>
     <text x="42" y="378" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="11">Stdlib first · file &lt;= 300 ln</text>
     <text x="28" y="398" fill="#f8fafc" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600">4. Clarity Engine</text>

@@ -1,13 +1,13 @@
 ---
 name: maxilun-craft
 description: >
-  Production UI/UX specialist for design systems, spatial rhythm, responsive
-  layouts, WCAG accessibility, and interaction polish. Combines mathematical
-  scales (4px grid, OKLCH tokens) with 84 real-world brand design references
-  (references/design-md/), 20 art directions, native CSS minimalism, and visual review.
-  Triggers: "/maxilun-craft", "/maxilun-ui", "/msal-craft", "/msal-ui", "desain UI",
-  "sistem desain", "tampilan antarmuka", "responsif", "aksesibilitas", "dark mode",
-  "interaksi tombol", or any visual frontend task.
+  Production UI/UX & Brand Identity specialist for design systems, mathematical SVG logo
+  construction, Brand Guidelines PDF generation, spatial rhythm, responsive layouts, WCAG
+  accessibility, and interaction polish. Combines mathematical scales (4px grid, OKLCH tokens)
+  with 100 real-world brand design references (references/design-md/) and 20 art directions.
+  Triggers: "/maxilun-craft", "/maxilun-ui", "/msal-craft", "/msal-ui", "desain UI", "buat logo",
+  "brand identity", "brand guideline pdf", "sistem desain", "tampilan antarmuka", "responsif",
+  "aksesibilitas", "dark mode", "interaksi tombol", or any visual frontend/brand task.
 metadata:
   version: "2.3.0"
   ecosystem: maxilun
@@ -26,6 +26,7 @@ metadata:
     - references/design-md/README.md
     - references/design-md/index.md
     - references/component-mobile-patterns.md
+    - references/brand-logo-guidelines.md
 ---
 
 # Maxilun Craft: UI/UX & Production Design Systems
@@ -34,15 +35,15 @@ Bertanggung jawab atas rekayasa visual tingkat produksi: sistem desain konsisten
 
 ## Skill Contract
 
-- **Owns**: visual direction, design tokens, layout, typography, component appearance, interaction states, and design accessibility.
+- **Owns**: visual direction, mathematical SVG logo design (`logo-mark.svg`, `logo-horizontal.svg`, `logo-mono.svg`, `favicon.svg`), Brand Guidelines PDF (`Brand-Guidelines.pdf`), design tokens, layout, typography, component appearance, interaction states, and design accessibility.
 - **Does not own**: React/Next.js runtime architecture (`maxilun-frontend`), general backend/code implementation (`maxilun-engineer`), technical SEO (`maxilun-seo-audit`), or final video rendering (`maxilun-cinecode`).
-- **Inputs**: product context (`PRODUCT.md` / `PRD.md`), surface brief, existing `DESIGN.md`, platform constraints, `references/component-mobile-patterns.md`, and at most two relevant files from `references/design-md/index.md`.
-- **Outputs**: a grounded design direction, token/component specifications, implementation-ready UI code, or a visual audit with evidence.
-- **Handoff**: send runtime work to `maxilun-frontend`, code changes to `maxilun-engineer`, complex animation systems to `maxilun-motion`, video rendering to `maxilun-cinecode`, and verification to `maxilun-verify`.
+- **Inputs**: product context (`PRODUCT.md` / `PRD.md`), surface brief, existing `DESIGN.md`, platform constraints, `references/component-mobile-patterns.md`, `references/brand-logo-guidelines.md`, and at most two relevant files from `references/design-md/index.md`.
+- **Outputs**: a grounded design direction, mathematical SVG logo suite, print-ready 8-page Brand Guidelines PDF, token/component specifications, implementation-ready UI code, or a visual audit with evidence.
+- **Handoff**: send runtime work to `maxilun-frontend`, code changes to `maxilun-engineer`, animated SVG/Lottie logo motion to `maxilun-motion`, MP4/WebM logo reveal video rendering (`<LogoReveal>`) to `maxilun-cinecode`, and verification to `maxilun-verify`.
 
 ### Design Reference Contract
 
-The bundled corpus in `references/design-md/` (84 production brand analyses) and `references/component-mobile-patterns.md` is part of this skill, not an external dependency. Read `references/design-md/README.md` and `references/design-md/index.md` before selecting a reference. Select by problem similarity, use no more than two references, and record `References`, `Applied`, `Rejected`, and `Reason` in the design output. Never reproduce a brand identity or use a reference as a substitute for product context.
+The bundled corpus in `references/design-md/` (100 production brand analyses) and `references/component-mobile-patterns.md` is part of this skill, not an external dependency. Read `references/design-md/README.md` and `references/design-md/index.md` before selecting a reference. Select by problem similarity, use no more than two references, and record `References`, `Applied`, `Rejected`, and `Reason` in the design output. Never reproduce a brand identity or use a reference as a substitute for product context.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)
@@ -63,15 +64,16 @@ Detail lengkap: `../maxilun/references/engines.md`.
 
 Sebelum menulis kode UI, periksa konteks proyek (`docs/PRD.md`, `docs/DESIGN.md`, `PRODUCT.md`). Tanyakan hanya hal yang belum diketahui dan mengubah keputusan desain secara material.
 
-### 0a. Anti-Slop Name & Label Check
+### 0a. Purity Name & Label Check
 Sebelum menamai halaman, menu navigasi, tombol, atau fitur:
 
-| DILARANG (AI Slop) | WAJIB DIGANTI DENGAN (Fungsi Spesifik) |
+| DILARANG (Klise Generik) | WAJIB DIGANTI DENGAN (Fungsi Spesifik) |
 |---|---|
 | `Dashboard`, `Admin Panel`, `Control Center` | `[Nama Fungsi] Monitor`, `Ringkasan [Aktivitas]`, `Antrean [Entitas]` |
 | `Get Started`, `Learn More`, `Explore`, `Submit` | Aksi konkret `<= 3 kata`: `Buat Akun`, `Lihat Harga`, `Kirim Tagihan` |
 | `Settings`, `Configuration`, `Preferences` | Konteks spesifik: `Notifikasi Email`, `Akses Tim`, `Metode Pembayaran` |
 | `Powerful`, `Smart`, `AI-Powered`, `Next-Gen`, `Mutakhir` | Hapus klaim kosong; jelaskan fungsi nyata dalam 3–6 kata |
+| `Home > ...`, `Dashboard / ...` (Breadcrumb) | **HAPUS BREADCRUMB.** Breadcrumb adalah ciri khas template AI. Gunakan link balik kontekstual tunggal (`← Kembali ke [Induk]`) bila perlu |
 
 ### 0b. Visual Direction Declaration (Design Read) & Reference Selection
 Sebelum implementasi, deklarasikan satu baris arah visual + catatan referensi dari `references/design-md/index.md` dan 20 Art Directions di `references/component-mobile-patterns.md`:
@@ -87,7 +89,7 @@ Sebelum implementasi, deklarasikan satu baris arah visual + catatan referensi da
 ```
 *(Jika belum ada arah dari user, beri label eksplisit **"DRAFT TANPA ARAH"** dengan dial jujur `ENERGY 1 / RHYTHM 1 / MOTION 1` — dilarang diam-diam jatuh ke gradien ungu-biru default AI).*
 
-### 0c. Copywriting Anti-Slop Filter (Inline)
+### 0c. Copywriting Purity Filter (Inline)
 Seluruh teks di dalam UI (heading, deskripsi, label input, empty state, toast, error message) wajib mematuhi aturan ini:
 1. **Tulis seperti manusia berbicara**, bukan brosur korporat. Satu kalimat = satu ide (`<= 20-25 kata`).
 2. **Kata kerja aktif & spesifik**: `"Upload invoice PDF (maks 5MB)"` bukan `"Dokumen dapat diunggah di sini"`.
@@ -166,11 +168,15 @@ Spesifikasi teknis lengkap untuk implementasi komponen dan interaksi mobile ters
 - **Pola Komponen (§4 di referensi)**: Form Validation UX (validasi saat `blur`, `aria-describedby`), Data Tables (sort, filter debounce 300ms, mobile card collapse), File Upload, Toast System (`aria-live`, pause-on-hover), Modal (`<dialog>` focus trap), Command Palette (`Cmd+K`), Multi-Step Wizard, dan Skeleton.
 - **Pola Mobile & PWA (§5 di referensi)**: Bottom Sheet (`visualViewport` + `env(safe-area-inset-bottom)`), Bottom Nav (3–5 item), Pull-to-Refresh, Swipe Actions + Undo Toast, dan `inputmode` semantik.
 - **24 Perintah Iteratif & 20 Art Directions (§2–§3 di referensi)**: `/maxilun-craft init|shape|build|polish|audit|critique|bolder|quieter|distill|harden|clarify|typeset|colorize|layout|animate|direction|images|review|app|frame`.
+- **Desain Logo SVG Matematis, Brand Identity & Brand Guidelines PDF (`references/brand-logo-guidelines.md`)**:
+  - Konstruksi 6 varian logo SVG berbasis grid matematis (`64x64`, lulus *1-Bit Monochrome Test* sebelum diberi warna OKLCH, bebas klise ikon bola lampu/roket/otak AI).
+  - Kompilasi **8-Page Brand Guidelines PDF (`Brand-Guidelines.pdf`)** vektor tajam menggunakan `@page` CSS Paged Media + headless Chromium (`page.pdf({ printBackground: true })`).
+  - Kolaborasi langsung dengan `maxilun-motion` (animasi `stroke-dashoffset` SVG/Lottie) dan `maxilun-cinecode` (`<LogoReveal>` untuk video intro/stinger MP4 & WebM Alpha).
 
 ## 6. Gerbang Purity Visual (15 Larangan Mutlak)
 
 Rujukan lengkap: `../maxilun/references/purity-catalog.md`. Hapus segera jika ditemukan:
-1. **Breadcrumb** pada halaman datar (`< 3` level hierarki, seperti login/register/404) (`CMP-001`).
+1. **Breadcrumb (`Home > ...` / `Dashboard / ...`)** — tanda paling mencolok bahwa web di-generate oleh AI (`CMP-001` / `CMP-011`). **Dilarang merender breadcrumb secara default** di semua halaman; gunakan tombol kembali kontekstual tunggal (`← Kembali ke [Nama Halaman Induk]`) hanya jika berada di halaman detail.
 2. **Gradien biru-ungu dekoratif** sebagai latar default (`CLR-001`).
 3. **Card di dalam card berlebihan** untuk teks sederhana yang cukup dipisah spasi/hairline.
 4. **Badge pujian palsu** (*"Powerful"*, *"AI-Powered"*, *"New"*) tanpa dasar faktual (`CMP-002`).

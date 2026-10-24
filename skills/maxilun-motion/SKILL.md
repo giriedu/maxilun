@@ -3,7 +3,7 @@ name: maxilun-motion
 description: >
   Motion design specialist untuk animasi interaktif dan aset motion web seperti Lottie/SVG,
   termasuk choreography berbasis fisika, kinetic typography, camera motion, dan audio reactivity.
-  Menurunkan Motion DNA langsung dari token maxilun-craft (84 referensi design-md) dan menghasilkan
+  Menurunkan Motion DNA langsung dari token maxilun-craft (100 referensi design-md) dan menghasilkan
   spesifikasi koreografi frame deterministik saat berkolaborasi dengan maxilun-cinecode.
   Triggers: "/maxilun-motion", "/msal-motion", "animasi web", "interactive animation", "Lottie",
   "SVG animation", "kinetic typography", "scroll animation", "audio-reactive animation", "choreography".
@@ -87,29 +87,28 @@ Acuan lengkap matriks pemetaan ada di `references/choreography-styles.md`. Langk
 3. **Pilih Hook Narasi / Opener**:
    Untuk animasi hero, onboarding, atau video explainer, pilih dari **22 Konsep Opener & Promo Hook** di `references/choreography-styles.md` (misal: *Logo Assembly*, *Type Scramble Decode*, *Grid Construct*, *Code-to-UI Live Compile*, *Architecture Node Activation*).
 
-## 3. Primitif Komponen Motion & Aturan Komposisi
+## 3. Katalog Komponen Motion, Efek Visual & Text Kinetics
 
-Implementasi kode lengkap tersedia di `references/motion-components.md`:
+Implementasi kode lengkap tersedia di `references/motion-components.md`, `references/choreography-styles.md`, serta template kanvas siap pakai di `assets/starter-opener.html` dan `assets/starter-explainer.html`:
 
-| Kategori | Komponen Primitif | Target Runtime |
+| Kategori | Primitif & Efek yang Tersedia | Target Runtime |
 |---|---|---|
-| **Entrance & Mask** | `Reveal` (directional/mask), `Cascade` (staggered children), `Trace` (`stroke-dashoffset` SVG) | CSS / WAAPI / SVG / CineCode |
-| **Physics & Transform** | `Spring` (analytical damped harmonic oscillator), `Drag` (inertia), `Orbit` (elliptical path) | WAAPI / GSAP / CineCode `<Spring>` |
-| **Shape & Text** | `Morph` (SVG `d` interpolation), `Scramble` (monospace decode), `Wave` (sine phase) | SVG / DOM (`aria-label` preserved) |
-| **Ambient & Audio** | `Pulse` (beat-synced scale/opacity), `Breathe` (subtle life), `Scatter` (canvas particles) | Canvas 2D / Web Audio API / CineCode |
+| **12 Motion Primitives** | `Reveal` (directional/mask), `Cascade` (staggered), `Spring` (analytical oscillator), `Trace` (SVG `stroke-dashoffset`), `Morph` (SVG `d`), `Scramble`, `Orbit`, `Pulse`, `Breathe`, `Wave`, `Drag`, `Scatter` | CSS / WAAPI / SVG / Canvas / CineCode |
+| **10 Efek Text Kinetics** | `Scramble` (decode monospace), `Elastic` (spring words), `MaskReveal` (line slide), `Typewriter`, `HighlightSweep`, `Wave`, `SplitReunite`, `GradientFlow`, `GlitchClean`, `CounterOdometer` (`tabular-nums`) | DOM (`aria-label` utuh) / CineCode |
+| **6 Efek Kamera & Kompositor** | `Portal Iris Wipe` (`clip-path: circle`), `Rack Focus Blur` (depth-of-field), `Parallax Depth Planes` (5-layer stage), `Light Sweep / Sheen`, `Film Grain Overlay` (SVG `feTurbulence`), `Chromatic Impact` | CSS / SVG Filter / CineCode `Effects.tsx` |
+| **8 Mode Audio-Reactive** | `Waveform Ribbon`, `Circular Spectrum`, `Particle Field`, `Typography Pulse`, `Color Shift` (OKLCH), `Geometry Morph`, `Grid Distortion`, `Spotlight Transient` | Web Audio API / Canvas 2D / CineCode |
 
 **Aturan Komposisi Ketat**:
-- Maksimal **3 primitif per elemen** dan maksimal **2 area gerak aktif bersamaan** dalam satu layar (mencegah *motion soup*).
+- Maksimal **3 primitif per elemen** dan maksimal **2 area gerak aktif bersamaan** dalam satu layar.
 - Untuk **Text Kinetics**, jaga teks asli tetap utuh bagi pembaca layar (`aria-label` pada elemen induk dan `aria-hidden="true"` pada pecahan karakter `<span>`).
 - Untuk **Kamera Virtual**, batasi maksimal 1 jenis gerakan kamera pada satu waktu (`dolly` atau `pan`; jangan mencampur `orbit + tilt + shake`).
-
 ## 4. Sinergi Lintas-Skill untuk Produksi Motion Video Maksimal
 
 Ketika pengguna meminta **Motion Video** berkualitas tinggi (promo produk, peluncuran fitur, data storytelling, atau demo UI), `maxilun-motion` bekerja dalam pipeline terpadu bersama spesialis Maxilun lainnya:
 
 ```mermaid
 flowchart LR
-    Craft["1. maxilun-craft\n(Design Tokens & 84 Brand Refs)"] --> Motion["2. maxilun-motion\n(Motion DNA & Frame Choreography)"]
+    Craft["1. maxilun-craft\n(Design Tokens & 100 Brand Refs)"] --> Motion["2. maxilun-motion\n(Motion DNA & Frame Choreography)"]
     Content["maxilun-content\n(Hook Copy & Script Beats)"] --> Motion
     Motion --> Cine["3. maxilun-cinecode\n(React Frame Composition & FFmpeg Render)"]
     Cine --> Verify["4. maxilun-verify\n(Frame Integrity & Budget Check)"]
@@ -153,13 +152,13 @@ Setiap animasi wajib menjawab **YA** pada minimal satu pertanyaan berikut; jika 
 | Companion | Peran dalam Pekerjaan Ini | Kontribusi Kualitas |
 |---|---|---|
 | `maxilun-cinecode` | Mengompilasi spesifikasi koreografi Motion menjadi file video MP4/WebM/GIF | Memastikan koreografi fisika dirender secara deterministik frame-demi-frame |
-| `maxilun-craft` | Menyediakan design tokens OKLCH dan 84 referensi `../maxilun-craft/references/design-md/index.md` | Menjamin warna, tipografi, dan kepadatan visual sekelas produk nyata |
+| `maxilun-craft` | Menyediakan design tokens OKLCH dan 100 referensi `../maxilun-craft/references/design-md/index.md` | Menjamin warna, tipografi, dan kepadatan visual sekelas produk nyata |
 | `maxilun-content` | Menyusun naskah hook, narasi scene, dan teks CTA singkat | Mencegah teks di dalam animasi/video terdengar seperti slogan AI generik |
 | `maxilun-frontend` | Integrasi animasi ke siklus hidup komponen React / Next.js App Router | Mencegah hydration mismatch dan memory leak pada event listener/animasi |
 
 ## Related Skills
 - **maxilun-cinecode**: Pembuatan dan rendering video final (MP4/WebM/GIF) berbasis kode (`../maxilun-cinecode/references/index.md`)
-- **maxilun-craft**: Sistem desain UI/UX, token OKLCH, dan 84 referensi brand (`../maxilun-craft/references/design-md/index.md`)
+- **maxilun-craft**: Sistem desain UI/UX, token OKLCH, dan 100 referensi brand (`../maxilun-craft/references/design-md/index.md`)
 - **maxilun-content**: Penulisan naskah narasi, hook, dan microcopy
 - **maxilun-frontend**: Integrasi komponen interaktif di React/Next.js
 - **maxilun-verify**: Pengujian performa frame, aksesibilitas, dan regresi visual

@@ -1,6 +1,6 @@
 # Design Reference Corpus
 
-This directory is a bundled reference library for `maxilun-craft`. It contains 84 design analyses covering product interfaces, editorial systems, commerce, mobility, finance, developer tools, and brand-led visual systems.
+This directory is a bundled reference library for `maxilun-craft`. It contains 100 design analyses covering product interfaces, editorial systems, commerce, mobility, finance, developer tools, AI platforms, and brand-led visual systems.
 
 ## How to use it
 

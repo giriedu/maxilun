@@ -54,7 +54,7 @@ genuinely new fact. Never three lines for a single point.
 - Related code stays together (no "organize by type" when "organize
   by feature" makes more sense)
 
-## CSS & UI Code Anti-Slop
+## CSS & UI Code Purity Rules
 
 ### Class Naming
 - Forbidden generic names: `container`, `wrapper`, `content`, `section`,

@@ -114,7 +114,37 @@ export function evaluateSpring(tSeconds: number, params: SpringParams = { stiffn
 | `Drag` | Mengikuti pointer dengan inersia & friksi | `transform: translate3d()` | Posisi mengikuti pointer 1:1 tanpa momentum |
 | `Scatter` | Penyebaran/pengumpulan partikel | Canvas 2D / WebGL buffer | Ilustrasi statis posisi akhir |
 
-**Aturan Komposisi Anti-Slop**:
+**Aturan Komposisi Purity**:
 1. Maksimal **3 primitif per elemen** dan maksimal **2 grup animasi simultan** dalam satu viewport agar fokus mata pengguna tidak pecah.
 2. Dilarang menganimasikan `top`, `left`, `width`, `height`, atau `box-shadow` secara terus-menerus pada thread utama; gunakan `transform` dan `opacity`.
 3. Untuk ekspor **Lottie JSON** dan **Animated SVG**, pastikan semua path sudah dikonversi ke kurva bezier standar tanpa filter CSS non-standar yang gagal dirender di iOS/Android.
+
+## 5. Engine Efek Visual, Text Kinetics & Filter Kompositor
+
+### 5.1 Katalog 10 Efek Text Kinetics (Tipografi Bergerak)
+| Efek Teks | Mekanisme Teknis | Parameter Kontrol | Kapan Digunakan |
+|---|---|---|---|
+| `Scramble` | Dekode karakter acak monospace menuju teks target | `speed`, `charset`, `resolveOrder` | Reveal judul teknis, angka KPI, kode CLI, atau hash |
+| `Elastic` | Posisi per kata/huruf memantul halus dengan `evaluateSpring()` | `stiffness`, `damping`, `staggerMs` | Headline hero produk yang energik dan taktil |
+| `MaskReveal` | Teks naik dari balik `overflow: hidden` container per baris | `yOffsetPx`, `durationMs`, `staggerMs` | Editorial reveal bersih (gaya Stripe / Linear / Apple) |
+| `Typewriter` | Kemunculan sekuensial karakter + kursor blok berkedip | `charIntervalMs`, `cursorChar` | Simulasi input terminal, prompt AI, atau live coding |
+| `HighlightSweep` | Latar belakang aksen menyapu kata kunci (`scaleX(0 -> 1)`) | `color`, `direction`, `durationMs` | Menekankan 1–2 kata kunci nilai bisnis di dalam kalimat |
+| `Wave` | Pergeseran fase sinus (`Math.sin(t + i * phase)`) antar-karakter | `amplitudePx`, `frequencyHz`, `phase` | Indikator pemrosesan aktif atau musik/audio state |
+| `SplitReunite` | Karakter memisah pada sumbu X/Y lalu menyatu kembali | `distancePx`, `axis`, `returnDelayMs` | Transisi pergantian bab/scene dramatis |
+| `GradientFlow` | Aliran warna `background-clip: text` dengan sudut terukur | `stops`, `angleDeg`, `durationMs` | Penekanan satu kata pada judul gelap kontras tinggi |
+| `GlitchClean` | Pergeseran `clip-path` singkat (`120ms`) lalu terkunci tajam | `slices`, `offsetPx`, `durationMs` | Tema keamanan siber, anomali sistem, atau retro-tech |
+| `CounterOdometer` | Interpolasi angka dengan `font-variant-numeric: tabular-nums` | `fromValue`, `toValue`, `decimals` | Animasi metrik finansial, latensi `ms`, dan pertumbuhan |
+
+### 5.2 Katalog Efek Kamera, Layer & Post-Processing (Browser & Video)
+| Efek Visual | Implementasi Native (CSS / SVG / Canvas) | Aturan Purity & Performa |
+|---|---|---|
+| **Iris / Portal Wipe** | `clip-path: circle(0% at 50% 50%)` → `circle(150% at 50% 50%)` | Gunakan untuk membuka scene baru dari titik klik/fokus utama |
+| **Rack Focus Blur** | `filter: blur(0px)` ↔ `blur(6px)` + `opacity` | Fokuskan hanya 1 layer aktif; batasi elemen blur simultan `<= 2` |
+| **Film Grain / Noise** | SVG `<feTurbulence type="fractalNoise" baseFrequency="0.8">` overlay (`opacity: 0.04`) | Memberi tekstur organik pada permukaan gelap agar bebas banding warna |
+| **Light Sweep / Sheen** | Pseudo-element miring `translateX(-120% -> 220%)` di dalam `overflow: hidden` | Hanya dipicu sekali saat kartu/badge penting masuk atau di-hover |
+| **Parallax Depth Planes** | 3 layer (`--layer-bg: 0.2x`, `--layer-mid: 0.6x`, `--layer-fg: 1.0x`) via `translate3d` | Wajib dimatikan otomatis saat `prefers-reduced-motion: reduce` aktif |
+| **Chromatic Impact** | Pemisahan singkat `text-shadow` / channel RGB (`<= 150ms`) pada ketukan puncak | Hanya untuk style *High-Velocity* / *Audio-Synced*; dilarang menyala terus-menerus |
+
+### 5.3 Template Starter Interaktif Bawaan (`assets/`)
+- `assets/starter-opener.html`: Kanvas panggung `1920x1080` responsif dengan 5 layer (`bg`, `mid`, `fg`, `text`, `overlay`), rig kamera virtual, dan injeksi variabel CSS Brand DNA.
+- `assets/starter-explainer.html`: Template multi-scene narasi penjelas lengkap dengan transisi kamera dan kontrol timeline.

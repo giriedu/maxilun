@@ -8,7 +8,7 @@ This directory is a bundled reference library for `maxilun-motion`. It covers na
 |---|---|---|
 | `references/motion-components.md` | Native CSS custom properties, spring physics approximations, Web Animations API (WAAPI) primitives, and GSAP/Canvas composition APIs | Always read before implementing interactive browser animations, micro-interactions, or SVG/Lottie motion |
 | `references/choreography-styles.md` | Brand DNA → Motion DNA mapping, 14 Motion Style Signatures, 22 Opener/Promo Hooks, 9 Explainer Styles, Camera & Multi-Scene Graph, Text Kinetics, and Audio Reactivity | Read when planning motion direction, storyboard choreography, kinetic typography, or handing off a motion spec to `maxilun-cinecode` |
-| `../maxilun-craft/references/design-md/index.md` | 84 Production Design Systems (Stripe, Linear, Vercel, Apple, Nike, etc.) | Read when deriving motion timing, spring stiffness, and color accents from a comparable product reference |
+| `../maxilun-craft/references/design-md/index.md` | 100 Production Design Systems (Stripe, Linear, Vercel, GitHub, Apple, Nike, etc.) | Read when deriving motion timing, spring stiffness, and color accents from a comparable product reference |
 
 ## Motion & Video Synergy Contract
 

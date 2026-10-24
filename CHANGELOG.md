@@ -10,10 +10,11 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 - **Multi-Specialist Motion Video Studio Pipeline** (`skills/maxilun-cinecode/references/video-production-pipeline.md` & `skills/maxilun-motion/references/choreography-styles.md`): unified 5-skill workflow (`maxilun-craft` + `maxilun-motion` + `maxilun-content` + `maxilun-cinecode` + `maxilun-verify`) for studio-grade programmatic videos, featuring Brand DNA-to-Motion DNA extraction, 14 motion style signatures, 22 opener/explainer hooks, 1080p canvas typography scales, beat-grid synchronization math, and deterministic React frame composition (`references/composition-api.md`).
-- **Docsmith Reference Corpus & Feature PRD/RFC Engine** (`skills/maxilun-docsmith/references/`): added `prd-rfc-specs.md`, `openapi-contracts.md` (OpenAPI 3.1 + RFC 9457 Problem Details + HMAC webhook verification), `runbooks-adr.md`, and `llms-txt-spec.md`. Connected Feature PRDs directly to `maxilun-craft`'s 84 design references and mandatory 4-state UI matrices.
+- **Docsmith Reference Corpus & Feature PRD/RFC Engine** (`skills/maxilun-docsmith/references/`): added `prd-rfc-specs.md`, `openapi-contracts.md` (OpenAPI 3.1 + RFC 9457 Problem Details + HMAC webhook verification), `runbooks-adr.md`, and `llms-txt-spec.md`. Connected Feature PRDs directly to `maxilun-craft`'s 100 design references and mandatory 4-state UI matrices.
 - **Scaffold Domain Archetypes & UI Reference Seeding** (`skills/maxilun-scaffold/references/`): added `prd-archetypes.md` (Fintech, B2B SaaS, DevTools/AI, E-Commerce, Media/EdTech) and `doc-templates.md`, seeding `docs/DESIGN.md` and `docs/PRD.md` directly from `maxilun-craft/references/design-md/`.
 - **Architect Deep-Dive Reference Playbooks** (`skills/maxilun-architect/references/`): added `api-distributed-patterns.md` and `migration-operations-playbook.md` covering Event Storming, Transactional Outbox, Saga, Strangler Fig, Expand-Contract migrations, PostgreSQL RLS multi-tenancy, DR RPO/RTO matrices, and CI Architecture Fitness Functions.
 - **Craft Component & Mobile Pattern Reference** (`skills/maxilun-craft/references/component-mobile-patterns.md`): extracted 20 Art Directions, 24 iterative commands, production component specifications, and mobile touch/safe-area patterns into a dedicated reference module.
+- **Expanded Design Reference Corpus to 100 Brands & Strict Breadcrumb Ban** (`skills/maxilun-craft/references/design-md/`): added 16 new production design system analyses (`github.md`, `cloudflare.md`, `datadog.md`, `planetscale.md`, `tailscale.md`, `turso.md`, `neon.md`, `perplexity.md`, `discord.md`, `arc.md`, `zed.md`, `dub.md`, `railway.md`, `polar.md`, `chronicle.md`, `midday.md`) bringing the total to **100 real-world brand systems**, and enforced a strict default ban on breadcrumb trails (`CMP-001` / `CMP-011`) as a top AI-generated website tell.
 
 ### Changed
 - **Zero Size-Budget Warnings Across All 18 Skills**: modularized `maxilun-scaffold`, `maxilun-motion`, `maxilun-cinecode`, `maxilun-architect`, and `maxilun-craft` so every `SKILL.md` in the repository is under the 400-line cognitive load ceiling while expanding total technical depth via on-demand `references/`.
@@ -27,7 +28,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 - Added standalone ownership contracts, routing boundaries, and explicit handoff rules for all 18 skills.
-- Added distribution-safe Anti-Slop v2 rules covering factual claims, evidence, routing, scope, and visual defaults.
+- Added distribution-safe Purity Gate v2 rules covering factual claims, evidence, routing, scope, and visual defaults.
 - Promoted `maxilun-craft`'s bundled `design-md` corpus into a documented reference workflow with selection and adaptation rules.
 - Added repository validation for public contract documents, bundled design references, and standalone skill contracts.
 - Bumped ecosystem package, installers, README badges, and all 18 skill metadata versions to 2.2.0.
@@ -41,7 +42,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 ### Added
 - **Security playbook** (`skills/maxilun-sentinel/references/security-playbook.md`): trust boundary catalog (10 types), security test patterns (4 categories, 20+ patterns), cryptographic implementation reference (4 platforms × 4 use cases), secrets rotation protocol with schedule, extended security headers with CSP templates, supply chain tooling matrix, and STRIDE threat model output template.
 - **Verify Tier 5 (Security Validation)**: integrated security testing tier in `maxilun-verify`, triggered for PRs touching auth/input/crypto/data storage. References sentinel security playbook.
-- **Design reference corpus** (`skills/maxilun-craft/references/design-md/`): 84 real-world brand design system analyses (Stripe, Vercel, Linear, Figma, Apple, etc.) as anti-slop design references.
+- **Design reference corpus** (`skills/maxilun-craft/references/design-md/`): 84 real-world brand design system analyses (Stripe, Vercel, Linear, Figma, Apple, etc.) as production design references.
 - **Alias backward compatibility table** in orchestrator: complete mapping of all 17 old `/msal-*` commands to new `/maxilun-*` primaries.
 - **Wave vs workflow hierarchy** clarified in orchestrator §5.
 - **Scaffold vs specialist decision matrix** added to orchestrator §3 disambiguation.
@@ -60,11 +61,11 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Shared rules moved from the repository root into `skills/maxilun/references/`. `npx skills add` copies skill folders only, so the old `rules/` directory was never installed and every skill ran without its engines. The root `rules/` directory is removed.
 - Removed the non-standard `metadata.rules` frontmatter field. No harness reads it; it advertised an auto-load that never happened.
 - Dropped the bare `/msal` trigger from the orchestrator. It collided with every `/msal-*` command.
-- Removed all references to external skills (`antislop`, `antislop-code`, `frontend-design`, `brainstorming`, `superpowers`). Nothing in the ecosystem depends on skills outside the 18.
+- Removed all references to external third-party skills outside the Maxilun 18-skill ecosystem.
 
 ### Added
 - Identical `CORE-RULES` block in all 18 skills, verified byte-for-byte by CI. Engines now travel with the skill instead of being pointed at by path.
-- `references/discovery.md`: a Wave 0 protocol for unclear briefs (outcome, constraints, non-goals, done criteria), adopted to replace the removed external brainstorming dependency.
+- `references/discovery.md`: a Wave 0 protocol for unclear briefs (outcome, constraints, non-goals, done criteria), built natively into the orchestrator.
 - `references/engines.md`: merged canonical detail for the four engines, three protocols, output contract, and integrity rules.
 - Evidence-based delivery gate. Each item requires a command output, `file:line`, or measured value; an item without evidence fails instead of being self-certified.
 - Real execution binding per platform, including how a parallel wave is actually dispatched and how skill availability is checked before routing.
@@ -132,7 +133,7 @@ Maxilun launches as a complete 18-specialist AI engineering co-pilot ecosystem, 
 #### 7 Always-On Quality Engines
 Enforced automatically across all 18 skills, non-overridable:
 - **Focus Engine** — Executive HUD, task decomposition, persistent subtask tracking (max 3 concurrent).
-- **Purity Engine** — Zero AI slop: automatically purges buzzwords, fabricated claims, and empty placeholders.
+- **Purity Engine** — Zero generic clichés: automatically purges buzzwords, fabricated claims, and empty placeholders.
 - **Minimalist Engineering** — Simplicity ladder, native APIs first, minimal valid changes.
 - **Clarity Engine** — Explicit technical signaling (`[CONFIRMED]`, `[INFERRED]`, `[UNCERTAIN]`, `[UNVERIFIED]`).
 - **Dependency Decision Framework** — Stdlib-first evaluation, bundle size gating, maintenance viability checks.

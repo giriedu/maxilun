@@ -105,3 +105,12 @@ Pilih **tepat satu** signature utama agar gerakan di seluruh halaman atau video 
   $$\text{Frames per Beat} = \text{round}\left(\frac{\text{FPS} \times 60}{\text{BPM}}\right)$$
   *(Contoh: pada `30 FPS` dan musik `120 BPM`, 1 ketukan = `15 frame`, 1 bar (4 ketukan) = `60 frame` / `2 detik`)*
 - Tempatkan semua transisi scene utama pada kelipatan bar (`frame 0, 60, 120, 180, ...`) agar potongan visual terasa menyatu dengan ritme audio.
+- **8 Mode Visualisasi Reaktif Audio**:
+  1. *Waveform Ribbon* — Garis kurva SVG/Canvas mengalir mengikuti amplitudo gelombang suara.
+  2. *Circular Spectrum* — Bar frekuensi radial mengelilingi logo atau indikator suara aktif.
+  3. *Particle Field* — Kecepatan dan kerapatan partikel Canvas dikendalikan oleh energi frekuensi rendah (*bass*).
+  4. *Typography Pulse* — Ketebalan (`font-weight` variable font) atau skala teks berdenyut tepat pada transien beat.
+  5. *Color Shift* — Pergeseran lightness/chroma OKLCH terukur mengikuti pita frekuensi (`bass`, `mid`, `treble`).
+  6. *Geometry Morph* — Titik simpul (*vertices*) poligon bergeser halus mengikuti gelombang audio.
+  7. *Grid Distortion* — Kisi latar melengkung proporsional terhadap puncak desibel (*RMS amplitude*).
+  8. *Spotlight Transient* — Intensitas pencahayaan panggung meningkat saat vokal/narator berbicara (*voice-over envelope*).

@@ -10,7 +10,7 @@ This directory is a bundled reference library for `maxilun-docsmith`. It contain
 | `references/openapi-contracts.md` | OpenAPI 3.1, RFC 9457 Problem Details (`application/problem+json`), Cursor Pagination, Idempotency, Webhooks, AsyncAPI 3.0, TypeSpec | Documenting REST APIs, event-driven topics, error catalogs, or webhook contracts |
 | `references/runbooks-adr.md` | Architecture Decision Records (ADR), Production Service Runbooks, Incident Playbooks, Zero-Downtime Migration Guides | Writing `docs/decisions/ADR-*.md`, `docs/runbooks/*.md`, or major version migration guides |
 | `references/llms-txt-spec.md` | `llms.txt`, `llms-full.txt`, High-Density READMEs, Context-Window-Optimized AI Documentation | Creating or auditing repository `README.md`, `/llms.txt`, or developer onboarding docs for humans and AI agents |
-| `../maxilun-craft/references/design-md/index.md` | 84 Production UI/UX Design Systems (Stripe, Linear, Vercel, Wise, Figma, etc.) | Specifying UI components, interaction states, visual hierarchy, or design tokens inside a Feature PRD or Technical Spec |
+| `../maxilun-craft/references/design-md/index.md` | 100 Production UI/UX Design Systems (Stripe, Linear, Vercel, GitHub, Wise, Figma, etc.) | Specifying UI components, interaction states, visual hierarchy, or design tokens inside a Feature PRD or Technical Spec |
 
 ## Selection & Application Contract
 

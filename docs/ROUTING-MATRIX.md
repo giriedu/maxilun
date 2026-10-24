@@ -6,7 +6,7 @@ Use this matrix to prevent trigger collisions. The first skill is the primary ow
 |---|---|---|---|
 | Add a login endpoint | `maxilun-sentinel` | `maxilun-engineer`, `maxilun-verify` | `maxilun-content`, `maxilun-craft` |
 | Add a Next.js page | `maxilun-frontend` | `maxilun-craft`, `maxilun-engineer`, `maxilun-verify` | `maxilun-cinecode` |
-| Define a visual system | `maxilun-craft` | `maxilun-content` when copy is needed | `maxilun-frontend` unless runtime work is requested |
+| Define a visual system, SVG logo, or Brand Book PDF | `maxilun-craft` | `maxilun-motion` (animated SVG logo), `maxilun-cinecode` (`<LogoReveal>` MP4/WebM video), `maxilun-content` (brand voice/tagline) | `maxilun-frontend` unless runtime work is requested |
 | Investigate a slow page | `maxilun-insight` | `maxilun-data` or `maxilun-frontend`, then `maxilun-engineer` | `maxilun-verify` as diagnosis owner |
 | Create an architecture diagram | `maxilun-diagrams` | `maxilun-architect` only when decisions are missing | `maxilun-engineer` |
 | Create an API README or OpenAPI spec | `maxilun-docsmith` | `maxilun-architect` when the contract is missing | `maxilun-content` |

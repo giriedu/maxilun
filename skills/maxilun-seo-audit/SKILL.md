@@ -82,7 +82,7 @@ flowchart LR
 - **Optimasi Gambar**: Wajib memiliki atribut `alt` deskriptif, format modern (WebP/AVIF), serta dimensi `width` dan `height` untuk mencegah pergeseran tata letak (CLS).
 
 ### 3. Data Terstruktur (Structured Data / Schema.org)
-- Terapkan JSON-LD yang valid untuk entitas relevan: `Article`, `Product`, `Organization`, `BreadcrumbList`.
+- Terapkan JSON-LD yang valid di `<head>` untuk entitas relevan: `Article`, `Product`, `Organization`, `SoftwareApplication` (catatan: jika menyertakan schema `BreadcrumbList` di JSON-LD untuk bot mesin pencari, **jangan** merender komponen breadcrumb visual yang memenuhi tampilan UI kecuali situs memiliki taksonomi katalog `>= 4` level).
 - *Catatan FAQPage*: Google telah membatasi tampilan rich result `FAQPage` sejak Agustus 2023 hanya untuk situs otoritas kesehatan dan pemerintahan yang mapan. Untuk situs komersial/SaaS, utamakan schema `Product`, `Article`, atau `SoftwareApplication`.
 - **Catatan Deteksi**: Validasi schema menggunakan Google Rich Results Test atau browser rendering, karena alat fetch statis sering kali memotong tag `<script type="application/ld+json">`.
 
@@ -141,9 +141,9 @@ Saat memeriksa halaman secara lokal atau dari hasil build/render (`dist/`, `out/
 
 `maxilun-seo-audit` mengaudit visibilitas search engine dan Core Web Vitals. Laporan audit dapat dibuat mandiri; companion dipilih jika perbaikan konten atau UI ikut diminta:
 
-| Companion | SEO Audit's Role | Anti-Slop Contribution |
+| Companion | SEO Audit's Role | Purity & Quality Contribution |
 |---|---|---|
-| `maxilun-content` | SEO copy optimization | Mencegah meta tags benar tapi konten tetap AI slop |
+| `maxilun-content` | SEO copy optimization | Mencegah meta tags benar tapi konten tetap generik |
 | `maxilun-craft` | UI/visual SEO (CLS, LCP) | Memastikan visual design tidak merusak Core Web Vitals |
 
 **Penggunaan companion**: Libatkan `maxilun-content` untuk menulis ulang copy atau metadata, dan `maxilun-craft` bila perbaikan visual/layout dibutuhkan. Pemeriksaan SEO read-only tidak bergantung pada kedua skill tersebut.

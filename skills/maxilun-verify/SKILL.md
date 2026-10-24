@@ -173,7 +173,7 @@ Pilih strategi pengujian berdasarkan risiko, jenis produk, tooling, dan kebutuha
 
 `maxilun-verify` memeriksa keadaan repo dan deliverable yang diminta, termasuk tanpa output dari skill lain:
 
-| Companion | Verify's Role | Anti-Slop Contribution |
+| Companion | Verify's Role | Purity & Quality Contribution |
 |---|---|---|
 | `maxilun-engineer` | Run tests setelah engineer menulis kode | Buktikan kode benar, bukan asumsi |
 | `maxilun-craft` | Run delivery gate setelah UI dibangun | Validasi visual + copy + 4 UI states + functional completeness |
