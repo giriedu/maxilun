@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maxilun Motion — Explainer Template</title>
+<style>
+/* ============================================================
+   BRAND DNA INJECTION POINTS
+   Modify these custom properties to rebrand the entire template.
+   All animation timing, colors, and typography derive from here.
+   ============================================================ */
+:root {
+  /* Craft-grounded tokens — replace with tokens from maxilun-craft design-md */
+  --brand-primary: #10b981;
+  --brand-secondary: #0284c7;
+  --brand-bg: #08090e;
+  --brand-font-display: 'Inter', system-ui, -apple-system, sans-serif;
+  --brand-font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --motion-duration-base: 0.6s;
+  --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --stage-width: 1920;
+  --stage-height: 1080;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: var(--brand-font-body);
+}
+
+/* ============================================================
+   STAGE / CANVAS SYSTEM
+   Fixed 1920×1080 design surface that scales responsively via
+   CSS transform to fit any viewport while preserving aspect ratio.
+   ============================================================ */
+#stage-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+#stage {
+  position: relative;
+  width: calc(var(--stage-width) * 1px);
+  height: calc(var(--stage-height) * 1px);
+  background: var(--brand-bg);
+  overflow: hidden;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+/* ============================================================
+   LAYER SYSTEM
+   Z-index hierarchy: bg → mid → fg → text → overlay
+   Each layer is a full-stage positioning context.
+   ============================================================ */
+.layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.layer--bg      { z-index: 1; }
+.layer--mid     { z-index: 2; }
+.layer--fg      { z-index: 3; }
+.layer--text    { z-index: 4; }
+.layer--overlay { z-index: 5; }
+
+/* ============================================================
+   CAMERA RIG
+   The camera wrapper receives GSAP-driven transforms for
+   breathing drift, push-through, and pan effects.
+   ============================================================ */
+#camera-rig {
+  position: absolute;
+  inset: -10%;
+  width: 120%;
+  height: 120%;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+/* ============================================================
+   SCENE GRAPH SYSTEM
+   Each scene is an independent content container with its own
+   enter/hold/exit lifecycle. Only one scene is active at a time.
+   Scenes are toggled via opacity and visibility by the engine.
+   ============================================================ */
+.scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  will-change: opacity, transform;
+}
+
+.scene.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Scene content positioning helpers */
+.scene-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 200px;
+}
+
+.scene-content.align-left { align-items: flex-start; text-align: left; }
+.scene-content.align-right { align-items: flex-end; text-align: right; }
+
+/* ============================================================
+   PARTICLE CANVAS
+   GPU-composited canvas overlay for particle effects.
+   ============================================================ */
+#particle-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+}
+
+/* ============================================================
+   TEXT KINETICS
+   Base styles for animated text elements. Characters are wrapped
+   in spans by the kinetics engine for per-character animation.
+   ============================================================ */
+.kinetic-text {
+  font-family: var(--brand-font-display);
+  color: #fff;
+  line-height: 1.2;
+}
+
+.kinetic-text .char {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.scene-title {
+  font-size: 72px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 32px;
+}
+
+.scene-body {
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.5;
+  max-width: 1200px;
+  opacity: 0.85;
+}
+
+.scene-label {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brand-secondary);
+  margin-bottom: 16px;
+}
+
+/* ============================================================
+   NARRATION SYNC MARKERS
+   Elements with data-timestamp attributes are highlighted or
+   triggered when playback reaches their timestamp. Used for
+   voice-over synchronization.
+   ============================================================ */
+[data-timestamp] {
+  transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+[data-timestamp].narration-active {
+  color: var(--brand-primary);
+}
+
+/* ============================================================
+   PROGRESS BAR
+   Thin bar at the bottom of the stage showing overall progress.
+   ============================================================ */
+#progress-bar {
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 4px;
+  background: var(--brand-primary);
+  width: 0%;
+  z-index: 10;
+  will-change: width;
+}
+
+/* ============================================================
+   SCENE INDICATOR DOTS
+   Visual navigation dots showing total scenes and current position.
+   ============================================================ */
+#scene-dots {
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 10;
+}
+
+.scene-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.scene-dot.active {
+  background: var(--brand-primary);
+  transform: scale(1.4);
+}
+
+/* ============================================================
+   TRANSITION OVERLAYS
+   Full-stage surfaces used by the transition library.
+   ============================================================ */
+.transition-wipe {
+  position: absolute;
+  inset: 0;
+  background: var(--brand-primary);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.transition-dissolve {
+  position: absolute;
+  inset: 0;
+  background: var(--brand-bg);
+  opacity: 0;
+}
+
+/* ============================================================
+   DEBUG SCRUB BAR
+   Visible only when ?debug=1 is in the URL. Provides timeline
+   scrubbing, play/pause, speed controls, and scene info.
+   ============================================================ */
+#debug-panel {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,0.9);
+  padding: 12px 20px;
+  font-family: monospace;
+  font-size: 13px;
+  color: #ccc;
+  gap: 12px;
+  align-items: center;
+}
+
+#debug-panel.visible { display: flex; }
+
+#debug-scrub {
+  flex: 1;
+  cursor: pointer;
+  accent-color: var(--brand-primary);
+}
+
+#debug-panel button {
+  background: #333;
+  border: 1px solid #555;
+  color: #fff;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  border-radius: 3px;
+}
+
+#debug-panel button:hover { background: #444; }
+#debug-info { min-width: 240px; text-align: right; }
+
+/* ============================================================
+   ACCESSIBILITY: REDUCED MOTION
+   Disables all animation and shows a static frame when the user
+   has requested reduced motion at the OS level.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  #particle-canvas { display: none; }
+
+  .kinetic-text .char {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  #camera-rig {
+    transform: none !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .scene { opacity: 1 !important; visibility: visible !important; }
+  .scene:not(:first-child) { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     STAGE STRUCTURE
+     The stage is the single rendering surface. Scenes live inside
+     the camera rig; UI chrome (progress, dots) lives in overlay.
+     ============================================================ -->
+<div id="stage-container">
+  <div id="stage">
+    <div id="camera-rig">
+
+      <!-- BACKGROUND LAYER -->
+      <div class="layer layer--bg" data-layer="bg">
+        <div class="transition-dissolve"></div>
+      </div>
+
+      <!-- MIDGROUND LAYER -->
+      <div class="layer layer--mid" data-layer="mid">
+        <canvas id="particle-canvas"></canvas>
+      </div>
+
+      <!-- FOREGROUND LAYER -->
+      <div class="layer layer--fg" data-layer="fg">
+        <div class="transition-wipe"></div>
+      </div>
+
+      <!-- ============================================================
+           SCENE GRAPH
+           Define scenes here. Each scene has:
+             - data-scene-id: unique identifier
+             - data-enter: enter animation type (fade, slide-up, zoom)
+             - data-hold: hold duration in seconds
+             - data-exit: exit animation type (fade, slide-left, dissolve)
+             - data-timestamp: narration sync points on child elements
+           ============================================================ -->
+      <div class="layer layer--text" data-layer="text">
+
+        <!-- SCENE 1: Introduction -->
+        <div class="scene active"
+             data-scene-id="intro"
+             data-enter="fade"
+             data-hold="3"
+             data-exit="slide-left">
+          <div class="scene-content">
+            <p class="scene-label kinetic-text" data-kinetic="stagger" data-timestamp="0.5">Introduction</p>
+            <h2 class="scene-title kinetic-text" data-kinetic="wave" data-timestamp="1.0">Start With Purpose</h2>
+            <p class="scene-body kinetic-text" data-kinetic="stagger" data-timestamp="2.0">
+              Every great explainer begins with a clear hook that tells the viewer why they should care.
+            </p>
+          </div>
+        </div>
+
+        <!-- SCENE 2: Problem -->
+        <div class="scene"
+             data-scene-id="problem"
+             data-enter="slide-up"
+             data-hold="4"
+             data-exit="dissolve">
+          <div class="scene-content align-left">
+            <p class="scene-label kinetic-text" data-kinetic="stagger" data-timestamp="0.5">The Problem</p>
+            <h2 class="scene-title kinetic-text" data-kinetic="scramble" data-timestamp="1.0">Complexity Kills Clarity</h2>
+            <p class="scene-body kinetic-text" data-kinetic="stagger" data-timestamp="2.0">
+              When information is dense and attention is scarce, traditional formats fail to communicate effectively.
+            </p>
+          </div>
+        </div>
+
+        <!-- SCENE 3: Solution -->
+        <div class="scene"
+             data-scene-id="solution"
+             data-enter="zoom"
+             data-hold="4"
+             data-exit="fade">
+          <div class="scene-content align-right">
+            <p class="scene-label kinetic-text" data-kinetic="stagger" data-timestamp="0.5">The Solution</p>
+            <h2 class="scene-title kinetic-text" data-kinetic="wave" data-timestamp="1.0">Motion Creates Meaning</h2>
+            <p class="scene-body kinetic-text" data-kinetic="stagger" data-timestamp="2.0">
+              Choreographed animation guides attention, reinforces hierarchy, and makes complex ideas feel simple.
+            </p>
+          </div>
+        </div>
+
+        <!-- SCENE 4: CTA -->
+        <div class="scene"
+             data-scene-id="cta"
+             data-enter="fade"
+             data-hold="3"
+             data-exit="dissolve">
+          <div class="scene-content">
+            <h2 class="scene-title kinetic-text" data-kinetic="wave" data-timestamp="0.5">Ready to Begin?</h2>
+            <p class="scene-body kinetic-text" data-kinetic="stagger" data-timestamp="1.5">
+              Customize this template. Add your content. Ship it.
+            </p>
+          </div>
+        </div>
+
+      </div><!-- /text layer -->
+    </div><!-- /camera-rig -->
+
+    <!-- OVERLAY LAYER: UI chrome outside camera transforms -->
+    <div class="layer layer--overlay" data-layer="overlay">
+      <div id="progress-bar"></div>
+      <div id="scene-dots"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DEBUG PANEL -->
+<div id="debug-panel">
+  <button id="debug-playpause">Pause</button>
+  <input type="range" id="debug-scrub" min="0" max="1" step="0.001" value="0">
+  <button id="debug-speed" data-speed="1">1×</button>
+  <span id="debug-info">Scene: — | 0.00s / 0.00s</span>
+</div>
+
+<!-- ============================================================
+     GSAP 3 FROM CDN
+     For offline use: download gsap.min.js locally and change src.
+     ============================================================ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<script>
+/* ============================================================
+   AUDIO REACTIVE STUB
+   Replace with real audio analysis to drive animations from
+   beat detection, frequency bands, or amplitude.
+   ============================================================ */
+window.__MOTION_AUDIO__ = { beat: false, frequency: 0, amplitude: 0 };
+
+/* ============================================================
+   EXPORT HOOK
+   Called once per frame during playback when an external capture
+   system is connected. Passes current progress (0–1) and scene ID.
+   ============================================================ */
+window.__MOTION_FRAME__ = null;
+
+/* ============================================================
+   VOICE-OVER PAUSE DETECTION HOOK
+   Set window.__MOTION_VOICE__.paused = true to pause playback
+   when narration buffering or external events require it.
+   ============================================================ */
+window.__MOTION_VOICE__ = { paused: false, currentTimestamp: 0 };
+
+/* ============================================================
+   CONFIGURATION
+   Central place to adjust timing, content, and behavior.
+   ============================================================ */
+const CONFIG = {
+  defaultHoldDuration: 3,
+  transitionDuration: 0.7,
+  loop: true,
+  autoplay: true,
+  particleCount: 100,
+  particleMaxSize: 2.5,
+  cameraBreathScale: 0.01,
+  cameraBreathDuration: 5,
+  debugParam: 'debug',
+};
+
+/* ============================================================
+   STAGE SCALING
+   Maintains 16:9 aspect ratio by scaling the fixed 1920×1080
+   stage to fit the current viewport via CSS transform.
+   ============================================================ */
+function scaleStage() {
+  const stage = document.getElementById('stage');
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const scale = Math.min(vw / 1920, vh / 1080);
+  stage.style.transform = `scale(${scale})`;
+}
+
+window.addEventListener('resize', scaleStage);
+scaleStage();
+
+/* ============================================================
+   TEXT KINETICS ENGINE
+   Wraps each character of .kinetic-text elements in spans and
+   exposes reveal methods: stagger, wave, scramble.
+   ============================================================ */
+const TextKinetics = {
+  init() {
+    document.querySelectorAll('.kinetic-text').forEach(el => {
+      if (el.dataset.kineticInit) return;
+      el.dataset.kineticInit = 'true';
+      const text = el.textContent.trim();
+      el.textContent = '';
+      [...text].forEach(ch => {
+        const span = document.createElement('span');
+        span.className = 'char';
+        span.textContent = ch === ' ' ? '\u00A0' : ch;
+        el.appendChild(span);
+      });
+    });
+  },
+
+  getChars(el) {
+    return gsap.utils.toArray(el.querySelectorAll('.char'));
+  },
+
+  stagger(el, opts = {}) {
+    const chars = this.getChars(el);
+    return gsap.from(chars, {
+      opacity: 0, y: 30,
+      duration: opts.duration || 0.4,
+      stagger: opts.stagger || 0.02,
+      ease: opts.ease || 'power3.out',
+    });
+  },
+
+  wave(el, opts = {}) {
+    const chars = this.getChars(el);
+    return gsap.from(chars, {
+      opacity: 0, y: 50, rotationX: -30,
+      duration: opts.duration || 0.6,
+      stagger: opts.stagger || 0.035,
+      ease: opts.ease || 'back.out(1.4)',
+      transformOrigin: 'center bottom',
+    });
+  },
+
+  scramble(el, opts = {}) {
+    const chars = this.getChars(el);
+    const glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&';
+    const tl = gsap.timeline();
+    const steps = opts.steps || 6;
+
+    chars.forEach((char, i) => {
+      const original = char.textContent;
+      for (let s = 0; s < steps; s++) {
+        tl.set(char, {
+          textContent: glyphs[Math.floor(Math.random() * glyphs.length)],
+        }, i * 0.015 + s * 0.035);
+      }
+      tl.set(char, { textContent: original }, i * 0.015 + steps * 0.035);
+    });
+
+    tl.from(chars, { opacity: 0, duration: 0.1, stagger: 0.015 }, 0);
+    return tl;
+  },
+
+  reveal(el, type) {
+    const method = this[type] || this.stagger;
+    return method.call(this, el);
+  },
+};
+
+/* ============================================================
+   PARTICLE SYSTEM
+   Canvas-based, capped at 200 particles for GPU friendliness.
+   ============================================================ */
+class ParticleSystem {
+  constructor(canvas, count) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.count = Math.min(count, 200);
+    this.particles = [];
+    this.resize();
+    this.seed();
+  }
+
+  resize() {
+    this.canvas.width = 1920;
+    this.canvas.height = 1080;
+  }
+
+  seed() {
+    const style = getComputedStyle(document.documentElement);
+    const primary = style.getPropertyValue('--brand-primary').trim();
+    const secondary = style.getPropertyValue('--brand-secondary').trim();
+    this.colors = [primary, secondary, '#ffffff'];
+
+    for (let i = 0; i < this.count; i++) {
+      this.particles.push({
+        x: Math.random() * 1920,
+        y: Math.random() * 1080,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: -(Math.random() * 0.6 + 0.1),
+        size: Math.random() * CONFIG.particleMaxSize + 0.5,
+        color: this.colors[Math.floor(Math.random() * this.colors.length)],
+        alpha: Math.random() * 0.5 + 0.1,
+        phase: Math.random() * Math.PI * 2,
+      });
+    }
+  }
+
+  update(progress) {
+    this.ctx.clearRect(0, 0, 1920, 1080);
+    for (const p of this.particles) {
+      p.x += p.vx + Math.sin(progress * 3 + p.phase) * 0.2;
+      p.y += p.vy;
+      if (p.y < -10) { p.y = 1090; p.x = Math.random() * 1920; }
+      if (p.x < -10) p.x = 1930;
+      if (p.x > 1930) p.x = -10;
+
+      this.ctx.globalAlpha = p.alpha;
+      this.ctx.fillStyle = p.color;
+      this.ctx.beginPath();
+      this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+    this.ctx.globalAlpha = 1;
+  }
+}
+
+/* ============================================================
+   CAMERA RIG
+   GSAP-driven camera movements on #camera-rig.
+   ============================================================ */
+const CameraRig = {
+  breathTimeline: null,
+
+  startBreathing() {
+    this.breathTimeline = gsap.to('#camera-rig', {
+      scale: 1 + CONFIG.cameraBreathScale,
+      x: () => (Math.random() - 0.5) * 8,
+      y: () => (Math.random() - 0.5) * 6,
+      duration: CONFIG.cameraBreathDuration,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: -1,
+    });
+  },
+
+  pushThrough(tl, startTime, duration, scaleTo = 1.05) {
+    tl.to('#camera-rig', {
+      scale: scaleTo, duration, ease: 'power2.inOut',
+    }, startTime);
+  },
+
+  pan(tl, startTime, duration, x = 0, y = 0) {
+    tl.to('#camera-rig', {
+      x, y, duration, ease: 'power2.inOut',
+    }, startTime);
+  },
+};
+
+/* ============================================================
+   TRANSITION LIBRARY
+   Reusable transition primitives for scene changes.
+   ============================================================ */
+const Transitions = {
+  fade(duration = 0.6) {
+    const tl = gsap.timeline();
+    tl.to('.transition-dissolve', { opacity: 1, duration: duration / 2, ease: 'power2.in' });
+    tl.to('.transition-dissolve', { opacity: 0, duration: duration / 2, ease: 'power2.out' });
+    return tl;
+  },
+
+  slideLeft(duration = 0.7) {
+    const tl = gsap.timeline();
+    tl.set('.transition-wipe', { transformOrigin: 'left center' });
+    tl.to('.transition-wipe', { scaleX: 1, duration: duration / 2, ease: 'power2.in' });
+    tl.to('.transition-wipe', { scaleX: 0, duration: duration / 2, ease: 'power2.out', transformOrigin: 'right center' });
+    return tl;
+  },
+
+  dissolve(duration = 0.6) {
+    return this.fade(duration);
+  },
+
+  zoom(duration = 0.8) {
+    const tl = gsap.timeline();
+    tl.fromTo('.transition-dissolve',
+      { opacity: 0, scale: 0.85 },
+      { opacity: 1, scale: 1, duration: duration / 2, ease: 'power2.in' }
+    );
+    tl.to('.transition-dissolve', {
+      opacity: 0, scale: 1.15, duration: duration / 2, ease: 'power2.out',
+    });
+    return tl;
+  },
+
+  get(type) {
+    const map = { fade: this.fade, 'slide-left': this.slideLeft, 'slide-up': this.slideLeft, dissolve: this.dissolve, zoom: this.zoom };
+    return (map[type] || this.fade).bind(this);
+  },
+};
+
+/* ============================================================
+   SCENE GRAPH ENGINE
+   Manages scene lifecycle: parses data attributes, builds the
+   master timeline from scene definitions, handles transitions.
+   ============================================================ */
+const SceneGraph = {
+  scenes: [],
+  masterTimeline: null,
+  currentSceneIndex: -1,
+
+  parse() {
+    const els = document.querySelectorAll('.scene[data-scene-id]');
+    this.scenes = [...els].map((el, index) => ({
+      el,
+      id: el.dataset.sceneId,
+      enter: el.dataset.enter || 'fade',
+      hold: parseFloat(el.dataset.hold) || CONFIG.defaultHoldDuration,
+      exit: el.dataset.exit || 'fade',
+      index,
+      narrations: [...el.querySelectorAll('[data-timestamp]')].map(n => ({
+        el: n,
+        time: parseFloat(n.dataset.timestamp),
+      })).sort((a, b) => a.time - b.time),
+      kineticEls: [...el.querySelectorAll('.kinetic-text')],
+    }));
+  },
+
+  buildDots() {
+    const container = document.getElementById('scene-dots');
+    container.innerHTML = '';
+    this.scenes.forEach((_, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'scene-dot';
+      dot.dataset.index = i;
+      container.appendChild(dot);
+    });
+  },
+
+  updateDots(activeIndex) {
+    document.querySelectorAll('.scene-dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === activeIndex);
+    });
+  },
+
+  buildTimeline() {
+    const tl = gsap.timeline({
+      paused: true,
+      onComplete: () => {
+        if (CONFIG.loop) {
+          this.resetScenes();
+          tl.restart();
+        }
+      },
+      onUpdate: () => {
+        const progress = tl.progress();
+        document.getElementById('progress-bar').style.width = `${progress * 100}%`;
+
+        if (window.__MOTION_FRAME__) {
+          window.__MOTION_FRAME__(progress, this.scenes[this.currentSceneIndex]?.id);
+        }
+
+        // Voice-over pause detection
+        if (window.__MOTION_VOICE__.paused) {
+          tl.pause();
+        }
+      },
+    });
+
+    let currentTime = 0;
+    const transDur = CONFIG.transitionDuration;
+
+    this.scenes.forEach((scene, i) => {
+      const sceneStart = currentTime;
+      const sceneEnd = currentTime + transDur + scene.hold + transDur;
+
+      // Enter transition
+      const enterFn = Transitions.get(scene.enter);
+      tl.add(enterFn(transDur), currentTime);
+
+      // Activate scene at transition midpoint
+      const activateTime = currentTime + transDur * 0.5;
+      tl.call(() => {
+        this.deactivateAll();
+        scene.el.classList.add('active');
+        this.currentSceneIndex = i;
+        this.updateDots(i);
+        TextKinetics.init();
+
+        // Trigger kinetic reveals for this scene
+        scene.kineticEls.forEach(kEl => {
+          const type = kEl.dataset.kinetic || 'stagger';
+          tl.add(TextKinetics.reveal(kEl, type), activateTime + 0.1);
+        });
+      }, null, activateTime);
+
+      // Narration sync points (relative to scene start)
+      scene.narrations.forEach(n => {
+        const absTime = activateTime + n.time;
+        tl.call(() => {
+          document.querySelectorAll('[data-timestamp]').forEach(el => el.classList.remove('narration-active'));
+          n.el.classList.add('narration-active');
+          window.__MOTION_VOICE__.currentTimestamp = n.time;
+        }, null, absTime);
+      });
+
+      // Camera subtle movement per scene
+      CameraRig.pan(tl, activateTime, scene.hold, (Math.random() - 0.5) * 15, (Math.random() - 0.5) * 10);
+
+      // Exit transition
+      const exitStart = currentTime + transDur + scene.hold;
+      const exitFn = Transitions.get(scene.exit);
+      tl.add(exitFn(transDur), exitStart);
+
+      // Deactivate scene after exit completes
+      tl.call(() => {
+        scene.el.classList.remove('active');
+      }, null, exitStart + transDur);
+
+      currentTime = exitStart + transDur * 0.5;
+    });
+
+    this.masterTimeline = tl;
+    return tl;
+  },
+
+  deactivateAll() {
+    this.scenes.forEach(s => s.el.classList.remove('active'));
+    document.querySelectorAll('[data-timestamp]').forEach(el => el.classList.remove('narration-active'));
+  },
+
+  resetScenes() {
+    this.deactivateAll();
+    this.currentSceneIndex = -1;
+    // Reset kinetic text for replay
+    document.querySelectorAll('.kinetic-text .char').forEach(ch => {
+      gsap.set(ch, { clearProps: 'all' });
+    });
+    gsap.set('.transition-dissolve', { opacity: 0 });
+    gsap.set('.transition-wipe', { scaleX: 0 });
+  },
+};
+
+/* ============================================================
+   DEBUG CONTROLS
+   Activated by appending ?debug=1 to the URL.
+   ============================================================ */
+function initDebug(timeline) {
+  const params = new URLSearchParams(window.location.search);
+  if (!params.has(CONFIG.debugParam)) return;
+
+  const panel = document.getElementById('debug-panel');
+  const scrub = document.getElementById('debug-scrub');
+  const playBtn = document.getElementById('debug-playpause');
+  const speedBtn = document.getElementById('debug-speed');
+  const info = document.getElementById('debug-info');
+
+  panel.classList.add('visible');
+  let isScrubbing = false;
+
+  scrub.addEventListener('input', () => {
+    isScrubbing = true;
+    timeline.pause();
+    timeline.progress(parseFloat(scrub.value));
+  });
+
+  scrub.addEventListener('change', () => {
+    isScrubbing = false;
+    if (!timeline.paused()) timeline.play();
+  });
+
+  playBtn.addEventListener('click', () => {
+    if (timeline.paused()) {
+      timeline.play();
+      playBtn.textContent = 'Pause';
+    } else {
+      timeline.pause();
+      playBtn.textContent = 'Play';
+    }
+  });
+
+  const speeds = [0.25, 0.5, 1, 2, 4];
+  let speedIdx = 2;
+  speedBtn.addEventListener('click', () => {
+    speedIdx = (speedIdx + 1) % speeds.length;
+    timeline.timeScale(speeds[speedIdx]);
+    speedBtn.textContent = `${speeds[speedIdx]}×`;
+    speedBtn.dataset.speed = speeds[speedIdx];
+  });
+
+  timeline.eventCallback('onUpdate', () => {
+    if (!isScrubbing) scrub.value = timeline.progress();
+    const sceneId = SceneGraph.scenes[SceneGraph.currentSceneIndex]?.id || '—';
+    info.textContent = `Scene: ${sceneId} | ${timeline.time().toFixed(2)}s / ${timeline.duration().toFixed(2)}s`;
+  });
+}
+
+/* ============================================================
+   INITIALIZATION
+   Boots all subsystems in dependency order.
+   ============================================================ */
+function init() {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  TextKinetics.init();
+
+  const particles = new ParticleSystem(
+    document.getElementById('particle-canvas'),
+    CONFIG.particleCount
+  );
+
+  SceneGraph.parse();
+  SceneGraph.buildDots();
+
+  const timeline = SceneGraph.buildTimeline();
+
+  if (!prefersReducedMotion) {
+    gsap.ticker.add(() => {
+      particles.update(timeline.progress());
+    });
+
+    CameraRig.startBreathing();
+
+    if (CONFIG.autoplay) timeline.play();
+  } else {
+    // Static fallback: show first scene only
+    SceneGraph.updateDots(0);
+  }
+
+  initDebug(timeline);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+</body>
+</html>

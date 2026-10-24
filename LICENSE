@@ -1,0 +1,25 @@
+# Maxilun Free-to-Use License v1.0
+
+Copyright (c) 2026 Maxilun Architecture (giriedu). All rights reserved.
+
+---
+
+### 1. Hak Penggunaan Bebas (Free to Use)
+Izin diberikan secara cuma-cuma (gratis) kepada siapa pun yang memperoleh salinan perangkat lunak, skill, dokumentasi, dan materi terkait ("Software") ini, untuk **MENGGUNAKAN** dan **MENJALANKAN** Software untuk keperluan apa pun yang sah, termasuk:
+- Penggunaan personal, riset, dan edukasi.
+- Penggunaan dalam proyek komersial, operasional bisnis internal, maupun pengembangan produk.
+- Pemasangan dan pemanggilan pada lingkungan kerja agen AI (Claude Code, Cursor, Codex, Antigravity, Zed, Termul, dll.).
+
+---
+
+### 2. Larangan Modifikasi & Pembatasan (Strictly Prohibited)
+**DILARANG KERAS MELAKUKAN HAL-HAL BERIKUT**:
+1. **DILARANG MEMODIFIKASI (NO MODIFICATION)**: Anda **TIDAK BOLEH** memodifikasi, mengotak-atik, mengubah, mengadaptasi, menerjemahkan, memotong, atau membuat karya turunan (*derivative works*) dari file skill, engine, prompt, aturan (*rules*), maupun kode di dalam repositori ini. Software harus digunakan sebagaimana adanya (*as-is*).
+2. **DILARANG MENJUAL ULANG (NO RESALE)**: Anda **TIDAK BOLEH** menjual, memperdagangkan, menyewakan, atau menarik biaya langsung atas Software ini maupun skill di dalamnya sebagai produk mandiri atau layanan berbayar tersendiri.
+3. **DILARANG MENDISTRIBUSIKAN VERSI MODIFIKASI**: Anda **TIDAK BOLEH** mendistribusikan ulang versi yang telah diubah atau dipotong. Distribusi ulang hanya diperbolehkan dalam bentuk aslinya secara utuh dengan tetap menyertakan hak cipta dan lisensi ini.
+4. **HAK CIPTA & ATRIBUSI**: Anda **TIDAK BOLEH** menghapus, menyamarkan, atau mengubah informasi hak cipta, nama pembuat, lisensi, atau atribusi Maxilun di dalam file Software.
+
+---
+
+### 3. Penafian & Batasan Tanggung Jawab (Disclaimer of Warranty)
+SOFTWARE INI DISEDIAKAN "SEBAGAIMANA ADANYA" (*AS IS*), TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN, ATAU KEWAJIBAN LAINNYA YANG TIMBUL DARI PENGGUNAAN SOFTWARE INI.

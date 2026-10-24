@@ -1,0 +1,16 @@
+# Normalize text so skill hashes are identical on Windows, macOS, and Linux.
+# Without this, git converts LF to CRLF on checkout and any content hash
+# (skills-lock, CI checks) differs per platform.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.mp4 binary
+*.webm binary

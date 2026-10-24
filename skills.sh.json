@@ -1,0 +1,54 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "Foundations & Orchestration",
+      "description": "Master orchestrator, graph-assisted code discovery, and project context scaffolder.",
+      "skills": [
+        "maxilun",
+        "maxilun-knowledge-graph",
+        "maxilun-scaffold"
+      ]
+    },
+    {
+      "title": "Architecture & Security",
+      "description": "System architecture, C4 modeling, ADRs, defensive security, and OWASP/STRIDE audit.",
+      "skills": [
+        "maxilun-architect",
+        "maxilun-sentinel"
+      ]
+    },
+    {
+      "title": "Core Implementation & Data",
+      "description": "Clean code implementation, TDD, database schema/migration, and Next.js React Server Components.",
+      "skills": [
+        "maxilun-engineer",
+        "maxilun-data",
+        "maxilun-frontend"
+      ]
+    },
+    {
+      "title": "Quality & Operations",
+      "description": "Automated verification, root-cause diagnostics, CI/CD pipelines, and technical documentation.",
+      "skills": [
+        "maxilun-verify",
+        "maxilun-insight",
+        "maxilun-deploy",
+        "maxilun-docsmith"
+      ]
+    },
+    {
+      "title": "Design, Media & Growth",
+      "description": "Design systems, physics-based motion, programmatic video, architecture diagrams, copywriting, and technical SEO.",
+      "skills": [
+        "maxilun-craft",
+        "maxilun-motion",
+        "maxilun-cinecode",
+        "maxilun-diagrams",
+        "maxilun-content",
+        "maxilun-seo-audit"
+      ]
+    }
+  ]
+}
