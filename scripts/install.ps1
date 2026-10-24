@@ -3,7 +3,7 @@ param(
 )
 
 #Requires -Version 5.1
-$Version = "2.1.0"
+$Version = "2.2.0"
 Write-Host ""
 Write-Host "  MAXILUN $Version Installer" -ForegroundColor Cyan
 Write-Host "  18 skills: 1 orchestrator + 17 specialists" -ForegroundColor DarkCyan

@@ -8,7 +8,7 @@ description: >
   Triggers: "/maxilun-diagrams", "/msal-diagram", "buat diagram", "gambar arsitektur",
   "sequence diagram", "alur kerja", "data flow diagram", "archify diagram", or system visualization tasks.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -26,6 +26,14 @@ metadata:
 # Maxilun Diagrams: System Visualization & Flow Mapping
 
 Bertanggung jawab atas visualisasi sistem teknis: diagram arsitektur tingkat tinggi, alur kerja proses (*workflows*), siklus pertukaran pesan (*sequence diagrams*), pipa data (*data pipelines*), dan mesin status (*state machines*). Mendukung sintaksis Mermaid bawaan, SVG/HTML interaktif standalone, dan integrasi opsional dengan Archify.
+
+## Skill Contract
+
+- **Owns**: Mermaid, SVG, and standalone architecture, sequence, data-flow, and state diagrams.
+- **Does not own**: architecture decisions or implementation changes.
+- **Inputs**: approved decisions, entities, flows, and audience needs.
+- **Outputs**: readable diagrams with a declared scope and legend where needed.
+- **Handoff**: request missing decisions from `maxilun-architect` and publish diagrams through `maxilun-docsmith` when documentation needs them.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)

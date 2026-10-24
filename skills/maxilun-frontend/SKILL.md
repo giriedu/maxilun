@@ -10,7 +10,7 @@ description: >
   "state management", "code splitting", "Next.js patterns",
   or any modern React/Next.js architecture task.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -28,6 +28,14 @@ metadata:
 # Maxilun Frontend: Modern Framework Architecture
 
 Bertanggung jawab atas arsitektur frontend modern: React Server Components, Next.js App Router patterns, Server Actions, state management yang tepat sasaran, type safety end-to-end, dan performa client-side yang terukur.
+
+## Skill Contract
+
+- **Owns**: React/Next.js runtime behavior, RSC boundaries, Server Actions, hydration, state, serialization, and bundling.
+- **Does not own**: visual identity, copy voice, general backend implementation, or technical SEO ownership.
+- **Inputs**: route requirements, API contracts, design decisions, framework version, and performance constraints.
+- **Outputs**: framework architecture, runtime-safe implementation guidance, and frontend performance decisions.
+- **Handoff**: use `maxilun-craft` for visual decisions, `maxilun-engineer` for code execution, and `maxilun-verify` for browser/regression evidence.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)

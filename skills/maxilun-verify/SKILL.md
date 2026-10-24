@@ -7,7 +7,7 @@ description: >
   Triggers: "/maxilun-verify", "/msal-test", "jalankan tes", "cek build", "type check",
   "lint kode", "uji regresi", "validasi perubahan", or verification before shipping.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -25,6 +25,14 @@ metadata:
 # Maxilun Verify: Quality Assurance & Build Validation
 
 Bertanggung jawab atas pembuktian kebenaran kode: menjalankan tes otomatis, pemeriksaan tipe (*type-checking*), linter, build produksi, dan pencegahan regresi. Pekerjaan belum selesai tanpa bukti eksekusi yang valid.
+
+## Skill Contract
+
+- **Owns**: test execution, lint, typecheck, build, regression, accessibility checks, and evidence reporting.
+- **Does not own**: root-cause diagnosis, architecture decisions, or implementation fixes.
+- **Inputs**: acceptance criteria, changed files, available project commands, and expected behavior.
+- **Outputs**: commands run, observed results, failures, coverage gaps, and a bounded PASS/FAIL conclusion.
+- **Handoff**: send failures to `maxilun-insight` for diagnosis or `maxilun-engineer` for fixes; re-run after changes.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)

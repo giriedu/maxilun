@@ -11,7 +11,7 @@ description: >
   "dampak perubahan", "/migration", "/tech-select", "capacity planning",
   "multi-tenant", or major structural decisions.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   maintainer: Maxilun Core Team
@@ -26,6 +26,14 @@ metadata:
     - zed
     - gemini-cli
 ---
+
+## Skill Contract
+
+- **Owns**: architecture decisions, module boundaries, API/event contracts, migration strategy, and capacity assumptions.
+- **Does not own**: diagram rendering, code implementation, database execution, or deployment configuration.
+- **Inputs**: product constraints, existing code map, operational constraints, and explicit quality goals.
+- **Outputs**: decisions with rejected alternatives, boundary maps, contracts, ADR-ready records, and risks.
+- **Handoff**: send diagrams to `maxilun-diagrams`, schema work to `maxilun-data`, security boundaries to `maxilun-sentinel`, implementation to `maxilun-engineer`, and documentation to `maxilun-docsmith`.
 
 # Maxilun Architect: Structural Design & Impact Analysis
 

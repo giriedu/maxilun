@@ -7,7 +7,7 @@ description: >
   Triggers: "/maxilun-docsmith", "/msal-docs", "tulis README", "dokumentasi API", "buat changelog",
   "panduan migrasi", "spesifikasi teknis", or developer documentation tasks.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -25,6 +25,14 @@ metadata:
 # Maxilun Docsmith: Technical Documentation & API Contracts
 
 Bertanggung jawab atas penyusunan dokumentasi teknis berkualitas tinggi: README repositori, spesifikasi kontrak API, changelog berstandar, panduan operasional (*runbooks*), dan panduan migrasi yang akurat untuk sesama perekayasa perangkat lunak.
+
+## Skill Contract
+
+- **Owns**: README, API specifications, ADR presentation, changelog, runbook, and migration documentation for engineers and operators.
+- **Does not own**: user-facing marketing copy, architecture decisions, or undocumented claims.
+- **Inputs**: verified behavior, contracts, decisions, commands, and release facts.
+- **Outputs**: precise technical documentation with version and scope boundaries.
+- **Handoff**: request decisions from `maxilun-architect`, facts from `maxilun-verify`, and user copy from `maxilun-content`.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)
@@ -184,4 +192,3 @@ Menyediakan dokumentasi terstruktur yang siap diproses langsung oleh agen AI dan
 - **maxilun-engineer**: Penyelarasan perubahan kode dengan pembaruan kontrak API
 - **maxilun-architect**: Penyusunan Architecture Decision Records (ADR)
 - **maxilun-content**: Readability dan tone consistency untuk dokumentasi
-

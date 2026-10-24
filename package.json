@@ -1,6 +1,6 @@
 {
   "name": "maxilun",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "AI engineering co-pilot — 18 skills (1 orchestrator + 17 specialists), bundled rules, graph-assisted code discovery, evidence-based orchestration.",
   "keywords": [
     "ai-skills",
@@ -26,7 +26,10 @@
     "programmatic-video",
     "cinecode",
     "project-scaffold",
-    "context-docs"
+    "context-docs",
+    "skill-routing",
+    "anti-slop",
+    "design-reference-corpus"
   ],
   "author": "Maxilun Architecture",
   "license": "SEE LICENSE IN LICENSE",

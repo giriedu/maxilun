@@ -7,7 +7,7 @@
 <br/>
 
 [![CI](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml/badge.svg)](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml)
-[![Version](https://img.shields.io/badge/version-2.1.0-7c3aed?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.2.0-7c3aed?style=flat-square)](CHANGELOG.md)
 [![Skills](https://img.shields.io/badge/skills-18_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
 [![License](https://img.shields.io/badge/license-Source_Available-22c55e?style=flat-square)](LICENSE)
 [![Platform](https://img.shields.io/badge/runs_on-Claude_·_Cursor_·_Codex_·_Antigravity_·_Zed_·_Termul-white?style=flat-square)](#platform-support)
@@ -120,6 +120,9 @@ Gunakan `maxilun-knowledge-graph` untuk perubahan kode struktural atau lintas-fi
 | [docs/SKILLS.md](docs/SKILLS.md) | Detail mendalam, peran teknis, dan pemicu 18 spesialis |
 | [docs/ENGINES.md](docs/ENGINES.md) | Empat engine kualitas dan tiga protokol operasi |
 | [docs/EXAMPLES.md](docs/EXAMPLES.md) | Contoh skenario rekayasa nyata & orkestrasi Wave Pattern |
+| [docs/SKILL-CONTRACTS.md](docs/SKILL-CONTRACTS.md) | Ownership, mode standalone, input, output, dan handoff setiap skill |
+| [docs/ROUTING-MATRIX.md](docs/ROUTING-MATRIX.md) | Routing primary owner dan batas trigger yang bertabrakan |
+| [docs/ANTI-SLOP.md](docs/ANTI-SLOP.md) | Anti-slop distribution-safe dan gate berbasis bukti |
 | [docs/RELEASE.md](docs/RELEASE.md) | Alur rilis GitHub Release otomatis & pembaruan metadata |
 | [CHANGELOG.md](CHANGELOG.md) | Riwayat pembaruan versi ekosistem |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Standar kontribusi & pengujian test-suite |

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="2.1.0"
+VERSION="2.2.0"
 echo "🌑 Installing Maxilun ${VERSION} (18 skills: 1 orchestrator + 17 specialists)"
 echo ""
 

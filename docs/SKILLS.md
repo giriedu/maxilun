@@ -1,5 +1,7 @@
 # Daftar 18 Skill Maxilun (1 Orchestrator + 17 Spesialis)
 
+Contract ownership dan routing lintas-skill ada di [SKILL-CONTRACTS.md](SKILL-CONTRACTS.md) dan [ROUTING-MATRIX.md](ROUTING-MATRIX.md). Aturan anti-slop publik ada di [ANTI-SLOP.md](ANTI-SLOP.md).
+
 | No | Nama Skill | Fungsi Utama | Pemicu Khas |
 |:---:|---|---|---|
 | 1 | **maxilun** | Orchestrator. Menentukan hasil yang diminta, memilih spesialis, menjalankan discovery untuk brief kabur, mengoordinasikan wave, dan menegakkan gate bukti sebelum delivery. | `/maxilun`, `mode maxilun` |

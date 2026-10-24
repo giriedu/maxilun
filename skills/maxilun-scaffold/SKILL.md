@@ -12,7 +12,7 @@ description: >
   "bikin PRD", "setup dokumentasi project", or any request to bootstrap
   project context files before development begins.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -30,6 +30,14 @@ metadata:
 # Maxilun Scaffold: Project Context Generator
 
 Menghasilkan satu set dokumen konteks project yang lengkap ke folder `docs/` sebelum coding dimulai. Dokumen ini menjadi **shared context** yang dibaca semua AI assistant — sehingga tidak perlu menjelaskan ulang stack, aturan, atau tujuan project setiap sesi baru.
+
+## Skill Contract
+
+- **Owns**: initial project-context document structure and baseline context capture.
+- **Does not own**: detailed architecture decisions, implementation, or final technical documentation.
+- **Inputs**: repository context, stated product goals, stack facts, and known constraints.
+- **Outputs**: a consistent, labeled project-context set with unknowns preserved.
+- **Handoff**: send architecture decisions to `maxilun-architect`, engineering docs to `maxilun-docsmith`, and implementation to the relevant specialist.
 
 ## 0. Filosofi
 

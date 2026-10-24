@@ -7,7 +7,7 @@
 <br/>
 
 [![CI](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml/badge.svg)](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml)
-[![Version](https://img.shields.io/badge/version-2.1.0-7c3aed?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.2.0-7c3aed?style=flat-square)](CHANGELOG.md)
 [![Skills](https://img.shields.io/badge/skills-18_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
 [![License](https://img.shields.io/badge/license-Source_Available-22c55e?style=flat-square)](LICENSE)
 [![Platform](https://img.shields.io/badge/runs_on-Claude_·_Cursor_·_Codex_·_Antigravity_·_Zed_·_Termul-white?style=flat-square)](#platform-support)
@@ -120,6 +120,9 @@ Use `maxilun-knowledge-graph` for structural or multi-file code changes when its
 | [docs/SKILLS.md](docs/SKILLS.md) | Triggers, capabilities, and parameters for all 18 skills |
 | [docs/ENGINES.md](docs/ENGINES.md) | Four Always-On Engines and three Operating Protocols |
 | [docs/EXAMPLES.md](docs/EXAMPLES.md) | Real-world engineering scenarios & multi-specialist Wave Patterns |
+| [docs/SKILL-CONTRACTS.md](docs/SKILL-CONTRACTS.md) | Ownership, standalone behavior, inputs, outputs, and handoffs for every skill |
+| [docs/ROUTING-MATRIX.md](docs/ROUTING-MATRIX.md) | Primary-owner routing and trigger collision boundaries |
+| [docs/ANTI-SLOP.md](docs/ANTI-SLOP.md) | Distribution-safe anti-slop and evidence gate |
 | [docs/RELEASE.md](docs/RELEASE.md) | Automated GitHub Releases, tag dispatch, and versioning protocols |
 | [CHANGELOG.md](CHANGELOG.md) | Semantic version release history |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution standards, test-suite validation, and code hygiene |

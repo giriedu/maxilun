@@ -8,7 +8,7 @@ description: >
   Triggers: "/maxilun-engineer", "tulis kode", "buat fitur", "fix bug", "refactor kode",
   "implementasikan fungsi", or any direct coding task.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -22,6 +22,14 @@ metadata:
     - zed
     - gemini-cli
 ---
+
+## Skill Contract
+
+- **Owns**: implementation, focused bug fixes, and measured refactoring after the required domain decisions exist.
+- **Does not own**: architecture decisions, visual direction, security policy, database design, or evidence-free diagnosis.
+- **Inputs**: an acceptance criterion, relevant code map, specialist constraints, and explicit unresolved questions.
+- **Outputs**: the smallest valid code change, meaningful tests when needed, and a verification record.
+- **Handoff**: request `maxilun-knowledge-graph` for structural discovery, use domain specialists for constraints, and send final proof to `maxilun-verify`.
 
 # Maxilun Engineer: Senior Code Implementation
 

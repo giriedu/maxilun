@@ -13,7 +13,7 @@ description: >
   "video template", "data-driven video", "batch video", "server-side video render",
   "video component", "timeline composition", or any task involving video generation via code.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -31,6 +31,14 @@ metadata:
 # Maxilun CineCode: Programmatic Video Creation
 
 Bertanggung jawab atas pembuatan video melalui kode: komponen visual sebagai frame, komposisi timeline, rendering server-side ke format video standar, sinkronisasi audio, dan pipeline batch. Video diperlakukan sebagai artefak perangkat lunak — version-controlled, testable, reproducible.
+
+## Skill Contract
+
+- **Owns**: code-defined video compositions, timeline, audio sync, rendering, and batch export to MP4/WebM/GIF.
+- **Does not own**: interactive browser animation or product UI implementation.
+- **Inputs**: final video brief, assets, timing, audio constraints, and render target.
+- **Outputs**: reproducible composition and rendered video artifact or bounded render diagnosis.
+- **Handoff**: use `maxilun-motion` for motion direction and `maxilun-verify` for render/output checks.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)

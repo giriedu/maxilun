@@ -7,7 +7,7 @@ description: >
   workflows and N+1 prevention. Triggers: "/maxilun-data", "skema database", "migrasi",
   "indeks query", "ORM", "optimasi database", "desain tabel", or any data layer task.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -25,6 +25,14 @@ metadata:
 # Maxilun Data: Database & Data Layer Engineering
 
 Bertanggung jawab atas desain skema yang tahan evolusi, migrasi tanpa downtime, query performan, dan pemilihan database yang tepat berdasarkan trade-off nyata — bukan hype.
+
+## Skill Contract
+
+- **Owns**: schema, migrations, indexes, ORM boundaries, query shape, and data-layer performance remedies.
+- **Does not own**: general system diagnosis, application security policy, or deployment operations.
+- **Inputs**: domain entities, access patterns, consistency needs, workload evidence, and migration constraints.
+- **Outputs**: schema decisions, migration steps, query/index plans, and rollback considerations.
+- **Handoff**: use `maxilun-insight` for diagnosis, `maxilun-sentinel` for data security, `maxilun-engineer` for implementation, and `maxilun-verify` for regression proof.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)
@@ -268,4 +276,3 @@ SET LOCAL app.current_tenant_id = '11111111-2222-3333-4444-555555555555';
 - **maxilun-insight**: Diagnosis performa query database dan connection pool exhaustion
 - **maxilun-engineer**: Implementasi kode query, migration, dan ORM patterns
 - **maxilun-verify**: Testing regression data layer dan validation migration
-

@@ -8,7 +8,7 @@ description: >
   Triggers: "/maxilun-insight", "/msal-audit", "diagnosis masalah", "kenapa ini lambat",
   "root cause", "analisis performa", "audit kode", "memory leak", or debugging investigations.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -22,6 +22,14 @@ metadata:
     - zed
     - gemini-cli
 ---
+
+## Skill Contract
+
+- **Owns**: symptom tracing, evidence collection, profiling, root-cause findings, and prioritized remediation recommendations.
+- **Does not own**: direct fixes, schema ownership, or declaring a test/build pass.
+- **Inputs**: reproducible symptoms, logs, metrics, traces, code paths, and workload assumptions.
+- **Outputs**: `Symptom → Evidence → Root cause → Recommendation`, with confidence labels and missing evidence.
+- **Handoff**: send schema/query remedies to `maxilun-data`, runtime fixes to `maxilun-frontend` or `maxilun-engineer`, and regression proof to `maxilun-verify`.
 
 # Maxilun Insight: Diagnostic Investigation & Code Audit
 
@@ -226,4 +234,3 @@ Diagnosis langkah:
 - **maxilun-verify**: Jalankan profiler dan tes performa sebagai bagian CI pipeline
 - **maxilun-deploy**: Monitoring, alerting, dan observability di production
 - **maxilun-engineer**: Implementasi fix berdasarkan diagnosis root cause
-

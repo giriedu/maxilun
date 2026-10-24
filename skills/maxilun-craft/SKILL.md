@@ -9,7 +9,7 @@ description: >
   Triggers: "/maxilun-craft", "/msal-ui", "desain UI", "sistem desain", "tampilan antarmuka",
   "responsif", "aksesibilitas", "dark mode", "interaksi tombol", or any visual frontend task.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -27,6 +27,18 @@ metadata:
 # Maxilun Craft: UI/UX & Design Systems
 
 Bertanggung jawab atas rekayasa visual tingkat produksi: sistem desain konsisten, tipografi matematis, palet warna aksesibel, tata letak responsif, dan interaksi pengguna yang hidup tanpa beban library berlebih.
+
+## Skill Contract
+
+- **Owns**: visual direction, design tokens, layout, typography, component appearance, interaction states, and design accessibility.
+- **Does not own**: React/Next.js runtime architecture, general code implementation, technical SEO, or final video rendering.
+- **Inputs**: product context, surface brief, existing `DESIGN.md`, platform constraints, and at most two relevant files from `references/design-md/`.
+- **Outputs**: a design direction, token/component decisions, implementation-ready UI guidance, or a visual audit with evidence.
+- **Handoff**: send runtime work to `maxilun-frontend`, code changes to `maxilun-engineer`, animation systems to `maxilun-motion`, and verification to `maxilun-verify`.
+
+### Design reference contract
+
+The bundled corpus is part of this skill, not an external dependency. Read `references/design-md/README.md` and `references/design-md/index.md` before selecting a reference. Select by problem similarity, use no more than two references, and record `References`, `Applied`, `Rejected`, and `Reason` in the design output. Never reproduce a brand identity or use a reference as a substitute for product context.
 
 **Enhanced with Impeccable-inspired workflows**: Persistent product context (PRODUCT.md), iterative design prompts, optional browser-assisted review when tools are available, and documented quality checks.
 
@@ -352,6 +364,142 @@ Shortcut via `pin` tetap tersedia untuk frequently-used commands:
 - **Composable**: Commands bisa di-chain (`/craft bolder hero` → `/craft polish hero`)
 - **Reversible**: Setiap perubahan tracked, bisa rollback via git
 - **Evidence-based**: Decisions grounded in PRODUCT.md context, not personal taste
+
+---
+
+## 3b. Advanced Design Workflow (Enhanced)
+
+Memberikan art direction berbasis riset 247 situs terkurasi, gambar nyata dari koleksi terbuka, dan validasi browser multi-lebar untuk menolak output generik AI.
+
+### 6-Langkah Build Process
+
+Setiap build desain baru mengikuti workflow ini:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 1. READ BRIEF    → Identifikasi apa yang unik untuk klien   │
+│ 2. DEAL DIRECTION → Pilih 1 dari 20 art directions          │
+│ 3. FIND IDEA     → Satu kalimat: material klien + direction │
+│ 4. BUILD         → Implementasi dengan gambar nyata + kredit│
+│ 5. BROWSER CHECK → Validasi di 3 lebar layar, fail on slop  │
+│ 6. SELF-REVIEW   → Lihat screenshot, fix top 3 issues      │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Estimasi**: 30-45 menit per build, beberapa ratus ribu token.
+
+### Art Direction System
+
+20 art directions diteliti dari 247 situs award-winning. Tiga direction di-deal secara acak, agent memilih satu berdasarkan brief.
+
+| # | Direction | Karakteristik | Cocok Untuk |
+|---|-----------|---------------|-------------|
+| 1 | Editorial Magazine | Tipografi dominan, grid asimetris, whitespace dramatis | Content-heavy, news, blog premium |
+| 2 | Swiss International | Grid ketat, sans-serif bold, warna terbatas, presisi | Corporate, fintech, professional services |
+| 3 | Neo-Brutalist | Border tebal, kontras tinggi, raw aesthetic, anti-polish | Creative agencies, youth brands, art projects |
+| 4 | Japanese Minimalist | Ma (negative space), tipografi vertikal, restraint | Luxury, wellness, cultural products |
+| 5 | Retro-Futurism | Warna neon, geometri, nostalgia 80s-90s tech | Gaming, entertainment, tech startups |
+| 6 | Organic Modern | Kurva natural, earth tones, tekstur organik | Sustainable brands, food, lifestyle |
+| 7 | Industrial Technical | Monospace, blueprint aesthetic, functional labeling | Developer tools, SaaS, infrastructure |
+| 8 | Art Deco Revival | Geometri simetris, gold accents, dramatic contrast | Luxury hospitality, fashion, events |
+| 9 | Scandinavian Functional | Light wood, soft shadows, warm neutrals, clarity | Furniture, home goods, family products |
+| 10 | Cyberpunk Dense | Dark UI, data visualization, glitch elements, neon | Crypto, gaming, security tech |
+| 11 | Vintage Print | Serif display, paper texture, muted palette, ornamental | Heritage brands, publishing, artisan products |
+| 12 | Glassmorphism Refined | Frosted layers done right, depth hierarchy, subtle | Modern SaaS, dashboards (single layer only!) |
+| 13 | Bauhaus Geometric | Primary colors, basic shapes, asymmetric balance | Education, design schools, creative tools |
+| 14 | Tropical Maximalist | Bold patterns, saturated colors, layered imagery | Travel, festivals, food & beverage |
+| 15 | Monochrome Typography | Single color, type scale as hero, rhythm over image | Portfolios, architecture, law firms |
+| 16 | Soft Gradient Mesh | Fluid gradients, organic blobs, dreamy atmosphere | Beauty, wellness, meditation apps |
+| 17 | Data-Dense Dashboard | Compact spacing, tabular nums, status colors, quiet panels | Analytics, admin, monitoring tools |
+| 18 | Illustrated Narrative | Custom illustrations, storytelling scroll, character | Onboarding, education, children's products |
+| 19 | Luxury Black & Gold | Deep blacks, metallic accents, generous spacing, serif | Premium services, jewelry, high-end real estate |
+| 20 | Playful Microinteractions | Bouncy easing, surprise details, friendly copy | Consumer apps, social, productivity tools |
+
+**Command**: `/maxilun-craft direction` — Deal 3 random directions, present with rationale, user picks one.
+
+### Real Image Protocol
+
+Gambar diambil dari koleksi terbuka dengan lisensi legal. Kredit wajib ditampilkan.
+
+**Sumber yang Diizinkan:**
+- Wikimedia Commons (Public Domain, CC BY, CC BY-SA)
+- Openverse (CC0, CC BY, CC BY-SA)
+- The Met Open Access (CC0)
+- Unsplash (Unsplash License)
+- Pexels (Pexels License)
+
+**Aturan Ketat:**
+1. **Kredit wajib**: Setiap gambar punya atribusi visible atau di halaman credits
+2. **Lisensi verified**: Cek lisensi sebelum pakai, jangan asumsi
+3. **Relevansi**: Gambar harus mendukung narasi, bukan dekorasi filler
+4. **Kualitas**: Resolusi cukup untuk viewport target, aspect ratio sesuai container
+5. **Alt text**: Deskriptif dan spesifik, bukan "image of..." atau keyword stuffing
+
+**Command**: `/maxilun-craft images <brief>` — Cari gambar relevan dari sumber terbuka, return URL + lisensi + kredit format.
+
+### Browser Self-Review Protocol
+
+Validasi visual di browser nyata pada tiga lebar layar. Gagal otomatis jika mendeteksi pola slop.
+
+**Tiga Breakpoint Wajib:**
+1. **Mobile**: 375px width
+2. **Tablet**: 768px width
+3. **Desktop**: 1440px width
+
+**Anti-Slop Visual Checklist (Fail = Reject):**
+
+| Check | Fail Condition | Fix Required |
+|-------|----------------|--------------|
+| Color Palette | Purple-to-blue gradient sebagai default | Ganti dengan semantic tokens dari §4 |
+| Typography | Font AI default (Inter, Roboto, Arial) tanpa modifikasi | Adjust weight, size, spacing, atau ganti font |
+| Layout | Hero+Cards+Testimonials+FAQ+Footer template | Restructure based on content needs |
+| Spacing | Whitespace random tanpa grouping logic | Apply 4px grid system dari §4 |
+| Components | Decorative buttons/tabs/search | Hapus atau beri fungsi nyata |
+| Animation | Glow/floating/parallax non-fungsional | Remove atau tie to UX purpose |
+| Identity | Logo swap = same feel | Add unique visual element (motif, accent, type treatment) |
+| Contrast | Text < 4.5:1 ratio | Adjust lightness per OKLCH tokens |
+| Mobile | Horizontal overflow, tap target < 44px | Fix responsive breakpoints |
+| Content | Fake stats/testimonials without source | Remove atau label `[REAL DATA]` |
+
+**Self-Review Loop (Max 3 Rounds):**
+1. Take screenshot at all 3 widths
+2. Run anti-slop checklist against screenshots
+3. Identify top 3 issues by severity
+4. Fix those 3 issues
+5. Re-screenshot, re-check
+6. Repeat until pass or 3 rounds complete
+
+**Command**: `/maxilun-craft review` — Execute browser self-review protocol, output findings + fixes applied.
+
+### Dashboard & App Screen Route (v2.1+)
+
+Untuk dashboard dan app screens, workflow berbeda:
+
+1. **Style Deal**: Pilih dari app-specific styles (bukan landing page styles)
+2. **Shell First**: Build layout structure tanpa data
+3. **Data Layer**: Add realistic data patterns (numbers, dates, statuses)
+4. **Charts & Tables**: Implement dengan proper formatting (tabular-nums, alignment)
+5. **App Rules Check**: Quiet panels, aligned figures, color spent on data, phone nav folds away
+
+**App-Specific Anti-Slop:**
+- Panel borders subtle, not heavy drop shadows
+- Numbers right-aligned with tabular-nums
+- Status colors limited to semantic set (success/warning/error/info)
+- Navigation collapses properly on mobile (bottom sheet/tab bar)
+- Empty states informative, not just "No data"
+
+**Command**: `/maxilun-craft app` — Activate dashboard/app screen route instead of landing page route.
+
+### Frame Check (v2.1+)
+
+Setiap halaman dicek frame-nya:
+- Clear title on first screen
+- Equal margins left/right
+- No section shoved to one side
+- No random blank stretches
+- Motion measured against Awwwards Site of the Day patterns
+
+**Command**: `/maxilun-craft frame` — Validate page framing and motion quality.
 
 ---
 
@@ -847,6 +995,14 @@ Jalankan gate ini SETELAH coding selesai, SEBELUM menyerahkan hasil ke pengguna.
 - [ ] Deskripsi/tagline max 2 kalimat, bukan paragraf panjang yang menumpuk jargon? (§0f)
 - [ ] Bahasa Indonesia natural, bukan terjemahan literal dari English AI patterns? (§0f)
 
+### Block G: Advanced Design Integration (Enhanced Anti-Generic)
+- [ ] Art direction dideklarasikan via §3b (salah satu dari 20 directions)? Atau explicit "DRAFT TANPA ARAH"?
+- [ ] Gambar (jika ada) berasal dari sumber terbuka dengan lisensi verified + kredit displayed? (§3b Real Image Protocol)
+- [ ] Browser self-review dijalankan di 3 lebar layar (375px, 768px, 1440px)? (§3b Browser Self-Review)
+- [ ] Frame check lulus: clear title first screen, equal margins, no random blank stretches? (§3b Frame Check)
+- [ ] Dashboard/app screens (jika applicable) mengikuti app-specific rules: quiet panels, tabular-nums, semantic status colors? (§3b Dashboard Route)
+- [ ] Self-review loop completed (max 3 rounds) hingga anti-slop checklist pass? (§3b Self-Review Loop)
+
 ### Delivery Gate Output Format
 ```
 🔒 DELIVERY GATE STATUS
@@ -856,6 +1012,7 @@ Block C (Functional): ✅ PASS / ❌ FAIL (detail)
 Block D (Identity): ✅ PASS / ❌ FAIL (detail)
 Block E (Evidence): ✅ PASS / ❌ FAIL (detail)
 Block F (Copywriting): ✅ PASS / ❌ FAIL (detail)
+Block G (Taste Integration): ✅ PASS / ❌ FAIL (detail)
 Verdict: SHIP / FIX FIRST (jika FIX FIRST, list item yang harus diperbaiki)
 ```
 
@@ -887,6 +1044,11 @@ Peta pola yang ditolak, aturan yang menegakkannya, dan titik pemeriksaannya. Tab
 | Write Reason | §0c Design Read declaration | Pre-gen §0c |
 | Verify | §15 Delivery Gate + maxilun-verify integration | Post-code verification |
 | Direction | §0a/§0c Context + Design Read | Pre-gen §0a/§0c |
+| Art Direction | §3b Taste-Driven Workflow (20 directions) | Pre-gen §3b + Delivery Block G |
+| Real Images | §3b Real Image Protocol (open sources + credits) | Build §3b + Delivery Block G |
+| Browser Review | §3b Browser Self-Review (3 widths, anti-slop checklist) | Post-build §3b + Delivery Block G |
+| Frame Quality | §3b Frame Check (title, margins, motion) | Post-build §3b + Delivery Block G |
+| App Screens | §3b Dashboard Route (quiet panels, tabular-nums) | Build §3b + Delivery Block G |
 
 ---
 
@@ -901,6 +1063,8 @@ Peta pola yang ditolak, aturan yang menegakkannya, dan titik pemeriksaannya. Tab
 | `maxilun-engineer` | Design spec untuk engineer implement | Spec yang jelas + code yang sesuai visual intent |
 
 **Penggunaan companion**: Libatkan `maxilun-content` jika pengguna juga meminta copy atau bila copy perlu dikembangkan bersama desain. Libatkan `maxilun-frontend` atau `maxilun-engineer` untuk integrasi implementasi. Filter visual anti-slop sudah menjadi bagian skill ini (§0b, §0f, §15), jadi tidak ada companion yang menjadi prasyarat untuk desain atau halaman sederhana.
+
+**Advanced Workflow**: Fitur art direction, gambar nyata, dan browser self-review sudah terintegrasi penuh di §3b. Gunakan `/maxilun-craft direction`, `/maxilun-craft images`, `/maxilun-craft review`, dan `/maxilun-craft app` untuk mengakses kemampuan advanced tanpa perlu setup tambahan.
 
 ## Related Skills
 - **maxilun-motion**: Animation, motion design, kinetic typography, and performance-gated motion

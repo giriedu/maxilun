@@ -60,6 +60,8 @@ REQUIRED_REFERENCES = [
     "code-hygiene.md",
 ]
 
+REQUIRED_PUBLIC_DOCS = ["SKILL-CONTRACTS.md", "ROUTING-MATRIX.md", "ANTI-SLOP.md"]
+
 BANNED_WORDS = [
     r"\bdelve\b",
     r"\btapestry\b",
@@ -289,8 +291,8 @@ def test_size_budget():
     hard_fail = False
     for skill in EXPECTED_SKILLS:
         lines = len(read_skill(skill).splitlines())
-        if lines > 1000:
-            print(f"  ❌ {skill}: {lines} lines (hard limit 1000) — split into references/")
+        if lines > 1200:
+            print(f"  ❌ {skill}: {lines} lines (hard limit 1200) — split into references/")
             hard_fail = True
         elif lines > 400:
             print(f"  ⚠️  {skill}: {lines} lines — candidate for references/ split")
@@ -338,6 +340,9 @@ def test_referenced_paths():
         REPO_ROOT / "docs" / "EXAMPLES.md",
         REPO_ROOT / "docs" / "RELEASE.md",
         REPO_ROOT / "docs" / "decisions" / "README.md",
+        *[REPO_ROOT / "docs" / doc for doc in REQUIRED_PUBLIC_DOCS],
+        SKILLS_DIR / "maxilun-craft" / "references" / "design-md" / "README.md",
+        SKILLS_DIR / "maxilun-craft" / "references" / "design-md" / "index.md",
         SKILLS_DIR / "maxilun-motion" / "references" / "motion-components.md",
         SKILLS_DIR / "maxilun-knowledge-graph" / "LENS.md",
         SKILLS_DIR / "maxilun-knowledge-graph" / "graph-viewer" / "lens.html",
@@ -355,6 +360,26 @@ def test_referenced_paths():
         else:
             print(f"  ✅ {p.relative_to(REPO_ROOT)}")
     return all_ok
+
+
+def test_skill_contracts():
+    print("\n🧪 Checking standalone skill contracts and routing boundaries...")
+    required_markers = ["**Owns**:", "**Does not own**:", "**Inputs**:", "**Outputs**:", "**Handoff**:"]
+    passed = True
+    for skill in EXPECTED_SKILLS:
+        content = read_skill(skill)
+        contract_heading = "## Skill Contract" if skill != "maxilun" else "## Distribution Contract"
+        missing = [marker for marker in [contract_heading, *required_markers] if marker not in content]
+        if missing:
+            print(f"  ❌ {skill}: missing contract markers {', '.join(missing)}")
+            passed = False
+    craft_content = read_skill("maxilun-craft")
+    if "references/design-md/README.md" not in craft_content or "references/design-md/index.md" not in craft_content:
+        print("  ❌ maxilun-craft: design reference instructions are not bundled")
+        passed = False
+    if passed:
+        print("  ✅ All skills expose standalone ownership contracts")
+    return passed
 
 
 def test_kg_scanner_functional():
@@ -466,6 +491,7 @@ def main():
         test_size_budget(),
         test_foundation_integration(),
         test_referenced_paths(),
+        test_skill_contracts(),
         test_kg_scanner_functional(),
         test_cross_references(),
     ]

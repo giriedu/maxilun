@@ -8,7 +8,7 @@ description: >
   Triggers: "/maxilun-seo-audit", "/msal-seo", "audit SEO", "technical SEO", "kenapa tidak ranking",
   "meta tags", "sitemap", "structured data", "schema markup", "canonical", or search optimization.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -26,6 +26,14 @@ metadata:
 # Maxilun SEO Audit: Technical SEO & Search Performance
 
 Bertanggung jawab atas audit komprehensif visibilitas mesin pencari: perayapan (*crawlability*), pengindeksan (*indexation*), struktur tag meta, kanonikalisasi, data terstruktur (JSON-LD schema), arsitektur tautan internal, metrik Core Web Vitals, dan kesiapan perayapan AI (*AI agent readiness*).
+
+## Skill Contract
+
+- **Owns**: crawlability, indexing, metadata, canonical URLs, structured data, internal links, and Core Web Vitals findings.
+- **Does not own**: general copywriting, application architecture, or deployment implementation.
+- **Inputs**: URLs or route inventory, rendered output, search requirements, and current technical evidence.
+- **Outputs**: prioritized SEO findings, affected routes, evidence, and remediation criteria.
+- **Handoff**: send copy changes to `maxilun-content`, framework changes to `maxilun-frontend`, implementation to `maxilun-engineer`, and proof to `maxilun-verify`.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)

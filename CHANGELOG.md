@@ -6,6 +6,15 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.2.0] — 2026-10-24
+
+### Changed
+- Added standalone ownership contracts, routing boundaries, and explicit handoff rules for all 18 skills.
+- Added distribution-safe Anti-Slop v2 rules covering factual claims, evidence, routing, scope, and visual defaults.
+- Promoted `maxilun-craft`'s bundled `design-md` corpus into a documented reference workflow with selection and adaptation rules.
+- Added repository validation for public contract documents, bundled design references, and standalone skill contracts.
+- Bumped ecosystem package, installers, README badges, and all 18 skill metadata versions to 2.2.0.
+
 ## [2.1.0] — 2026-10-23
 
 ### Changed

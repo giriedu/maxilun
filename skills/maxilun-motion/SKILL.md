@@ -8,7 +8,7 @@ description: >
   Triggers: "/maxilun-motion", "animasi web", "interactive animation", "Lottie", "SVG animation",
   "kinetic typography", "scroll animation", "audio-reactive animation".
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -24,6 +24,14 @@ metadata:
 ---
 
 # Maxilun Motion — Motion Design Specialist
+
+## Skill Contract
+
+- **Owns**: browser/UI animation, motion timing, transitions, Lottie/SVG motion, and interaction feedback.
+- **Does not own**: static visual system ownership or final video rendering.
+- **Inputs**: interaction intent, reduced-motion requirements, performance budget, and existing tokens.
+- **Outputs**: motion specification or implementation-ready animation behavior with reduced-motion fallback.
+- **Handoff**: send static direction to `maxilun-craft`, runtime integration to `maxilun-frontend`, and video output to `maxilun-cinecode`.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)

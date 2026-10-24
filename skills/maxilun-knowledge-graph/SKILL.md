@@ -6,7 +6,7 @@ description: >
   "/msal-graph", "cari kode", "di mana fungsi", "petakan dependensi", "siapa panggil",
   "relasi modul", "analisis impor", codebase lookup, navigation, pre-edit mapping.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -20,6 +20,14 @@ metadata:
     - zed
     - gemini-cli
 ---
+
+## Skill Contract
+
+- **Owns**: locating files and symbols, caller/callee traces, import relationships, and change-impact maps.
+- **Does not own**: architecture choices, implementation, or diagnosis without corroborating runtime evidence.
+- **Inputs**: a symbol, behavior, file, or change target.
+- **Outputs**: precise `file:line` findings, graph edges, confidence labels, and unresolved lookup gaps.
+- **Handoff**: return the map to the requesting specialist; do not modify the target code as part of discovery.
 
 # Maxilun Knowledge Graph: Fondasi Pencarian Kode
 

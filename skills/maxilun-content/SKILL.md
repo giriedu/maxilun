@@ -8,7 +8,7 @@ description: >
   Triggers: "/maxilun-content", "/msal-copy", "copywriting", "konten pemasaran", "microcopy",
   "teks tombol CTA", "pesan error UI", "brand voice", or product messaging tasks.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -26,6 +26,14 @@ metadata:
 # Maxilun Content: Product Copywriting & Microcopy
 
 Bertanggung jawab atas penyusunan copywriting produk, teks pemasaran teknis, microcopy antarmuka pengguna (CTA, error message, empty state), dan pembentukan nada suara (*brand voice*) yang autentik dan bebas klise generator AI.
+
+## Skill Contract
+
+- **Owns**: user-facing copy, CTA wording, microcopy, error text, onboarding language, and voice consistency.
+- **Does not own**: engineering documentation, SEO audit findings, or invented product claims.
+- **Inputs**: verified product facts, audience, task, voice, and localization constraints.
+- **Outputs**: specific copy with rationale where needed and unresolved claims labeled.
+- **Handoff**: send technical content to `maxilun-docsmith` and SEO implementation findings to `maxilun-seo-audit`.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)

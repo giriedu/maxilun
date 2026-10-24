@@ -10,7 +10,7 @@ description: >
   "maxilun lite", "maxilun full", "maxilun ultra", or an explicit request
   to run or coordinate the Maxilun ecosystem.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -30,9 +30,21 @@ metadata:
     - references/code-hygiene.md
 ---
 
-# Maxilun: Master Orchestrator v2.0
+# Maxilun: Master Orchestrator v2.1
 
 Satu orchestrator untuk 17 spesialis. Tugasnya tiga: memilih spesialis yang benar, mengoordinasikan wave yang saling bergantung, dan menolak hasil yang tidak terbukti. Bukan ensiklopedia aturan — aturan ada di `references/`, dipanggil saat dibutuhkan.
+
+## Distribution Contract
+
+- **Owns**: request classification, one-primary routing, sequencing, synthesis, evidence gates, and failure handling.
+- **Does not own**: domain implementation, visual design, architecture decisions, or test execution.
+- **Inputs**: the user's requested outcome, available context, specialist availability, and evidence from completed work.
+- **Outputs**: a routed workflow, handoff records, synthesized result, and bounded delivery decision.
+- **Handoff**: route one primary owner, add companions only for named artifacts or verification, and return the final evidence to the user.
+- **Standalone mode**: when a specialist is unavailable, provide a labeled fallback instead of inventing a capability or requiring a private tool.
+- **Public package rule**: use only paths relative to this installed skill or the repository being worked on. Never depend on this repository's local absolute paths.
+
+Use `docs/SKILL-CONTRACTS.md` and `docs/ROUTING-MATRIX.md` when the repository is available. The skill remains functional without those repository documents.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)

@@ -10,7 +10,7 @@ description: >
   "validasi input", "cegah sql injection", "xss", "csrf", "rahasia api",
   "kriptografi", "enkripsi", "AES", "hashing", "timing attack", "sertifikat TLS", or security tasks.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -28,6 +28,14 @@ metadata:
 # Maxilun Sentinel: Application Security & Data Integrity
 
 Bertanggung jawab atas postur keamanan aplikasi, arsitektur autentikasi & otorisasi tangguh, mitigasi celah keamanan (OWASP Top 10), validasi ketat batas kepercayaan (*trust boundaries*), dan proteksi privasi data.
+
+## Skill Contract
+
+- **Owns**: application security, trust boundaries, authentication, authorization, input validation, secrets, and cryptographic decisions.
+- **Does not own**: general feature implementation, infrastructure deployment, or visual design.
+- **Inputs**: threat model, data flows, trust boundaries, platform constraints, and security requirements.
+- **Outputs**: threats, mitigations, secure contracts, and implementation constraints with evidence.
+- **Handoff**: send code changes to `maxilun-engineer`, infrastructure concerns to `maxilun-deploy`, and security regression proof to `maxilun-verify`.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)
@@ -300,4 +308,3 @@ location /api/v1/auth/ {
 - **maxilun-deploy**: Security monitoring, secret injection, SSL/TLS configuration, perimeter WAF, dan audit logging
 - **maxilun-verify**: Security regression tests, OWASP ZAP integration, dan vulnerability scanning di CI
 - **maxilun-engineer**: Implementasi security measures dan secure coding patterns
-

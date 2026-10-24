@@ -7,7 +7,7 @@ description: >
   Triggers: "/maxilun-deploy", "CI/CD", "Docker", "pipeline", "monitoring", "deployment",
   "SSL", "backup database", "environment variables", or any DevOps/infra task.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -25,6 +25,14 @@ metadata:
 # Maxilun Deploy: Deployment & Operations Engineering
 
 Bertanggung jawab atas pipeline CI/CD yang reliabel, containerization efisien, manajemen environment yang aman, observability komprehensif, dan strategi deployment tanpa downtime.
+
+## Skill Contract
+
+- **Owns**: CI/CD, containers, environment configuration, observability, deployment strategy, rollback, backup, and recovery.
+- **Does not own**: application authentication policy or feature implementation.
+- **Inputs**: runtime requirements, service topology, deployment constraints, secrets interface, and recovery objectives.
+- **Outputs**: deployable operations design, pipeline changes, runbooks, and recovery evidence.
+- **Handoff**: use `maxilun-sentinel` for application security, `maxilun-engineer` for code changes, and `maxilun-docsmith` for operator documentation.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)
