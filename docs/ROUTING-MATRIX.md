@@ -9,7 +9,9 @@ Use this matrix to prevent trigger collisions. The first skill is the primary ow
 | Define a visual system | `maxilun-craft` | `maxilun-content` when copy is needed | `maxilun-frontend` unless runtime work is requested |
 | Investigate a slow page | `maxilun-insight` | `maxilun-data` or `maxilun-frontend`, then `maxilun-engineer` | `maxilun-verify` as diagnosis owner |
 | Create an architecture diagram | `maxilun-diagrams` | `maxilun-architect` only when decisions are missing | `maxilun-engineer` |
-| Create an API README | `maxilun-docsmith` | `maxilun-architect` when the contract is missing | `maxilun-content` |
+| Create an API README or OpenAPI spec | `maxilun-docsmith` | `maxilun-architect` when the contract is missing | `maxilun-content` |
+| Write a Feature PRD or Engineering RFC | `maxilun-docsmith` | `maxilun-craft` (UI references/states), `maxilun-architect` (system boundaries) | `maxilun-content` as spec owner |
+| Bootstrap initial `docs/` folder (10 files) | `maxilun-scaffold` | `maxilun-craft` (DESIGN.md references), `maxilun-architect` | `maxilun-docsmith` as bootstrap owner |
 | Create a landing page | `maxilun-craft` | `maxilun-content`, `maxilun-frontend`, `maxilun-verify`, `maxilun-seo-audit` | `maxilun-docsmith` |
 | Render an MP4 or WebM | `maxilun-cinecode` | `maxilun-motion` for motion direction | `maxilun-craft` as implementation owner |
 

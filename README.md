@@ -7,7 +7,7 @@
 <br/>
 
 [![CI](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml/badge.svg)](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml)
-[![Version](https://img.shields.io/badge/version-2.2.0-7c3aed?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.3.0-7c3aed?style=flat-square)](CHANGELOG.md)
 [![Skills](https://img.shields.io/badge/skills-18_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
 [![License](https://img.shields.io/badge/license-Source_Available-22c55e?style=flat-square)](LICENSE)
 [![Platform](https://img.shields.io/badge/runs_on-Claude_·_Cursor_·_Codex_·_Antigravity_·_Zed_·_Termul-white?style=flat-square)](#platform-support)
@@ -43,7 +43,7 @@ Structured by real-world software engineering lifecycle — from foundational ar
 |:--:|---|---|---|
 | 1 | `maxilun` | Orchestrator — outcome-based routing, discovery protocol, wave coordination, evidence gates | `/maxilun`, `mode maxilun` |
 | 2 | `maxilun-knowledge-graph` | Code Discovery — graph-based symbol and dependency mapping with WebGL visualizer (Lens) | `/maxilun-graph`, `/msal-trace` |
-| 3 | `maxilun-scaffold` | Project Context Scaffolder — generates 10 AI-readable architecture docs in `docs/` | `/maxilun-scaffold`, `/msal-init` |
+| 3 | `maxilun-scaffold` | Project Context Scaffolder — generates 10 AI-readable docs in `docs/` with domain archetypes & UI references | `/maxilun-scaffold`, `/msal-init` |
 | 4 | `maxilun-architect` | System Architecture — C4 Model, Event Storming, ADRs, deep `/maxilun-think` reasoning | `/maxilun-think`, `/maxilun-architect` |
 | 5 | `maxilun-sentinel` | Defensive Security — OWASP Top 10, STRIDE threat modeling, crypto, supply chain audit | `/maxilun-sentinel`, `/msal-security` |
 | 6 | `maxilun-engineer` | Code Implementation — Test-Driven Development (TDD), 5-WHY debugging, clean refactoring | `/maxilun-engineer` |
@@ -52,7 +52,7 @@ Structured by real-world software engineering lifecycle — from foundational ar
 | 9 | `maxilun-verify` | Quality Assurance — Playwright E2E, visual regression, accessibility (a11y), contract tests | `/maxilun-verify`, `/msal-test` |
 | 10 | `maxilun-insight` | Performance Diagnostics — CPU/memory/DB profiling, distributed tracing, leak detection | `/maxilun-insight`, `/msal-audit` |
 | 11 | `maxilun-deploy` | Cloud & Operations — CI/CD pipelines, multi-stage Docker, zero-downtime rollouts | `/maxilun-deploy` |
-| 12 | `maxilun-docsmith` | Technical Documentation — OpenAPI/AsyncAPI contracts, architecture ADRs, runbooks | `/maxilun-docsmith`, `/msal-docs` |
+| 12 | `maxilun-docsmith` | Technical Specs & Documentation — Feature PRDs/RFCs, OpenAPI 3.1/AsyncAPI contracts, ADRs, runbooks, `llms.txt` | `/maxilun-docsmith`, `/msal-docs` |
 | 13 | `maxilun-craft` | Design Systems & UI/UX — OKLCH color palettes, WCAG AAA accessibility, 4px grid | `/maxilun-craft`, `/msal-ui` |
 | 14 | `maxilun-motion` | Motion design — interactive browser animation, Lottie/SVG assets, kinetic typography | `/maxilun-motion` |
 | 15 | `maxilun-cinecode` | Final video rendering — code-driven MP4/WebM/GIF, data-driven and batch pipelines | `/maxilun-cinecode` |

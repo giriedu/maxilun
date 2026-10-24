@@ -20,7 +20,7 @@ The primary skill owns the deliverable. Companion skills advise or validate; the
 |---|---|---|
 | `maxilun` | routing, sequencing, synthesis, evidence gates | domain implementation |
 | `maxilun-knowledge-graph` | code discovery and dependency mapping | architecture decisions or code edits |
-| `maxilun-scaffold` | project-context document bootstrap | detailed architecture decisions |
+| `maxilun-scaffold` | 10-file project-context bootstrap (`docs/`) with domain archetypes & UI reference seeding | detailed architecture decisions or deep single-feature specs |
 | `maxilun-architect` | system boundaries, contracts, migrations, ADR decisions | final diagrams or implementation |
 | `maxilun-sentinel` | application security and trust boundaries | infrastructure deployment ownership |
 | `maxilun-engineer` | general code implementation and refactoring | specialist domain decisions |
@@ -29,7 +29,7 @@ The primary skill owns the deliverable. Companion skills advise or validate; the
 | `maxilun-verify` | tests, lint, typecheck, build and regression evidence | root-cause investigation |
 | `maxilun-insight` | evidence-based diagnosis and profiling | direct implementation |
 | `maxilun-deploy` | CI/CD, containers, runtime operations and recovery | application security decisions |
-| `maxilun-docsmith` | engineering and operator documentation | user-facing marketing copy |
+| `maxilun-docsmith` | feature PRDs/RFCs, API contracts (OpenAPI/AsyncAPI), READMEs, ADRs, runbooks, `llms.txt` | user-facing marketing copy or initial 10-file folder bootstrap |
 | `maxilun-craft` | visual system, layout, typography and interaction design | framework architecture |
 | `maxilun-motion` | browser and UI motion | final video rendering |
 | `maxilun-cinecode` | rendered video artifacts and video pipelines | browser UI animation |

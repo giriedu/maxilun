@@ -10,7 +10,7 @@ description: >
   "maxilun lite", "maxilun full", "maxilun ultra", or an explicit request
   to run or coordinate the Maxilun ecosystem.
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -30,7 +30,7 @@ metadata:
     - references/code-hygiene.md
 ---
 
-# Maxilun: Master Orchestrator v2.1
+# Maxilun: Master Orchestrator v2.3
 
 Satu orchestrator untuk 17 spesialis. Tugasnya tiga: memilih spesialis yang benar, mengoordinasikan wave yang saling bergantung, dan menolak hasil yang tidak terbukti. Bukan ensiklopedia aturan — aturan ada di `references/`, dipanggil saat dibutuhkan.
 
@@ -96,7 +96,7 @@ Pilih berdasarkan **hasil yang diminta**, bukan kata kunci yang disebut sambil l
 | `maxilun-verify` | Bukti eksekusi: tes, lint, typecheck, build, regresi | `/maxilun-verify`, "jalankan tes", "cek build" |
 | `maxilun-insight` | Akar masalah, profil performa, bukti penyebab | `/maxilun-insight`, "root cause", "kenapa lambat" |
 | `maxilun-deploy` | Pipeline, container, environment, rollback, observability | `/maxilun-deploy`, "CI/CD", "Docker", "deploy" |
-| `maxilun-docsmith` | README, OpenAPI, ADR, runbook, changelog | `/maxilun-docsmith`, "dokumentasi API" |
+| `maxilun-docsmith` | Feature PRD/RFC, README, OpenAPI, ADR, runbook, changelog, `llms.txt` | `/maxilun-docsmith`, "dokumentasi API", "buat PRD fitur", "tulis RFC" |
 | `maxilun-content` | Copy produk, microcopy, brand voice, lokalisasi | `/maxilun-content`, "copywriting", "teks CTA" |
 | `maxilun-motion` | Animasi browser, Lottie/SVG, kinetic type | `/maxilun-motion`, "animasi web", "Lottie" |
 | `maxilun-cinecode` | File video final (MP4/WebM/GIF), pipeline render | `/maxilun-cinecode`, "render MP4", "batch video" |
@@ -158,9 +158,9 @@ Urutan keputusan, berhenti di aturan pertama yang menjawab:
 | `maxilun-craft` vs `maxilun-frontend` | craft = visual, token, aksesibilitas, state UI. frontend = arsitektur Next.js, RSC, Server Action, bundle. |
 | `maxilun-motion` vs `maxilun-cinecode` | motion = animasi browser/aset motion. cinecode = file video final. Video final dengan koreografi khusus → cinecode utama, motion untuk rancangan. |
 | `maxilun-insight` vs `maxilun-engineer` | insight = menemukan penyebab (profiling, tracing, evidence gathering). engineer = memperbaiki kode setelah penyebab diketahui. Jika stack trace sudah menunjuk ke fungsi spesifik → langsung engineer. Jika "lambat tapi tidak tahu kenapa" → insight dulu. Insight tidak menulis fix; engineer tidak melakukan profiling mendalam. |
-| `maxilun-docsmith` vs `maxilun-content` | docsmith = dibaca engineer (API, README, runbook). content = dibaca pengguna akhir (tombol, error, landing). |
+| `maxilun-docsmith` vs `maxilun-content` | docsmith = spesifikasi teknis & dokumen yang dibaca engineer/AI (Feature PRD/RFC, API, README, runbook, `llms.txt`). content = copy yang dibaca pengguna akhir (tombol, error, landing). |
 | `maxilun-architect` vs `maxilun-data` | architect = batas sistem dan kontrak. data = skema fisik, migrasi, index. Multi-tenancy: architect memilih model, data mengimplementasikan RLS. |
-| `maxilun-scaffold` vs specialist | scaffold = generate 10 dokumen konteks awal (PRD, TECHSTACK, DESIGN, SECURITY, dll.) sebagai starting point. Specialist = menghasilkan artefak domain-specific yang mendalam dan terverifikasi. Gunakan scaffold untuk inisialisasi proyek baru atau onboarding. Gunakan specialist langsung jika konteks sudah ada dan user meminta output spesifik (misal "buat threat model" → sentinel, bukan scaffold SECURITY.md). Scaffold output adalah draft; specialist output adalah deliverable. |
+| `maxilun-scaffold` vs `maxilun-docsmith` / specialist | scaffold = generate 10 dokumen konteks awal (`docs/PRD.md`, `TECHSTACK.md`, `DESIGN.md`, `SECURITY.md`, dll.) saat inisialisasi proyek baru. docsmith = spesifikasi mendalam per fitur (Feature PRD/RFC dengan 4 state UI + kontrak API), `README.md`, `openapi.yaml`, ADR, runbook, dan `llms.txt`. Gunakan specialist langsung jika konteks sudah ada dan user meminta artefak mendalam (misal "buat threat model" → sentinel; "buat RFC/PRD fitur X" → docsmith). |
 
 ## 4. Discovery (Wave 0)
 

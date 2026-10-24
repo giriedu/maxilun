@@ -3,13 +3,13 @@ name: maxilun-craft
 description: >
   Production UI/UX specialist for design systems, spatial rhythm, responsive
   layouts, WCAG accessibility, and interaction polish. Combines mathematical
-  scales (4px grid, OKLCH tokens) with native CSS minimalism and visual review.
-  Uses known project context and asks only for missing details that materially
-  affect the requested design.
-  Triggers: "/maxilun-craft", "/msal-ui", "desain UI", "sistem desain", "tampilan antarmuka",
-  "responsif", "aksesibilitas", "dark mode", "interaksi tombol", or any visual frontend task.
+  scales (4px grid, OKLCH tokens) with 84 real-world brand design references
+  (references/design-md/), 20 art directions, native CSS minimalism, and visual review.
+  Triggers: "/maxilun-craft", "/maxilun-ui", "/msal-craft", "/msal-ui", "desain UI",
+  "sistem desain", "tampilan antarmuka", "responsif", "aksesibilitas", "dark mode",
+  "interaksi tombol", or any visual frontend task.
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -22,153 +22,27 @@ metadata:
     - codex
     - zed
     - gemini-cli
+  references:
+    - references/design-md/README.md
+    - references/design-md/index.md
+    - references/component-mobile-patterns.md
 ---
 
-# Maxilun Craft: UI/UX & Design Systems
+# Maxilun Craft: UI/UX & Production Design Systems
 
-Bertanggung jawab atas rekayasa visual tingkat produksi: sistem desain konsisten, tipografi matematis, palet warna aksesibel, tata letak responsif, dan interaksi pengguna yang hidup tanpa beban library berlebih.
+Bertanggung jawab atas rekayasa visual tingkat produksi: sistem desain konsisten berbasis token semantik OKLCH, tipografi matematis, tata letak responsif 4px grid, aksesibilitas WCAG AA/AAA, serta arsitektur 4 state komponen yang terbebas dari estetika generik AI.
 
 ## Skill Contract
 
 - **Owns**: visual direction, design tokens, layout, typography, component appearance, interaction states, and design accessibility.
-- **Does not own**: React/Next.js runtime architecture, general code implementation, technical SEO, or final video rendering.
-- **Inputs**: product context, surface brief, existing `DESIGN.md`, platform constraints, and at most two relevant files from `references/design-md/`.
-- **Outputs**: a design direction, token/component decisions, implementation-ready UI guidance, or a visual audit with evidence.
-- **Handoff**: send runtime work to `maxilun-frontend`, code changes to `maxilun-engineer`, animation systems to `maxilun-motion`, and verification to `maxilun-verify`.
+- **Does not own**: React/Next.js runtime architecture (`maxilun-frontend`), general backend/code implementation (`maxilun-engineer`), technical SEO (`maxilun-seo-audit`), or final video rendering (`maxilun-cinecode`).
+- **Inputs**: product context (`PRODUCT.md` / `PRD.md`), surface brief, existing `DESIGN.md`, platform constraints, `references/component-mobile-patterns.md`, and at most two relevant files from `references/design-md/index.md`.
+- **Outputs**: a grounded design direction, token/component specifications, implementation-ready UI code, or a visual audit with evidence.
+- **Handoff**: send runtime work to `maxilun-frontend`, code changes to `maxilun-engineer`, complex animation systems to `maxilun-motion`, video rendering to `maxilun-cinecode`, and verification to `maxilun-verify`.
 
-### Design reference contract
+### Design Reference Contract
 
-The bundled corpus is part of this skill, not an external dependency. Read `references/design-md/README.md` and `references/design-md/index.md` before selecting a reference. Select by problem similarity, use no more than two references, and record `References`, `Applied`, `Rejected`, and `Reason` in the design output. Never reproduce a brand identity or use a reference as a substitute for product context.
-
-**Enhanced with Impeccable-inspired workflows**: Persistent product context (PRODUCT.md), iterative design prompts, optional browser-assisted review when tools are available, and documented quality checks.
-
-## 0. Design Context Check
-
-Sebelum membuat desain atau implementasi UI, gunakan konteks proyek dan brief yang sudah tersedia. Minta klarifikasi hanya untuk informasi yang belum diketahui dan benar-benar mengubah keputusan desain. Jangan hentikan pekerjaan untuk menanyakan ulang informasi yang sudah diberikan atau bisa dipastikan dari proyek.
-
-### 0a. Context Gathering (Jika Diperlukan)
-
-Jika konteks belum tersedia, tanyakan hanya hal yang diperlukan dari daftar berikut:
-
-1. **Produk/Aplikasi ini untuk siapa?** (audiens spesifik, bukan "semua orang")
-2. **Apa fungsi utama halaman/komponen ini?** (task konkret, bukan "tampilan bagus")
-3. **Apakah ada brand guideline, moodboard, atau referensi visual?** (jika tidak, tawarkan untuk buat direction singkat)
-4. **Nama aplikasi/fitur sudah ditentukan?** (jika belum, usulkan nama berdasarkan fungsi, bukan buzzword)
-
-Jika pengguna menyerahkan pilihan kepada Anda, buat asumsi minimum yang masuk akal, tandai arah sebagai draft, lalu lanjutkan.
-
-### 0b. Anti-Slop Name & Label Check
-
-Sebelum menamai halaman, menu, tombol, atau fitur:
-
-| DILARANG (AI Slop) | GANTI DENGAN (Fungsi Spesifik) |
-|---|---|
-| Dashboard, Admin Panel, Control Center | [Nama Fungsi] Monitor, [Entitas] Manager, Ringkasan [Aktivitas] |
-| Get Started, Learn More, Explore | [Aksi Konkret]: Buat Akun, Lihat Harga, Coba Demo |
-| Settings, Configuration, Preferences | Pengaturan [Konteks]: Notifikasi Email, Privasi Data, Tampilan |
-| Profile, Account, User | Nama Pengguna + Konteks: Profil Dokter, Akun Toko, Data Siswa |
-| Welcome, Hello, Hi there | Sapaan kontekstual: Selamat Datang di [App], Lanjutkan Pekerjaan, Kembali ke [Fitur] |
-| Powerful, Smart, AI-Powered, Next-Gen | Hapus. Jelaskan fungsi nyata dalam 3-5 kata |
-| Revolutionize, Transform, Elevate | Hapus. Gunakan kata kerja konkret: Otomatisasi, Percepat, Sederhanakan |
-
-**Aturan penamaan**:
-- Nama harus menjawab: "Halaman ini melakukan APA untuk SIAPA?"
-- Jika nama bisa dipakai di 10+ aplikasi lain tanpa perubahan → nama terlalu generik, ganti
-- Menu sidebar/nav wajib mencerminkan struktur informasi aktual, bukan template default
-- Breadcrumb hanya jika hierarki navigasi ≥3 level; halaman sederhana (login, register, 404) TIDAK pakai breadcrumb
-
-### 0c. Visual Direction Declaration (Design Read)
-
-Sebelum generate, deklarasikan satu baris:
-
-> Reading this as: `<page kind>` for `<audience>`, in a `<visual language>` style, dial ENERGY X / RHYTHM Y / MOTION Z.
-
-Contoh: *"Reading this as: Login page for clinic staff, in a calm medical-professional style, dial ENERGY 1 / RHYTHM 1 / MOTION 1."*
-
-Jika tidak ada direction dari pengguna:
-- Label output: **"DRAFT TANPA ARAH"**
-- Dial default jujur: **ENERGY 1 / RHYTHM 1 / MOTION 1**
-- Jangan silently fallback ke aesthetic AI default (ungu-biru, glassmorphism, glow)
-
-### 0d. Page-Type Specific Pre-Check
-
-Untuk tipe halaman umum, jalankan checklist tambahan SEBELUM coding:
-
-**Login/Register Page:**
-- [ ] Form fields sesuai kebutuhan autentikasi aktual (email+password? OAuth? OTP?)
-- [ ] Error state untuk setiap field (invalid format, wrong password, account locked)
-- [ ] Loading state pada submit button (spinner + disable)
-- [ ] Success/failure feedback setelah submit
-- [ ] "Forgot password" link berfungsi atau ditandai "Coming soon"
-- [ ] Social login buttons hanya jika backend mendukung
-- [ ] Tidak ada elemen dekoratif yang tidak berfungsi (gradient background, floating shapes, fake testimonials)
-- [ ] Layout fokus pada form, bukan hero section atau marketing copy
-- [ ] Mobile: input font ≥16px, tap target ≥44px, no horizontal scroll
-
-**Dashboard/Admin Page:**
-- [ ] Data yang ditampilkan berasal dari sumber nyata atau placeholder berlabel `[REAL DATA]`
-- [ ] Empty state untuk setiap widget/chart/list
-- [ ] Loading skeleton yang meniru bentuk konten final
-- [ ] Filter/search berfungsi atau ditandai non-fungsional
-- [ ] Navigation menu mencerminkan struktur informasi aktual, bukan template 4-item default
-- [ ] Tidak ada statistik palsu ("99.9% uptime", "10K+ users") tanpa sumber
-
-**Landing Page:**
-- [ ] Hero menjelaskan nilai produk dalam 1 kalimat spesifik, bukan slogan generik
-- [ ] CTA utama mengarah ke aksi nyata (signup, demo, pricing)
-- [ ] Testimonials dari orang/perusahaan nyata atau dihapus sepenuhnya
-- [ ] Feature list berdasarkan kemampuan aktual, bukan klaim marketing
-- [ ] FAQ berisi pertanyaan yang benar-benar ditanyakan user, bukan template
-- [ ] Tidak ada "Trusted by" logo bar tanpa izin penggunaan logo
-
-### 0e. Gate Status Output
-
-Setelah menjalankan §0a-0d, output status gate SEBELUM mulai coding:
-
-```
-🔒 DESIGN CONTEXT CHECK
-- Context gathered: ✅/❌ (jika ❌, labeled DRAFT TANPA ARAH)
-- Names/labels checked: ✅/❌ (list yang diganti)
-- Design Read declared: ✅ "Reading this as: ..."
-- Page-type pre-check: ✅/❌ (list item yang perlu perhatian)
-- Verdict: PROCEED / BLOCKED (jika BLOCKED, sebutkan alasan dan langkah perbaikan)
-```
-
-Jika verdict = BLOCKED, jangan lanjutkan. Perbaiki dulu, lalu re-run gate.
-
-### 0f. Copywriting Anti-Slop Filter (Inline)
-
-Meskipun `maxilun-content` adalah spesialis copywriting, `maxilun-craft` WAJIB punya filter copy dasar untuk mencegah AI slop text masuk ke UI. Aturan ini berlaku untuk SEMUA teks yang ditulis dalam kode UI (label, heading, deskripsi, placeholder, error message, toast, tooltip).
-
-**Teks DILARANG (AI Slop Patterns):**
-
-| Kategori | Contoh DILARANG | Ganti Dengan |
-|---|---|---|
-| Deskripsi bombastis | "Studio desain independen yang merancang identitas visual, arsitektur jenama, dan sistem desain digital" | "Kami membantu brand membangun identitas visual yang konsisten" (singkat, konkret, manusia) |
-| Buzzword stacking | "Portal tracking progres proyek dan verifikasi invoice digital transparan" | "Pantau progres proyek dan cek invoice kapan saja" |
-| Formal berlebihan | "Dilengkapi dengan fitur mutakhir untuk optimalisasi produktivitas" | "Fitur yang membantu Anda bekerja lebih cepat" |
-| Jargon tanpa konteks | "Arsitektur jenama", "Sistem desain digital", "Ekosistem terintegrasi" | Gunakan kata yang dimengerti audiens target |
-| Kalimat panjang >25 kata | Satu kalimat menjelaskan 3+ hal sekaligus | Pecah jadi 2-3 kalimat pendek atau bullet points |
-| Passive voice dominan | "Proyek dapat dilacak melalui portal yang telah disediakan" | "Lacak progres proyek Anda di portal" |
-| Triple adjective | "Cepat, aman, dan terpercaya" | Pilih SATU yang paling relevan + buktikan |
-
-**Prinsip copy di UI:**
-1. **Tulis seperti manusia berbicara**, bukan seperti brosur korporat
-2. **Satu kalimat = satu ide**. Jika ada "dan", "yang", "dengan" bertumpuk, pecah
-3. **Kata kerja aktif**: "Lacak", "Kelola", "Buat" bukan "Dapat dilacak", "Dapat dikelola"
-4. **Spesifik > Umum**: "Upload invoice PDF" bukan "Upload dokumen"
-5. **Singkat > Panjang**: Label tombol max 3 kata. Heading max 8 kata. Deskripsi max 2 kalimat.
-6. **Test baca keras**: Jika terasa kaku/bukan cara orang bicara, tulis ulang
-7. **Bahasa Indonesia natural**: Jangan terjemahkan literal dari English AI patterns. "Get started" bukan "Mulai sekarang" (lebih baik: "Buat akun" atau "Coba gratis")
-
-**Copy Check Gate** (jalankan sebelum ship):
-- [ ] Baca semua teks UI keras-keras. Terasa natural atau seperti robot/brosur?
-- [ ] Adakah kalimat >25 kata? Pecah.
-- [ ] Adakah buzzword dari purity-catalog A butir 5? Hapus/ganti.
-- [ ] Adakah klaim tanpa bukti ("terpercaya", "mutakhir", "terbaik")? Hapus atau beri data.
-- [ ] Apakah label tombol/CTA spesifik untuk konteks ini? Bukan "Submit", "Klik di sini", "Pelajari lebih lanjut"?
-
----
+The bundled corpus in `references/design-md/` (84 production brand analyses) and `references/component-mobile-patterns.md` is part of this skill, not an external dependency. Read `references/design-md/README.md` and `references/design-md/index.md` before selecting a reference. Select by problem similarity, use no more than two references, and record `References`, `Applied`, `Rejected`, and `Reason` in the design output. Never reproduce a brand identity or use a reference as a substitute for product context.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)
@@ -185,902 +59,158 @@ Berlaku pada setiap respons dan setiap perubahan kode. Tidak bisa di-override ol
 Detail lengkap: `../maxilun/references/engines.md`.
 <!-- CORE-RULES:END -->
 
+## 0. Design Context Check (Pre-Generation Gate Wajib)
+
+Sebelum menulis kode UI, periksa konteks proyek (`docs/PRD.md`, `docs/DESIGN.md`, `PRODUCT.md`). Tanyakan hanya hal yang belum diketahui dan mengubah keputusan desain secara material.
+
+### 0a. Anti-Slop Name & Label Check
+Sebelum menamai halaman, menu navigasi, tombol, atau fitur:
+
+| DILARANG (AI Slop) | WAJIB DIGANTI DENGAN (Fungsi Spesifik) |
+|---|---|
+| `Dashboard`, `Admin Panel`, `Control Center` | `[Nama Fungsi] Monitor`, `Ringkasan [Aktivitas]`, `Antrean [Entitas]` |
+| `Get Started`, `Learn More`, `Explore`, `Submit` | Aksi konkret `<= 3 kata`: `Buat Akun`, `Lihat Harga`, `Kirim Tagihan` |
+| `Settings`, `Configuration`, `Preferences` | Konteks spesifik: `Notifikasi Email`, `Akses Tim`, `Metode Pembayaran` |
+| `Powerful`, `Smart`, `AI-Powered`, `Next-Gen`, `Mutakhir` | Hapus klaim kosong; jelaskan fungsi nyata dalam 3–6 kata |
+
+### 0b. Visual Direction Declaration (Design Read) & Reference Selection
+Sebelum implementasi, deklarasikan satu baris arah visual + catatan referensi dari `references/design-md/index.md` dan 20 Art Directions di `references/component-mobile-patterns.md`:
+
+```text
+🔒 DESIGN CONTEXT CHECK
+- Design Read: "Reading this as: <page kind> for <audience>, in a <visual direction> style, dial ENERGY X / RHYTHM Y / MOTION Z."
+- References: <1-2 files from references/design-md/index.md>
+- Applied: <hierarchy, type scale, spacing density, or color roles adapted>
+- Rejected: <elements omitted for this product>
+- Reason: <audience, task, and platform constraint>
+- Verdict: PROCEED / BLOCKED
+```
+*(Jika belum ada arah dari user, beri label eksplisit **"DRAFT TANPA ARAH"** dengan dial jujur `ENERGY 1 / RHYTHM 1 / MOTION 1` — dilarang diam-diam jatuh ke gradien ungu-biru default AI).*
+
+### 0c. Copywriting Anti-Slop Filter (Inline)
+Seluruh teks di dalam UI (heading, deskripsi, label input, empty state, toast, error message) wajib mematuhi aturan ini:
+1. **Tulis seperti manusia berbicara**, bukan brosur korporat. Satu kalimat = satu ide (`<= 20-25 kata`).
+2. **Kata kerja aktif & spesifik**: `"Upload invoice PDF (maks 5MB)"` bukan `"Dokumen dapat diunggah di sini"`.
+3. **Bebas em-dash berlebihan & bebas buzzword** dari `../maxilun/references/purity-catalog.md` (butir A.5–A.6).
+
 ## 1. Engine Overrides
 
 Delta domain terhadap Core Rules di atas. Override craft:
-- **Purity**: Tolak klise visual AI (gradien biru-ungu, glow semua border, glassmorphism bertumpuk). Purpose Gate wajib. Gunakan documented quality checks yang relevan sebagai panduan review (§12). Periksa konteks desain dari brief dan proyek sebelum implementasi.
-- **Minimalist**: CSS native modern (Grid, `@container`, `oklch()`) > utility framework pihak ketiga.
+- **Purity**: Tolak klise visual AI (gradien biru-ungu dekoratif `CLR-001`, glow di semua border, glassmorphism bertumpuk, angka/testimoni palsu). Tunduk pada `../maxilun/references/purity-catalog.md`.
+- **Minimalist**: Utamakan CSS native modern (CSS Grid, `@container`, `oklch()`, `<dialog>`, CSS View Transitions) di atas dependency berat.
 
 ## Workflow
 ```mermaid
 flowchart LR
-    A[§0 Context Check] --> B[PRODUCT.md Init]
-    B --> C[Tokens]
-    C --> D[Layout]
-    D --> E[States]
-    E --> F[Purity Gate]
-    F --> G[Quality Review]
-    G --> H[Delivery Gate]
+    A[§0 Context & Ref Check] --> B[Tokens & Typography]
+    B --> C[Layout & Component Patterns]
+    C --> D[4 UI States & Mobile Touch]
+    D --> E[3-Width Review]
+    E --> F[§8 Delivery Gate]
 ```
 
-**Sebelum desain atau implementasi UI**: Cek apakah knowledge graph sudah tersedia (sesi aktif, `.maxilun/graph.json`, atau CodeGraph/LSP). Jika ya, gunakan untuk memahami struktur komponen dan dependensi yang ada — jangan re-analyze dari nol. Lihat orchestrator §6 "Context inheritance".
+**Warisan Konteks**: Periksa apakah `maxilun-knowledge-graph` tersedia untuk memahami struktur komponen yang ada sebelum mengubah UI.
 
----
+## 2. Fondasi Sistem Desain (Design Tokens & Tipografi)
 
-## 2. PRODUCT.md: Persistent Product Context
-
-### Filosofi
-Desain yang baik dimulai dari pemahaman mendalam tentang produk, bukan preferensi visual sesaat. PRODUCT.md adalah single source of truth untuk konteks produk yang persisten antar sesi, memastikan setiap keputusan desain grounded pada realitas bisnis dan kebutuhan user.
-
-### Struktur PRODUCT.md
-```markdown
-# [Product Name] — Product Context
-
-## Identity
-- **Name**: [Nama produk/jasa]
-- **Tagline**: [One-line value proposition, max 8 words]
-- **Category**: [SaaS / E-commerce / Content / Tool / etc.]
-
-## Audience
-- **Primary**: [Siapa yang menggunakan? Role, demografi, tech-savviness]
-- **Secondary**: [Stakeholders lain yang terpengaruh]
-- **Anti-audience**: [Siapa yang BUKAN target? Penting untuk fokus]
-
-## Purpose & Goals
-- **Core problem solved**: [Masalah utama yang diselesaikan]
-- **Success metrics**: [KPI konkret: conversion, retention, task completion time]
-- **Business model**: [Subscription / Transactional / Ad-supported / etc.]
-
-## Operating Context
-- **Platform**: [Web app / Mobile / Desktop / Embedded / etc.]
-- **Tech stack**: [Framework, CMS, backend constraints]
-- **Performance budget**: [Load time target, bundle size limit]
-- **Accessibility requirements**: [WCAG level, regional compliance]
-
-## Voice & Tone
-- **Brand personality**: [Professional / Playful / Authoritative / Friendly / etc.]
-- **Language style**: [Formal / Conversational / Technical / Simple]
-- **Cultural context**: [Locale-specific considerations, taboos, preferences]
-
-## Evidence Base
-- **User research**: [Links to interviews, surveys, personas]
-- **Analytics**: [Current baseline metrics, pain points from data]
-- **Competitive analysis**: [Key differentiators vs alternatives]
-- **Constraints**: [Legal, technical, budget, timeline limitations]
-
-## Visual Direction (Separate from Product Truth)
-> Catatan: Arah visual (style, mood, aesthetic) TIDAK masuk di sini. 
-> Visual direction ditetapkan per-surface di `.maxilun/surfaces/*.md` 
-> atau di DESIGN.md setelah product context disetujui.
-```
-
-### Kapan Membuat PRODUCT.md
-- **Proyek baru**: Wajib sebelum mulai desain apa pun
-- **Proyek existing**: Buat jika belum ada, extract dari codebase/docs/stakeholder interviews
-- **Scope change besar**: Update PRODUCT.md saat pivot atau expansion signifikan
-
-### Command: `/maxilun-craft init`
-Menjalankan interactive session untuk gather product context:
-1. Scan project structure, package.json, README, existing docs
-2. Identify gaps in product understanding
-3. Ask targeted questions HANYA untuk informasi yang missing
-4. Generate PRODUCT.md draft untuk review
-5. Recommend next steps (design tokens, surface planning, etc.)
-
-**Contoh penggunaan:**
-```
-/maxilun-craft init                    # Full interactive setup
-/maxilun-craft init --from-brief       # Parse existing brief document
-/maxilun-craft init --update           # Refresh existing PRODUCT.md
-```
-
----
-
-## 3. Iterative Design Commands (24 Commands)
-
-Terinspirasi dari Impeccable, diperkuat dengan Maxilun purity gates dan token system integration. Entri `/maxilun-craft <command> <target>` adalah prompt pola untuk skill, bukan executable CLI; gunakan hanya jika skill tersedia di sesi.
-
-### Core Workflow Commands
-
-| Command | Fungsi | Kapan Gunakan |
-|---------|--------|---------------|
-| `/maxilun-craft init` | Setup PRODUCT.md + design tokens + workflow config | Proyek baru atau onboarding |
-| `/maxilun-craft shape` | Plan UX/UI structure sebelum coding | Early design phase |
-| `/maxilun-craft build` | Execute implementation dari approved shape | Implementation phase |
-| `/maxilun-craft polish` | Final pass: alignment, consistency, shipping readiness | Pre-launch |
-| `/maxilun-craft audit` | Agent-assisted accessibility, visual, and performance review | Quality gate |
-| `/maxilun-craft critique` | LLM-powered UX design review (hierarchy, clarity, emotion) | Design feedback |
-| `/maxilun-craft document` | Generate DESIGN.md dari existing codebase | Legacy projects |
-| `/maxilun-craft extract` | Pull reusable components/tokens ke design system | System maturation |
-
-### Refinement Commands
-
-| Command | Fungsi | Efek |
-|---------|--------|------|
-| `/maxilun-craft bolder` | Amplify boring/generic designs | Increase contrast, scale, visual weight |
-| `/maxilun-craft quieter` | Tone down overly busy/loud designs | Reduce saturation, simplify layout |
-| `/maxilun-craft distill` | Strip to essence, remove complexity | Delete non-essential elements |
-| `/maxilun-craft harden` | Add error handling, edge cases, i18n | Robustness improvements |
-| `/maxilun-craft clarify` | Improve unclear UX copy | Rewrite labels, instructions, errors |
-| `/maxilun-craft typeset` | Fix font choices, hierarchy, sizing | Typography refinements |
-| `/maxilun-craft colorize` | Introduce strategic color accents | Purposeful color additions |
-| `/maxilun-craft layout` | Fix spacing, rhythm, alignment | Spatial corrections |
-
-### Enhancement Commands
-
-| Command | Fungsi | Scope |
-|---------|--------|-------|
-| `/maxilun-craft animate` | Add purposeful motion (integrates maxilun-motion) | Micro-interactions, transitions |
-| `/maxilun-craft delight` | Add moments of joy without slop | Subtle surprises, satisfying feedback |
-| `/maxilun-craft overdrive` | Technically extraordinary effects (performance-gated) | Hero sections, showcases |
-| `/maxilun-craft onboard` | First-run flows, empty states, activation | User journey optimization |
-| `/maxilun-craft adapt` | Responsive adjustments per breakpoint | Cross-device consistency |
-| `/maxilun-craft optimize` | Performance improvements (bundle, render, load) | Speed & efficiency |
-
-### Utility Commands
-
-| Command | Fungsi | Output |
-|---------|--------|--------|
-| `/maxilun-craft pin <cmd>` | Create shortcut alias (e.g., `pin audit` → `/audit`) | Personalized workflow |
-| `/maxilun-craft live` | Enter live browser iteration mode | Real-time visual editing |
-| `/maxilun-craft generate <element>` | Generate variants in browser, no manual picking | Rapid exploration |
-| `/maxilun-craft detect <path>` | Agent-assisted review of supplied source files | Focused quality review |
-
-### Command Usage Examples
-```bash
-# Audit specific page
-/maxilun-craft audit landing-page
-
-# Polish before launch
-/maxilun-craft polish checkout-flow
-
-# Make hero section more impactful
-/maxilun-craft bolder hero-section
-
-# Simplify complex dashboard
-/maxilun-craft distill analytics-dashboard
-
-# Live iterate on navigation
-/maxilun-craft live navbar
-
-# Generate button variants
-/maxilun-craft generate cta-button
-```
-
-### Namespace Convention
-Prefix `msal-` (Maxilun Skill Abstraction Layer) digunakan untuk semua commands guna mencegah konflik dengan:
-- Custom user commands
-- Skill ekosistem lain yang terpasang di platform yang sama
-- Future ecosystem skills
-
-Shortcut via `pin` tetap tersedia untuk frequently-used commands:
-```bash
-/maxilun-craft pin audit    # Creates /audit shortcut
-/maxilun-craft pin bolder   # Creates /bolder shortcut
-```
-
-### Command Philosophy
-- **Targeted**: Setiap command fokus pada satu aspek, bukan "fix everything"
-- **Composable**: Commands bisa di-chain (`/craft bolder hero` → `/craft polish hero`)
-- **Reversible**: Setiap perubahan tracked, bisa rollback via git
-- **Evidence-based**: Decisions grounded in PRODUCT.md context, not personal taste
-
----
-
-## 3b. Advanced Design Workflow (Enhanced)
-
-Memberikan art direction berbasis riset 247 situs terkurasi, gambar nyata dari koleksi terbuka, dan validasi browser multi-lebar untuk menolak output generik AI.
-
-### 6-Langkah Build Process
-
-Setiap build desain baru mengikuti workflow ini:
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│ 1. READ BRIEF    → Identifikasi apa yang unik untuk klien   │
-│ 2. DEAL DIRECTION → Pilih 1 dari 20 art directions          │
-│ 3. FIND IDEA     → Satu kalimat: material klien + direction │
-│ 4. BUILD         → Implementasi dengan gambar nyata + kredit│
-│ 5. BROWSER CHECK → Validasi di 3 lebar layar, fail on slop  │
-│ 6. SELF-REVIEW   → Lihat screenshot, fix top 3 issues      │
-└─────────────────────────────────────────────────────────────┘
-```
-
-**Estimasi**: 30-45 menit per build, beberapa ratus ribu token.
-
-### Art Direction System
-
-20 art directions diteliti dari 247 situs award-winning. Tiga direction di-deal secara acak, agent memilih satu berdasarkan brief.
-
-| # | Direction | Karakteristik | Cocok Untuk |
-|---|-----------|---------------|-------------|
-| 1 | Editorial Magazine | Tipografi dominan, grid asimetris, whitespace dramatis | Content-heavy, news, blog premium |
-| 2 | Swiss International | Grid ketat, sans-serif bold, warna terbatas, presisi | Corporate, fintech, professional services |
-| 3 | Neo-Brutalist | Border tebal, kontras tinggi, raw aesthetic, anti-polish | Creative agencies, youth brands, art projects |
-| 4 | Japanese Minimalist | Ma (negative space), tipografi vertikal, restraint | Luxury, wellness, cultural products |
-| 5 | Retro-Futurism | Warna neon, geometri, nostalgia 80s-90s tech | Gaming, entertainment, tech startups |
-| 6 | Organic Modern | Kurva natural, earth tones, tekstur organik | Sustainable brands, food, lifestyle |
-| 7 | Industrial Technical | Monospace, blueprint aesthetic, functional labeling | Developer tools, SaaS, infrastructure |
-| 8 | Art Deco Revival | Geometri simetris, gold accents, dramatic contrast | Luxury hospitality, fashion, events |
-| 9 | Scandinavian Functional | Light wood, soft shadows, warm neutrals, clarity | Furniture, home goods, family products |
-| 10 | Cyberpunk Dense | Dark UI, data visualization, glitch elements, neon | Crypto, gaming, security tech |
-| 11 | Vintage Print | Serif display, paper texture, muted palette, ornamental | Heritage brands, publishing, artisan products |
-| 12 | Glassmorphism Refined | Frosted layers done right, depth hierarchy, subtle | Modern SaaS, dashboards (single layer only!) |
-| 13 | Bauhaus Geometric | Primary colors, basic shapes, asymmetric balance | Education, design schools, creative tools |
-| 14 | Tropical Maximalist | Bold patterns, saturated colors, layered imagery | Travel, festivals, food & beverage |
-| 15 | Monochrome Typography | Single color, type scale as hero, rhythm over image | Portfolios, architecture, law firms |
-| 16 | Soft Gradient Mesh | Fluid gradients, organic blobs, dreamy atmosphere | Beauty, wellness, meditation apps |
-| 17 | Data-Dense Dashboard | Compact spacing, tabular nums, status colors, quiet panels | Analytics, admin, monitoring tools |
-| 18 | Illustrated Narrative | Custom illustrations, storytelling scroll, character | Onboarding, education, children's products |
-| 19 | Luxury Black & Gold | Deep blacks, metallic accents, generous spacing, serif | Premium services, jewelry, high-end real estate |
-| 20 | Playful Microinteractions | Bouncy easing, surprise details, friendly copy | Consumer apps, social, productivity tools |
-
-**Command**: `/maxilun-craft direction` — Deal 3 random directions, present with rationale, user picks one.
-
-### Real Image Protocol
-
-Gambar diambil dari koleksi terbuka dengan lisensi legal. Kredit wajib ditampilkan.
-
-**Sumber yang Diizinkan:**
-- Wikimedia Commons (Public Domain, CC BY, CC BY-SA)
-- Openverse (CC0, CC BY, CC BY-SA)
-- The Met Open Access (CC0)
-- Unsplash (Unsplash License)
-- Pexels (Pexels License)
-
-**Aturan Ketat:**
-1. **Kredit wajib**: Setiap gambar punya atribusi visible atau di halaman credits
-2. **Lisensi verified**: Cek lisensi sebelum pakai, jangan asumsi
-3. **Relevansi**: Gambar harus mendukung narasi, bukan dekorasi filler
-4. **Kualitas**: Resolusi cukup untuk viewport target, aspect ratio sesuai container
-5. **Alt text**: Deskriptif dan spesifik, bukan "image of..." atau keyword stuffing
-
-**Command**: `/maxilun-craft images <brief>` — Cari gambar relevan dari sumber terbuka, return URL + lisensi + kredit format.
-
-### Browser Self-Review Protocol
-
-Validasi visual di browser nyata pada tiga lebar layar. Gagal otomatis jika mendeteksi pola slop.
-
-**Tiga Breakpoint Wajib:**
-1. **Mobile**: 375px width
-2. **Tablet**: 768px width
-3. **Desktop**: 1440px width
-
-**Anti-Slop Visual Checklist (Fail = Reject):**
-
-| Check | Fail Condition | Fix Required |
-|-------|----------------|--------------|
-| Color Palette | Purple-to-blue gradient sebagai default | Ganti dengan semantic tokens dari §4 |
-| Typography | Font AI default (Inter, Roboto, Arial) tanpa modifikasi | Adjust weight, size, spacing, atau ganti font |
-| Layout | Hero+Cards+Testimonials+FAQ+Footer template | Restructure based on content needs |
-| Spacing | Whitespace random tanpa grouping logic | Apply 4px grid system dari §4 |
-| Components | Decorative buttons/tabs/search | Hapus atau beri fungsi nyata |
-| Animation | Glow/floating/parallax non-fungsional | Remove atau tie to UX purpose |
-| Identity | Logo swap = same feel | Add unique visual element (motif, accent, type treatment) |
-| Contrast | Text < 4.5:1 ratio | Adjust lightness per OKLCH tokens |
-| Mobile | Horizontal overflow, tap target < 44px | Fix responsive breakpoints |
-| Content | Fake stats/testimonials without source | Remove atau label `[REAL DATA]` |
-
-**Self-Review Loop (Max 3 Rounds):**
-1. Take screenshot at all 3 widths
-2. Run anti-slop checklist against screenshots
-3. Identify top 3 issues by severity
-4. Fix those 3 issues
-5. Re-screenshot, re-check
-6. Repeat until pass or 3 rounds complete
-
-**Command**: `/maxilun-craft review` — Execute browser self-review protocol, output findings + fixes applied.
-
-### Dashboard & App Screen Route (v2.1+)
-
-Untuk dashboard dan app screens, workflow berbeda:
-
-1. **Style Deal**: Pilih dari app-specific styles (bukan landing page styles)
-2. **Shell First**: Build layout structure tanpa data
-3. **Data Layer**: Add realistic data patterns (numbers, dates, statuses)
-4. **Charts & Tables**: Implement dengan proper formatting (tabular-nums, alignment)
-5. **App Rules Check**: Quiet panels, aligned figures, color spent on data, phone nav folds away
-
-**App-Specific Anti-Slop:**
-- Panel borders subtle, not heavy drop shadows
-- Numbers right-aligned with tabular-nums
-- Status colors limited to semantic set (success/warning/error/info)
-- Navigation collapses properly on mobile (bottom sheet/tab bar)
-- Empty states informative, not just "No data"
-
-**Command**: `/maxilun-craft app` — Activate dashboard/app screen route instead of landing page route.
-
-### Frame Check (v2.1+)
-
-Setiap halaman dicek frame-nya:
-- Clear title on first screen
-- Equal margins left/right
-- No section shoved to one side
-- No random blank stretches
-- Motion measured against Awwwards Site of the Day patterns
-
-**Command**: `/maxilun-craft frame` — Validate page framing and motion quality.
-
----
-
-## 4. Fondasi Sistem Desain (Design Tokens)
-
-### Skala Spasial (4px/8px Grid)
-Semua padding, margin, dan gap wajib mengacu pada kelipatan 4px:
+### 2.1 Skala Spasial (4px Grid) & Hierarki Radius
 ```css
 :root {
-  --space-1: 4px;    /* micro-spacing, badge padding */
-  --space-2: 8px;    /* gap elemen kompak */
-  --space-3: 12px;   /* padding form input */
-  --space-4: 16px;   /* padding container standar */
-  --space-6: 24px;   /* pemisah antar-komponen */
-  --space-8: 32px;   /* pemisah antar-seksi */
-  --space-12: 48px;  /* margin hero section */
+  --space-1: 4px;   --space-2: 8px;   --space-3: 12px;  --space-4: 16px;
+  --space-6: 24px;  --space-8: 32px;  --space-12: 48px; --space-16: 64px;
+  --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
 }
 ```
+- **Aturan Radius Anak <= Induk**: Jika Card memakai `12px` dan memiliki `padding: 16px`, elemen tombol/input di dalamnya wajib memiliki radius lebih kecil (`6px–8px`), bukan seragam `12px` di semua elemen (`CMP-004`).
 
-### Sistem Warna Semantic (Perceptually Uniform OKLCH)
-Tentukan warna berdasarkan peran semantic, bukan hex acak:
+### 2.2 Sistem Warna Semantik (Perceptually Uniform OKLCH & Dark Mode)
 ```css
 :root {
-  /* Latar belakang & Kontras */
-  --surface-base:     oklch(98% 0.005 250);
-  --surface-card:     oklch(100% 0 0);
-  --text-main:        oklch(18% 0.01 250);
-  --text-muted:       oklch(45% 0.01 250);
-
-  /* Interaktif & Status */
-  --brand-primary:    oklch(52% 0.18 250);
-  --brand-hover:      oklch(44% 0.18 250);
-  --status-success:   oklch(60% 0.16 145);
-  --status-danger:    oklch(58% 0.22 25);
+  --surface-base:    oklch(98.5% 0.004 250);
+  --surface-card:    oklch(100% 0 0);
+  --border-hairline: oklch(89% 0.008 250);
+  --text-main:       oklch(18% 0.012 250);
+  --text-muted:      oklch(46% 0.012 250);
+  --brand-primary:   oklch(50% 0.17 255);
+  --brand-hover:     oklch(43% 0.17 255);
+  --status-success:  oklch(58% 0.16 145);
+  --status-warning:  oklch(72% 0.17 75);
+  --status-danger:   oklch(56% 0.21 25);
 }
 ```
+- **Dark Mode Tanpa Kedip (Flash Prevention)**: Definisikan pasangan token gelap dalam satu sistem, pasang `color-scheme: dark` pada `<html>` saat tema gelap aktif, dan gunakan inline synchronous script di `<head>` sebelum body dirender (lihat detail di `references/component-mobile-patterns.md`).
 
-## 5. Gerbang Aksesibilitas & Responsivitas (Non-Negotiable)
+### 2.3 Tipografi & Disiplin Angka
+- Skala: `12px (xs)`, `14px (sm)`, `16px (md/body)`, `18-20px (lg)`, `24-32px (xl)`, `40-56px (display)`.
+- `line-height`: Heading `1.15–1.25`, Body `1.5–1.6`, lebar baca paragraf `60ch–75ch`.
+- **Wajib `font-variant-numeric: tabular-nums`** pada setiap kolom tabel, harga, waktu, metrik KPI, dan penghitung angka.
 
-1. **Aksesibilitas (WCAG AA/AAA)**:
-   - Rasio kontras teks biasa minimal `4.5:1` (AA) atau `7:1` (AAA).
-   - Indikator fokus (`:focus-visible`) wajib terlihat jelas saat navigasi keyboard.
-   - Semua elemen interaktif memiliki label yang dapat dibaca screen reader (`aria-label` untuk icon button).
-   - Ukuran target sentuh mobile minimal `44x44px` dengan jarak minimal `8px`.
-2. **Mobile-First Layout**:
-   - Dimulai dari viewport mobile (`375px`), adaptasi tablet (`768px`), hingga desktop (`1024px+`).
-   - Tidak boleh ada scroll horizontal tak disengaja (*overflow-x hidden* yang terkendali).
-   - Ukuran teks body di mobile minimal `16px` untuk mencegah auto-zoom di browser iOS.
-3. **Interaksi & Mikro-Animasi**:
-   - Transisi cepat dan responsif: durasi `150ms - 250ms`.
-   - Hanya animasikan properti GPU-accelerated: `transform` dan `opacity`.
-   - Hormati preferensi pengguna: `@media (prefers-reduced-motion: reduce)`.
-   - Tingkatkan kontras saat `:hover`/`:active`/`:focus` — status tidak boleh bertumpu pada warna saja (pasang ikon/teks label).
+## 3. Gerbang Aksesibilitas & Responsivitas (Non-Negotiable)
 
-## 6. Tipografi & Ritme Modular
-- Skala tipografi konsisten: `--text-xs 12px`, `--text-sm 14px`, `--text-md 16px`, `--text-lg 18-20px`, `--text-xl 24-32px`.
-- `line-height`: heading 1.2-1.3, body 1.5. Lebar baca blok teks panjang: `max-width: 60ch - 75ch`.
-- Angka kolom perbandingan: `font-variant-numeric: tabular-nums` agar tidak goyang begitu nilainya berubah.
-- Kapital/eyebrow text: `letter-spacing: 0.04em - 0.08em`, selalu uppercase via `text-transform: uppercase`, bukan huruf kapital ditulis manual.
+1. **Kontras WCAG AA/AAA**: Rasio kontras teks biasa minimal `4.5:1` (`7:1` AAA); teks besar minimal `3:1`. Status tidak boleh hanya mengandalkan warna (sertakan ikon/teks).
+2. **Navigasi Keyboard & Screen Reader**: Indikator `:focus-visible` wajib jelas; urutan `Tab` logis; semua tombol ikon wajib memiliki `aria-label` deskriptif.
+3. **Mobile-First & Touch Target**: Mulai dari `375px` → `768px` → `1440px`. Target sentuh minimal `44x44px` (jarak `>= 8px`), tanpa horizontal overflow, dan ukuran font `<input>` minimal `16px`.
+4. **Mikro-Interaksi**: Durasi `150ms–250ms`, hanya menganimasikan `transform` dan `opacity`, serta wajib mematuhi `@media (prefers-reduced-motion: reduce)`.
 
-## 7. Dark Mode & Warna Adaptif
-- Token terang/gelap didefinisikan dalam satu set token dari awal — bukan fork file CSS terpisah.
-- Dark mode wajib pasang `color-scheme: dark` pada root agar kontrol native (scrollbar, `<select>`, checkbox) ikut beradaptasi.
-- Semua kombinasi token uji kontras AA pada kedua tema; pasangan brand pada latar gelap biasanya butuh `lightness` lebih tinggi agar lolos.
+## 4. Desain 4 Keadaan UI (Mandatory 4 UI States)
 
-### Toggle Persistence & System Preference
-- Simpan preferensi pengguna di `localStorage` (`theme-preference: 'light' | 'dark' | 'system'`).
-- Default ke `'system'` jika belum ada preferensi tersimpan; deteksi via `matchMedia('(prefers-color-scheme: dark)')`.
-- Dengarkan event `change` pada media query untuk update real-time saat pengguna mengubah setting OS.
-- Prioritas: pilihan eksplisit pengguna > system preference.
+Setiap halaman, tabel, list, dan komponen asinkron wajib mengimplementasikan **4 state**:
+1. **Loading State**: Skeleton yang meniru proporsi geometri konten final (`CLS = 0`), bukan sekadar spinner di tengah layar.
+2. **Empty State**: Penjelasan konkret mengapa data belum ada + tombol aksi pertama (*first action CTA*).
+3. **Populated State**: Tampilan data normal yang tahan terhadap teks sangat panjang (`truncate`/`line-clamp`) dan angka ekstrem.
+4. **Error State**: Pesan spesifik apa yang gagal (bukan *"Something went wrong"*) + langkah/tombol pemulihan (*Retry* atau jalur alternatif).
 
-### Flash-of-Wrong-Theme Prevention
-- Sisipkan script blocking di `<head>` **sebelum** render body:
-  ```html
-  <script>
-    (function(){
-      var t = localStorage.getItem('theme-preference');
-      var d = document.documentElement;
-      if (t === 'dark' || (!t && matchMedia('(prefers-color-scheme:dark)').matches)) {
-        d.classList.add('dark');
-        d.style.colorScheme = 'dark';
-      }
-    })();
-  </script>
-  ```
-- Script ini wajib inline dan synchronous — bukan module atau deferred — agar berjalan sebelum paint pertama.
-- Pasang juga di SSR/framework hydration untuk mencegah mismatch antara server-rendered HTML dan client state.
+## 5. Pola Komponen Produksi, Mobile & 24 Perintah Iteratif
 
-### Transisi Antar-Tema
-- Gunakan `view-transition-name` dan CSS View Transitions API untuk transisi halus antar tema:
-  ```css
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation-duration: 200ms;
-    animation-timing-function: ease-in-out;
-  }
-  ```
-- Fallback untuk browser tanpa dukungan: toggle class `.dark` langsung tanpa animasi.
-- Hormati `prefers-reduced-motion`: jika aktif, skip animasi transisi tema sepenuhnya.
-- Jangan gunakan `transition: all` pada elemen individual hanya untuk theme switch — ini menyebabkan repaint mahal.
+Spesifikasi teknis lengkap untuk implementasi komponen dan interaksi mobile tersedia di `references/component-mobile-patterns.md`:
+- **Pola Komponen (§4 di referensi)**: Form Validation UX (validasi saat `blur`, `aria-describedby`), Data Tables (sort, filter debounce 300ms, mobile card collapse), File Upload, Toast System (`aria-live`, pause-on-hover), Modal (`<dialog>` focus trap), Command Palette (`Cmd+K`), Multi-Step Wizard, dan Skeleton.
+- **Pola Mobile & PWA (§5 di referensi)**: Bottom Sheet (`visualViewport` + `env(safe-area-inset-bottom)`), Bottom Nav (3–5 item), Pull-to-Refresh, Swipe Actions + Undo Toast, dan `inputmode` semantik.
+- **24 Perintah Iteratif & 20 Art Directions (§2–§3 di referensi)**: `/maxilun-craft init|shape|build|polish|audit|critique|bolder|quieter|distill|harden|clarify|typeset|colorize|layout|animate|direction|images|review|app|frame`.
 
-## 8. Gerbang Purity Visual (Reject-Only, Non-Negotiable)
+## 6. Gerbang Purity Visual (15 Larangan Mutlak)
 
-Setiap elemen di bawah dilarang tanpa fungsi nyata. Rujukan lengkap: `../maxilun/references/purity-catalog.md`. Jika muncul tanpa alasan desain → hapus.
+Rujukan lengkap: `../maxilun/references/purity-catalog.md`. Hapus segera jika ditemukan:
+1. **Breadcrumb** pada halaman datar (`< 3` level hierarki, seperti login/register/404) (`CMP-001`).
+2. **Gradien biru-ungu dekoratif** sebagai latar default (`CLR-001`).
+3. **Card di dalam card berlebihan** untuk teks sederhana yang cukup dipisah spasi/hairline.
+4. **Badge pujian palsu** (*"Powerful"*, *"AI-Powered"*, *"New"*) tanpa dasar faktual (`CMP-002`).
+5. **Emoji sebagai pengganti ikon UI** (`CMP-003`).
+6. **Border-radius seragam** antara container induk dan elemen anak (`CMP-004`).
+7. **Hero klise** dengan lebih dari satu CTA primer yang saling berebut perhatian.
+8. **Statistik atau testimoni fiktif** (`"99.9% uptime"`, `"10K+ users"`, avatar acak) tanpa sumber nyata.
+9. **Animasi dekoratif tanpa tujuan UX** (floating blobs, glow berkedip, parallax berat).
+10. **Layout cetakan** (*Hero + 3 Cards + Testimonials + FAQ*) yang tidak mencerminkan fungsi produk.
+11. **Komponen mati / non-fungsional** (tombol search, filter, atau lonceng notifikasi yang tidak bekerja) (`CMP-005`).
 
-1. **Breadcrumb tak perlu** — jangan render pada halaman sederhana tanpa hierarki navigasi.
-2. **Gradien berlebihan** — gradasi hanya menandai makna (status), bukan dekorasi.
-3. **Card berlebihan** — teks biasa tidak dibungkus card; card hanya untuk konten yang memang satu unit.
-4. **Badge tak penting** — badge hanya untuk status faktual (versi, jumlah), bukan pujian (*"Powerful"*, *"AI-Powered"*, *"New"*).
-5. **Emoji sebagai ikon** — ikon wajib dari satu set profesional, bukan emoji.
-6. **Rounded corners seragam** — radius mengikuti hirarki: anak ≤ induk.
-7. **Hero klise** — satu CTA utama; hero menjelaskan nilai nyata, bukan sensasi.
-8. **Statistik palsu** — angka tanpa sumber dihapus.
-9. **Animasi berlebihan** — glow, floating, parallax, hover non-fungsional dilarang; animasi hanya mengklarifikasi sebab-akibat.
-10. **Layout template** — struktur mengikuti kebutuhan konten, bukan pola default situs AI.
-11. **Whitespace tanpa tujuan** — whitespace menandai pengelompokan, bukan mengisi halaman.
-12. **Ikon tidak konsisten** — satu set, satu gaya, satu ketebalan garis.
-13. **Shadow berlebihan** — bayangan berlapis hanya pada elemen yang memang diangkat dari permukaan.
-14. **Teks UI generik** — manfaat konkret, bukan slogan (disusun bersama `maxilun-content`).
-15. **Komponen tanpa fungsi** — tombol/tab/dropdown/pencarian dekoratif tidak dirender.
+## 7. DELIVERY GATE (Wajib Lulus Sebelum Ship)
 
-*Gerbang tunggal*: jangan menambahkan elemen hanya agar terlihat canggih. Setiap komponen wajib punya fungsi + alasan desain + relevansi kebutuhan pengguna.
+Jalankan pemeriksaan ini sebelum menyerahkan hasil ke pengguna:
 
-## 9. Desain Keadaan UI (State Design, Non-Negotiable)
-- Setiap tampilan list/detail wajib punya minimal 4 keadaan: data ada, kosong, memuat, gagal.
-- **Skeleton meniru bentuk konten final** (blok teks/panel sesuai proporsi asli), bukan spinner abstrak.
-- Setiap keadaan gagal membawa dua bagian wajib: pesan konkret apa yang terjadi + cara pemulihannya, disusun bersama `maxilun-content`.
-- Keadaan kosong selalu menyediakan tindakan pertama yang bisa dijalankan pengguna (empty copy disusun bersama `maxilun-content`).
-
-## 10. Pola Komponen Produksi (Production Component Patterns)
-
-Panduan implementasi komponen UI tingkat produksi. Setiap pola wajib memenuhi gerbang aksesibilitas (§5) dan purity visual (§8).
-
-### Form Validation UX
-- **Inline errors**: Tampilkan pesan error langsung di bawah field terkait, bukan banner global. Gunakan `aria-describedby` yang merujuk ke ID elemen error.
-- **Field-level timing**: Validasi saat `blur` (bukan `input`) untuk menghindari gangguan saat mengetik. Validasi ulang saat `input` hanya setelah error pertama muncul.
-- **Disabled submit**: Tombol submit dinonaktifkan hanya selama request berlangsung, bukan berdasarkan validitas form — izinkan submit untuk memicu validasi server-side.
-- **Progressive disclosure**: Field opsional atau lanjutan disembunyikan di balik toggle "Tampilkan opsi lanjutan". Jangan tampilkan semua field sekaligus jika tidak relevan.
-- **Struktur HTML**: Gunakan `<form>` native dengan `<label for="...">`, `<fieldset>` + `<legend>` untuk grup logis. Error container: `<div role="alert" id="error-{field}">`.
-
-### Data Tables
-- **Sorting**: Header kolom clickable dengan indikator arah sort (`aria-sort="ascending|descending"`). Multi-column sort via Shift+Click.
-- **Filtering**: Filter per-kolom inline (dropdown/text input di header). Debounce input teks 300ms. Tampilkan jumlah hasil terfilter.
-- **Column resize**: Drag handle di border kanan header. Simpan lebar preferensi di `localStorage`. Min-width wajib agar konten tidak collapse.
-- **Row selection**: Checkbox di kolom pertama. Select-all di header dengan state tri-state (none/some/all). `aria-selected` pada setiap `<tr>`.
-- **Responsive card collapse**: Pada viewport < 768px, tabel berubah menjadi stack card vertikal. Setiap baris menjadi card dengan label-key dari header kolom. Gunakan CSS Grid `@container` atau breakpoint media query.
-
-### File Upload
-- **Drag-drop zone**: Area drop dengan border dashed, ubah style saat `dragover`. Terima file via paste clipboard juga.
-- **Progress indicator**: Progress bar per-file dengan persentase. Untuk multi-file, tampilkan progress agregat + individual.
-- **Preview**: Thumbnail gambar/video sebelum upload. Nama file + ukuran untuk dokumen. Hapus preview jika tipe tidak didukung.
-- **Type/size validation**: Validasi client-side sebelum upload. Tolak dengan pesan spesifik ("File melebihi 5MB", "Format .exe tidak didukung"). Daftar allowed types eksplisit di atribut `accept`.
-- **Retry**: Tombol retry per-file yang gagal. Auto-retry maksimal 2x dengan exponential backoff untuk error jaringan.
-
-### Toast / Notification System
-- **Positioning**: Fixed position, default bottom-right (LTR). Hindari menutupi konten utama atau CTA. Z-index di atas overlay tapi di bawah modal.
-- **Stacking**: Stack vertikal dengan gap `--space-2`. Toast baru muncul di atas/bawah tergantung posisi. Maksimum 3 toast terlihat; sisanya antri.
-- **Auto-dismiss**: Default 5 detik untuk info/success, 8 detik untuk warning, manual dismiss untuk error. Timer pause saat hover/focus.
-- **Pause-on-hover**: Pause auto-dismiss timer saat pointer masuk atau fokus keyboard ada di toast. Resume saat keluar.
-- **Accessibility**: Container toast wajib `aria-live="polite"` (info/success) atau `aria-live="assertive"` (error/warning). Setiap toast punya `role="status"` atau `role="alert"`. Tombol dismiss wajib accessible.
-
-### Modal / Dialog
-- **Focus trapping**: Fokus terkunci di dalam modal. Tab/Shift+Tab cycle melalui elemen focusable. Kembalikan fokus ke trigger element saat ditutup.
-- **Scroll locking**: Body scroll disabled saat modal terbuka (`overflow: hidden` pada body). Restore saat ditutup. Modal content sendiri tetap scrollable.
-- **Nested modals**: Hindari jika memungkinkan. Jika wajib, setiap layer punya backdrop sendiri dan focus trap independen. Tutup dari luar ke dalam (LIFO).
-- **Backdrop behavior**: Klik backdrop = tutup (kecuali form belum tersimpan → konfirmasi dulu). Escape key = tutup. Backdrop animasi fade 150ms.
-- **Gunakan `<dialog>` native** sebagai dasar. Fallback polyfill hanya untuk browser tanpa dukungan.
-
-### Command Palette / Search
-- **Keyboard navigation**: Buka via shortcut global (Ctrl/Cmd+K). Arrow Up/Down navigasi hasil. Enter pilih. Escape tutup. Type-ahead filtering real-time.
-- **Fuzzy matching**: Pencarian fuzzy (substring + typo tolerant). Highlight matched characters di hasil. Prioritaskan exact match > prefix > substring.
-- **Recent searches**: Simpan 5 pencarian terakhir di `localStorage`. Tampilkan di atas hasil pencarian saat input kosong. Tombol hapus riwayat individual.
-- **Kategori hasil**: Kelompokkan hasil berdasarkan tipe (halaman, aksi, dokumentasi). Label kategori sebagai section header non-clickable.
-
-### Multi-Step Wizard
-- **Progress indication**: Stepper visual dengan nomor/label per langkah. Langkah aktif highlighted, selesai ditandai checkmark. `aria-current="step"` pada langkah aktif.
-- **Step validation**: Validasi per-langkah sebelum izinkan lanjut. Error ditampilkan inline di langkah tersebut, bukan di akhir wizard.
-- **Back/forward**: Tombol Back selalu tersedia (kecuali langkah pertama). Forward hanya aktif jika validasi lolos. Browser back button = kembali satu langkah (pushState per langkah).
-- **Data persistence**: Simpan data form per-langkah di sessionStorage atau state management. Restore jika pengguna refresh atau navigasi kembali. Draft auto-save opsional.
-
-### Skeleton Loading Patterns
-- **Text blocks**: Rectangle dengan tinggi sesuai line-height font target. Width bervariasi (100%, 80%, 60%) untuk meniru paragraf natural. Animasi shimmer/pulse halus.
-- **Image grids**: Placeholder dengan aspect ratio identik konten final. Border-radius cocok dengan gambar asli.
-- **Data rows**: Replikasi struktur baris tabel/list dengan kolom-kolom skeleton. Tinggi row konsisten dengan konten final.
-- **Nav bars**: Skeleton untuk navbar, sidebar, tab bar sesuai layout target. Pastikan CLS = 0 saat skeleton diganti konten asli.
-- **Prinsip umum**: Skeleton wajib mencerminkan bentuk konten final (§9). Durasi animasi 1.5-2s loop. Hormati `prefers-reduced-motion`: ganti dengan static placeholder tanpa animasi.
-
-## 11. Pola Interaksi Mobile (Mobile Interaction Patterns)
-
-Pola interaksi khusus perangkat sentuh. Semua pola wajib mematuhi target sentuh minimal 44x44px (§5) dan safe area handling.
-
-### Bottom Sheet / Drawer
-- **Swipe gestures**: Swipe down untuk dismiss. Swipe up untuk expand ke full height. Threshold dismiss: 30% tinggi sheet atau velocity > 500px/s.
-- **Snap points**: Definisi snap points eksplisit (e.g., 30%, 60%, 100% viewport height). Animasi spring ke snap point terdekat saat gesture berakhir.
-- **Backdrop dismiss**: Tap backdrop = dismiss. Backdrop opacity meningkat seiring sheet naik.
-- **Keyboard avoidance**: Saat keyboard virtual muncul, sheet menyesuaikan posisi agar input tetap terlihat. Gunakan `visualViewport` API, bukan `window.innerHeight`.
-- **Safe area**: Padding bottom wajib `env(safe-area-inset-bottom)` untuk menghindari notch/home indicator. Content tidak tertutup area sistem.
-
-### Mobile Navigation
-- **Tab bar**: Fixed bottom, 3-5 item maksimal. Ikon + label singkat. Active state jelas (warna + ikon filled). Height ≥ 56px + safe area bottom.
-- **Bottom nav vs top nav**: Bottom nav untuk aplikasi dengan 3-5 destinasi utama. Top nav/hamburger untuk konten hierarkis atau > 5 destinasi.
-- **Gesture-based**: Swipe edge kiri/kanan untuk navigasi antar-halaman (opsional, jangan konflik dengan swipe actions list).
-- **Persistent vs contextual**: Tab bar persistent untuk navigasi primer. Contextual toolbar muncul hanya di konteks tertentu (e.g., mode edit, selection mode).
-
-### Pull-to-Refresh
-- Trigger hanya saat scroll position = 0. Indikator visual (spinner/arrow) mengikuti jarak pull.
-- Threshold aktivasi: 60-80px. Refresh berjalan setelah release melewati threshold.
-- Disable saat data sedang dimuat. Timeout maksimal 10 detik dengan fallback error state.
-- Gunakan CSS `overscroll-behavior-y: contain` untuk mencegah chaining ke parent scroll container.
-
-### Swipe Actions on List Items
-- Swipe kiri = aksi sekunder (archive, delete). Swipe kanan = aksi primer (reply, mark read).
-- Revealed action buttons dengan warna semantic (merah = destructive, biru = informational).
-- Undo toast setelah aksi destructive, durasi 5 detik. Konfirmasi eksplisit untuk aksi irreversible.
-- Velocity threshold untuk quick-action: swipe cepat > 500px/s langsung eksekusi tanpa reveal penuh.
-- Accessibility: aksi swipe wajib tersedia juga via long-press context menu atau tombol visible alternatif.
-
-### Mobile-Optimized Input
-- **Numeric keypads**: `inputmode="numeric"` untuk angka, `inputmode="decimal"` untuk desimal, `inputmode="tel"` untuk nomor telepon. Pattern attribute sebagai fallback.
-- **Date pickers**: Gunakan `<input type="date">` native terlebih dahulu. Custom picker hanya jika desain membutuhkan format/range khusus.
-- **Autocomplete**: Atribut `autocomplete` semantik (`name`, `email`, `cc-number`, dll.) untuk integrasi password manager dan autofill browser.
-- **Font size ≥ 16px** pada semua input mobile untuk mencegah iOS auto-zoom.
-- **Label placement**: Label di atas input (bukan floating label yang kompleks) untuk aksesibilitas dan kesederhanaan.
-
-### Safe Area Handling
-- Deklarasikan `viewport-fit=cover` di meta viewport tag.
-- Gunakan CSS environment variables untuk semua padding/margin yang berbatasan dengan edge layar:
-  ```css
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
-  ```
-- Fixed/sticky elements wajib memperhitungkan safe area. Bottom nav, top header, floating action button semuanya.
-- Test di device dengan notch, dynamic island, dan home indicator.
-
-### PWA Considerations
-- **Install prompts**: Gunakan event `beforeinstallprompt`. Tampilkan prompt custom hanya setelah pengguna menunjukkan engagement (e.g., kunjungan ke-3, menyelesaikan tugas). Jangan auto-prompt di load pertama.
-- **Offline capability**: Service worker dengan strategi cache-first untuk aset statis, network-first untuk API. Offline fallback page yang informatif (bukan blank/error generik).
-- **Manifest**: `manifest.json` dengan name, short_name, icons (192px + 512px), theme_color, background_color, display: standalone.
-- **Update flow**: Deteksi service worker update. Tampilkan notifikasi "Versi baru tersedia" dengan tombol refresh. Jangan force-update tanpa persetujuan pengguna.
-
-## 12. Quality Review Protocol
-
-Maxilun Craft memakai `purity-catalog.md` sebagai panduan review visual. Repository ini belum menyertakan executable detector, hook otomatis, atau `scripts/audit.js`; jalankan review sebagai alur kerja agent dan jangan mengklaim hasilnya berasal dari pemindaian otomatis.
-
-### Agent-Assisted Review
-
-**Via Skill Request (agent-assisted review):**
 ```text
-/maxilun-craft audit                    # Review supplied source or an open local project
-/maxilun-craft audit --strict           # Report only actionable WARNING/ERROR findings
-/maxilun-craft audit --fix              # Apply safe, user-requested fixes after review
-/maxilun-craft detect src/components/   # Inspect a supplied local path
-```
-
-These are agent prompts, not shell executables. URL review requires an available browser tool and explicit URL access.
-
-No file-save hook or CI workflow is included. Add CI enforcement only after a detector executable and its supported flags exist in the target project.
-
-### Example Configuration Shape
-
-Example configuration shape only; no current tool in this repository reads `.maxilun/config.json`:
-```json
-{
-  "detector": {
-    "enabled": true,
-    "failOnSeverity": "ERROR",
-    "ignoreRules": ["TYPO-003"],
-    "ignoreFiles": ["legacy/**", "vendor/**"],
-    "designSystem": {
-      "enabled": true,
-      "tokenPath": ".maxilun/design-tokens.json"
-    }
-  },
-  "hook": {
-    "enabled": true,
-    "runOnSave": true,
-    "runOnStop": false
-  }
-}
-```
-
-Per-developer override di `.maxilun/config.local.json` (gitignored).
-
-### Inline Waivers
-
-Untuk pengecualian yang justified:
-```css
-/* maxilun-disable CLR-001: brand identity requires gradient */
-.hero { background: linear-gradient(...); }
-
-/* maxilun-disable-next-line TYPO-002 */
-.caption { color: #888; } /* intentional decorative muted style */
-```
-
-Waiver wajib disertai alasan. Unjustified waivers = tech debt.
-
-### Review Findings Format
-
-**Human-readable (stderr):**
-```
-src/components/Hero.tsx:42
-  ERROR CLR-001: Purple-to-blue gradient detected
-  → Suggestion: Use semantic color token --brand-primary instead
-  
-src/styles/buttons.css:18
-  WARNING ANI-006: transition: all causes performance issues
-  → Suggested fix: Expand the transition to specific properties if the user asks for a fix
-
-Found 2 issues (1 error, 1 warning)
-```
-
-**Machine-readable (JSON):**
-```json
-{
-  "findings": [
-    {
-      "ruleId": "CLR-001",
-      "severity": "ERROR",
-      "file": "src/components/Hero.tsx",
-      "line": 42,
-      "message": "Purple-to-blue gradient detected",
-      "suggestion": "Use semantic color token --brand-primary instead",
-      "autoFixable": false
-    }
-  ],
-  "summary": {
-    "errors": 1,
-    "warnings": 1,
-    "filesScanned": 47,
-    "rulesTriggered": 2
-  }
-}
-```
-
----
-
-## 13. Browser-Assisted Review (Jika Tool Tersedia)
-
-Perintah di bawah adalah prompt pola untuk agen, bukan CLI atau kemampuan bawaan paket. Gunakan hanya jika sesi menyediakan browser yang dapat dioperasikan dan proyek lokal dapat diedit melalui tool yang tersedia. Tanpa tool tersebut, berikan saran atau perubahan kode biasa; jangan mengklaim telah mengubah, menyimpan, atau membuang state browser.
-
-### Meminta Review Browser
-```bash
-/maxilun-craft live                     # Enter live mode for current dev server
-/maxilun-craft live navbar              # Focus on specific element
-/maxilun-craft live --port 3000         # Specify dev server port
-```
-
-### Review yang Bisa Dibantu Browser
-
-1. **Eksplorasi varian**: Usulkan varian visual; implementasikan hanya melalui kemampuan edit yang benar-benar tersedia.
-   ```
-   /maxilun-craft generate cta-button   # Generate 5 button variants in browser
-   ```
-
-2. **Penyesuaian token**: Tinjau token dan perubahan visual bila browser/tool edit tersedia.
-   - Color adjustments (hue, saturation, lightness)
-   - Spacing scale modifications
-   - Typography size/weight changes
-
-3. **Pemilihan elemen**: Gunakan inspeksi browser hanya bila tool mendukung pemilihan elemen.
-   - Auto-detect component boundaries
-   - Show applicable tokens and constraints
-   - Suggest improvements based on the documented review checklist
-
-4. **Perbandingan**: Tampilkan before/after hanya bila state kedua versi memang tersedia.
-   - Side-by-side view
-   - Onion skin overlay
-   - Diff highlighting
-
-### Live Mode Safety
-
-- **Local development only**: Never inject into production sites
-- **Trusted projects only**: Review `package.json` scripts before use
-- **Validasi**: Jalankan pemeriksaan proyek yang tersedia setelah perubahan; jangan mengasumsikan hook khusus Maxilun ada.
-- **Penyimpanan**: Simpan atau buang perubahan hanya melalui kontrol/tool yang benar-benar tersedia dan sesuai permintaan pengguna.
-
-### Mengakhiri Review Browser
-```bash
-/maxilun-craft live --stop              # Exit live mode
-/maxilun-craft live --save              # Save current state and exit
-/maxilun-craft live --discard           # Discard changes and exit
-```
-
----
-
-## 14. DESIGN.md & Surface Briefs
-
-### DESIGN.md Structure
-Generated via `/maxilun-craft document` dari existing codebase:
-```markdown
-# [Product] Design System
-
-## Visual Direction
-- Style: [Minimal / Bold / Playful / etc.]
-- Mood: [Calm / Energetic / Professional / etc.]
-- Key characteristics: [3-5 defining traits]
-
-## Token System
-[Auto-extracted from CSS variables / Tailwind config / etc.]
-
-## Component Library
-[Inventory of existing components with usage patterns]
-
-## Patterns & Conventions
-[Documented recurring solutions]
-
-## Known Issues
-[Technical debt, inconsistencies, improvement opportunities]
-```
-
-### Surface Briefs
-Per-route/artifact strategy documents di `.maxilun/surfaces/*.md`:
-```markdown
-# Surface: Landing Page
-
-## Purpose
-[What this surface achieves for user and business]
-
-## Audience Segment
-[Specific subset of primary audience]
-
-## Content Strategy
-[Key messages, information hierarchy]
-
-## Visual Direction
-[Style choices specific to this surface]
-
-## Success Criteria
-[Measurable outcomes for this surface]
-```
-
-Surface briefs terpisah dari PRODUCT.md karena:
-- Product truth stable, visual direction evolves per-surface
-- Different surfaces may need different treatments
-- Enables A/B testing of visual approaches
-- Keeps product context clean and focused
-
----
-
-## 15. DELIVERY GATE (MANDATORY, SEBELUM SHIP)
-
-Jalankan gate ini SETELAH coding selesai, SEBELUM menyerahkan hasil ke pengguna. Output status PASS/FAIL per item. Jika ada FAIL, perbaiki dulu, re-run, baru ship.
-
-### Block A: Context Verification
-- [ ] Konteks yang tersedia sudah digunakan; klarifikasi hanya diminta untuk hal yang belum diketahui dan berdampak pada keputusan?
-- [ ] §0b Names/labels dicek terhadap tabel anti-slop?
-- [ ] §0c Design Read dideklarasikan sebelum coding?
-- [ ] §0d Page-type pre-check dijalankan untuk tipe halaman yang relevan?
-- [ ] Asumsi atau batas konteks yang memengaruhi hasil dinyatakan?
-
-### Block B: Purity Catalog Compliance (dari ../maxilun/references/purity-catalog.md)
-- [ ] Tidak ada gradient biru-ungu/purple-to-blue sebagai default dekoratif? (CLR-001)
-- [ ] Tidak ada breadcrumb pada halaman tanpa hierarki ≥3 level? (CMP-001)
-- [ ] Tidak ada badge marketing ("Powerful", "AI-Powered", "New") tanpa basis faktual? (CMP-002)
-- [ ] Tidak ada emoji sebagai ikon fungsional? (CMP-003)
-- [ ] Tidak ada border-radius seragam di semua elemen? (CMP-004)
-- [ ] Tidak ada elemen interaktif non-fungsional? (CMP-005)
-- [ ] Tidak ada glassmorphism bertumpuk (>1 layer)? (§8 item 37)
-- [ ] Tidak ada shadow berlebihan di setiap komponen? (§8 item 36)
-- [ ] Tidak ada animasi tanpa tujuan UX? (§8 item 29)
-- [ ] Typography bukan font AI default (Arial, Inter, Roboto) tanpa modifikasi? (TYPO-001)
-
-### Block C: Functional Completeness
-- [ ] Setiap form punya validasi inline + error state + loading state + success/failure feedback?
-- [ ] Setiap list/data view punya empty state + loading skeleton + error state?
-- [ ] Setiap link/button mengarah ke destinasi nyata atau ditandai `// TODO` + label visible?
-- [ ] Mobile layout tested: no horizontal overflow, tap targets ≥44px, input font ≥16px?
-- [ ] Keyboard navigation berfungsi: Tab order logis, focus visible, Escape closes modals?
-- [ ] Dark mode (jika diimplementasikan) berfungsi penuh di kedua mode tanpa break?
-
-### Block D: Anti-Slop Identity Check
-- [ ] Jika logo dan nama produk ditukar, apakah desain masih terasa unik dan berkarakter? (Jika tidak → terlalu generik, revisi)
-- [ ] Apakah nama menu/halaman/tombol spesifik untuk produk ini, bukan template yang bisa dipakai di 10+ app lain?
-- [ ] Apakah layout mengikuti kebutuhan konten aktual, bukan pola Hero+Cards+Testimonials+FAQ+Footer?
-- [ ] Apakah warna/font/spacing dipilih dengan alasan tertulis, bukan karena "terlihat bagus" atau "default AI"?
-- [ ] Apakah ada minimal satu elemen identitas visual yang unik untuk produk ini (motif, aksen, tipografi khas)?
-
-### Block E: Evidence & Honesty
-- [ ] Tidak ada statistik palsu atau klaim tanpa sumber? (R-17, R-36)
-- [ ] Tidak ada testimonial fiktif (avatar AI, nama random)? (R-18)
-- [ ] Tidak ada fabricated security/compliance claims? (R-36)
-- [ ] Placeholder berlabel eksplisit (`[REAL DATA]`, `[LOGO]`, "Coming soon") jika data belum tersedia? (R-23, R-38)
-- [ ] Em dash tidak digunakan di teks UI? (R-02)
-
-### Block F: Copywriting Anti-Slop
-- [ ] Semua teks UI terbaca natural saat dibaca keras, tidak seperti brosur/robot? (§0f)
-- [ ] Tidak ada kalimat >25 kata di label/heading/deskripsi UI? (§0f)
-- [ ] Tidak ada buzzword dari purity-catalog A butir 5 ("mutakhir", "terdepan", "revolusioner", dll.)? (§0f)
-- [ ] Tidak ada klaim tanpa bukti ("terpercaya", "terbaik", "profesional")? (§0f)
-- [ ] CTA/label tombol spesifik untuk konteks produk, bukan "Submit"/"Klik di sini"/"Pelajari lebih lanjut"? (§0f)
-- [ ] Deskripsi/tagline max 2 kalimat, bukan paragraf panjang yang menumpuk jargon? (§0f)
-- [ ] Bahasa Indonesia natural, bukan terjemahan literal dari English AI patterns? (§0f)
-
-### Block G: Advanced Design Integration (Enhanced Anti-Generic)
-- [ ] Art direction dideklarasikan via §3b (salah satu dari 20 directions)? Atau explicit "DRAFT TANPA ARAH"?
-- [ ] Gambar (jika ada) berasal dari sumber terbuka dengan lisensi verified + kredit displayed? (§3b Real Image Protocol)
-- [ ] Browser self-review dijalankan di 3 lebar layar (375px, 768px, 1440px)? (§3b Browser Self-Review)
-- [ ] Frame check lulus: clear title first screen, equal margins, no random blank stretches? (§3b Frame Check)
-- [ ] Dashboard/app screens (jika applicable) mengikuti app-specific rules: quiet panels, tabular-nums, semantic status colors? (§3b Dashboard Route)
-- [ ] Self-review loop completed (max 3 rounds) hingga anti-slop checklist pass? (§3b Self-Review Loop)
-
-### Delivery Gate Output Format
-```
 🔒 DELIVERY GATE STATUS
-Block A (Pre-Gen Gate): ✅ PASS / ❌ FAIL (detail)
-Block B (Purity Catalog): ✅ PASS / ❌ FAIL (detail)
-Block C (Functional): ✅ PASS / ❌ FAIL (detail)
-Block D (Identity): ✅ PASS / ❌ FAIL (detail)
-Block E (Evidence): ✅ PASS / ❌ FAIL (detail)
-Block F (Copywriting): ✅ PASS / ❌ FAIL (detail)
-Block G (Taste Integration): ✅ PASS / ❌ FAIL (detail)
-Verdict: SHIP / FIX FIRST (jika FIX FIRST, list item yang harus diperbaiki)
+Block A (Context & Reference Record): ✅ PASS / ❌ FAIL (Design Read + 1-2 design-md refs recorded)
+Block B (Purity Catalog Compliance):  ✅ PASS / ❌ FAIL (No CLR-001, CMP-001..005, or TYPO-001 violations)
+Block C (Functional & 4 UI States):   ✅ PASS / ❌ FAIL (Loading skeleton, empty + CTA, populated, error + recovery)
+Block D (Mobile & Accessibility):     ✅ PASS / ❌ FAIL (375px/768px/1440px clean, tap >=44px, contrast >=4.5:1)
+Block E (Evidence & Copywriting):     ✅ PASS / ❌ FAIL (Zero fake stats, natural copy <=25 words, specific CTAs)
+Verdict: SHIP / FIX FIRST
 ```
-
-**ATURAN KERAS**: Verdict = FIX FIRST → jangan ship. Perbaiki, re-run gate, baru ship. Delivery tanpa clean gate = kegagalan.
-
----
-
-## 16. Tabel Penegakan Purity
-
-Peta pola yang ditolak, aturan yang menegakkannya, dan titik pemeriksaannya. Tabel ini untuk audit cepat, bukan aturan baru.
-
-| Pola | Aturan di skill ini | Titik penegakan |
-|---|---|---|
-| Color/Gradients | §8 Purity Visual item 2, purity-catalog CLR-001 | Pre-gen §0c + Delivery Block B |
-| Em Dash | purity-catalog §A.5 Banned Vocabulary | Delivery Block E |
-| Mobile | §5 Gerbang Aksesibilitas, §11 Mobile Patterns | Delivery Block C |
-| Icons | §8 item 5, purity-catalog CMP-003 | Delivery Block B |
-| Layout | §8 item 10, purity-catalog B3 | Pre-gen §0d + Delivery Block D |
-| Badges | §8 item 4, purity-catalog CMP-002 | Delivery Block B |
-| Glassmorphism | §8 item 3, purity-catalog B6 | Delivery Block B |
-| CTAs | §0b Anti-Slop Name Table | Pre-gen §0b + Delivery Block D |
-| Buzzwords | purity-catalog A butir 5-6 Banned Vocabulary | Pre-gen §0b + Delivery Block E |
-| Fake Data | §8 item 8, purity-catalog B4 | Delivery Block E |
-| Assets | §0a Context Gathering | Pre-gen §0a + Delivery Block E |
-| Nav Links | §0b Menu naming rules | Pre-gen §0b + Delivery Block C |
-| Contrast | §5 WCAG AA/AAA, purity-catalog CLR-002 | Delivery Block B |
-| Interactive | §9 State Design, purity-catalog CMP-005 | Delivery Block C |
-| UI States | §9 State Design (4 states minimum) | Delivery Block C |
-| Write Reason | §0c Design Read declaration | Pre-gen §0c |
-| Verify | §15 Delivery Gate + maxilun-verify integration | Post-code verification |
-| Direction | §0a/§0c Context + Design Read | Pre-gen §0a/§0c |
-| Art Direction | §3b Taste-Driven Workflow (20 directions) | Pre-gen §3b + Delivery Block G |
-| Real Images | §3b Real Image Protocol (open sources + credits) | Build §3b + Delivery Block G |
-| Browser Review | §3b Browser Self-Review (3 widths, anti-slop checklist) | Post-build §3b + Delivery Block G |
-| Frame Quality | §3b Frame Check (title, margins, motion) | Post-build §3b + Delivery Block G |
-| App Screens | §3b Dashboard Route (quiet panels, tabular-nums) | Build §3b + Delivery Block G |
-
----
+**Aturan Keras**: Jika ada satu saja blok yang `FAIL`, perbaiki kodenya terlebih dahulu sebelum menyerahkan hasil.
 
 ## Companion Skills Awareness
 
-`maxilun-craft` adalah spesialis UI/visual. Jalankan mandiri untuk desain yang ruang lingkupnya jelas; pilih companion jika bagian deliverable itu memang diminta:
-
-| Companion | Peran dalam pekerjaan ini | Kontribusi kualitas |
+| Companion | Peran dalam Pekerjaan Ini | Kontribusi Kualitas |
 |---|---|---|
-| `maxilun-content` | Bangun visual untuk copy yang content tulis | Copy natural + visual non-slop = halaman yang terasa manusia |
-| `maxilun-frontend` | Desain UI untuk framework architecture | Arsitektur benar + visual tidak generik |
-| `maxilun-engineer` | Design spec untuk engineer implement | Spec yang jelas + code yang sesuai visual intent |
-
-**Penggunaan companion**: Libatkan `maxilun-content` jika pengguna juga meminta copy atau bila copy perlu dikembangkan bersama desain. Libatkan `maxilun-frontend` atau `maxilun-engineer` untuk integrasi implementasi. Filter visual anti-slop sudah menjadi bagian skill ini (§0b, §0f, §15), jadi tidak ada companion yang menjadi prasyarat untuk desain atau halaman sederhana.
-
-**Advanced Workflow**: Fitur art direction, gambar nyata, dan browser self-review sudah terintegrasi penuh di §3b. Gunakan `/maxilun-craft direction`, `/maxilun-craft images`, `/maxilun-craft review`, dan `/maxilun-craft app` untuk mengakses kemampuan advanced tanpa perlu setup tambahan.
+| `maxilun-content` | Menyusun copy antarmuka, pesan error, dan empty state | Memastikan teks terdengar manusiawi dan bebas jargon AI |
+| `maxilun-frontend` | Mengintegrasikan komponen UI ke arsitektur Next.js RSC & Server Actions | Menjaga batas server/client dan performa bundle tetap optimal |
+| `maxilun-motion` | Merancang koreografi animasi berbasis fisika pegas dan aset Lottie/SVG | Memberikan gerak yang fungsional dengan fallback `prefers-reduced-motion` |
+| `maxilun-cinecode` | Menggunakan token dan referensi `design-md` untuk merender scene video produk | Menjamin konsistensi identitas visual antara aplikasi web dan video MP4/WebM |
+| `maxilun-docsmith` & `maxilun-scaffold` | Mengisi `docs/DESIGN.md` dan matriks 4 state UI di dalam `PRD.md` | Mengikat spesifikasi dokumen langsung ke standar desain produksi |
 
 ## Related Skills
-- **maxilun-motion**: Animation, motion design, kinetic typography, and performance-gated motion
-- **maxilun-frontend**: RSC architecture, Server Actions, state management, type safety
-- **maxilun-content**: UX copy, microcopy, error messages, onboarding text (gunakan saat penulisan atau review copy termasuk dalam lingkup)
-- **maxilun-verify**: Test generation and validation for craft outputs (runs §15 delivery gate)
-- **maxilun-engineer**: Code implementation (craft designs, engineer builds)
-
-## Design Reference Corpus
-
-`references/design-md/` berisi 84 analisis design system brand nyata (Stripe, Vercel, Linear, Figma, Apple, dll.). Setiap file adalah DESIGN.md yang sudah lolos anti-slop: token warna, tipografi, spacing, komponen, dan pola interaksi yang terbukti produksi.
-
-Gunakan sebagai referensi saat:
-- Membangun design system baru dan butuh contoh nyata, bukan template generik
-- User menyebut brand tertentu sebagai referensi visual
-- Delivery gate Block D (Identity) gagal karena output terasa generik
-- Butuh validasi bahwa pilihan desain bukan AI default
-
-Baca file yang relevan, ekstrak pola yang applicable, lalu terapkan dengan konteks proyek user. Jangan copy-paste mentah — adaptasi.
+- **maxilun-motion**: Animasi interaktif, *Motion DNA*, dan koreografi fisika (`../maxilun-motion/references/index.md`)
+- **maxilun-cinecode**: Kompilasi dan render video programatik (`../maxilun-cinecode/references/index.md`)
+- **maxilun-frontend**: Arsitektur React Server Components, App Router, dan state management
+- **maxilun-content**: Copywriting produk, microcopy, dan panduan suara brand
+- **maxilun-docsmith**: Spesifikasi PRD fitur dan dokumentasi teknis (`../maxilun-docsmith/references/index.md`)
+- **maxilun-verify**: Pengujian otomatis aksesibilitas, E2E Playwright, dan regresi visual

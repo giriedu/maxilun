@@ -6,7 +6,7 @@ description: >
   "/msal-graph", "cari kode", "di mana fungsi", "petakan dependensi", "siapa panggil",
   "relasi modul", "analisis impor", codebase lookup, navigation, pre-edit mapping.
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0

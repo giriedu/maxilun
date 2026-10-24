@@ -8,7 +8,7 @@ Release dibuat otomatis saat tag `v*.*.*` di-push ke repo:
 
 ```bash
 # Ganti nilai ini untuk rilis yang sedang dibuat; CHANGELOG.md harus memiliki section yang sama.
-RELEASE_VERSION=2.2.0
+RELEASE_VERSION=2.3.0
 
 # Pastikan semua perubahan sudah di-commit dan push ke main
 git add .
@@ -29,7 +29,7 @@ GitHub Actions akan:
 ### Metode Manual (via GitHub UI)
 
 1. Buka: https://github.com/giriedu/maxilun/releases/new
-2. Tag: pilih atau buat tag versi yang akan dirilis, misalnya `v2.2.0`
+2. Tag: pilih atau buat tag versi yang akan dirilis, misalnya `v2.3.0`
 3. Title: gunakan nama produk dan tag tersebut
 4. Body: salin section versi yang sama dari `CHANGELOG.md`
 5. Klik "Publish release"
@@ -43,9 +43,9 @@ GitHub "About" (deskripsi di sidebar) **tidak bisa diset via file** — harus ma
 1. Buka: https://github.com/giriedu/maxilun
 2. Klik ikon ⚙️ (gear) di sebelah kanan "About"
 3. Isi form:
-   - **Description**: `AI engineering co-pilot — 18 specialist skills, graph-assisted code discovery, confidence-based orchestration`
+   - **Description**: `AI engineering co-pilot — 18 specialist skills, 84 UI design references, graph code discovery, programmatic motion video & evidence-based orchestration`
    - **Website**: `https://skills.sh/giriedu/maxilun`
-   - **Topics**: `ai-skills`, `claude-code`, `antigravity`, `cursor`, `codex`, `zed`, `termul`, `knowledge-graph`, `purity-engine`, `nextjs`, `project-scaffold`
+   - **Topics**: `ai-skills`, `claude-code`, `antigravity`, `cursor`, `codex`, `zed`, `termul`, `knowledge-graph`, `purity-engine`, `motion-design`, `programmatic-video`, `design-system`, `openapi`, `project-scaffold`
 4. Klik "Save changes"
 
 ---
@@ -54,6 +54,7 @@ GitHub "About" (deskripsi di sidebar) **tidak bisa diset via file** — harus ma
 
 | Tag | Tanggal | Highlights |
 |---|---|---|
+| v2.3.0 | 2026-10-24 | Multi-specialist Motion Video Studio pipeline (Craft + Motion + Content + CineCode), Docsmith & Scaffold reference corpora with UI reference seeding, Architect deep-dive playbooks, and <400-line modularization across all 18 skills |
 | v2.2.0 | 2026-10-24 | Standalone ownership contracts, routing boundaries, distribution-safe Anti-Slop v2, craft design-md reference workflow, repository validation |
 | v2.1.0 | 2026-10-23 | Namespace unification to maxilun-*, sentinel security playbook, verify tier 5, craft design reference corpus |
 | v2.0.0 | 2026-10-23 | Rules bundled inside the orchestrator skill, identical CORE-RULES block in all 18 skills, discovery protocol, evidence-based delivery gates, real tool binding per platform, external skill dependencies removed |

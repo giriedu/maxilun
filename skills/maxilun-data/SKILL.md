@@ -7,7 +7,7 @@ description: >
   workflows and N+1 prevention. Triggers: "/maxilun-data", "skema database", "migrasi",
   "indeks query", "ORM", "optimasi database", "desain tabel", or any data layer task.
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0

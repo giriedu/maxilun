@@ -6,6 +6,20 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.3.0] — 2026-10-24
+
+### Added
+- **Multi-Specialist Motion Video Studio Pipeline** (`skills/maxilun-cinecode/references/video-production-pipeline.md` & `skills/maxilun-motion/references/choreography-styles.md`): unified 5-skill workflow (`maxilun-craft` + `maxilun-motion` + `maxilun-content` + `maxilun-cinecode` + `maxilun-verify`) for studio-grade programmatic videos, featuring Brand DNA-to-Motion DNA extraction, 14 motion style signatures, 22 opener/explainer hooks, 1080p canvas typography scales, beat-grid synchronization math, and deterministic React frame composition (`references/composition-api.md`).
+- **Docsmith Reference Corpus & Feature PRD/RFC Engine** (`skills/maxilun-docsmith/references/`): added `prd-rfc-specs.md`, `openapi-contracts.md` (OpenAPI 3.1 + RFC 9457 Problem Details + HMAC webhook verification), `runbooks-adr.md`, and `llms-txt-spec.md`. Connected Feature PRDs directly to `maxilun-craft`'s 84 design references and mandatory 4-state UI matrices.
+- **Scaffold Domain Archetypes & UI Reference Seeding** (`skills/maxilun-scaffold/references/`): added `prd-archetypes.md` (Fintech, B2B SaaS, DevTools/AI, E-Commerce, Media/EdTech) and `doc-templates.md`, seeding `docs/DESIGN.md` and `docs/PRD.md` directly from `maxilun-craft/references/design-md/`.
+- **Architect Deep-Dive Reference Playbooks** (`skills/maxilun-architect/references/`): added `api-distributed-patterns.md` and `migration-operations-playbook.md` covering Event Storming, Transactional Outbox, Saga, Strangler Fig, Expand-Contract migrations, PostgreSQL RLS multi-tenancy, DR RPO/RTO matrices, and CI Architecture Fitness Functions.
+- **Craft Component & Mobile Pattern Reference** (`skills/maxilun-craft/references/component-mobile-patterns.md`): extracted 20 Art Directions, 24 iterative commands, production component specifications, and mobile touch/safe-area patterns into a dedicated reference module.
+
+### Changed
+- **Zero Size-Budget Warnings Across All 18 Skills**: modularized `maxilun-scaffold`, `maxilun-motion`, `maxilun-cinecode`, `maxilun-architect`, and `maxilun-craft` so every `SKILL.md` in the repository is under the 400-line cognitive load ceiling while expanding total technical depth via on-demand `references/`.
+- **Expanded Test Suite Verification** (`scripts/test-suite.py`): validates all newly bundled reference files and cross-skill handoff links across `docsmith`, `scaffold`, `motion`, `cinecode`, `architect`, and `craft`.
+- Bumped ecosystem version to `2.3.0` across all 18 skills, `package.json`, `install.sh`, `install.ps1`, `README.md`, `README.id.md`, and `docs/RELEASE.md`.
+
 ## [2.2.0] — 2026-10-24
 
 ### Changed

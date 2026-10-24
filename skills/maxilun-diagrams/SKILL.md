@@ -8,7 +8,7 @@ description: >
   Triggers: "/maxilun-diagrams", "/msal-diagram", "buat diagram", "gambar arsitektur",
   "sequence diagram", "alur kerja", "data flow diagram", "archify diagram", or system visualization tasks.
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0

@@ -8,7 +8,7 @@ description: >
   Triggers: "/maxilun-content", "/msal-copy", "copywriting", "konten pemasaran", "microcopy",
   "teks tombol CTA", "pesan error UI", "brand voice", or product messaging tasks.
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -32,8 +32,8 @@ Bertanggung jawab atas penyusunan copywriting produk, teks pemasaran teknis, mic
 - **Owns**: user-facing copy, CTA wording, microcopy, error text, onboarding language, and voice consistency.
 - **Does not own**: engineering documentation, SEO audit findings, or invented product claims.
 - **Inputs**: verified product facts, audience, task, voice, and localization constraints.
-- **Outputs**: specific copy with rationale where needed and unresolved claims labeled.
-- **Handoff**: send technical content to `maxilun-docsmith` and SEO implementation findings to `maxilun-seo-audit`.
+- **Outputs**: specific copy, UI microcopy, or frame-timed video script beats with rationale where needed and unresolved claims labeled.
+- **Handoff**: send technical content to `maxilun-docsmith`, motion/video script beats to `maxilun-motion` and `maxilun-cinecode`, and SEO implementation findings to `maxilun-seo-audit`.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)
@@ -166,6 +166,17 @@ Copywriting Bahasa Indonesia punya pola slop spesifik yang berbeda dari English.
    - Jika terdengar seperti teman/kolega yang menjelaskan produk → tepat
    - Target: orang biasa bisa paham dalam 1x baca, tanpa perlu re-read
 
+
+## 7. Naskah Motion Video & Storyboard Copy (`maxilun-motion` + `maxilun-cinecode`)
+
+Saat menulis teks untuk animasi interaktif (`maxilun-motion`) atau video produk (`maxilun-cinecode` — lihat `../maxilun-cinecode/references/video-production-pipeline.md`), terapkan aturan khusus layar bergerak:
+1. **Aturan Maksimal 8 Kata per Scene**: Penonton video tidak bisa membaca kalimat panjang yang sedang bergerak. Pangkas setiap scene menjadi 1 ide tajam (`<= 8 kata` untuk headline layar, `<= 14 kata` untuk subtitle/voice-over per 3 detik).
+2. **Struktur 4 Beat Naskah Video (12–15 Detik)**:
+   - **Beat 1 — Hook (`0s–3s` / `f0..90`)**: Sebutkan masalah terukur atau perubahan kecepatan ekstrem (*"Deploy CI turun dari 18 menit ke 40 detik."*).
+   - **Beat 2 — Mechanism (`3s–8s` / `f90..240`)**: Tunjukkan cara kerja dengan label aksi aktif 2–4 kata per langkah.
+   - **Beat 3 — Proof (`8s–11.5s` / `f240..345`)**: Tampilkan angka perbandingan faktual tanpa kata sifat kosong.
+   - **Beat 4 — Action (`11.5s–14s` / `f345..420`)**: Satu perintah CLI atau satu tombol CTA spesifik.
+
 ## Companion Skills Awareness
 
 `maxilun-content` menyusun copywriting produk dan microcopy UI. Jalankan mandiri untuk copy yang brief-nya cukup; pilih companion jika konteks tambahan mengubah hasil:
@@ -176,11 +187,14 @@ Copywriting Bahasa Indonesia punya pola slop spesifik yang berbeda dari English.
 | `maxilun-frontend` | Konteks halaman dan routing | Gunakan jika copy perlu ditempatkan dalam struktur halaman |
 | `maxilun-docsmith` | Readability dokumentasi teknis | Gunakan untuk dokumentasi teknis yang juga memerlukan penyelarasan bahasa |
 | `maxilun-seo-audit` | SEO copy optimization | Gunakan jika optimasi search masuk lingkup |
+| `maxilun-motion` & `maxilun-cinecode` | Menyusun naskah hook 3 detik, teks kinetic typography, dan subtitle `.vtt` | Mencegah video produk berisi kalimat brosur panjang yang gagal dibaca penonton |
 
-**Penggunaan companion**: Libatkan `maxilun-craft` jika copy bergantung pada hierarki visual atau keadaan UI tertentu, dan `maxilun-frontend` jika copy harus dipasang ke struktur/routing halaman. Untuk teks mandiri, sampaikan copy serta asumsi yang relevan tanpa menahan hasil.
+**Penggunaan companion**: Libatkan `maxilun-craft` jika copy bergantung pada hierarki visual atau keadaan UI tertentu, `maxilun-motion` / `maxilun-cinecode` untuk naskah animasi/video, dan `maxilun-frontend` jika copy harus dipasang ke struktur/routing halaman. Untuk teks mandiri, sampaikan copy serta asumsi yang relevan tanpa menahan hasil.
 
 ## Related Skills
 - **maxilun-craft**: UI/UX design system dan konteks visual untuk microcopy
+- **maxilun-motion**: Koreografi kinetic typography dan animasi teks interaktif (`../maxilun-motion/references/index.md`)
+- **maxilun-cinecode**: Kompilasi naskah dan subtitle ke dalam video programatik (`../maxilun-cinecode/references/video-production-pipeline.md`)
 - **maxilun-frontend**: Page structure dan routing context untuk copy placement
 - **maxilun-docsmith**: Technical documentation readability dan tone consistency
 - **maxilun-seo-audit**: SEO optimization untuk copy dan meta descriptions

@@ -7,7 +7,7 @@ description: >
   Triggers: "/maxilun-deploy", "CI/CD", "Docker", "pipeline", "monitoring", "deployment",
   "SSL", "backup database", "environment variables", or any DevOps/infra task.
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0

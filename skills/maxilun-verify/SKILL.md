@@ -7,7 +7,7 @@ description: >
   Triggers: "/maxilun-verify", "/msal-test", "jalankan tes", "cek build", "type check",
   "lint kode", "uji regresi", "validasi perubahan", or verification before shipping.
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -176,7 +176,8 @@ Pilih strategi pengujian berdasarkan risiko, jenis produk, tooling, dan kebutuha
 | Companion | Verify's Role | Anti-Slop Contribution |
 |---|---|---|
 | `maxilun-engineer` | Run tests setelah engineer menulis kode | Buktikan kode benar, bukan asumsi |
-| `maxilun-craft` | Run delivery gate setelah UI dibangun | Validasi visual + copy + functional completeness |
+| `maxilun-craft` | Run delivery gate setelah UI dibangun | Validasi visual + copy + 4 UI states + functional completeness |
+| `maxilun-cinecode` & `maxilun-motion` | Run frame integrity, Vitest scene math, dan reduced-motion checks | Buktikan tidak ada frame kosong/drift dan a11y motion terpenuhi |
 | `maxilun-sentinel` | Security test setelah implementasi auth/crypto | Buktikan tidak ada vulnerability |
 | `maxilun-deploy` | CI pipeline validation | Pastikan build + test pass di environment target |
 
@@ -185,5 +186,6 @@ Pilih strategi pengujian berdasarkan risiko, jenis produk, tooling, dan kebutuha
 ## Related Skills
 - **maxilun-deploy**: CI test orchestration, pipeline integration, and sharding configuration
 - **maxilun-engineer**: Code implementation (verify validates engineer's output)
-- **maxilun-craft**: UI/UX implementation (verify runs craft §13 delivery gate)
+- **maxilun-craft**: UI/UX implementation (verify runs craft §7 delivery gate)
+- **maxilun-cinecode**: Programmatic video frame & render verification (`../maxilun-cinecode/references/index.md`)
 - **maxilun-sentinel**: Security implementation (verify runs security tests)

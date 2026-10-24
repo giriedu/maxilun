@@ -4,15 +4,16 @@ description: >
   Project context scaffolder. Generates a complete set of AI-readable
   project documents (PRD, TECHSTACK, DESIGN, SECURITY, STYLEGUIDE, TASK,
   ARCHITECTURE, SKILLS, GLOSSARY, ONBOARDING) into a single `docs/` folder
-  before coding begins. Ensures every AI assistant — Claude, Antigravity,
-  Codex, Cursor, Grok, or any other — has instant shared context without
-  re-reading the codebase. Run once at project start, update per milestone.
+  before coding begins. Grounds PRD invariants in domain archetypes and seeds
+  DESIGN.md from the 84 production UI/UX references in maxilun-craft.
+  Ensures every AI assistant — Claude, Antigravity, Codex, Cursor, Grok, or any
+  other — has instant shared context without re-reading the codebase.
   Triggers: "/maxilun-scaffold", "/msal-init", "scaffold dokumen", "buat docs project",
   "init konteks project", "generate project docs", "siapkan dokumen awal",
   "bikin PRD", "setup dokumentasi project", or any request to bootstrap
   project context files before development begins.
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
@@ -25,6 +26,10 @@ metadata:
     - codex
     - zed
     - gemini-cli
+  references:
+    - references/index.md
+    - references/doc-templates.md
+    - references/prd-archetypes.md
 ---
 
 # Maxilun Scaffold: Project Context Generator
@@ -33,21 +38,25 @@ Menghasilkan satu set dokumen konteks project yang lengkap ke folder `docs/` seb
 
 ## Skill Contract
 
-- **Owns**: initial project-context document structure and baseline context capture.
+- **Owns**: initial project-context document structure and baseline context capture (`docs/PRD.md`, `TECHSTACK.md`, `DESIGN.md`, `SECURITY.md`, `STYLEGUIDE.md`, `TASK.md`, `ARCHITECTURE.md`, `SKILLS.md`, `GLOSSARY.md`, `ONBOARDING.md`).
 - **Does not own**: detailed architecture decisions, implementation, or final technical documentation.
-- **Inputs**: repository context, stated product goals, stack facts, and known constraints.
-- **Outputs**: a consistent, labeled project-context set with unknowns preserved.
-- **Handoff**: send architecture decisions to `maxilun-architect`, engineering docs to `maxilun-docsmith`, and implementation to the relevant specialist.
+- **Inputs**: repository context, stated product goals, stack facts, known constraints, `references/prd-archetypes.md`, `references/doc-templates.md`, and at most two relevant design references from `../maxilun-craft/references/design-md/index.md`.
+- **Outputs**: a consistent, labeled 10-document project-context set in `docs/` with unknowns preserved and `DESIGN.md` grounded in real UI/UX references.
+- **Handoff**: send architecture decisions to `maxilun-architect`, engineering docs and feature specs to `maxilun-docsmith`, UI implementation to `maxilun-craft`, and code implementation to the relevant specialist.
+
+### Reference & UI/UX Grounding Contract
+
+The bundled corpus in `references/index.md`, `references/prd-archetypes.md`, and `references/doc-templates.md` is part of this skill. Before generating `docs/PRD.md` and `docs/DESIGN.md`, read `references/prd-archetypes.md` and `../maxilun-craft/references/design-md/index.md` (plus `../maxilun-craft/references/design-md/README.md`). Select at most two comparable product references from `../maxilun-craft/references/design-md/` based on product domain similarity, translate their hierarchy/typography/OKLCH token principles into `docs/DESIGN.md`, and record `References`, `Applied`, `Rejected`, and `Reason`. Never leave `docs/DESIGN.md` as an empty placeholder when the product category is known.
 
 ## 0. Filosofi
 
 > Kode yang baik dimulai dari konteks yang jelas. AI yang baik dimulai dari dokumen yang tepat.
 
 Tanpa konteks tertulis, setiap AI session dimulai dari nol. Dengan `docs/` yang lengkap:
-- AI langsung tahu stack, konvensi, dan batasan — tanpa tanya berulang
+- AI langsung tahu stack, konvensi, invarian domain, dan batasan — tanpa tanya berulang
 - Onboarding developer baru dari hari pertama
-- Keputusan teknis terdokumentasi, bukan hilang di chat history
-- Semua AI platform (Claude, Antigravity, Codex, Cursor, Grok, dll.) bekerja dari sumber yang sama
+- Keputusan teknis dan arah visual terdokumentasi di repo, bukan hilang di chat history
+- Semua AI platform bekerja dari sumber kebenaran yang sama
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)
@@ -67,18 +76,18 @@ Detail lengkap: `../maxilun/references/engines.md`.
 ## 1. Engine Overrides
 
 Delta domain terhadap Core Rules di atas. Override scaffold:
-- **Purity**: Dokumen yang dihasilkan harus berisi fakta konkret project ini — bukan template generik yang copy-paste dari mana saja. Placeholder yang masih terbuka harus memakai `[TBD: alasan]`; dalam mode cepat, gunakan `[TBD: perlu konfirmasi pengguna]` lalu rangkum pertanyaan yang belum terjawab.
-- **Minimalist**: Tidak semua dokumen harus panjang. PRD 1 halaman lebih baik dari PRD 10 halaman yang tidak dibaca. Setiap bagian harus justify keberadaannya.
-- **Clarity**: Gunakan `[CONFIRMED]` untuk fakta yang sudah dipastikan, `[TBD: alasan]` untuk hal yang belum diputuskan, dan `[ASSUMED]` untuk asumsi yang belum divalidasi.
+- **Purity**: Dokumen yang dihasilkan harus berisi fakta konkret project ini — bukan template generik yang copy-paste dari mana saja. Placeholder yang masih terbuka harus memakai `[TBD: alasan]`; dalam mode cepat, gunakan `[TBD: perlu konfirmasi pengguna]` lalu rangkum pertanyaan yang belum terjawab. Tunduk pada `../maxilun/references/purity-catalog.md`.
+- **Minimalist**: Tidak semua dokumen harus panjang. PRD 1 halaman yang padat invarian lebih baik dari PRD 10 halaman yang tidak dibaca. Setiap bagian harus justify keberadaannya.
+- **Clarity**: Gunakan `[CONFIRMED]` untuk fakta yang sudah dipastikan dari repo/user, `[TBD: alasan]` untuk hal yang belum diputuskan, dan `[ASSUMED]` untuk asumsi domain yang belum divalidasi.
 
 ## Workflow
 
 ```mermaid
 flowchart LR
-    A[Discovery] --> B[Interview]
-    B --> C[Generate]
-    C --> D[Review]
-    D --> E[Commit]
+    A[Discovery & Repo Scan] --> B[Archetype & UI Ref Match]
+    B --> C[Adaptive Interview]
+    C --> D[Generate 10 Docs]
+    D --> E[Quality Gate]
     E --> F[Update per Milestone]
 ```
 
@@ -88,721 +97,123 @@ Sebelum menghasilkan dokumen apapun, scaffold wajib mengumpulkan konteks melalui
 
 ### 2.1 Scan Otomatis (jika project sudah ada)
 Baca file-file berikut jika tersedia:
-- `package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `pom.xml` → stack detection
-- `README.md`, `README*.md` → existing context
-- `.env.example`, `docker-compose.yml` → infrastruktur
-- `src/`, `app/`, `lib/` → struktur proyek
+- `package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `pom.xml` → stack detection (`[CONFIRMED]`)
+- `README.md`, `README*.md`, `docs/*` → existing context
+- `.env.example`, `docker-compose.yml`, `Dockerfile` → infrastruktur & variabel lingkungan
+- `src/`, `app/`, `lib/`, `prisma/`, `drizzle/` → struktur modul & skema data
 - Git log (5 commit terakhir) → momentum dan konteks terkini
 
-### 2.2 Interview Adaptif
+### 2.2 Pemetaan Archetype & Referensi UI/UX
+Cocokkan hasil scan atau deskripsi awal user dengan `references/prd-archetypes.md`:
+1. Tentukan kategori domain: **Fintech/Payment**, **B2B SaaS/Workflow**, **DevTools/AI**, **E-Commerce/Booking**, atau **Media/EdTech**.
+2. Pilih 1–2 file referensi dari `../maxilun-craft/references/design-md/index.md` yang sesuai dengan kategori tersebut untuk mengisi fondasi `docs/DESIGN.md` dan persyaratan state UI di `docs/PRD.md`.
+
+### 2.3 Interview Adaptif
 Hanya tanya informasi yang **tidak bisa disimpulkan** dari scan. Format pertanyaan:
 
-```
-📋 Saya akan generate 10 dokumen konteks di docs/. 
-   Butuh beberapa info yang tidak bisa saya simpulkan dari codebase.
-   
-   1. Apa nama dan tujuan utama project ini? (1-2 kalimat)
-   2. Siapa pengguna utamanya? (role/persona, bukan nama orang)
-   3. Stack yang PASTI dipakai? (yang belum yakin, saya tandai [TBD])
-   4. Ada batasan atau constraint khusus? (budget, timeline, compliance)
-   5. Skill Maxilun mana yang akan aktif di project ini?
+```text
+📋 Saya akan men-generate 10 dokumen konteks di docs/.
+   Berdasarkan scan awal, berikut beberapa hal yang perlu dikonfirmasi:
+
+   1. Apa tujuan utama project ini dan masalah konkret yang diselesaikan? (1-2 kalimat)
+   2. Siapa pengguna utamanya (role/persona) dan di perangkat apa mereka paling sering bekerja?
+   3. Stack yang PASTI dipakai? (yang belum diputuskan akan saya tandai [TBD: alasan])
+   4. Ada batasan khusus (timeline, compliance UU PDP/PCI-DSS, atau arsitektur wajib)?
+   5. Apakah ada preferensi arah visual/brand, atau gunakan rekomendasi dari referensi UI/UX Maxilun?
 ```
 
-Jika sudah ada README yang jelas, lewati pertanyaan yang sudah terjawab.
+Jika sudah ada README atau brief yang jelas, lewati pertanyaan yang sudah terjawab.
 
-### 2.3 Mode Cepat (`--quick`)
-Jika user menambah flag `--quick` atau `cepat`, lewati interview — generate dokumen dengan placeholder `[TBD: perlu konfirmasi pengguna]` dan rangkum pertanyaan yang belum terjawab.
+### 2.4 Mode Cepat (`--quick`)
+Jika user menambah flag `--quick` atau `cepat`, lewati interview — pilih archetype terdekat dari `references/prd-archetypes.md`, pilih referensi desain yang sesuai dari `../maxilun-craft/references/design-md/index.md`, generate ke-10 dokumen dengan label `[ASSUMED]` atau `[TBD: perlu konfirmasi pengguna]`, lalu tampilkan ringkasan asumsi di akhir.
 
 ## 3. Output: 10 Dokumen di `docs/`
 
-Semua dokumen digenerate ke folder `docs/` di root project. Jika folder belum ada, buat otomatis.
+Semua dokumen digenerate ke folder `docs/` di root project menggunakan struktur kanonik di `references/doc-templates.md`:
 
-```
+```text
 docs/
-├── PRD.md            # Product requirements & user stories
-├── TECHSTACK.md      # Stack, versi, rationale
-├── DESIGN.md         # Visual direction & design tokens
-├── SECURITY.md       # Threat model, auth, secrets policy
-├── STYLEGUIDE.md     # Coding conventions & patterns
-├── TASK.md           # Sprint tracker & backlog
-├── ARCHITECTURE.md   # C4 L1/L2, module boundaries, ADR
-├── SKILLS.md         # Maxilun skills aktif & command reference
-├── GLOSSARY.md       # Domain terms & definisi bisnis
-└── ONBOARDING.md     # Setup steps untuk developer/AI baru
+├── PRD.md            # Product requirements, user stories (Gherkin), 4 UI states, non-goals, KPIs
+├── TECHSTACK.md      # Stack, versi, alasan pemilihan, alternatif ditolak, env vars
+├── DESIGN.md         # Visual direction, Design Reference Record (maxilun-craft), OKLCH tokens, 4px grid
+├── SECURITY.md       # Threat model STRIDE spesifik domain, auth/authz, kriptografi, PII policy
+├── STYLEGUIDE.md     # Konvensi penamaan, batas kompleksitas (<=300 baris), error handling, git rules
+├── TASK.md           # Milestone goal, max 3 active tasks, prioritized backlog, blockers
+├── ARCHITECTURE.md   # Diagram C4 L1/L2 (Mermaid), module boundaries, alur data, ringkasan ADR
+├── SKILLS.md         # Peta spesialis Maxilun aktif di project ini & ringkasan cepat untuk AI
+├── GLOSSARY.md       # Ubiquitous language (istilah bisnis kanonik & sinonim yang dilarang)
+└── ONBOARDING.md     # Urutan baca untuk AI assistant & langkah setup lokal terverifikasi untuk engineer
 ```
 
----
-
-## 4. Template Tiap Dokumen
-
-### 4.1 PRD.md
-
-```markdown
-# PRD — [Nama Project]
-
-> **Status**: [Draft | Active | Frozen]  
-> **Last Updated**: YYYY-MM-DD  
-> **Owner**: [nama/role]
-
-## Ringkasan Satu Paragraf
-[Jelaskan APA yang dibangun, UNTUK SIAPA, dan MENGAPA — max 3 kalimat]
-
-## Problem Statement
-[Masalah konkret yang diselesaikan. Bukan "meningkatkan efisiensi" — 
- tapi "pengguna kehilangan X menit per hari karena Y"]
-
-## Target Pengguna
-| Persona | Kebutuhan Utama | Pain Point |
-|---|---|---|
-| [Persona A] | ... | ... |
-| [Persona B] | ... | ... |
-
-## Fitur — MVP (Must Have)
-- [ ] [Fitur 1]: [deskripsi + acceptance criteria]
-- [ ] [Fitur 2]: [deskripsi + acceptance criteria]
-
-## Fitur — Phase 2 (Should Have)
-- [ ] [Fitur 3]
-
-## Out of Scope (Tidak Dibangun)
-- [X] [Fitur yang sengaja tidak dibangun + alasan]
-
-## Success Metrics
-| Metrik | Baseline | Target | Cara Ukur |
-|---|---|---|---|
-| [KPI 1] | [angka sekarang] | [angka target] | [tool/cara] |
-
-## Constraints
-- **Timeline**: [TBD]
-- **Budget**: [TBD]
-- **Compliance**: [GDPR / PCI-DSS / tidak ada]
-- **Platform**: [Web / Mobile / API only]
-```
-
----
-
-### 4.2 TECHSTACK.md
-
-```markdown
-# TECHSTACK — [Nama Project]
-
-> **Status**: [Proposed | Confirmed | Locked]  
-> **Last Updated**: YYYY-MM-DD
-
-## Stack Keputusan
-
-| Layer | Teknologi | Versi | Alasan Dipilih | Alternatif Ditolak |
-|---|---|---|---|---|
-| **Frontend** | [Next.js / Vite / SvelteKit] | [14.x] | [alasan] | [apa yang ditolak + kenapa] |
-| **Backend** | [Node.js / Go / Python / PHP] | [x.x] | [alasan] | ... |
-| **Database** | [PostgreSQL / MySQL / MongoDB] | [x.x] | [alasan] | ... |
-| **Auth** | [NextAuth / Auth.js / Lucia / custom] | [x.x] | [alasan] | ... |
-| **ORM** | [Prisma / Drizzle / GORM / SQLAlchemy] | [x.x] | [alasan] | ... |
-| **Styling** | [Vanilla CSS / Tailwind / CSS Modules] | [x.x] | [alasan] | ... |
-| **Deployment** | [Vercel / Railway / VPS / AWS] | - | [alasan] | ... |
-| **CI/CD** | [GitHub Actions / GitLab CI] | - | [alasan] | ... |
-| **Testing** | [Vitest / Jest / Playwright] | [x.x] | [alasan] | ... |
-| **Monitoring** | [Sentry / Datadog / self-hosted] | - | [alasan] | ... |
-
-## Dependency Policy
-- Node version minimum: `[x.x.x]` (lock via `.nvmrc` atau `engines` di `package.json`)
-- Package manager: `[npm | pnpm | yarn | bun]`
-- Update strategy: [patch auto / minor manual / major planned]
-- Banned packages: [list package yang tidak boleh dipakai + alasan]
-
-## Environment Variables
-| Var | Scope | Deskripsi | Contoh Value |
-|---|---|---|---|
-| `DATABASE_URL` | server | Connection string DB | `postgresql://...` |
-| `NEXTAUTH_SECRET` | server | Auth secret key | `openssl rand -base64 32` |
-| `NEXT_PUBLIC_API_URL` | client | Base URL API publik | `https://api.domain.com` |
-
-## Architectural Decisions (ADR Ringkas)
-- **[YYYY-MM-DD]** Memilih [X] karena [alasan] → lihat `ARCHITECTURE.md#adr`
-```
-
----
-
-### 4.3 DESIGN.md
-
-```markdown
-# DESIGN — [Nama Project]
-
-> **Status**: [Draft | Active]  
-> **Last Updated**: YYYY-MM-DD  
-> **Skill**: maxilun-craft (`/maxilun-craft`)
-
-## Brand Identity
-- **Nama**: [Nama Project/Brand]
-- **Tagline**: [max 8 kata]
-- **Kepribadian**: [Professional / Playful / Authoritative / Minimal]
-- **Anti-vibe**: [Apa yang BUKAN brand ini]
-
-## Color System (OKLCH)
-```css
-:root {
-  /* Surface */
-  --surface-base:    oklch([L]% [C] [H]);   /* [TBD] */
-  --surface-card:    oklch([L]% [C] [H]);
-  
-  /* Text */
-  --text-main:       oklch([L]% [C] [H]);
-  --text-muted:      oklch([L]% [C] [H]);
-  
-  /* Brand */
-  --brand-primary:   oklch([L]% [C] [H]);
-  --brand-hover:     oklch([L]% [C] [H]);
-  
-  /* Status */
-  --status-success:  oklch(60% 0.16 145);
-  --status-danger:   oklch(58% 0.22 25);
-  --status-warning:  oklch(72% 0.18 75);
-  --status-info:     oklch(58% 0.18 250);
-}
-```
-
-## Typography
-- **Font Utama**: [Inter / Geist / Plus Jakarta Sans / TBD]
-- **Font Mono**: [JetBrains Mono / Geist Mono / TBD]
-- **Scale**: `12px → 14px → 16px → 18px → 24px → 32px → 48px`
-- **Line height**: Heading `1.2`, Body `1.6`
-
-## Spacing (4px Grid)
-`4 → 8 → 12 → 16 → 24 → 32 → 48 → 64 → 96px`
-
-## Komponen Kunci
-- **Border radius**: [4px card / 8px input / 12px modal / full pill]
-- **Shadow system**: [subtle / medium / elevated]
-- **Animation duration**: [150ms micro / 250ms transition / 400ms modal]
-
-## Dark Mode
-- [ ] Dark mode didukung
-- [ ] Menggunakan `prefers-color-scheme`
-- [ ] Toggle manual tersedia
-```
-
----
-
-### 4.4 SECURITY.md
-
-```markdown
-# SECURITY — [Nama Project]
-
-> **Status**: [Draft | Review | Approved]  
-> **Last Updated**: YYYY-MM-DD  
-> **Skill**: maxilun-sentinel (`/maxilun-sentinel`)
-
-## Threat Model (STRIDE Ringkas)
-| Ancaman | Vector | Mitigasi | Status |
-|---|---|---|---|
-| **Spoofing** | Token palsu / session hijack | JWT + httpOnly cookie + refresh rotation | [TBD] |
-| **Tampering** | Parameter manipulation | Input validation + HMAC signing | [TBD] |
-| **Information Disclosure** | Error leak / log PII | Generic error response + log sanitization | [TBD] |
-| **Denial of Service** | Brute force / flood | Rate limiting + CAPTCHA | [TBD] |
-| **Elevation of Privilege** | IDOR / broken authz | RBAC + ownership check per resource | [TBD] |
-
-## Authentication
-- **Metode**: [Session / JWT / OAuth2 / Passkeys / Magic Link]
-- **Provider**: [Credentials / Google / GitHub / lainnya]
-- **MFA**: [Tidak / TOTP / WebAuthn]
-- **Session timeout**: [idle: Xmin / absolute: Xjam]
-- **Password policy**: [min 8 char / bcrypt cost 12 / hibp check]
-
-## Authorization
-- **Model**: [RBAC / ABAC / flat permission]
-- **Roles**: `[admin, user, guest, ...]`
-- **Ownership rule**: [User hanya bisa akses resource miliknya sendiri]
-
-## Secrets Management
-- [ ] Semua secret di environment variable — tidak ada hardcode
-- [ ] `.env` di `.gitignore`
-- [ ] Secret rotation plan: [TBD]
-- [ ] Secret scanning di CI: [GitHub secret scanning / Gitleaks / TBD]
-
-## Input Validation
-- Semua input divalidasi di server — client-side hanya UX
-- Library: [Zod / Yup / Joi / class-validator / TBD]
-- File upload: [tipe allowed, max size, scan virus]
-
-## Data Privacy
-- PII yang disimpan: [email, nama, ... — list lengkap]
-- Retensi data: [X hari / sampai delete akun]
-- Compliance: [GDPR / UU PDP Indonesia / tidak applicable]
-- Right to erasure: [mekanisme hapus akun + data]
-
-## Security Headers
-```
-Content-Security-Policy: [TBD]
-X-Frame-Options: DENY
-X-Content-Type-Options: nosniff
-Referrer-Policy: strict-origin-when-cross-origin
-Permissions-Policy: [TBD]
-```
-
-## Incident Response
-- Contact: [email security / channel Slack]
-- Disclosure policy: [koordinasi dulu / public setelah patch]
-```
-
----
-
-### 4.5 STYLEGUIDE.md
-
-```markdown
-# STYLEGUIDE — [Nama Project]
-
-> **Last Updated**: YYYY-MM-DD  
-> **Linting**: [ESLint / Biome / Ruff / golangci-lint / TBD]
-
-## Naming Conventions
-
-### File & Folder
-```
-components/UserProfile.tsx       # PascalCase untuk komponen
-lib/formatDate.ts                # camelCase untuk utility
-hooks/useAuth.ts                 # camelCase, prefix "use" untuk hooks
-app/dashboard/page.tsx           # kebab-case untuk routes (Next.js)
-```
-
-### Variabel & Fungsi
-```typescript
-const userName = "..."           // camelCase
-const MAX_RETRY = 3              // UPPER_SNAKE untuk konstanta
-function getUserById(id: string) // verb + noun, camelCase
-interface UserProfile { ... }    // PascalCase untuk tipe/interface
-type UserId = string             // PascalCase untuk type alias
-```
-
-### Database
-```sql
-user_profiles     -- snake_case untuk tabel
-created_at        -- snake_case untuk kolom
-idx_users_email   -- prefix idx_ untuk index
-```
-
-## Code Structure
-
-### Urutan Import (TypeScript/JavaScript)
-```typescript
-// 1. Node built-ins
-import { readFile } from 'fs/promises'
-
-// 2. External packages
-import { z } from 'zod'
-
-// 3. Internal absolute
-import { db } from '@/lib/db'
-
-// 4. Internal relative
-import { formatDate } from './utils'
-
-// 5. Types (terakhir)
-import type { User } from '@/types'
-```
-
-### Aturan Fungsi
-- Max 1 level of abstraction per fungsi
-- Max 20 baris per fungsi (jika lebih → pecah)
-- Satu fungsi = satu tanggung jawab
-- Hindari boolean parameter → gunakan object options
-
-### Error Handling
-```typescript
-// ✅ Baik: explicit error type
-type Result<T> = { data: T; error: null } | { data: null; error: string }
-
-// ❌ Hindari: throw di mana-mana tanpa boundary
-```
-
-## Komentar & Dokumentasi
-- Komentar menjelaskan **MENGAPA**, bukan **APA** (kode sudah menjelaskan apa)
-- JSDoc untuk fungsi publik yang di-export
-- TODO wajib ada nama + tanggal: `// TODO(username, YYYY-MM-DD): deskripsi`
-- Hapus kode yang di-comment-out sebelum merge — gunakan git history
-
-## Git Conventions
-
-### Branch Naming
-```
-feat/user-authentication
-fix/login-redirect-loop
-chore/update-dependencies
-docs/api-documentation
-```
-
-### Commit Message (Conventional Commits)
-```
-feat: add OAuth2 Google login
-fix: correct token expiry calculation
-docs: update API endpoint reference
-chore: upgrade Next.js to 14.2
-refactor: extract auth middleware
-test: add unit test for formatDate
-```
-
-### PR Rules
-- Max 400 baris changed per PR (kecuali generated code)
-- Wajib link ke issue/task
-- Self-review sebelum request review
-- Hapus branch setelah merge
-
-## Yang Dilarang (Non-Negotiable)
-- [ ] `any` type di TypeScript tanpa komentar justifikasi
-- [ ] `console.log` di production code
-- [ ] Secret hardcoded di kode
-- [ ] Nested ternary lebih dari 1 level
-- [ ] `// @ts-ignore` tanpa alasan
-- [ ] Direct DOM manipulation di React component
-```
-
----
-
-### 4.6 TASK.md
-
-```markdown
-# TASK — [Nama Project]
-
-> **Sprint**: [Sprint N | Milestone X.Y]  
-> **Periode**: YYYY-MM-DD → YYYY-MM-DD  
-> **Last Updated**: YYYY-MM-DD
-
-## 🎯 Goal Sprint Ini
-[Satu kalimat: apa yang harus selesai di akhir sprint ini]
-
-## ✅ In Progress
-- [ ] **[TASK-001]** [Deskripsi task] `@assignee` — _due: YYYY-MM-DD_
-  - Sub-task: [langkah konkret]
-  - Blocker: [apa yang menghambat, jika ada]
-
-## 📋 Backlog (Prioritized)
-- [ ] **[TASK-002]** [Deskripsi] — _Priority: High_
-- [ ] **[TASK-003]** [Deskripsi] — _Priority: Medium_
-- [ ] **[TASK-004]** [Deskripsi] — _Priority: Low_
-
-## ✔️ Done (Sprint Ini)
-- [x] **[TASK-000]** [Deskripsi] — _Selesai: YYYY-MM-DD_
-
-## 🚫 Blocked
-- **[TASK-00X]**: [alasan blocked] → [langkah untuk unblock]
-
-## 📌 Notes & Decisions
-- [YYYY-MM-DD] [Keputusan atau catatan penting sprint ini]
-
-## Roadmap Milestone
-| Milestone | Target | Status |
-|---|---|---|
-| v0.1 — MVP Auth | [TBD] | 🔄 In Progress |
-| v0.2 — Core Feature | [TBD] | ⏳ Planned |
-| v1.0 — Launch | [TBD] | ⏳ Planned |
-```
-
----
-
-### 4.7 ARCHITECTURE.md
-
-```markdown
-# ARCHITECTURE — [Nama Project]
-
-> **Last Updated**: YYYY-MM-DD  
-> **Skill**: maxilun-architect (`/msal-think`)
-
-## C4 Level 1 — System Context
-
-```mermaid
-C4Context
-  title System Context: [Nama Project]
-  Person(user, "Pengguna", "Deskripsi singkat")
-  System(system, "[Nama Project]", "Deskripsi sistem")
-  System_Ext(ext1, "[Sistem Eksternal]", "Contoh: Payment Gateway")
-  Rel(user, system, "Menggunakan")
-  Rel(system, ext1, "Memanggil API")
-```
-
-## C4 Level 2 — Container
-
-```mermaid
-C4Container
-  title Container Diagram: [Nama Project]
-  Person(user, "Pengguna")
-  Container(web, "Web App", "[Next.js]", "Frontend")
-  Container(api, "API Server", "[Node.js/Go/dll]", "Backend")
-  ContainerDb(db, "Database", "[PostgreSQL]", "Data persistence")
-  Rel(user, web, "HTTPS")
-  Rel(web, api, "REST/GraphQL")
-  Rel(api, db, "SQL")
-```
-
-## Module Boundaries
-
-| Module | Tanggung Jawab | Boleh Import | Dilarang Import |
-|---|---|---|---|
-| `core/` | Business logic murni | Tidak ada dependency external | UI, framework |
-| `api/` | HTTP handlers | `core/`, `lib/` | `components/` |
-| `components/` | UI rendering | `lib/`, `types/` | `api/`, `core/` langsung |
-| `lib/` | Shared utilities | Built-ins only | Module internal lain |
-
-## Data Flow
-
-```
-User Request → [Middleware] → [Route Handler] → [Service Layer] → [Repository] → DB
-                    ↓                ↓                  ↓
-               [Auth Check]    [Validation]        [Business Logic]
-```
-
-## Architectural Decision Records (ADR)
-
-### ADR-001: [Judul Keputusan]
-- **Date**: YYYY-MM-DD
-- **Status**: Accepted
-- **Context**: [Situasi yang memaksa keputusan]
-- **Decision**: [Keputusan yang diambil]
-- **Consequences**: [Trade-off yang diterima]
-
-## Known Constraints
-- [Constraint teknis yang harus dihormati semua developer/AI]
-- [Contoh: "Tidak boleh ada circular dependency antar module"]
-```
-
----
-
-### 4.8 SKILLS.md
-
-```markdown
-# SKILLS — [Nama Project]
-
-> Maxilun skills yang aktif di project ini.  
-> Semua command menggunakan prefix `msal-` untuk menghindari konflik.
-
-## Skills Aktif
-
-| Skill | Command | Kapan Digunakan |
-|---|---|---|
-| maxilun | `/maxilun` | Entry point. Jika bingung mulai dari sini |
-| maxilun-engineer | `/maxilun-engineer` | Tulis kode, fix bug, refactor |
-| maxilun-architect | `/msal-think` | Desain arsitektur, keputusan struktural |
-| maxilun-craft | `/maxilun-craft` | UI/UX, design system, komponen |
-| maxilun-sentinel | `/maxilun-sentinel` | Security review, auth, enkripsi |
-| maxilun-insight | `/maxilun-insight` | Debug, profiling, root cause |
-| maxilun-verify | `/maxilun-verify` | Testing, CI, build validation |
-| maxilun-docsmith | `/maxilun-docsmith` | Dokumentasi teknis, README, API spec |
-| maxilun-data | `/maxilun-data` | Database, schema, migration, query |
-| maxilun-deploy | `/maxilun-deploy` | CI/CD, Docker, deployment |
-| maxilun-frontend | `/maxilun-frontend` | Next.js, RSC, Server Actions |
-| maxilun-knowledge-graph | `/msal-graph` | Peta dependensi kode sebelum edit |
-| maxilun-scaffold | `/maxilun-scaffold` | Update docs/ ini saat milestone baru |
-
-## Konvensi Project Ini
-
-- **Sebelum edit kode**: Selalu jalankan `/msal-graph` untuk memetakan dependensi
-- **Sebelum PR**: Jalankan `/maxilun-verify` untuk validasi
-- **Untuk keputusan arsitektur baru**: Tulis ADR di `ARCHITECTURE.md`
-- **Update docs ini**: Jalankan `/maxilun-scaffold --update` per milestone
-
-## Konteks untuk AI
-
-Membaca file ini? Ini ringkasan project:
-- **Tujuan**: [Isi dari PRD.md]
-- **Stack utama**: [Isi dari TECHSTACK.md]
-- **Hal yang TIDAK boleh**: [Isi dari STYLEGUIDE.md bagian "Yang Dilarang"]
-- **Status sekarang**: [Isi dari TASK.md bagian "In Progress"]
-```
-
----
-
-### 4.9 GLOSSARY.md
-
-```markdown
-# GLOSSARY — [Nama Project]
-
-> Kamus istilah domain bisnis dan teknis yang digunakan di project ini.  
-> Semua AI dan developer wajib menggunakan terminologi yang sama.
-
-## Istilah Bisnis (Domain Language)
-
-| Istilah | Definisi | Sinonim yang Dihindari |
-|---|---|---|
-| **[Istilah A]** | [Definisi presisi] | [Kata lain yang jangan dipakai] |
-| **[Istilah B]** | [Definisi presisi] | ... |
-
-_Contoh (hapus setelah diisi):_
-| **Order** | Transaksi pembelian yang sudah dikonfirmasi pembayarannya | Cart, Transaction, Purchase |
-| **Cart** | Kumpulan item sebelum checkout — belum jadi order | Basket, Bag |
-| **Tenant** | Perusahaan/organisasi yang berlangganan platform | Client, Customer, User |
-
-## Istilah Teknis Project
-
-| Istilah | Definisi |
-|---|---|
-| **[Nama modul]** | [Apa yang dilakukan modul ini] |
-| **[Nama service]** | [Tanggung jawab service ini] |
-
-## Akronim
-
-| Akronim | Kepanjangan | Konteks |
-|---|---|---|
-| MFA | Multi-Factor Authentication | Auth system |
-| RLS | Row-Level Security | Database isolation |
-| [TBD] | ... | ... |
-
-## Aturan Penamaan (Ubiquitous Language)
-- Gunakan bahasa domain, bukan bahasa teknis, dalam nama variabel & fungsi yang menyangkut bisnis
-- Contoh: `order.confirm()` bukan `order.setStatusToConfirmed()`
-- Hindari sinonim: pilih satu kata untuk satu konsep dan konsisten
-```
-
----
-
-### 4.10 ONBOARDING.md
-
-```markdown
-# ONBOARDING — [Nama Project]
-
-> Panduan setup lengkap untuk developer baru dan AI assistant.  
-> Ikuti urutan ini. Jangan skip langkah.
-
-## Untuk AI Assistant
-
-Jika kamu AI (Claude, Antigravity, Codex, Cursor, Grok, dll.) dan baru pertama membaca project ini:
-
-1. **Baca dulu**: `PRD.md` → `TECHSTACK.md` → `ARCHITECTURE.md` → `TASK.md`
-2. **Pahami batasan**: `SECURITY.md` + `STYLEGUIDE.md` (bagian "Yang Dilarang")
-3. **Sebelum edit kode**: Jalankan `/msal-graph` untuk memetakan dependensi
-4. **Terminologi**: Cek `GLOSSARY.md` jika ada istilah yang tidak familiar
-5. **Tanya jika tidak yakin**: Lebih baik klarifikasi daripada asumsi salah
-
-## Untuk Developer Baru (Human)
-
-### Prerequisites
-- [ ] Node.js `>= [x.x.x]` ([download](https://nodejs.org))
-- [ ] [Tool lain yang wajib ada]
-- [ ] Git configured dengan SSH key
-
-### Setup Lokal
-
-```bash
-# 1. Clone
-git clone [repo-url]
-cd [project-folder]
-
-# 2. Install dependencies
-[npm install | pnpm install | yarn | bun install]
-
-# 3. Setup environment
-cp .env.example .env
-# Edit .env — isi nilai yang diperlukan (lihat TECHSTACK.md#environment-variables)
-
-# 4. Setup database
-[npx prisma migrate dev | ... | TBD]
-
-# 5. Jalankan development server
-[npm run dev | TBD]
-```
-
-### Verifikasi Setup
-```bash
-# Cek semua OK
-[npm run typecheck]
-[npm run lint]
-[npm test]
-```
-
-Jika ada error di langkah manapun → cek `TROUBLESHOOTING.md` atau tanya di [channel/cara kontak].
-
-### Akses yang Perlu Diminta
-- [ ] GitHub repository access
-- [ ] [Staging environment credentials]
-- [ ] [Monitoring dashboard]
-- [ ] [Slack/Discord channel]
-
-### Struktur Folder
-
-```
-[project-name]/
-├── docs/              ← Kamu ada di sini
-├── src/               ← Source code
-│   ├── [struktur project]
-├── [config files]
-└── README.md
-```
-
-Baca `ARCHITECTURE.md` untuk penjelasan lebih dalam tentang setiap module.
-
-### Workflow Harian
-1. Pull latest: `git pull origin main`
-2. Buat branch: `git checkout -b feat/nama-fitur`
-3. Kode sesuai `STYLEGUIDE.md`
-4. Test: `[npm test]`
-5. Commit dengan conventional commits (lihat `STYLEGUIDE.md#git-conventions`)
-6. Push & buka PR
-
-### Kontak
-- **Tech Lead**: [nama / @username]
-- **PM**: [nama / @username]
-- **Untuk pertanyaan teknis**: [channel Slack/Discord]
-- **Untuk akses/onboarding**: [email/person]
-```
-
----
+## 4. Aturan Penyusunan Tiap Dokumen Inti
+
+Baca template lengkap di `references/doc-templates.md` dan terapkan aturan pengisian berikut:
+
+### 4.1 `PRD.md` (Terikat Domain & UI States)
+- **Problem Statement**: Wajib menyebutkan rasa sakit yang terukur (waktu terbuang, risiko finansial, atau frekuensi error), bukan kalimat abstrak.
+- **Fitur MVP**: Setiap fitur wajib memiliki *Acceptance Criteria* deterministik (Given/When/Then) dan mewajibkan 4 state UI (Loading skeleton, Empty state + CTA, Populated state, Error state + recovery) yang merujuk ke `DESIGN.md`.
+- **Out of Scope (Non-Goals)**: Wajib mencantumkan minimal 2 fitur yang sengaja ditolak/ditunda pada fase ini agar scope tidak melebar.
+- *Catatan*: Jika user hanya meminta pembuatan/pembaruan spesifikasi teknis mendalam untuk satu fitur baru (RFC / Feature PRD + spesifikasi OpenAPI) pada project yang sudah berjalan, arahkan atau kolaborasikan dengan `maxilun-docsmith` (`../maxilun-docsmith/references/prd-rfc-specs.md`).
+
+### 4.2 `DESIGN.md` (Terintegrasi Referensi `maxilun-craft`)
+- Wajib membaca `../maxilun-craft/references/design-md/index.md` dan mencantumkan blok **Design Reference Record** (`References`, `Applied`, `Rejected`, `Reason`, dan deklarasi `Design Read`).
+- Turunkan token warna semantik `oklch()`, skala tipografi, `tabular-nums` (untuk tabel/angka), dan hierarki `border-radius` (anak `<=` induk) berdasarkan masalah produk, bukan template AI default (tolak gradien ungu-biru dekoratif).
+
+### 4.3 `ARCHITECTURE.md`, `TECHSTACK.md` & `SECURITY.md`
+- Selaraskan batas modul di `ARCHITECTURE.md` dengan folder nyata di repo (`src/`, `app/`, `core/`, `db/`).
+- Setiap teknologi di `TECHSTACK.md` wajib mencantumkan kolom **Alternatif Ditolak** beserta alasannya.
+- Ancaman STRIDE di `SECURITY.md` wajib spesifik terhadap archetype produk di `references/prd-archetypes.md` (misal: manipulasi harga/idempotency untuk e-commerce/fintech; kebocoran lintas-tenant IDOR untuk B2B SaaS).
 
 ## 5. Mode Update (`--update`)
 
-Jika project sudah berjalan dan butuh refresh docs:
+Jika project sudah berjalan dan butuh sinkronisasi dokumen terhadap perubahan kode:
 
 ```bash
 /maxilun-scaffold --update
 ```
 
-**Yang dilakukan**:
-1. Baca kondisi terkini project (git log, package.json, src/)
-2. Identifikasi dokumen yang stale (> 30 hari tidak diupdate)
-3. Tanya hanya untuk info yang berubah
-4. Update dokumen yang relevan, simpan yang masih valid
-5. Tandai bagian yang perlu review manual dengan `[STALE: periksa ulang]`
+**Prosedur**:
+1. Bandingkan isi `docs/` saat ini dengan kondisi terbaru repositori (`package.json`, skema DB, route baru, dan `git log`).
+2. Identifikasi bagian dokumen yang tidak lagi sinkron dengan kode aktual.
+3. Perbarui fakta yang sudah pasti berubah (`[CONFIRMED]`), pertahankan keputusan yang masih valid, dan tandai bagian yang ambigu dengan `[STALE: perlu konfirmasi]`.
+4. Jika ada penambahan endpoint publik atau README utama perlu disinkronkan, handoff ke `maxilun-docsmith`.
 
-**Kapan update**:
-- Awal setiap milestone baru
-- Setelah major stack change
-- Setelah architectural decision baru
-- Setelah security review
+## 6. Integrasi Lintas-Spesialis Maxilun
 
-## 6. Integrasi dengan Skill Lain
-
-| Dokumen | Skill yang Mengisi/Update |
-|---|---|
-| `PRD.md` | maxilun-scaffold (init), maxilun-content (copy) |
-| `TECHSTACK.md` | maxilun-scaffold, maxilun-architect (ADR section) |
-| `DESIGN.md` | maxilun-scaffold (init), maxilun-craft (update) |
-| `SECURITY.md` | maxilun-scaffold (init), maxilun-sentinel (update) |
-| `STYLEGUIDE.md` | maxilun-scaffold, maxilun-engineer (update) |
-| `TASK.md` | maxilun-scaffold (init), manual update per sprint |
-| `ARCHITECTURE.md` | maxilun-scaffold (init), maxilun-architect (update) |
-| `SKILLS.md` | maxilun-scaffold (auto-generate dari skills aktif) |
-| `GLOSSARY.md` | maxilun-scaffold (init), collaborative update |
-| `ONBOARDING.md` | maxilun-scaffold, maxilun-deploy (setup steps) |
+| Dokumen di `docs/` | Bootstrap Awal | Spesialis Pengembang & Validator Lanjutan |
+|---|---|---|
+| `PRD.md` | `maxilun-scaffold` | `maxilun-docsmith` (Feature PRD/RFC detail), `maxilun-content` (microcopy) |
+| `DESIGN.md` | `maxilun-scaffold` (via corpus `maxilun-craft`) | `maxilun-craft` (implementasi UI, audit 4 state & aksesibilitas) |
+| `TECHSTACK.md` & `ARCHITECTURE.md` | `maxilun-scaffold` | `maxilun-architect` (keputusan ADR kritis, batas sistem), `maxilun-diagrams` |
+| `SECURITY.md` | `maxilun-scaffold` | `maxilun-sentinel` (threat modeling mendalam & audit kode keamanan) |
+| `STYLEGUIDE.md` | `maxilun-scaffold` | `maxilun-engineer` (penegakan code hygiene & refactoring) |
+| `ONBOARDING.md` & `SKILLS.md` | `maxilun-scaffold` | `maxilun-deploy` (CI/CD & Docker), `maxilun-docsmith` (`README.md` & `llms.txt`) |
 
 ## Companion Skills Awareness
 
-`maxilun-scaffold` menghasilkan dokumen konteks project (PRD, TECHSTACK, ARCHITECTURE). Jalankan mandiri; pilih companion untuk dokumen atau keputusan yang memerlukan review khusus:
+`maxilun-scaffold` menghasilkan 10 dokumen konteks project secara mandiri. Pilih companion hanya bila bagian deliverable membutuhkan keputusan spesialis:
 
 | Companion | Scaffold's Role | Anti-Slop Contribution |
 |---|---|---|
-| `maxilun-content` | Doc readability dan tone | Mencegah dokumen template kosong yang tidak terbaca user |
-| `maxilun-architect` | Architecture docs accuracy | Memastikan ARCHITECTURE.md sesuai dengan keputusan ADR nyata |
+| `maxilun-craft` | Menggunakan `../maxilun-craft/references/design-md/index.md` untuk `DESIGN.md` | Mencegah `DESIGN.md` berisi token kosong atau estetika AI generik |
+| `maxilun-docsmith` | Handoff untuk Feature RFC, OpenAPI spec, `README.md`, dan `llms.txt` | Memastikan kontrak API dan dokumentasi engineer akurat hingga level skema |
+| `maxilun-architect` | Validasi batas modul dan ADR di `ARCHITECTURE.md` | Memastikan diagram C4 dan aturan impor sesuai arsitektur nyata |
+| `maxilun-content` | Penyuntingan bahasa produk dan value proposition di `PRD.md` | Mencegah bahasa brosur korporat pada deskripsi produk |
 
-**Penggunaan companion**: Libatkan `maxilun-content` jika brief meminta penyuntingan untuk audiens eksternal, dan `maxilun-architect` jika dokumen membuat keputusan atau klaim arsitektur. Scaffold dapat menghasilkan dokumen konteks mandiri dari informasi repo; tandai fakta yang belum diketahui sebagai TBD.
+## 7. Delivery Gate Kualitas Dokumen
 
-## 7. Aturan Kualitas Dokumen
+Sebelum menyerahkan hasil `docs/` ke pengguna, verifikasi seluruh checklist ini:
 
-Setiap dokumen yang di-generate wajib memenuhi:
+- [ ] Ke-10 file di `docs/` terbentuk lengkap mengikuti struktur `references/doc-templates.md`.
+- [ ] Tidak ada klaim tanpa ukuran/bukti (`"performansi tinggi"`, `"sangat aman"` dihapus atau diganti target konkret).
+- [ ] Setiap `[TBD: alasan]` mencantumkan alasan jelas mengapa belum diputuskan.
+- [ ] `docs/PRD.md` memiliki kriteria penerimaan deterministik, matriks 4 state UI, dan bagian *Out of Scope (Non-Goals)*.
+- [ ] `docs/DESIGN.md` menyertakan blok **Design Reference Record** yang merujuk ke `../maxilun-craft/references/design-md/index.md`.
+- [ ] Seluruh nama script dan environment variable di `TECHSTACK.md` dan `ONBOARDING.md` cocok dengan file konfigurasi repositori jika kode sudah ada.
 
-- [ ] Tidak ada bagian yang sepenuhnya generik (bisa ditemukan di Google)
-- [ ] Setiap `[TBD]` punya alasan: kenapa belum diputuskan
-- [ ] Tidak ada klaim tanpa sumber (`"performansi tinggi"` → berapa angkanya?)
-- [ ] Versi dan tanggal update tercantum
-- [ ] Dibaca manusia dan AI sama-sama terbantu
-
-## Skill Maintenance
-
-- **Maintainer**: Maxilun Core Team
-- **Update trigger**: Setiap pattern baru yang terbukti berguna di production
-- **Contribution**: PR dengan justifikasi mengapa dokumen/section perlu ditambah/hapus
+## Related Skills
+- **maxilun-docsmith**: Spesifikasi fitur/RFC mendalam, kontrak OpenAPI/AsyncAPI, runbook, ADR, dan `llms.txt`
+- **maxilun-craft**: Pemilik utama sistem desain UI/UX dan penyedia 84 referensi di `../maxilun-craft/references/design-md/`
+- **maxilun-architect**: Desain arsitektur mendalam, kontrak antar-modul, dan ADR
+- **maxilun-sentinel**: Audit keamanan aplikasi dan threat modeling STRIDE
+- **maxilun-content**: Copywriting produk dan microcopy antarmuka

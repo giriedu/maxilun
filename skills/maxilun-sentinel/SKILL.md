@@ -10,7 +10,7 @@ description: >
   "validasi input", "cegah sql injection", "xss", "csrf", "rahasia api",
   "kriptografi", "enkripsi", "AES", "hashing", "timing attack", "sertifikat TLS", or security tasks.
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0

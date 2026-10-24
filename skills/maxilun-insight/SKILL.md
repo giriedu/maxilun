@@ -8,7 +8,7 @@ description: >
   Triggers: "/maxilun-insight", "/msal-audit", "diagnosis masalah", "kenapa ini lambat",
   "root cause", "analisis performa", "audit kode", "memory leak", or debugging investigations.
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0

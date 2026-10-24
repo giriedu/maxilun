@@ -8,7 +8,7 @@ description: >
   Triggers: "/maxilun-engineer", "tulis kode", "buat fitur", "fix bug", "refactor kode",
   "implementasikan fungsi", or any direct coding task.
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0

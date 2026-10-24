@@ -8,7 +8,7 @@ description: >
   Triggers: "/maxilun-seo-audit", "/msal-seo", "audit SEO", "technical SEO", "kenapa tidak ranking",
   "meta tags", "sitemap", "structured data", "schema markup", "canonical", or search optimization.
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Maxilun-Source-Available-2.0
