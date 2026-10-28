@@ -98,3 +98,11 @@ genuinely new fact. Never three lines for a single point.
   route paths, event names
 - Type definitions: prefer specific interfaces over `any`, `object`,
   `Record<string, unknown>`. Define shape explicitly.
+
+### Form & Micro-UX Hygiene Rules (WIG Standards)
+- Forbidden: blocking paste (`onPaste` with `preventDefault()`). Users must always be able to paste credentials, tokens, and form data.
+- Required: `spellCheck={false}` on email, code, license keys, API tokens, and username inputs to eliminate false grammar warnings.
+- Required: explicit `<label>` tied via `htmlFor` or direct wrapping for all inputs. Single shared clickable hit target for checkbox/radio labels without dead zones.
+- Required: `min-w-0` on flex children that contain truncated text (`truncate` / `text-overflow: ellipsis`) to prevent layout blowout.
+- Required: `overscroll-behavior: contain` on modals, sheets, and popovers to prevent scroll-chaining to the underlying viewport.
+- Required: unicode ellipsis `…` instead of `...`, and `text-wrap: balance` or `text-pretty` on display titles and headings.

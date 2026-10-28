@@ -218,6 +218,38 @@ Diagnosis langkah:
    - Tentukan `pool_max` dari concurrency aplikasi, jumlah replika, batas `max_connections`, dan hasil pengukuran; jangan gunakan formula tetap lintas workload.
 4. Jika semua koneksi dipakai tapi query singkat: bottleneck di application throughput, bukan query — scale horizontal atau tambah replica.
 
+
+## 7. Protokol Review Kritis & Audit Codebase (Senior On-Call Protocol)
+
+Saat menjalankan audit repo atau review perubahan kode, bertindaklah seperti *senior engineer* yang akan bertanggung jawab saat sistem bermasalah di produksi.
+
+### 7.1 Hierarki Evaluasi Kode
+Nilai kode berdasarkan urutan prioritas non-negosiasi:
+1. **Kebenaran Logika (Correctness)**: Apakah logika menyelesaikan masalah tanpa efek samping tersembunyi?
+2. **Keamanan (Security)**: Apakah input divalidasi, otorisasi terjaga, dan tidak ada kebocoran rahasia?
+3. **Ketahanan Beban (Resilience under Load)**: Apakah alur kerja tahan terhadap lonjakan data dan konkurensi?
+4. **Cakupan Uji (Test Coverage)**: Apakah jalur kritis dan skenario kegagalan memiliki tes otomatis?
+5. **Performa (Speed)**: Apakah alur eksekusi bebas dari bottleneck N+1 atau kalkulasi redundan?
+6. **Kerampingan Kode (Lean/YAGNI)**: Apakah setiap baris baru benar-benar dibutuhkan? Kode terbaik adalah kode yang tidak perlu ditulis.
+
+### 7.2 Inspeksi Radius Pemanggil (Beyond the Diff)
+- Jangan hanya membaca baris perubahan diff yang tampak.
+- Jika ada perubahan tipe, penambahan parameter, atau modifikasi nilai balik: telusuri seluruh fungsi pemanggil (*callers*) di seluruh codebase.
+- Nyatakan **Asumsi Beban Nyata**: Sebutkan apakah kode diaudit untuk kebutuhan single-run CLI, batch job periodik, atau layanan multi-tenant throughput tinggi.
+
+### 7.3 Daftar Pangkas Terurut (Ranked Cut-List)
+Setiap audit menyeluruh wajib menghasilkan daftar pangkas konkret:
+- **Kode Mati (Dead Code)**: Fungsi, tipe, atau variabel yang tidak lagi memiliki pemanggil aktif.
+- **Lapisan Pembungkus Dangkal (Shallow Layers)**: Modul atau wrapper tipis yang hanya meneruskan argumen tanpa menambah logika nyata.
+- **Dependensi Redundan**: Paket npm/pip eksternal yang fungsinya dapat digantikan dengan beberapa baris kode standar bawaan bahasa.
+
+### 7.4 Format Pelaporan Akhir & Transparansi Residu
+Setiap akhir tinjauan audit wajib ditutup dengan dua poin transparansi:
+```text
+⚠️ BATAS TINJAUAN & RISIKO RESIDU:
+- Dilewati / Tidak Dicek: [Sebutkan bagian yang sengaja tidak diaudit, misal: migrasi database historis atau stress-test konkurensi > 500 RPS]
+- Risiko Operasional Residu: [Hal konkret yang wajib dipantau tim saat deployment, misal: monitor memori heap saat payload > 10MB]
+```
 ## Companion Skills Awareness
 
 `maxilun-insight` mendiagnosis akar masalah dan audit performa. Insight dapat menyampaikan temuan dan rekomendasi secara mandiri; companion digunakan untuk tindak lanjut yang diminta:

@@ -66,20 +66,25 @@ Setiap elemen berikut dilarang ditambahkan tanpa fungsi nyata. Jika muncul tanpa
 17. **Whitespace as filler** — large empty spaces tanpa rhythm/hierarchy purpose. Whitespace marks grouping, not fills pages.
 18. **Grid misalignment** — elements tidak snap ke baseline/grid. Optical alignment ±1px acceptable, random placement tidak.
 19. **Overflow issues** — horizontal scroll unintended, text truncation tanpa ellipsis, content clipping.
+20. **Cookie-cutter 3-card grid** — 3 cards berdampingan berukuran dan format identik (`grid-cols-3` seragam) dengan icon lingkaran di atas, judul, dan 2 baris teks. Wajib diganti dengan Asymmetric Bento Grid (`2:1` atau `1:2:1`) di mana setiap kartu memiliki fungsi dan peran visual yang berbeda.
+21. **Generic 4-metric KPI top strip** — strip 4 kotak statis simetris di atas dashboard dengan angka besar dan badge persentase hijau palsu (`+12.5%`) tanpa filter waktu atau data riil. Gantikan dengan panel telemetri operasional atau alur antrean tugas nyata.
+22. **Centered hero dual-button cliché** — hero section dengan judul rata tengah, subteks rata tengah, dan dua tombol pill simetris berdampingan yang berebut aksi primer. Wajib satu aksi primer tegas didukung elemen bukti asimetris.
 
 ### B4. Component & Pattern Issues
-20. **Breadcrumb Navigation (AI-Generated Web Tell — DILARANG DEFAULT)** — `Home > Section > Page` atau `Dashboard / Settings / Profile` di bagian atas halaman adalah salah satu sinyal terkuat bahwa sebuah website di-generate oleh template AI. **DILARANG merender komponen breadcrumb secara default** pada landing page, SaaS dashboard, form, login/register, 404, maupun aplikasi web modern. Gunakan navigasi kembali kontekstual (`← Kembali ke Daftar Tagihan`), command palette (`Cmd+K`), atau tab/header langsung. Pengecualian hanya jika pengguna secara eksplisit meminta breadcrumb untuk katalog e-commerce/dokumentasi bersarang `>= 4` level.
-21. **Badge inflation** — badges labeled "Powerful", "AI-Powered", "New" tanpa factual basis. Badges only for status (version, count, state).
-22. **Emoji as icons** — emoji menggantikan professional icon set. Icons wajib dari satu family (Lucide, Phosphor, etc.) dengan consistent weight.
-23. **Uniform border radius** — semua elements rounded sama (e.g., all 8px). Nested radii: child ≤ parent, concentric hierarchy.
-24. **Hero cliché** — bombastic headline + generic subtitle + dual CTAs tanpa clear primary. One primary CTA; hero explains value, not sensation.
-25. **Fake statistics** — "99.9% Accuracy", "10k+ happy users" tanpa source. Numbers require citation or deletion.
-26. **Decorative components** — buttons/tabs/dropdowns/search that don't function. If non-functional, don't render.
-27. **Tab bar bloat** — >5 tabs di mobile nav. Mobile tab bars: 3-5 items max dengan icons + labels.
-28. **Modal abuse** — modals untuk content yang bisa inline. Modals only for interrupts requiring focus.
-29. **Login page decoration** — gradient backgrounds, floating shapes, fake product screenshots, marketing copy, atau testimonials pada halaman login/register. Login page fokus pada form functionality, bukan visual impressiveness. Background boleh textured/subtle tapi tidak boleh mengganggu readability form.
-30. **Generic menu names** — sidebar/nav menggunakan "Dashboard", "Settings", "Profile", "Admin" tanpa konteks produk. Menu names wajib mencerminkan struktur informasi aktual: "Patient Records" bukan "Dashboard", "Notification Preferences" bukan "Settings", "Clinic Profile" bukan "Profile".
-
+23. **Breadcrumb Navigation (AI-Generated Web Tell — DILARANG DEFAULT)** — `Home > Section > Page` atau `Dashboard / Settings / Profile` di bagian atas halaman adalah salah satu sinyal terkuat bahwa sebuah website di-generate oleh template AI. **DILARANG merender komponen breadcrumb secara default** pada landing page, SaaS dashboard, form, login/register, 404, maupun aplikasi web modern. Gunakan navigasi kembali kontekstual (`← Kembali ke Daftar Tagihan`), command palette (`Cmd+K`), atau tab/header langsung. Pengecualian hanya jika pengguna secara eksplisit meminta breadcrumb untuk katalog e-commerce/dokumentasi bersarang `>= 4` level.
+24. **Badge inflation** — badges labeled "Powerful", "AI-Powered", "New" tanpa factual basis. Badges only for status (version, count, state).
+25. **Emoji as icons** — emoji menggantikan professional icon set. Icons wajib dari satu family (Lucide, Phosphor, etc.) dengan consistent weight.
+26. **Uniform border radius** — semua elements rounded sama (e.g., all 8px). Nested radii: child ≤ parent, concentric hierarchy.
+27. **Hero cliché** — bombastic headline + generic subtitle + dual CTAs tanpa clear primary. One primary CTA; hero explains value, not sensation.
+28. **Fake statistics** — "99.9% Accuracy", "10k+ happy users" tanpa source. Numbers require citation or deletion.
+29. **Decorative components** — buttons/tabs/dropdowns/search that don't function. If non-functional, don't render.
+30. **Tab bar bloat** — >5 tabs di mobile nav. Mobile tab bars: 3-5 items max dengan icons + labels.
+31. **Modal abuse** — modals untuk content yang bisa inline. Modals only for interrupts requiring focus.
+32. **Login page decoration** — gradient backgrounds, floating shapes, fake product screenshots, marketing copy, atau testimonials pada halaman login/register. Login page fokus pada form functionality, bukan visual impressiveness. Background boleh textured/subtle tapi tidak boleh mengganggu readability form.
+33. **Generic menu names & IA** — sidebar/nav menggunakan "Dashboard", "Settings", "Profile", "Admin", "Features" tanpa konteks produk. Menu names wajib mencerminkan struktur informasi aktual berbasis kata benda & kata kerja domain nyata.
+34. **Non-functional navigation elements** — bilah navigasi dengan kotak pencarian mati, lonceng notifikasi tanpa hitungan/isi, atau avatar tanpa menu popover. Setiap elemen interaktif wajib berfungsi nyata atau dihilangkan.
+35. **Clumsy mobile hamburger overlay** — menu mobile yang membuka daftar teks vertikal satu layar penuh yang kaku. Wajib menggunakan Bottom Tab Bar (3–4 tujuan utama) di zona ibu jari dan Bottom Sheet Drawer untuk menu sekunder.
+36. **Missing active route indicator** — item menu tanpa penanda rute aktif semantik (`aria-current="page"`) atau visual (sliding pill highlight).
 ### B5. Animation & Motion Issues
 29. **Animation overload** — glow, floating, parallax, hover effects tanpa functional purpose. Motion clarifies cause-effect only.
 30. **Bounce/elastic easing** — cubic-bezier dengan overshoot (bounce, elastic) terasa dated. Use spring physics or ease-out.
@@ -144,6 +149,9 @@ Gunakan ID berikut untuk menyebut temuan secara konsisten. Nilai source, preview
 | LAY-005 | Horizontal overflow detected (overflow-x: hidden hack) | ERROR | ❌ |
 | LAY-006 | Element misaligned from baseline grid >2px | WARNING | ❌ |
 | LAY-007 | Text truncation without ellipsis/title attribute | WARNING | ✅ Add overflow handling |
+| LAY-008 | Cookie-cutter 3-card grid with identical height/iconography | ERROR | ❌ Replace with asymmetric bento grid |
+| LAY-009 | Generic 4-metric KPI top strip without telemetry/filter | WARNING | ❌ Replace with operational workflow panel |
+| LAY-010 | Centered hero with competing symmetric dual pill buttons | ERROR | ❌ Single clear primary action + asymmetric proof |
 
 ### C4. Component Checks
 | ID | Check | Severity | Suggested action |
@@ -157,8 +165,11 @@ Gunakan ID berikut untuk menyebut temuan secara konsisten. Nilai source, preview
 | CMP-007 | Tab bar with >5 items (mobile) | ERROR | ❌ |
 | CMP-008 | Login/register page with decorative gradient background | WARNING | ❌ |
 | CMP-009 | Login/register page with marketing copy or testimonials | ERROR | ❌ |
-| CMP-010 | Generic menu name ("Dashboard", "Settings", "Profile") without product context | WARNING | ❌ |
+| CMP-010 | Generic menu name ("Dashboard", "Settings", "Profile") without product context | ERROR | ❌ Derive from domain verbs & entities |
 | CMP-011 | `Home > ...` or `Dashboard / ...` trail on landing, app, auth, or dashboard screen | ERROR | ❌ Remove breadcrumb |
+| CMP-012 | Non-functional navigation element (search/bell/avatar with no action) | ERROR | ❌ Wire functional action or remove |
+| CMP-013 | Mobile menu using clumsy full-screen list instead of thumb-zone tab bar/sheet | ERROR | ❌ Implement ergonomic bottom navigation/sheet |
+| CMP-014 | Navigation item missing active route state (`aria-current="page"` or sliding highlight) | ERROR | ✅ Add active state & aria-current |
 
 ### C5. Animation & Performance Checks
 | ID | Check | Severity | Suggested action |

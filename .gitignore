@@ -39,6 +39,7 @@ build/
 .trae/
 .windsurf/
 .codebuddy/
+.hermes/
 skills-lock.json
 .maxilun/
 

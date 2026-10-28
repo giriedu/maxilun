@@ -6,6 +6,15 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [Unreleased]
+
+### Enhanced
+- **Craft & UI/UX Standards**: Added concentric inner radius formula (`radius_inner = max(0, radius_outer - padding)`), 8-state interactive feedback system, Web Interface Guidelines (WIG) compliance (paste unblocking, spellcheck discipline, flex truncation `min-w-0`, `overscroll-behavior: contain`), and "One Live Thing" subject inventory protocol.
+- **Motion & Micro-interactions**: Codified Emil Kowalski action frequency matrix (0ms instant for high-frequency actions) and Disney animation principles adapted for web micro-interactions.
+- **Architecture & Deep Modules**: Integrated Deep Modules vocabulary (Module, Interface, Depth, Seam, Adapter), The Deletion Test, and Two-Adapter Seam rule into `maxilun-architect`.
+- **Diagnostic & Audit**: Codified Senior On-Call review protocol in `maxilun-insight`, ranked cut-list for pruning dead weight, and mandatory residual risk disclosure.
+- **Code Hygiene**: Synchronized form, scroll containment, and micro-typography standards across the ecosystem.
+
 ## [1.0.0] — 2026-10-24
 
 ### Initial Release — Production-Grade AI Engineering Skills Ecosystem

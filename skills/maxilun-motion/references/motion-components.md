@@ -26,6 +26,27 @@ Untuk sebagian besar UI web, gunakan CSS Variables + CSS Transitions / Animation
   }
 }
 ```
+### Matriks Frekuensi Aksi & Timing (Emil Kowalski Matrix)
+
+1. **Aturan Frekuensi Harian**:
+   - **Aksi Frekuensi Tinggi (≥100x/hari)**: Pintasan keyboard (`Cmd+K`), seleksi baris tabel, tab keyboard, switch akun. **Durasi: 0ms (INSTANT)**. Dilarang menganimasikan aksi ini karena menimbulkan hambatan psikologis (*interaction friction*).
+   - **Interaksi Standar**: Tooltip, popover, menu dropdown, selektor: **120ms – 180ms**.
+   - **Struktural & Sheet**: Modal dialog, bottom sheet drawer, collapsible panel: **200ms – 250ms**.
+2. **Aturan Kurva (Easing)**:
+   - **Dilarang `ease-in` untuk UI interaktif**: Animasi yang mulai lambat terasa tersendat (*sluggish*).
+   - **Gunakan High-Tension `ease-out`**: `cubic-bezier(0.23, 1, 0.32, 1)` atau `cubic-bezier(0.16, 1, 0.3, 1)`.
+   - Popover dan dropdown wajib membesar dari titik pemicunya (`transform-origin: top left/right`), bukan dari titik tengah layar.
+
+### Adaptasi 12 Prinsip Animasi untuk Mikro-Interaksi Web
+
+| Prinsip Animasi | Penerapan Mikro-Interaksi Web | Spesifikasi CSS / Timing |
+|---|---|---|
+| **Squash & Stretch** | Kompresi tombol saat ditekan (`:active`) | `transform: scale(0.97); transition: transform 60ms ease-out;` |
+| **Anticipation** | Pengangkatan halus pada hover sebelum klik | `transform: translateY(-1px); box-shadow: 0 2px 6px rgba(0,0,0,0.08);` |
+| **Follow Through** | Centang checkbox menggambar setelah kotak terisi | `transition: stroke-dashoffset 180ms ease-out 50ms;` |
+| **Arc Motion** | Pergerakan ibu jari toggle switch melengkung | `cubic-bezier(0.34, 1.56, 0.64, 1)` durasi 180ms |
+| **Timing Bounds** | Cap durasi mikro-interaksi maksimal 300ms | 50–100ms (instan), 100–200ms (standar), 200–300ms (kompleks) |
+
 
 ### Reveal Primitive (WAAPI)
 ```typescript

@@ -87,3 +87,34 @@ Saat mengevaluasi adopsi library, database, atau infrastruktur baru:
 | **Shared Database Lintas-Service** | Dua layanan berbeda melakukan `INSERT/UPDATE` ke tabel fisik yang sama | Tetapkan satu pemilik tabel tunggal; ekspos akses lewat kontrak API/event |
 | **Premature Microservices** | Tim `< 5 engineer` memecah 6 repo mikro sebelum domain stabil | Gunakan **Modular Monolith** dengan batas impor folder yang ditegakkan linter |
 | **Anemic Domain & Leaky DTO** | Logika bisnis tersebar di handler HTTP dan mengembalikan baris ORM mentah ke publik | Isolasi logika di modul `core/` dan pisahkan skema DB dari DTO respons API |
+
+---
+
+## 6. Arsitektur Modul Mendalam (Deep Modules) & Disiplin Seam
+
+Arsitektur yang sehat dibangun dari modul-modul yang mendalam (*deep modules*): kapabilitas besar di balik antarmuka ramping, diletakkan pada titik sambung (*seam*) yang bersih, dan dapat diuji langsung melalui antarmuka tersebut.
+
+### 6.1 Kosakata Standar Desain Modul
+
+1. **Modul**: Segala sesuatu yang memiliki antarmuka dan implementasi (skala agnostik: fungsi, kelas, paket internal, atau slice vertikal).
+2. **Antarmuka (Interface)**: Seluruh hal yang wajib diketahui pemanggil untuk menggunakannya secara benar: tipe argumen, invarian status, urutan eksekusi, penanganan error, dan karakteristik performa.
+3. **Implementasi**: Badan kode di dalam modul yang tersembunyi dari pemanggil luar.
+4. **Kedalaman (Depth)**: Rasio kapabilitas yang diperoleh pemanggil terhadap beban kognitif antarmuka yang harus dipelajari.
+   - **Deep Module**: Antarmuka ringkas dengan implementasi internal kaya (contoh: fungsi I/O file atau transaction runner yang menangani retry, lock, dan rollback di dalam).
+   - **Shallow Module**: Antarmuka gemuk dengan implementasi tipis yang hanya meneruskan panggilan (*pass-through*).
+5. **Seam (Titik Sambung)**: Lokasi di mana antarmuka hidup dan perilaku dapat diubah tanpa mengedit pemanggil.
+6. **Adapter**: Objek konkret yang memenuhi antarmuka pada suatu titik sambung.
+
+### 6.2 Prinsip Evaluasi & The Deletion Test
+
+1. **The Deletion Test (Uji Hapus Modul)**:
+   Simulasikan penghapusan modul dari codebase:
+   - Jika kompleksitas lenyap tanpa jejak, modul tersebut hanyalah pembungkus dangkal (*shallow wrapper*). Hapus dan lakukan *inline*.
+   - Jika kompleksitas yang sama harus ditulis ulang menyebar di $N$ pemanggil, modul tersebut terbukti memiliki fungsi nyata (*deep module*).
+2. **Aturan Dua Adapter (Seam Reality Check)**:
+   - *1 Adapter*: Titik sambung bersifat spekulatif/hipotetis. Jangan membuat antarmuka generic bila hanya ada satu implementasi nyata (pelanggaran YAGNI).
+   - *2 Adapter*: Titik sambung terbukti nyata (misal: implementasi Postgres di produksi dan in-memory fake untuk pengujian unit).
+3. **Desain untuk Daya Uji (Testability)**:
+   - Terima dependensi dari luar (*dependency injection* sederhana), jangan menginstansiasi client di dalam fungsi inti.
+   - Kembalikan hasil komputasi eksplisit, hindari *hidden side-effects*.
+   - Perkecil permukaan publik antarmuka: semakin sedikit metode publik, semakin sedikit skenario tes yang harus dipelihara.

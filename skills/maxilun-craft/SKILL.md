@@ -72,6 +72,8 @@ Sebelum menamai halaman, menu navigasi, tombol, atau fitur:
 | `Dashboard`, `Admin Panel`, `Control Center` | `[Nama Fungsi] Monitor`, `Ringkasan [Aktivitas]`, `Antrean [Entitas]` |
 | `Get Started`, `Learn More`, `Explore`, `Submit` | Aksi konkret `<= 3 kata`: `Buat Akun`, `Lihat Harga`, `Kirim Tagihan` |
 | `Settings`, `Configuration`, `Preferences` | Konteks spesifik: `Notifikasi Email`, `Akses Tim`, `Metode Pembayaran` |
+| `Home`, `Features`, `Pricing`, `About` (Nav Generik) | Objek domain nyata: misal `Topologi Cluster`, `Direktori Klien`, `Katalog API` |
+| `Overview`, `Analytics`, `Reports`, `Users` (App Generik) | Workflow harian: `Antrean Tagihan`, `Aktivitas Tim`, `Insiden Aktif` |
 | `Powerful`, `Smart`, `AI-Powered`, `Next-Gen`, `Mutakhir` | Hapus klaim kosong; jelaskan fungsi nyata dalam 3–6 kata |
 | `Home > ...`, `Dashboard / ...` (Breadcrumb) | **HAPUS BREADCRUMB.** Breadcrumb adalah ciri khas template AI. Gunakan link balik kontekstual tunggal (`← Kembali ke [Induk]`) bila perlu |
 
@@ -123,7 +125,7 @@ flowchart LR
   --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
 }
 ```
-- **Aturan Radius Anak <= Induk**: Jika Card memakai `12px` dan memiliki `padding: 16px`, elemen tombol/input di dalamnya wajib memiliki radius lebih kecil (`6px–8px`), bukan seragam `12px` di semua elemen (`CMP-004`).
+- **Formula Radius Konsentris**: `radius_inner = max(0, radius_outer - padding)`. Jika Card memakai `16px` dan padding `8px`, tombol/input di dalamnya wajib memiliki radius `8px`, bukan seragam `16px` di semua elemen (`CMP-004`).
 
 ### 2.2 Sistem Warna Semantik (Perceptually Uniform OKLCH & Dark Mode)
 ```css
@@ -146,15 +148,17 @@ flowchart LR
 - Skala: `12px (xs)`, `14px (sm)`, `16px (md/body)`, `18-20px (lg)`, `24-32px (xl)`, `40-56px (display)`.
 - `line-height`: Heading `1.15–1.25`, Body `1.5–1.6`, lebar baca paragraf `60ch–75ch`.
 - **Wajib `font-variant-numeric: tabular-nums`** pada setiap kolom tabel, harga, waktu, metrik KPI, dan penghitung angka.
+- **Standar Tipografi Mikro WIG**: Judul/heading wajib menggunakan `text-wrap: balance` atau `text-pretty`, elipsis unicode `…` (bukan tiga titik biasa `...`), kutip lengkung `“` `”`, dan spasi non-breaking `&nbsp;` pada shortcut (`⌘&nbsp;K`) atau besaran satuan (`10&nbsp;MB`).
 
 ## 3. Gerbang Aksesibilitas & Responsivitas (Non-Negotiable)
 
 1. **Kontras WCAG AA/AAA**: Rasio kontras teks biasa minimal `4.5:1` (`7:1` AAA); teks besar minimal `3:1`. Status tidak boleh hanya mengandalkan warna (sertakan ikon/teks).
 2. **Navigasi Keyboard & Screen Reader**: Indikator `:focus-visible` wajib jelas; urutan `Tab` logis; semua tombol ikon wajib memiliki `aria-label` deskriptif.
 3. **Mobile-First & Touch Target**: Mulai dari `375px` → `768px` → `1440px`. Target sentuh minimal `44x44px` (jarak `>= 8px`), tanpa horizontal overflow, dan ukuran font `<input>` minimal `16px`.
-4. **Mikro-Interaksi**: Durasi `150ms–250ms`, hanya menganimasikan `transform` dan `opacity`, serta wajib mematuhi `@media (prefers-reduced-motion: reduce)`.
+4. **Mikro-Interaksi Taktil**: Durasi `100ms–250ms`, hanya menganimasikan `transform` dan `opacity`, serta wajib mematuhi `@media (prefers-reduced-motion: reduce)`. Tombol aktif mengecil secara taktil (`scale(0.97)`).
+5. **Higienitas Form & Layout (WIG Compliance)**: Dilarang mematikan fungsi tempel (`onPaste.preventDefault()`), pasang `spellCheck={false}` pada input kode/token/email/username, flex children dengan teks truncate wajib `min-w-0`, dan modal/drawer wajib `overscroll-behavior: contain`.
 
-## 4. Desain 4 Keadaan UI (Mandatory 4 UI States)
+## 4. Desain 4 Keadaan UI & 8-State Komponen
 
 Setiap halaman, tabel, list, dan komponen asinkron wajib mengimplementasikan **4 state**:
 1. **Loading State**: Skeleton yang meniru proporsi geometri konten final (`CLS = 0`), bukan sekadar spinner di tengah layar.
@@ -162,10 +166,13 @@ Setiap halaman, tabel, list, dan komponen asinkron wajib mengimplementasikan **4
 3. **Populated State**: Tampilan data normal yang tahan terhadap teks sangat panjang (`truncate`/`line-clamp`) dan angka ekstrem.
 4. **Error State**: Pesan spesifik apa yang gagal (bukan *"Something went wrong"*) + langkah/tombol pemulihan (*Retry* atau jalur alternatif).
 
+Selain itu, elemen interaktif kontrol primer (Button, Input) wajib mendukung **8 state interaktif**: `[Default]`, `[Hover]`, `[Focus-Visible]`, `[Active/Press]`, `[Disabled]`, `[Loading/Spinner]`, `[Error]`, `[Success]`. Serta sertakan minimal **satu interaksi hidup ("One Live Thing")** yang membuktikan nilai domain secara langsung.
 ## 5. Pola Komponen Produksi, Mobile & 24 Perintah Iteratif
 
 Spesifikasi teknis lengkap untuk implementasi komponen dan interaksi mobile tersedia di `references/component-mobile-patterns.md`:
-- **Pola Komponen (§4 di referensi)**: Form Validation UX (validasi saat `blur`, `aria-describedby`), Data Tables (sort, filter debounce 300ms, mobile card collapse), File Upload, Toast System (`aria-live`, pause-on-hover), Modal (`<dialog>` focus trap), Command Palette (`Cmd+K`), Multi-Step Wizard, dan Skeleton.
+- **Sistem Navigasi & Menu (§4.0 di referensi)**: Domain-First IA Protocol, Command-Driven Header (`Cmd+K`, sliding pill indicator), Operational Sidebar Rail (workspace switcher, grouped section headers, counter badges, keyboard shortcut tooltips), Ergonomic Mobile Bottom Nav (thumb zone 3–4 item) & Draggable Bottom Sheet Drawer, Contextual Mega-Menu, dan active route indicator (`aria-current="page"`).
+- **Tata Letak Otentik & Anti-Cetakan (§4.5 di referensi)**: Asymmetric Bento Grid (`2:1` / `1:2:1`), 4-Level Surface & Elevation Ladder (`Canvas` → `Surface` → `Elevated` → `Overlay`), Typographic Tension & Density Rhythm (kontras tajam Display vs Technical Metadata).
+- **Pola Komponen Form & Data (§4.1–§4.4 di referensi)**: Form Validation UX (validasi saat `blur`, `aria-describedby`), Data Tables (sort, filter debounce 300ms, mobile card collapse), File Upload, Toast System (`aria-live`, pause-on-hover), Modal (`<dialog>` focus trap), Multi-Step Wizard, dan Skeleton.
 - **Pola Mobile & PWA (§5 di referensi)**: Bottom Sheet (`visualViewport` + `env(safe-area-inset-bottom)`), Bottom Nav (3–5 item), Pull-to-Refresh, Swipe Actions + Undo Toast, dan `inputmode` semantik.
 - **24 Perintah Iteratif & 20 Art Directions (§2–§3 di referensi)**: `/maxilun-craft init|shape|build|polish|audit|critique|bolder|quieter|distill|harden|clarify|typeset|colorize|layout|animate|direction|images|review|app|frame`.
 - **Desain Logo SVG Matematis, Brand Identity & Brand Guidelines PDF (`references/brand-logo-guidelines.md`)**:
@@ -182,11 +189,12 @@ Rujukan lengkap: `../maxilun/references/purity-catalog.md`. Hapus segera jika di
 4. **Badge pujian palsu** (*"Powerful"*, *"AI-Powered"*, *"New"*) tanpa dasar faktual (`CMP-002`).
 5. **Emoji sebagai pengganti ikon UI** (`CMP-003`).
 6. **Border-radius seragam** antara container induk dan elemen anak (`CMP-004`).
-7. **Hero klise** dengan lebih dari satu CTA primer yang saling berebut perhatian.
+7. **Hero klise & tombol kembar simetris** dengan dua CTA primer berdampingan yang saling berebut perhatian (`LAY-010`).
 8. **Statistik atau testimoni fiktif** (`"99.9% uptime"`, `"10K+ users"`, avatar acak) tanpa sumber nyata.
 9. **Animasi dekoratif tanpa tujuan UX** (floating blobs, glow berkedip, parallax berat).
-10. **Layout cetakan** (*Hero + 3 Cards + Testimonials + FAQ*) yang tidak mencerminkan fungsi produk.
-11. **Komponen mati / non-fungsional** (tombol search, filter, atau lonceng notifikasi yang tidak bekerja) (`CMP-005`).
+10. **Layout cetakan AI** (*Hero + 3 Cards identik + Testimonials + FAQ* atau *strip 4 kotak KPI seragam*) (`LAY-008`, `LAY-009`).
+11. **Komponen mati / non-fungsional** (tombol search, filter, atau lonceng notifikasi yang tidak bekerja) (`CMP-005`, `CMP-012`).
+12. **Navigasi generik & mobile canggung** (menu tanpa nama entitas domain nyata `CMP-010`, menu mobile fullscreen kaku tanpa thumb-zone tab bar/sheet `CMP-013`, item tanpa active indicator `CMP-014`).
 
 ## 7. DELIVERY GATE (Wajib Lulus Sebelum Ship)
 
@@ -195,9 +203,9 @@ Jalankan pemeriksaan ini sebelum menyerahkan hasil ke pengguna:
 ```text
 🔒 DELIVERY GATE STATUS
 Block A (Context & Reference Record): ✅ PASS / ❌ FAIL (Design Read + 1-2 design-md refs recorded)
-Block B (Purity Catalog Compliance):  ✅ PASS / ❌ FAIL (No CLR-001, CMP-001..005, or TYPO-001 violations)
+Block B (Purity Catalog Compliance):  ✅ PASS / ❌ FAIL (No CLR-001, CMP-001..014, LAY-008..010, or TYPO-001 violations)
 Block C (Functional & 4 UI States):   ✅ PASS / ❌ FAIL (Loading skeleton, empty + CTA, populated, error + recovery)
-Block D (Mobile & Accessibility):     ✅ PASS / ❌ FAIL (375px/768px/1440px clean, tap >=44px, contrast >=4.5:1)
+Block D (Navigation, Mobile & A11y):  ✅ PASS / ❌ FAIL (Domain IA, active route state, 375px/768px/1440px, tap >=44px, contrast >=4.5:1)
 Block E (Evidence & Copywriting):     ✅ PASS / ❌ FAIL (Zero fake stats, natural copy <=25 words, specific CTAs)
 Verdict: SHIP / FIX FIRST
 ```
