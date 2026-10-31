@@ -1,8 +1,9 @@
 import React from 'react';
+import { useCurrentFrame } from '../hooks';
 import { interpolate } from './Interpolate';
 
 export interface SceneTransitionProps {
-  frame: number;
+  frame?: number;
   durationInFrames?: number;
   type?: 'fade' | 'wipe-right' | 'wipe-up' | 'iris' | 'zoom-through';
   children: React.ReactNode;
@@ -17,7 +18,8 @@ export const SceneTransition: React.FC<SceneTransitionProps> = ({
   type = 'fade',
   children,
 }) => {
-  const progress = interpolate(frame, [0, durationInFrames], [0, 1], 'clamp');
+  const currentFrame = useCurrentFrame();
+  const progress = interpolate(frame ?? currentFrame, [0, durationInFrames], [0, 1], 'clamp');
 
   let style: React.CSSProperties = { position: 'absolute', inset: 0 };
 
@@ -44,7 +46,7 @@ export const SceneTransition: React.FC<SceneTransitionProps> = ({
 };
 
 export interface CameraRigProps {
-  frame: number;
+  frame?: number;
   startFrame?: number;
   endFrame?: number;
   fromScale?: number;
@@ -71,9 +73,11 @@ export const CameraRig: React.FC<CameraRigProps> = ({
   toY = 0,
   children,
 }) => {
-  const scale = interpolate(frame, [startFrame, endFrame], [fromScale, toScale], 'clamp');
-  const x = interpolate(frame, [startFrame, endFrame], [fromX, toX], 'clamp');
-  const y = interpolate(frame, [startFrame, endFrame], [fromY, toY], 'clamp');
+  const currentFrame = useCurrentFrame();
+  const activeFrame = frame ?? currentFrame;
+  const scale = interpolate(activeFrame, [startFrame, endFrame], [fromScale, toScale], 'clamp');
+  const x = interpolate(activeFrame, [startFrame, endFrame], [fromX, toX], 'clamp');
+  const y = interpolate(activeFrame, [startFrame, endFrame], [fromY, toY], 'clamp');
 
   return (
     <div

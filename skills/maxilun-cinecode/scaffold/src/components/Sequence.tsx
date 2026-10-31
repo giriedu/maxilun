@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from 'react';
-import { useCurrentFrame } from '../hooks';
+import { FrameOffsetContext, useCurrentFrame } from '../hooks';
 
 interface SequenceProps {
   from: number;
@@ -14,14 +14,17 @@ export const useSequence = () => useContext(SequenceContext);
 
 export const Sequence: React.FC<SequenceProps> = ({ from, durationInFrames, children }) => {
   const frame = useCurrentFrame();
+  const parentOffset = useContext(FrameOffsetContext);
 
   if (frame < from || frame >= from + durationInFrames) {
     return null;
   }
 
   return (
-    <SequenceContext.Provider value={{ from, durationInFrames }}>
-      <>{children}</>
-    </SequenceContext.Provider>
+    <FrameOffsetContext.Provider value={parentOffset + from}>
+      <SequenceContext.Provider value={{ from, durationInFrames }}>
+        <>{children}</>
+      </SequenceContext.Provider>
+    </FrameOffsetContext.Provider>
   );
 };

@@ -1,19 +1,20 @@
-# CineCode Reference Corpus
+# CineCode Reference Index
 
-This directory is a bundled reference library for `maxilun-cinecode`. It documents the programmatic video architecture, React frame primitives (`<AbsoluteFill>`, `<Sequence>`, `<Spring>`, `<Audio>`, `<Subtitle>`, `interpolate`), FFmpeg encoding presets, unit/snapshot testing (`references/composition-api.md`), and the multi-specialist **Maxilun Motion Video Pipeline** (`references/video-production-pipeline.md`) that combines `maxilun-craft`, `maxilun-motion`, `maxilun-content`, and `maxilun-cinecode`.
+`maxilun-cinecode` uses the official Remotion React framework for new video projects. Its own guidance layers Maxilun's brief, art direction, motion choreography, and factuality requirements on top of Remotion's APIs and Agent Skills.
 
-## Index of Bundled References
-
-| File | Purpose | When to Read |
+| Reference | Purpose | When to read |
 |---|---|---|
-| `references/composition-api.md` | Complete API reference for `<AbsoluteFill>`, `<Sequence>`, `<Series>`, `<Spring>`, `interpolate`, `<Audio>`, `<Subtitle>`, dynamic data binding, FFmpeg render presets, and Vitest frame unit tests | Always read before building or editing a CineCode video composition or render pipeline |
-| `references/video-production-pipeline.md` | Multi-skill production blueprint: how to combine `maxilun-craft` (`../maxilun-craft/references/design-md/index.md`), `maxilun-motion` (`../maxilun-motion/references/choreography-styles.md`), `maxilun-content`, and `maxilun-cinecode` for studio-grade product videos, launch teasers, and data reports | Read whenever generating a complete promo/demo/explainer video to maximize visual, kinetic, and narrative quality |
-| `references/soundtrack-audio-production.md` | Scoring AI original soundtrack (Suno/Udio prompts), video beat grid math, audio ducking automation curve, loudness targets (-16 LUFS voice, -24 LUFS BGM), and real-time preview server | Read when adding original music, voice-over audio mixing, or dev preview to a video project |
-| `../maxilun-motion/references/choreography-styles.md` | 14 Motion Style Signatures, 22 Opener/Promo Hooks, Beat Grid Math, and Spring DNA | Read when translating motion choreography into frame-accurate `<Sequence>` and `<Spring>` code |
-| `../maxilun-craft/references/design-md/index.md` | 100 Production Design Systems (Stripe, Linear, Vercel, GitHub, Apple, Nike, etc.) | Read to style video scenes with authentic typography scales, `tabular-nums`, and OKLCH/hex palettes |
+| `remotion-workflow.md` | Project setup, official skill routing, preview-first production, storyboard, export boundary, licensing reminder | Every new video project or significant video edit |
+| `visual-assets-workflow.md` | Original Maxilun process for still/footage briefs, continuity, asset review, and compositing | When creating or sourcing visual assets or footage |
+| `composition-api.md` | Remotion `Composition`, `Sequence`, frame-driven animation, media, assets, Studio, and render orientation | Before writing or changing Remotion compositions |
+| `video-production-pipeline.md` | Brief, production mode, art direction, shot list, motion-graphics quality and factuality gates | Complete promo, demo, explainer, or data-storytelling work |
+| `soundtrack-audio-production.md` | Audio planning, score direction, narration, mix and timing | When the brief includes music, voice-over, or audio treatment |
+| `../maxilun-motion/references/choreography-styles.md` | Motion language, signature catalog, and frame choreography concepts | When a video needs authored motion direction |
+| `../maxilun-craft/references/design-md/index.md` | Brand and visual-system references | When supplied brand tokens/references do not cover the brief |
 
-## Evidence & Render Contract
+## Framework boundary
 
-1. Every frame in `maxilun-cinecode` MUST be a pure, deterministic function of `frame` and `fps` (`useCurrentFrame()`, `useVideoConfig()`). Never use `setTimeout`, `requestAnimationFrame`, or CSS `transition` inside a rendered video component (they cause non-deterministic frame capture).
-2. Ground scene visual tokens in `../maxilun-craft/references/design-md/index.md` and motion curves in `../maxilun-motion/references/choreography-styles.md`.
-3. Validate frame 0, mid-transition frames, and final CTA frames before full MP4/WebM encoding.
+- The `scaffold/` folder at this skill path is a legacy Maxilun frame renderer. Do not use it for a new video project.
+- New projects use the official `create-video` starter or the Remotion project already present in the target workspace.
+- Remotion is source-available under a proprietary license. See `remotion-workflow.md` and the current official license terms for eligibility.
+- Remotion composes and renders code-defined media. AI video footage must come from a separate generator or user-provided assets, then be edited and overlaid in Remotion.

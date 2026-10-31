@@ -362,6 +362,7 @@ def test_referenced_paths():
         SKILLS_DIR / "maxilun-craft" / "references" / "design-md" / "README.md",
         SKILLS_DIR / "maxilun-craft" / "references" / "design-md" / "index.md",
         SKILLS_DIR / "maxilun-craft" / "references" / "component-mobile-patterns.md",
+        SKILLS_DIR / "maxilun-craft" / "references" / "interface-engineering.md",
         SKILLS_DIR / "maxilun-architect" / "references" / "index.md",
         SKILLS_DIR / "maxilun-architect" / "references" / "api-distributed-patterns.md",
         SKILLS_DIR / "maxilun-architect" / "references" / "migration-operations-playbook.md",

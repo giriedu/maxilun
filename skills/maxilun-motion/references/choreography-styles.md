@@ -36,7 +36,7 @@ Ambil token visual dari proyek atau pilih 1–2 referensi yang setara dari `../m
 
 ## 2. Matriks 14 Style Signature Motion
 
-Pilih **tepat satu** signature utama agar gerakan di seluruh halaman atau video konsisten (tidak menjadi *motion soup*):
+Gunakan signature sebagai kosakata referensi, bukan preset wajib. Pilih satu pengaruh dominan bila itu membantu menyatukan gerak; gabungkan pengaruh yang kompatibel atau abaikan matriks bila brief membutuhkan bahasa visual lain. Konsistensi datang dari art direction, motif, timing, dan aturan transisi, bukan dari memaksakan satu efek ke semua shot.
 
 | # | Style Signature | Karakteristik Фиsika & Easing | Cocok Untuk Domain | Referensi `design-md` Terdekat |
 |---|---|---|---|---|
@@ -57,9 +57,11 @@ Pilih **tepat satu** signature utama agar gerakan di seluruh halaman atau video 
 
 ---
 
-## 3. Katalog 22 Konsep Opener & Promo Hook (3–5 Detik Pertama)
+## 3. Katalog 22 Konsep Opener & Promo Hook
 
-### A. Opener (Frame 0 – Frame 90 @ 30fps)
+Konsep berikut adalah pemantik ide, bukan kewajiban atau durasi baku. Pilih, ubah, atau abaikan berdasarkan pesan, platform, dan footage yang tersedia. Jangan memakai KPI, klaim, atau UI contoh kecuali sumbernya benar-benar tersedia.
+
+### A. Opener
 1. **Logo Assembly** — Elemen geometri menyatu ke titik tengah menggunakan simulasi spring (`stiffness: 150, damping: 15`).
 2. **Type Scramble Decode** — Karakter acak monospace terdekode menjadi judul utama dalam 24 frame.
 3. **Portal Iris Wipe** — Mask lingkaran membesar dari elemen fokus utama membuka scene.
@@ -104,7 +106,7 @@ Pilih **tepat satu** signature utama agar gerakan di seluruh halaman atau video 
 - Hitung durasi frame per ketukan (beat) untuk sinkronisasi dengan `maxilun-cinecode`:
   $$\text{Frames per Beat} = \text{round}\left(\frac{\text{FPS} \times 60}{\text{BPM}}\right)$$
   *(Contoh: pada `30 FPS` dan musik `120 BPM`, 1 ketukan = `15 frame`, 1 bar (4 ketukan) = `60 frame` / `2 detik`)*
-- Tempatkan semua transisi scene utama pada kelipatan bar (`frame 0, 60, 120, 180, ...`) agar potongan visual terasa menyatu dengan ritme audio.
+- Bila edit memang mengikuti musik, gunakan beat/bar grid sebagai titik referensi dan sesuaikan cut dengan aksi serta narasi. Jangan mengunci semua transisi ke BPM; beberapa bagian perlu menahan gerak atau menyimpang dari beat untuk memberi dampak.
 - **8 Mode Visualisasi Reaktif Audio**:
   1. *Waveform Ribbon* — Garis kurva SVG/Canvas mengalir mengikuti amplitudo gelombang suara.
   2. *Circular Spectrum* — Bar frekuensi radial mengelilingi logo atau indikator suara aktif.

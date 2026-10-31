@@ -1,15 +1,14 @@
 ---
 name: maxilun-cinecode
 description: >
-  Programmatic video creation specialist. Build studio-grade videos with code — React/TypeScript
-  components as deterministic frames, timeline composition, server-side rendering to MP4/WebM/GIF,
-  audio beat sync, data-driven sequences, and batch export. Integrates maxilun-craft (100 brand
-  design references), maxilun-motion (physics choreography & 22 hooks), and maxilun-content
-  (tight script beats) for maximum production quality.
+  Video composition specialist built on the official Remotion React framework. Plans motion graphics,
+  footage-led edits, scene timing, Studio preview, media layers, captions, and export. Integrates
+  maxilun-craft for visual direction, maxilun-motion for choreography, and maxilun-content for script.
   Triggers: "/maxilun-cinecode", "/msal-cinecode", "/maxilun-soundtrack", "/msal-soundtrack",
   "/maxilun-preview", "/msal-preview", "buat video dari kode", "programmatic video",
   "render video", "motion video", "soundtrack video", "audio ducking", "video template",
-  "data-driven video", "batch video", "server-side video render", "video component", "timeline composition".
+  "data-driven video", "batch video", "server-side video render", "video component", "timeline composition",
+  "AI footage", "image-to-video", "text-to-video", "visual frame generation".
 metadata:
   version: "1.0.0"
   ecosystem: maxilun
@@ -27,25 +26,27 @@ metadata:
   references:
     - references/index.md
     - references/composition-api.md
+    - references/remotion-workflow.md
+    - references/visual-assets-workflow.md
     - references/video-production-pipeline.md
     - references/soundtrack-audio-production.md
 ---
 
-# Maxilun CineCode: Programmatic Video Compiler & Studio Pipeline
+# Maxilun CineCode: Remotion Video Composition & Motion Graphics
 
-Bertanggung jawab atas pembuatan video melalui kode (*video-as-code*): komponen React/TypeScript deterministik sebagai frame, komposisi timeline, sinkronisasi audio/beat, pengikatan data dinamis, dan rendering server-side ke MP4/WebM/GIF. Video diperlakukan sebagai artefak perangkat lunak yang dapat di-version-control, diuji per frame, dan direproduksi secara deterministik.
+Bertanggung jawab atas komposisi video berbasis React dengan **Remotion**: menyusun shot dan timeline, membuat motion graphics, menempatkan footage dan audio, meninjau preview interaktif di Remotion Studio, lalu mengekspor video bila diminta. Untuk footage sinematik/AI, generator footage menghasilkan klip; Remotion menyusun klip dan motion graphics menjadi video final.
 
 ## Skill Contract
 
-- **Owns**: code-defined video compositions, timeline sequencing, audio/subtitle sync, AI soundtrack scoring & ducking, headless frame rendering, and batch export to MP4/WebM/GIF.
+- **Owns**: Remotion compositions, scene/timeline structure, motion graphics, video/audio/caption layers, Studio preview, and requested exports.
 - **Does not own**: interactive browser-only animation (`maxilun-motion`) or live web application runtime (`maxilun-frontend`).
 - **Inputs**: video brief, data sources, target resolution/fps, `references/index.md`, motion choreography from `../maxilun-motion/references/choreography-styles.md`, and visual system references from `../maxilun-craft/references/design-md/index.md`.
-- **Outputs**: reproducible React/TypeScript video composition, verified keyframe stills, and rendered video artifacts (`.mp4`, `.webm`, `.gif`, plus `.vtt`/`.srt` subtitles).
-- **Handoff**: use `maxilun-motion` for physics choreography and hook concepts, `maxilun-craft` for visual tokens and typography hierarchy, `maxilun-content` for punchy script beats (`<= 8 words/scene`), and `maxilun-verify` for frame integrity and render validation.
+- **Outputs**: a Remotion project with storyboard, compositions, previewable media, and requested exports (`.mp4`, `.webm`, `.gif`, stills, captions).
+- **Handoff**: use `maxilun-motion` for shot choreography, `maxilun-craft` for visual direction, `maxilun-content` for fact-based script, and `maxilun-verify` for requested implementation checks.
 
 ### Multi-Skill Studio Pipeline Contract
 
-The bundled corpus in `references/index.md` (`references/composition-api.md` and `references/video-production-pipeline.md`) is part of this skill. Before writing video scenes, read `references/video-production-pipeline.md`, `../maxilun-motion/references/choreography-styles.md`, and `../maxilun-craft/references/design-md/index.md`. Select at most two visual references from `../maxilun-craft/references/design-md/` and one motion signature from `../maxilun-motion/references/choreography-styles.md`, then record `Visual Reference`, `Motion Signature`, `Canvas Scale`, and `Frame Budget` in the project specification.
+Before new video work, read `references/remotion-workflow.md` and `references/video-production-pipeline.md`; read `references/visual-assets-workflow.md` when creating or sourcing stills or footage. Use the installed skills and tools available in the user's environment; do not assume a provider, model, or credential is available. Establish a brief, production mode (`motion graphics`, `footage-led`, or `hybrid`), storyboard, and art direction before selecting reusable components. Do not invent product metrics, customer proof, product screens, or visual assets; label illustrative material visibly.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)
@@ -65,103 +66,81 @@ Detail lengkap: `../maxilun/references/engines.md`.
 ## 1. Engine Overrides
 
 Delta domain terhadap Core Rules di atas. Override cinecode:
-- **Purity & Determinisme**: Setiap frame wajib murni fungsi matematika dari `frame` dan `fps` (`useCurrentFrame()`, `useVideoConfig()`). **Dilarang keras** memakai `setTimeout`, `requestAnimationFrame`, atau properti CSS `transition:` di dalam scene yang dirender ke video karena menyebabkan *frame drift*. Tunduk pada `../maxilun/references/purity-catalog.md`.
-- **Minimalist**: Gunakan primitif bawaan di `scaffold/src/` (`<AbsoluteFill>`, `<Sequence>`, `<Spring>`, `interpolate`, `<Audio>`, `<Subtitle>`) sebelum menambah library eksternal.
-- **Clarity**: Spesifikasi video wajib mencantumkan angka pasti: resolusi (`width x height`), `fps`, `durationInFrames`, rentang frame per scene, dan format codec output.
+- **Remotion First**: Gunakan paket, komponen, hooks, project root, dan CLI Remotion yang terpasang di proyek. Jangan membuat renderer, frame clock, encoder, atau API tiruan baru. `scaffold/` lama hanya untuk pemeliharaan proyek legacy.
+- **Purity & Determinisme**: Animasi yang dirender dihitung dari `useCurrentFrame()` dan `useVideoConfig()` Remotion. Hindari `setTimeout`, `requestAnimationFrame`, `Math.random()` tanpa seed, dan CSS `transition` untuk animasi video.
+- **Minimalist**: Gunakan API bawaan Remotion terlebih dahulu; tambahkan library ketika efek/format yang diminta memang membutuhkannya.
+- **Clarity**: Composition mencantumkan ukuran kanvas, `fps`, durasi frame, props yang dapat diubah, serta target ekspor bila ekspor diminta.
 
 ## Workflow
 ```mermaid
 flowchart LR
-    A[Craft Tokens + Motion Spec] --> B[Scene & Timeline Code]
-    B --> C[Still Frame Check f0/Mid/End]
-    C --> D[Headless Frame Render]
-    D --> E[FFmpeg Encode + VTT]
+    A[Brief + Production Mode] --> B[Storyboard + Art Direction]
+    B --> C[Remotion Composition]
+    C --> D[Remotion Studio Preview]
+    D --> E[Review + Revisions]
+    E --> F[Requested Render / Export]
 ```
 
-## 2. Pipeline Sinergi 5 Spesialis untuk Motion Video Maksimal
+## 2. Kolaborasi Skill untuk Video
 
 Acuan lengkap: `references/video-production-pipeline.md`. Saat membangun video produk, promo peluncuran, atau visualisasi data, gabungkan kekuatan ekosistem Maxilun:
 
 | Lapisan Produksi | Spesialis & Referensi Sumber | Aturan Eksekusi di Video |
 |---|---|---|
-| **1. Art Direction & Tokens** | `maxilun-craft` (`../maxilun-craft/references/design-md/index.md`) | Pilih 1–2 referensi brand nyata (misal `vercel.md`, `stripe.md`, `linear.app.md`). Gunakan skala font khusus kanvas 1080p: Headline `64px–96px`, Subheadline `32px–44px`, Label UI `>=22px`, dan angka metrik wajib `tabular-nums`. |
-| **2. Physics & Choreography** | `maxilun-motion` (`../maxilun-motion/references/choreography-styles.md`) | Gunakan salah satu dari 14 *Style Signatures* dan 22 *Opener Hooks*. Terapkan *overlapping action* (elemen B mulai bergerak saat elemen A mencapai 70% spring) dan tahan posisi baca (*hold time*) minimal `45–60 frame` (`1.5–2.0 detik`). |
-| **3. Script & Narrative Hook** | `maxilun-content` | Maksimal **8 kata per layar**. Tampilkan bukti kuantitatif (grafik perbandingan atau terminal nyata), bukan klaim sifat abstrak. |
-| **4. Frame Compilation & Audio** | `maxilun-cinecode` (`references/composition-api.md`) | Kompilasi scene menggunakan `<Sequence>`, `<Spring>`, dan `interpolate(..., 'clamp')`. Kunci pergantian scene pada beat audio ($\text{Frames/Beat} = \text{round}(\text{FPS} \times 60 / \text{BPM})$). |
-| **5. Frame & Codec Verification** | `maxilun-verify` | Uji unit matematika frame (`Vitest`), periksa tangkapan layar pada `frame 0` (thumbnail), tengah, dan akhir, serta pastikan encode MP4 memakai `-pix_fmt yuv420p`. |
+| **1. Art Direction & Tokens** | `maxilun-craft` (`../maxilun-craft/references/design-md/index.md`) | Gunakan referensi brand hanya setelah diperiksa. Skalakan tipografi menurut dimensi video dan tinjau hasilnya di Remotion Studio. |
+| **2. Physics & Choreography** | `maxilun-motion` (`../maxilun-motion/references/choreography-styles.md`) | Storyboard menentukan gerak; signature dan hook hanya alat bantu. Gunakan overlap dan waktu baca sesuai fungsi shot, bukan preset angka tetap. |
+| **3. Script & Narrative** | `maxilun-content` | Ringkas teks sesuai durasi dan fakta yang disediakan. Hook hanya dipakai jika sesuai tujuan; jangan mengarang bukti kuantitatif. |
+| **4. Composition & Audio** | `maxilun-cinecode` (`references/remotion-workflow.md`) | Implementasikan storyboard dengan API Remotion yang terpasang. Gunakan sequence/transition dan timing audio hanya bila mendukung irama cerita. |
+| **5. Preview & Export** | `maxilun-cinecode` + `maxilun-verify` | Tinjau composition di Remotion Studio. Ekspor dan periksa codec hanya jika pengguna meminta file hasil. |
 
-## 3. Arsitektur Komposisi & Primitif (`scaffold/src/`)
+## 3. Runtime dan Komposisi Remotion
 
-Detail API lengkap dan contoh kode multi-scene tersedia di `references/composition-api.md`.
+Gunakan API dari versi Remotion yang terpasang. Panduan inti, project setup, preview workflow, dan referensi upstream ada di `references/remotion-workflow.md` dan `references/composition-api.md`.
 
-### 3.1 Komponen Inti & Efek Sinematik di `scaffold/src/components/`
-- **Layout & Timeline**: `<AbsoluteFill>` (full-frame layer container) dan `<Sequence from={number} durationInFrames={number} name={string}>` (isolasi rentang frame scene).
-- **Fisika & Interpolasi**: `<Spring frame={number} fps={number} config={{ stiffness, damping, mass }}>` dan `interpolate(frame, [inStart, inEnd], [outStart, outEnd], 'clamp')`.
-- **Efek Visual, Kamera & Transisi (`Effects.tsx`)**:
-  - `<SceneTransition type="iris | wipe-right | wipe-up | zoom-through | fade">` — transisi masuk/keluar scene berbasis `clip-path` & `scale` deterministik.
-  - `<CameraRig fromScale={1} toScale={1.06} fromX={0} toX={-24}>` — rig kamera virtual 2.5D (`dolly`, `pan`, `tilt`) per frame.
-  - `<RackFocusBlur fromBlurPx={8} toBlurPx={0}>` — perpindahan fokus kedalaman (*depth-of-field*) antar-layer.
-  - `<ColorGrade contrast={1.04} saturate={1.05} vignetteOpacity={0.28}>` — koreksi warna sinematik + *radial vignette*.
-  - `<FilmGrainOverlay frame={frame} opacity={0.04} />` — *fractal noise* SVG per frame (mencegah *color banding* pada latar gelap MP4).
-  - `<KineticScrambleText text="..." frame={frame} durationInFrames={24} />` — efek dekode karakter teks monospace deterministik.
-  - `<VideoClip src="./input.mp4" trimStartSeconds={1.5} borderRadius={16} />` — menyematkan dan memotong file video lokal dari folder pengguna dengan sinkronisasi `seeked` per frame (`VideoClip.tsx`).
-  - `<LogoReveal brandName="..." tagline="..." outerPathD="..." innerPathD="..." />` — komponen animasi *Motion Logo Reveal* 4 tahap (blueprint grid + SVG `stroke-dashoffset` trace + spring core assembly + wordmark reveal) untuk video intro/outro MP4 & WebM Alpha (`LogoReveal.tsx`).
-  - `<KineticHeadline text="..." startFrame={f} />` & `<MaskedSlideText>` — tipografi kinetik per kata dengan fisika spring teredam dan mask clipping (`KineticTypography.tsx`).
-  - `<SvgTrace pathD="..." />`, `<ParticleBurst />`, `<ArchitecturalFrame />` — visual motion grafis vektor, partikel radial, dan framing arsitektural standar purity (`MotionShapes.tsx`).
-  - `<CounterOdometer toValue={n} />`, `<ProgressRing value={p} />`, `<AnimatedBarChart data={[...]} />` — komponen dataviz telemetri metrik dengan angka `tabular-nums` (`DataMotion.tsx`).
-- **Audio & Takarir**: `<Audio>` (mendukung fungsi kurva volume per frame untuk *audio ducking*) dan `<Subtitle>` (overlay takarir + ekspor `.srt` / `.vtt`).
-### 3.2 Preset Resolusi & Target Distribusi
-| Preset | Resolusi | FPS | Codec Rekomendasi | Safe Area Margin |
-|---|---|---|---|---|
-| `presentation` | `1920x1080` (`16:9`) | `30` / `60` | MP4 H.264 (`libx264`, `yuv420p`, `crf 18`) | Kiri/Kanan `96px`, Atas/Bawah `80px` |
-| `social-vertical` | `1080x1920` (`9:16`) | `30` / `60` | MP4 H.264 (`libx264`, `yuv420p`, `crf 19`) | Atas `220px`, Bawah `340px` (bebas UI Reels/TikTok) |
-| `social-square` | `1080x1080` (`1:1`) | `30` | MP4 H.264 (`libx264`, `yuv420p`, `crf 19`) | Seluruh sisi `80px` |
-| `web-optimized` | `1280x720` (`16:9`) | `30` | WebM VP9 (`libvpx-vp9`, `crf 28`) | Kiri/Kanan `64px`, Atas/Bawah `56px` |
-| `transparent` | `1920x1080` (`16:9`) | `30` | WebM VP9 Alpha (`yuva420p`) | Sesuai komponen target |
+| Kebutuhan | Remotion API | Panduan Maxilun |
+|---|---|---|
+| Mendaftarkan video dan metadata | `<Composition>` di root, `calculateMetadata()` bila dinamis | Tetapkan ukuran, fps, durasi, dan props nyata |
+| Menyusun waktu/scene | `<Sequence>`, `<Series>`, `<TransitionSeries>` | Scene mengikuti shot list; hindari format 4-beat wajib |
+| Menggerakkan grafis | `useCurrentFrame()`, `useVideoConfig()`, `interpolate()`, `spring()`, `Easing` | Semua animasi harus frame-driven |
+| Menempatkan media | `<Video>`, `<Audio>`, `<Img>`, helpers aset Remotion | Footage AI menjadi klip input; overlay dibuat sebagai komposisi |
+| Preview dan ekspor | Remotion Studio dan `npx remotion render` | Preview lebih dulu; render hanya bila diminta |
 
-## 4. Alur Eksekusi Proyek Video (`scaffold/`)
+Jangan gunakan `scaffold/` dan komponen `maxilun-cinecode` buatan sendiri untuk video baru. Folder itu adalah renderer legacy, dipertahankan hanya untuk pemeliharaan komposisi lama. Jangan campur API legacy dan Remotion dalam satu proyek baru.
 
-Saat membuat atau merender proyek video menggunakan kerangka kerja di `skills/maxilun-cinecode/scaffold/`:
+## 4. Menjalankan Proyek Remotion
+
+Untuk proyek yang belum ada, baca `references/remotion-workflow.md`; gunakan `create-video` resmi di folder target yang sesuai. Untuk proyek Remotion yang sudah ada, pertahankan setup dan versi proyek.
 
 ```bash
-# 1. Siapkan scaffold project di direktori kerja target dan pasang dependensi
-npm run setup
+# Jalankan preview interaktif
+npm run dev
 
-# 2. Jalankan unit test matematika frame dan validasi struktur komposisi
-npm test
-npm run validate
-
-# 3. Ambil sampel still frame kunci (Frame 0, Mid, CTA) untuk inspeksi visual cepat
-npm run still -- --frame 0 --output ./out/check-f0.png
-npm run still -- --frame 120 --output ./out/check-mid.png
-
-# 4. Render komposisi penuh ke MP4/WebM atau jalankan batch dari data CSV/JSON
-npm run render -- --composition main --output ./out/video.mp4
-npm run batch -- --template promo --data ./variants.json --output ./out/
-
-# 5. Edit Video Lokal di Folder: Render motion transparan lalu tempelkan di atas video asli (--bg-video)
-node scripts/render.js --entry ./src/compositions/Overlay.tsx --duration 300 --transparent --output ./out
-node scripts/encode.js --frames ./out/frames --bg-video ./input-footage.mp4 --output ./out/edited-video.mp4
+# Pilih composition dan ekspor hanya setelah pengguna meminta file hasil
+npx remotion render
 ```
-*(Catatan: jalankan perintah di atas hanya di dalam proyek yang sudah menyalin atau menginisialisasi `scaffold/`).*
 
-## 5. Delivery Gate Video (Wajib Sebelum Ship)
+Perintah render, codec, ukuran, dan opsi output mengikuti versi Remotion serta target distribusi proyek. Jangan mematok perintah FFmpeg/encoder legacy sebagai jalur utama.
+
+## 5. Review Sebelum Menyerahkan Video
 
 Sebelum menyerahkan hasil render atau kode komposisi video ke pengguna, pastikan seluruh pemeriksaan ini lulus:
 
 - [ ] **Frame 0 Integrity**: Frame `0` sudah menampilkan komposisi awal yang bermakna (siap menjadi thumbnail), bukan layar hitam/putih kosong.
 - [ ] **Deterministic Frame Check**: Tidak ada `transition:` CSS, `setTimeout`, atau `Math.random()` tanpa seed di dalam komponen scene; setiap frame `N` selalu menghasilkan piksel yang 100% identik saat dirender ulang.
-- [ ] **Canvas Readability & Safe Zone**: Ukuran font terkecil `>= 22px` (pada kanvas 1080p), kontras teks memenuhi WCAG AA (`>= 4.5:1`), angka dinamis memakai `tabular-nums`, dan tidak ada elemen yang terpotong di luar *safe area*.
-- [ ] **Reading Hold Time**: Setiap scene teks memiliki waktu tahan statis minimal `45 frame` (`1.5 detik` @ 30fps) setelah animasi masuk selesai.
-- [ ] **Universal Playback & Accessibility**: Output MP4 menggunakan pixel format `yuv420p`, durasi audio sesuai dengan `durationInFrames`, dan takarir `.srt`/`.vtt` tersedia bila video memuat narasi.
+- [ ] **Canvas Readability & Safe Zone**: Tipografi tetap terbaca pada ukuran pemutaran target dan aman dari crop/UI platform. Gunakan kontras kuat; terapkan WCAG bila konteks produk, aksesibilitas, atau platform memerlukannya. `tabular-nums` berguna untuk angka yang berubah.
+- [ ] **Storyboard & Art Direction**: Setiap scene sesuai shot list dan satu arah visual; komposisi/gerak tidak jatuh ke layout dashboard, neon-grid, scramble, atau partikel tanpa alasan brief.
+- [ ] **Truth & Asset Integrity**: Klaim, data, logo, dan UI produk bersumber dari brief/aset yang diberikan. Data contoh diberi label `illustrative`; tidak ada benchmark atau bukti sosial rekaan.
+- [ ] **Rendered Motion Review**: Periksa frame awal, tengah, akhir, dan tiap pergantian shot. Bila tersedia, tonton render penuh untuk menilai kontinuitas, ritme, transisi, footage/overlay, dan masalah visual antarfame.
+- [ ] **Reading Hold Time**: Scene memberi cukup waktu untuk membaca berdasarkan panjang copy, bahasa, ukuran layar, dan kecepatan animasinya.
+- [ ] **Playback & Accessibility**: Cocokkan format dengan platform yang diminta, sinkronkan durasi audio dengan timeline, dan sediakan takarir saat diminta atau dibutuhkan konteks distribusi.
 
 ## Companion Skills Awareness
 
 | Companion | CineCode's Role | Purity & Quality Contribution |
 |---|---|---|
-| `maxilun-motion` | Menerjemahkan *Motion DNA*, 14 *Style Signatures*, dan 22 *Hooks* (`../maxilun-motion/references/choreography-styles.md`) ke dalam `<Sequence>` & `<Spring>` | Menghilangkan animasi linear kaku dan memberikan koreografi fisika kelas studio |
+| `maxilun-motion` | Menyusun motion direction dan shot choreography yang diterjemahkan ke API Remotion | Membantu tiap gerak mendukung cerita, bukan menambah dekorasi |
 | `maxilun-craft` | Menggunakan token warna OKLCH, skala tipografi, dan 100 referensi `../maxilun-craft/references/design-md/index.md` | Mencegah tampilan scene video terlihat seperti template presentasi murahan |
-| `maxilun-content` | Menyusun narasi pendek (`<= 8 kata/scene`), hook 3 detik pertama, dan CTA tajam | Menghapus kalimat panjang dan jargon marketing yang tidak terbaca di video |
+| `maxilun-content` | Menyusun narasi dan teks layar dari fakta yang tersedia | Menjaga copy ringkas, jelas, dan sesuai durasi tanpa slogan atau klaim generik |
 | `maxilun-data` | Menyediakan query dan skema bersih untuk *data-driven batch video* | Memastikan metrik dan grafik di dalam video akurat dari sumber data nyata |
 
 ## Related Skills

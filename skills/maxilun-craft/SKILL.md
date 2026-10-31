@@ -5,7 +5,7 @@ description: >
   construction, Brand Guidelines PDF generation, spatial rhythm, responsive layouts, WCAG
   accessibility, and interaction polish. Combines mathematical scales (4px grid, OKLCH tokens)
   with 100 real-world brand design references (references/design-md/) and 20 art directions.
-  Triggers: "/maxilun-craft", "/maxilun-ui", "/msal-craft", "/msal-ui", "desain UI", "buat logo",
+  Triggers: "/maxilun-craft", "/maxilun-ui", "/msal-craft", "/msal-ui", "desain UI", "ganti UI UX", "redesign", "buat logo",
   "brand identity", "brand guideline pdf", "sistem desain", "tampilan antarmuka", "responsif",
   "aksesibilitas", "dark mode", "interaksi tombol", or any visual frontend/brand task.
 metadata:
@@ -27,6 +27,7 @@ metadata:
     - references/design-md/index.md
     - references/component-mobile-patterns.md
     - references/brand-logo-guidelines.md
+    - references/interface-engineering.md
 ---
 
 # Maxilun Craft: UI/UX & Production Design Systems
@@ -37,7 +38,7 @@ Bertanggung jawab atas rekayasa visual tingkat produksi: sistem desain konsisten
 
 - **Owns**: visual direction, mathematical SVG logo design (`logo-mark.svg`, `logo-horizontal.svg`, `logo-mono.svg`, `favicon.svg`), Brand Guidelines PDF (`Brand-Guidelines.pdf`), design tokens, layout, typography, component appearance, interaction states, and design accessibility.
 - **Does not own**: React/Next.js runtime architecture (`maxilun-frontend`), general backend/code implementation (`maxilun-engineer`), technical SEO (`maxilun-seo-audit`), or final video rendering (`maxilun-cinecode`).
-- **Inputs**: product context (`PRODUCT.md` / `PRD.md`), surface brief, existing `DESIGN.md`, platform constraints, `references/component-mobile-patterns.md`, `references/brand-logo-guidelines.md`, and at most two relevant files from `references/design-md/index.md`.
+- **Inputs**: product context (`PRODUCT.md` / `PRD.md`), surface brief, existing `DESIGN.md`, platform constraints, `references/component-mobile-patterns.md`, `references/interface-engineering.md`, `references/brand-logo-guidelines.md`, and at most two relevant files from `references/design-md/index.md`.
 - **Outputs**: a grounded design direction, mathematical SVG logo suite, print-ready 8-page Brand Guidelines PDF, token/component specifications, implementation-ready UI code, or a visual audit with evidence.
 - **Handoff**: send runtime work to `maxilun-frontend`, code changes to `maxilun-engineer`, animated SVG/Lottie logo motion to `maxilun-motion`, MP4/WebM logo reveal video rendering (`<LogoReveal>`) to `maxilun-cinecode`, and verification to `maxilun-verify`.
 
@@ -89,13 +90,44 @@ Sebelum implementasi, deklarasikan satu baris arah visual + catatan referensi da
 - Reason: <audience, task, and platform constraint>
 - Verdict: PROCEED / BLOCKED
 ```
-*(Jika belum ada arah dari user, beri label eksplisit **"DRAFT TANPA ARAH"** dengan dial jujur `ENERGY 1 / RHYTHM 1 / MOTION 1` — dilarang diam-diam jatuh ke gradien ungu-biru default AI).*
+*(Jika belum ada arah dari pengguna, tawarkan 2–3 opsi referensi brand konkret dari katalog yang relevan sebelum coding, atau beri label eksplisit **"DRAFT TANPA ARAH"** dengan dial jujur `ENERGY 1 / RHYTHM 1 / MOTION 1` — dilarang diam-diam jatuh ke gradien ungu-biru default AI).*
 
 ### 0c. Copywriting Purity Filter (Inline)
 Seluruh teks di dalam UI (heading, deskripsi, label input, empty state, toast, error message) wajib mematuhi aturan ini:
 1. **Tulis seperti manusia berbicara**, bukan brosur korporat. Satu kalimat = satu ide (`<= 20-25 kata`).
 2. **Kata kerja aktif & spesifik**: `"Upload invoice PDF (maks 5MB)"` bukan `"Dokumen dapat diunggah di sini"`.
 3. **Bebas em-dash berlebihan & bebas buzzword** dari `../maxilun/references/purity-catalog.md` (butir A.5–A.6).
+
+### 0d. Protokol Visual Pivot saat UI/UX Disebut "Generik AI" (Anti-Patch Cliché Rule)
+Jika pengguna menyatakan tampilan saat ini **"UI/UX generik AI"**, **"desain AI banget"**, **"seperti template AI"**, **"tampilan membosankan/kaku"**, atau meminta **"ganti UI/UX"**, **"redesign tampilan"**, **"rombak desain"**:
+
+1. **DILARANG HANYA MENYESUAIKAN ATAU TAMBAL SULAM KOSMETIK**
+   - Mengubah border-radius 8px jadi 12px, mematikan satu gradien, atau menggeser margin pada layout yang dasarnya klise TIDAK AKAN menyembuhkan kesan generik. Ini adalah kegagalan pemahaman desain. Dilarang mengirim diff tambal sulam yang "hanya menyesuaikan".
+
+2. **WAJIB STOP & AJUKAN PERTANYAAN ARAH VISUAL DENGAN REFERENSI NYATA**
+   - Hentikan seluruh pengeditan kode tampilan seketika.
+   - Ajukan pertanyaan konkret: *"UI/UX mau seperti apa?"*
+   - Wajib sodorkan **3–4 opsi arketipe referensi konkret** dari `references/design-md/index.md` (100 profil brand) dan 20 Art Directions di `references/component-mobile-patterns.md` yang dipetakan ke domain produk:
+     - **Developer Tools / SaaS / Cloud**:
+       - *Opsi A (Linear / Raycast)*: Dark mode pekat, monospaced metadata, keyboard shortcut badges, border hairline presisi, tanpa bayangan lebay (`linear.app.md` / `raycast.md`).
+       - *Opsi B (Vercel / Stripe)*: Kontras monokrom tajam, tipografi ekspresif, whitespace lega, kartu modular fungsional (`vercel.md` / `stripe.md`).
+       - *Opsi C (Supabase / Datadog)*: Kerapatan data tinggi, panel telemetri operasional, status semantik fungsional (`supabase.md` / `datadog.md`).
+     - **Fintech / Layanan Finansial / ERP**:
+       - *Opsi A (Midday / Mercury)*: Modern banking elegan, tabular-nums presisi, palet tenang, kartu transaksi asimetris (`midday.md` / `mercury.md`).
+       - *Opsi B (Wise / Revolut)*: Kontras tinggi, navigasi mobile ergonomis, badge status faktual (`wise.md` / `revolut.md`).
+       - *Opsi C (Swiss International)*: Grid matematis ketat, sans-serif objektif, palet terbatas (Art Direction 2).
+     - **Konsumen / Media / E-Commerce**:
+       - *Opsi A (Apple / Flagship Minimalist)*: Tipografi display proporsional, ruang negatif lega, media-first (`apple.md` / Art Direction 19).
+       - *Opsi B (The Verge / Editorial Magazine)*: Grid asimetris dinamis, kontras serif/sans, layout berbasis konten (`theverge.md` / Art Direction 1).
+       - *Opsi C (Neo-Brutalist / Modern Playful)*: Border tegas 2px, kontras ekstrem, kejujuran struktural (Art Direction 3).
+     - **Opsi Terbuka**: *"Atau Anda memiliki link/nama brand referensi spesifik yang ingin dijadikan acuan?"*
+
+3. **PEROMBAKAN ARSITEKTUR VISUAL SECARA RADIKAL (FULL RE-ARCHITECT)**
+   - Setelah pengguna memilih salah satu opsi atau memberikan referensi sendiri:
+     1. Baca file profil brand referensi di `references/design-md/<brand>.md`.
+     2. Deklarasikan `🔒 DESIGN CONTEXT CHECK` baru dengan referensi tersebut.
+     3. Hancurkan layout template lama (buang 3-kartu simetris, hero tengah klise, KPI strip seragam).
+     4. Bangun ulang struktur menggunakan Asymmetric Bento Grid (`2:1` atau `1:2:1`), 4-Level Surface Elevation (`canvas` → `surface` → `elevated` → `overlay`), tipografi proporsional, dan sistem token warna OKLCH sesuai referensi terpilih.
 
 ## 1. Engine Overrides
 
@@ -180,7 +212,7 @@ Spesifikasi teknis lengkap untuk implementasi komponen dan interaksi mobile ters
   - Kompilasi **8-Page Brand Guidelines PDF (`Brand-Guidelines.pdf`)** vektor tajam menggunakan `@page` CSS Paged Media + headless Chromium (`page.pdf({ printBackground: true })`).
   - Kolaborasi langsung dengan `maxilun-motion` (animasi `stroke-dashoffset` SVG/Lottie) dan `maxilun-cinecode` (`<LogoReveal>` untuk video intro/stinger MP4 & WebM Alpha).
 
-## 6. Gerbang Purity Visual (15 Larangan Mutlak)
+## 6. Gerbang Purity Visual (18 Larangan Mutlak)
 
 Rujukan lengkap: `../maxilun/references/purity-catalog.md`. Hapus segera jika ditemukan:
 1. **Breadcrumb (`Home > ...` / `Dashboard / ...`)** — tanda paling mencolok bahwa web di-generate oleh AI (`CMP-001` / `CMP-011`). **Dilarang merender breadcrumb secara default** di semua halaman; gunakan tombol kembali kontekstual tunggal (`← Kembali ke [Nama Halaman Induk]`) hanya jika berada di halaman detail.
@@ -195,6 +227,12 @@ Rujukan lengkap: `../maxilun/references/purity-catalog.md`. Hapus segera jika di
 10. **Layout cetakan AI** (*Hero + 3 Cards identik + Testimonials + FAQ* atau *strip 4 kotak KPI seragam*) (`LAY-008`, `LAY-009`).
 11. **Komponen mati / non-fungsional** (tombol search, filter, atau lonceng notifikasi yang tidak bekerja) (`CMP-005`, `CMP-012`).
 12. **Navigasi generik & mobile canggung** (menu tanpa nama entitas domain nyata `CMP-010`, menu mobile fullscreen kaku tanpa thumb-zone tab bar/sheet `CMP-013`, item tanpa active indicator `CMP-014`).
+13. **Patching kosmetik pada layout klise saat dikritik generik** — dilarang hanya mengubah border-radius, margin, atau token warna di atas kerangka yang dasarnya cetakan AI. Wajib jalankan Protokol Visual Pivot (§0d).
+14. **Floating Hero Pill Tagline (`• BADGE •`)** (`CMP-015`) — kapsul pill melayang dengan titik di atas H1 sebagai dekorasi default.
+15. **Monotonous "Center-Everything Cascade"** (`LAY-011`) — seksi berulang yang semuanya rata tengah (overline -> H2 -> subteks -> card).
+16. **Pseudo-Sci-Fi Hallucinated Gimmicks** (`CMP-016`) — metafora fiksi ilmiah palsu (*"Chamber 01"*, *"Ruang Virtual 3D"*, kubus wireframe 3D) untuk produk utilitas/developer tools biasa.
+17. **Dual Competing Rounded-Full Pill Buttons** (`CMP-017`) — dua tombol pill berdampingan di hero section yang berebut aksi primer.
+18. **Uniform 4-Metric Floating KPI Strip** (`LAY-012`) — 4 kartu metrik simetris melayang di atas radial glow.
 
 ## 7. DELIVERY GATE (Wajib Lulus Sebelum Ship)
 
@@ -203,13 +241,13 @@ Jalankan pemeriksaan ini sebelum menyerahkan hasil ke pengguna:
 ```text
 🔒 DELIVERY GATE STATUS
 Block A (Context & Reference Record): ✅ PASS / ❌ FAIL (Design Read + 1-2 design-md refs recorded)
-Block B (Purity Catalog Compliance):  ✅ PASS / ❌ FAIL (No CLR-001, CMP-001..014, LAY-008..010, or TYPO-001 violations)
+Block B (Purity Catalog Compliance):  ✅ PASS / ❌ FAIL (No CLR-001, CMP-001..017, LAY-008..012, or TYPO-001 violations)
 Block C (Functional & 4 UI States):   ✅ PASS / ❌ FAIL (Loading skeleton, empty + CTA, populated, error + recovery)
 Block D (Navigation, Mobile & A11y):  ✅ PASS / ❌ FAIL (Domain IA, active route state, 375px/768px/1440px, tap >=44px, contrast >=4.5:1)
 Block E (Evidence & Copywriting):     ✅ PASS / ❌ FAIL (Zero fake stats, natural copy <=25 words, specific CTAs)
+Block F (Interface Engineering):     ✅ PASS / ❌ FAIL (Concentric radius, 1 primary action, 2x space grouping, zero of 13 escalation triggers)
 Verdict: SHIP / FIX FIRST
 ```
-**Aturan Keras**: Jika ada satu saja blok yang `FAIL`, perbaiki kodenya terlebih dahulu sebelum menyerahkan hasil.
 
 ## Companion Skills Awareness
 

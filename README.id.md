@@ -108,7 +108,7 @@ Disusun berdasarkan siklus rekayasa perangkat lunak dari fondasi arsitektur hing
 | 11 | `maxilun-deploy` | Operasi & Cloud — pipeline CI/CD, Docker multi-stage, rollout zero-downtime | `/maxilun-deploy` |
 | 12 | `maxilun-docsmith` | Spesifikasi & Dokumentasi Teknis — Feature PRD/RFC, OpenAPI 3.1/AsyncAPI, ADR, runbook, `llms.txt` | `/maxilun-docsmith`, `/msal-docs` |
 | 13 | `maxilun-craft` | Desain Sistem & UI/UX — palet warna OKLCH, kepatuhan WCAG AAA, grid 4px, 100 referensi brand | `/maxilun-craft`, `/msal-ui` |
-| 14 | `maxilun-motion` | Desain Motion — animasi browser interaktif, aset Lottie/SVG, kinetic typography, koreografi | `/maxilun-motion` |
+| 14 | `maxilun-motion` | Desain Motion — animasi browser interaktif, scene 3D/WebGL penuh, arah visual berbasis referensi, storyboard motion, review preview, dan fallback aksesibel | `/maxilun-motion`, `scene 3D`, `immersive website`, `Three.js`, `WebGL`, `motion-led website` |
 | 15 | `maxilun-cinecode` | Video Programatik — MP4/WebM/GIF berbasis kode, kompilator frame React, pipeline batch | `/maxilun-cinecode` |
 | 16 | `maxilun-diagrams` | Visualisasi Sistem — diagram alur, sequence, C4 diagram via Mermaid/SVG | `/maxilun-diagram`, `/maxilun-diagrams` |
 | 17 | `maxilun-content` | Copywriting Pengguna — landing page, microcopy UI, naskah video pendek, brand voice, lokalisasi | `/maxilun-content`, `/msal-copy` |

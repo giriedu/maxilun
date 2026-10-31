@@ -1,80 +1,72 @@
 import React from 'react';
-import { AbsoluteFill } from '../scaffold/src/components/AbsoluteFill';
-import { interpolate } from '../scaffold/src/components/Interpolate';
+import { AbsoluteFill, interpolate, useCurrentFrame } from 'remotion';
 
 interface DataPoint {
   label: string;
   value: number;
+  displayValue?: string;
 }
 
 interface DataVizSceneProps {
+  /** Supply verified values, or clearly label the composition as illustrative. */
   data: DataPoint[];
-  frame: number;
+  title: string;
+  sourceLabel: string;
 }
 
-export const DataVizScene: React.FC<DataVizSceneProps> = ({ data, frame }) => {
-  const maxBarWidth = 600;
-  const barHeight = 60;
-  const gap = 20;
-  const maxValue = Math.max(...data.map(d => d.value));
+const ink = '#171715';
+const accent = '#D6492F';
+
+export const DataVizScene: React.FC<DataVizSceneProps> = ({ data, title, sourceLabel }) => {
+  const frame = useCurrentFrame();
+  const maxValue = Math.max(1, ...data.map(({ value }) => Math.max(0, value)));
+  const rows = data.map((point, index) => {
+    const startFrame = index * 8;
+    const progress = interpolate(frame, [startFrame, startFrame + 24], [0, 1], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    });
+
+    return { ...point, progress, widthPercent: (Math.max(0, point.value) / maxValue) * 100 };
+  });
 
   return (
     <AbsoluteFill
       style={{
-        backgroundColor: '#111',
-        padding: '80px',
+        backgroundColor: '#F1EEE6',
+        color: ink,
+        padding: 96,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        gap: `${gap}px`,
+        fontFamily: 'Arial, sans-serif',
       }}
     >
-      {data.map((point, i) => {
-        // Animate bars growing from 0 to full width over 30 frames per bar
-        const startFrame = i * 10;
-        const progress = interpolate(
-          frame - startFrame,
-          [0, 30],
-          [0, 1],
-          'clamp'
-        );
-
-        const barWidth = (point.value / maxValue) * maxBarWidth * progress;
-
-        return (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <span
-              style={{
-                color: '#fff',
-                fontSize: '24px',
-                fontFamily: 'system-ui',
-                width: '200px',
-                textAlign: 'right',
-              }}
-            >
-              {point.label}
-            </span>
-            <div
-              style={{
-                width: `${barWidth}px`,
-                height: `${barHeight}px`,
-                backgroundColor: `hsl(${220 + i * 30}, 70%, 50%)`,
-                borderRadius: '4px',
-                transition: 'none',
-              }}
-            />
-            <span
-              style={{
-                color: '#aaa',
-                fontSize: '20px',
-                fontFamily: 'monospace',
-              }}
-            >
-              {Math.round(point.value * progress)}
+      <h1 style={{ margin: '0 0 64px', maxWidth: 1400, fontSize: 88, lineHeight: 0.98, letterSpacing: '-0.06em' }}>
+        {title}
+      </h1>
+      <div style={{ display: 'grid', gap: 28, maxWidth: 1450 }}>
+        {rows.map(({ label, value, displayValue, progress, widthPercent }, index) => (
+          <div key={`${label}-${index}`} style={{ display: 'grid', gridTemplateColumns: '260px 1fr 180px', alignItems: 'center', gap: 24 }}>
+            <span style={{ fontSize: 30, fontWeight: 600 }}>{label}</span>
+            <div style={{ height: 36, background: '#D7D2C8', overflow: 'hidden' }}>
+              <div
+                style={{
+                  width: `${widthPercent * progress}%`,
+                  height: '100%',
+                  background: index === 0 ? accent : ink,
+                }}
+              />
+            </div>
+            <span style={{ fontSize: 30, fontVariantNumeric: 'tabular-nums', textAlign: 'right' }}>
+              {displayValue ?? String(value)}
             </span>
           </div>
-        );
-      })}
+        ))}
+      </div>
+      <div style={{ position: 'absolute', left: 96, bottom: 72, fontSize: 22, color: '#55534D' }}>
+        {sourceLabel}
+      </div>
     </AbsoluteFill>
   );
 };

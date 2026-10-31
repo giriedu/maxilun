@@ -37,8 +37,16 @@ Ajukan berurutan, lewati yang sudah terjawab:
    Menentukan di mana effort desain dan verifikasi diarahkan.
 4. **Apa yang jelas tidak termasuk?**
    Non-goals mencegah scope creep lebih efektif daripada daftar fitur.
-5. **Ada referensi, brand, atau konvensi yang harus diikuti?**
-   Jika tidak ada, nyatakan arah sebagai draft dan lanjut.
+5. **Ada referensi, brand, atau konvensi visual yang harus diikuti?**
+   - Khusus tugas yang melibatkan UI/UX atau halaman baru, tanyakan: *"UI/UX mau seperti apa?"* dengan menyodorkan 2–3 contoh referensi brand konkret dari katalog `references/design-md/index.md` (misal: Linear/Raycast untuk devtools, Midday/Mercury untuk fintech, Vercel/Stripe untuk SaaS modern, Apple untuk consumer) atau minta link/brand referensi dari pengguna.
+   - Jika tugas bukan UI/UX dan tidak ada referensi khusus, nyatakan arah sebagai draft dan lanjut.
+
+### 3.1 Khusus Deliverable UI/UX, Redesign & Penolakan "Generik AI"
+
+Ketika tugas mencakup perancangan antarmuka baru, redesign, atau ketika pengguna menyatakan tampilan saat ini generik AI:
+1. **Dilarang langsung menulis kode dengan layout default.** Asumsi tanpa referensi hampir selalu menghasilkan cetakan klise AI (hero simetris, 3-kartu identik, gradien ungu-biru).
+2. **Kunci acuan visual terlebih dahulu.** Tanyakan preferensi visual pengguna dengan memberikan opsi referensi konkret dari katalog `references/design-md/index.md` atau 20 Art Directions.
+3. **Jika pengguna mengeluh "UI/UX generik AI":** Dilarang hanya melakukan penyesuaian/patching kosmetik (ubah border radius atau margin). Hentikan pembuatan kode dan jalankan Protokol Visual Pivot `maxilun-craft` (§0d).
 
 ## 4. Dari Jawaban ke Keputusan
 

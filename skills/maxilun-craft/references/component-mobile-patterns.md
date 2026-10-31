@@ -70,6 +70,20 @@ Saat membangun antarmuka baru, pilih **1 arah artistik yang sesuai dengan kontek
 | 19 | **High-Contrast Luxury** | Hitam pekat / putih bersih, margin ekstra lega, tipografi proporsional | Otomotif flagship, properti, jam tangan |
 | 20 | **Tactile Micro-Responsive** | Tombol dan kontrol dengan umpan balik pegas instan (`< 150ms`) | Aplikasi utilitas harian, manajemen tugas |
 
+### 3.1 Pemetaan Cepat Referensi Brand & Art Direction untuk Pertanyaan "UI/UX Mau Seperti Apa?"
+
+Gunakan tabel pemetaan ini saat pengguna mengeluhkan *"UI/UX generik AI"* atau saat memulai perancangan visual baru tanpa arah yang jelas. Ajukan pertanyaan *"UI/UX mau seperti apa?"* dengan langsung menyodorkan 3–4 opsi arketipe dari tabel ini:
+
+| Domain Produk | Opsi A (Karakter Utama) | Opsi B (Alternatif Kontras) | Opsi C (Spesifik/Dense) | Referensi Terbuka |
+|---|---|---|---|---|
+| **DevTools, Cloud & SaaS Teknis** | **Linear / Raycast**: Dark pekat, monospaced metadata, keyboard hints (`linear.app.md`, `raycast.md`) | **Vercel / Stripe**: Monokrom tajam, tipografi hierarkis ekspresif, kartu modular (`vercel.md`, `stripe.md`) | **Supabase / Datadog**: Operational dense, telemetry stream, status semantik (`supabase.md`, `datadog.md`) | Link/brand acuan dari pengguna |
+| **Fintech, Banking & ERP** | **Midday / Mercury**: Modern financial clean, tabular-nums presisi, palet tenang (`midday.md`, `mercury.md`) | **Wise / Revolut**: Kontras tinggi, mobile tab bar ergonomis, badge transaksi faktual (`wise.md`, `revolut.md`) | **Swiss International**: Grid matematis ketat, palet terbatas, garis hairline (Art Direction 2) | Link/brand acuan dari pengguna |
+| **Media, Publikasi & Riset** | **The Verge / Wired**: Editorial Magazine, grid asimetris dinamis, tipografi display (`theverge.md`, `wired.md`) | **Notion / Chronicle**: Bersih, canvas-first, tipografi fleksibel (`notion.md`, `chronicle.md`) | **Vintage Editorial Print**: Serif berkarakter, background canvas-cream (Art Direction 11) | Link/brand acuan dari pengguna |
+| **Consumer, Gaya Hidup & Komersial** | **Apple / Flagship**: Tipografi proporsional, ruang negatif lega, media showcase (`apple.md`, Art Direction 19) | **Vibrant Commerce**: Fotografi dominan, badge harga faktual, CTA kontras tinggi (Art Direction 14) | **Japanese Minimalist**: Ruang negatif bermakna (*Ma*), warna alam tenang (Art Direction 4) | Link/brand acuan dari pengguna |
+| **Platform Kreatif & Komunitas** | **Discord / Arc**: Playful, layered surface, tipografi ekspresif (`discord.md`, `arc.md`) | **Figma / Framer**: Modern workspace, canvas interaktif, toolbar presisi (`figma.md`, `framer.md`) | **Neo-Brutalist**: Border tegas 2px, kontras ekstrem, kejujuran struktural (Art Direction 3) | Link/brand acuan dari pengguna |
+
+**Aturan Handoff**: Setelah pengguna memilih salah satu opsi atau memberikan acuan sendiri, muat profil brand terkait dari `design-md/<brand>.md` atau Art Direction yang dipilih, lalu rombak total struktur visual. Dilarang hanya melakukan penyesuaian kosmetik pada layout lama.
+
 ---
 
 ## 4. Pola Komponen Produksi (Production Component Specifications)

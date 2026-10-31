@@ -108,7 +108,7 @@ Structured by real-world software engineering lifecycle — from foundational ar
 | 11 | `maxilun-deploy` | Cloud & Operations — CI/CD pipelines, multi-stage Docker, zero-downtime rollouts | `/maxilun-deploy` |
 | 12 | `maxilun-docsmith` | Technical Specs & Documentation — Feature PRDs/RFCs, OpenAPI 3.1/AsyncAPI contracts, ADRs, runbooks, `llms.txt` | `/maxilun-docsmith`, `/msal-docs` |
 | 13 | `maxilun-craft` | Design Systems & UI/UX — OKLCH color palettes, WCAG AAA accessibility, 4px grid, 100 brand references | `/maxilun-craft`, `/msal-ui` |
-| 14 | `maxilun-motion` | Motion Design — interactive browser animation, Lottie/SVG assets, kinetic typography, choreography | `/maxilun-motion` |
+| 14 | `maxilun-motion` | Motion Design — interactive browser animation, complete WebGL 3D scenes, camera choreography, reference-led art direction, motion storyboards, preview review, and accessible fallbacks | `/maxilun-motion`, `3D scene`, `immersive website`, `Three.js`, `WebGL`, `motion-led website` |
 | 15 | `maxilun-cinecode` | Programmatic Video — code-driven MP4/WebM/GIF, React frame compiler, data-driven batch pipelines | `/maxilun-cinecode` |
 | 16 | `maxilun-diagrams` | System Visualization — C4, sequence, Event Storming, data-flow diagrams via Mermaid | `/maxilun-diagram`, `/maxilun-diagrams` |
 | 17 | `maxilun-content` | User-Facing Copywriting — landing pages, UI microcopy, video script beats, error states, brand voice | `/maxilun-content`, `/msal-copy` |

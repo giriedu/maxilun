@@ -1,92 +1,47 @@
-# Soundtrack Scoring, Beat Grid Alignment & Audio Ducking Pipeline
+# Audio Direction and Remotion Timeline
 
-Gunakan referensi ini saat memproduksi musik latar asli (AI music generation via Suno/Udio), menyelaraskan birama musik dengan frame video, menghitung kurva audio ducking, atau mengonfigurasi dev server preview real-time di `maxilun-cinecode`.
+Use this guide when a video brief includes music, narration, sound effects, or audio sync. Do not add a soundtrack by default if the user did not ask for one or supply an audio direction.
 
----
+## 1. Plan the audio before editing
 
-## 1. Komposisi Musik Latar Deterministik Berbasis Storyboard
+- Record the intended mood, energy curve, narration priority, language, and any music/SFX references from the brief.
+- Use supplied or user-approved audio assets. If a music-generation service is available and the user asks for generated music, prepare a prompt from the brief instead of imposing a default genre, BPM, or instrumentation.
+- Note the source and license/usage constraints for every external or generated track.
+- Make the narration understandable at normal listening volume. Ducking, EQ, compression, and loudness targets depend on the source material and destination; do not claim broadcast compliance without measuring the final mix.
 
-Musik latar video promosi berfungsi memperkuat emosi narasi, bukan sekadar mengisi kekosongan:
+## 2. Put audio on the Remotion timeline
 
-### Formula Prompt AI Music (Suno / Udio API)
-```text
-[Genre]: Cinematic Ambient Synthwave / Minimalist Tech Pulse
-[Tempo]: 120 BPM
-[Instrumentation]: Warm analog synthesizers, deep sub-bass pulse, crisp digital percussion, subtle arpeggio
-[Mood]: Confident, authoritative, engineering precision, no lyrics (pure instrumental)
-[Structure]: 
-- Intro (0s - 5s): Sub-bass swell and light rhythmic pulse
-- Build (5s - 15s): Layered arpeggios establishing momentum
-- Peak (15s - 25s): Full rhythmic drive without overpowering vocal frequencies
-- Outro (25s - 30s): Clean acoustic decay on sustained root chord
+Use the installed Remotion API. In current versions, `<Audio>` and `<Video>` are provided by `@remotion/media`; use `staticFile()` from `remotion` for project assets in `public/`. Check current docs if the installed version differs.
+
+```tsx
+import { Audio } from '@remotion/media';
+import { interpolate, staticFile, useCurrentFrame } from 'remotion';
+
+export const MusicBed: React.FC = () => {
+  const frame = useCurrentFrame();
+  const volume = interpolate(frame, [0, 18, 240, 270], [0, 0.2, 0.2, 0], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+
+  return <Audio src={staticFile('music-bed.mp3')} volume={volume} />;
+};
 ```
 
----
+For edits that need explicit timeline placement, use `<Sequence>` or the audio component's documented timing props. Calculate every sync point from the actual clip, frame rate, and edit; do not assume a default tempo.
 
-## 2. Perhitungan Beat Grid Video
+## 3. Beat and narration sync
 
-Untuk menyinkronkan pergantian scene atau transisi visual pada ketukan musik:
+When a music track has a known BPM and stable beat grid, a rough frame interval is `fps * 60 / BPM`. Confirm the grid against the actual waveform/audio because intros, pickup beats, tempo changes, and edits can shift downbeats. Major cuts can follow the beat when that strengthens the story; narration-led scenes may intentionally cut off-beat.
 
-$$\text{Frames Per Beat} = \text{round}\left(\frac{\text{FPS} \times 60}{\text{BPM}}\right)$$
+For voice-over, align captions to the final narration timing. Use silence and pauses deliberately. Do not synthesize or invent narration unless the user asks for it.
 
-| FPS | BPM | Frames / Beat | Durasi Per Beat | Penanda Birama 4/4 (1 Bar) |
-|---|---|---|---|---|
-| `30` | `120` | `15 frames` | `0.50 detik` | Setiap `60 frames` (`2.0s`) |
-| `30` | `100` | `18 frames` | `0.60 detik` | Setiap `72 frames` (`2.4s`) |
-| `30` | `90` | `20 frames` | `0.67 detik` | Setiap `80 frames` (`2.67s`) |
-| `60` | `120` | `30 frames` | `0.50 detik` | Setiap `120 frames` (`2.0s`) |
+## 4. Preview and export
 
-Kunci transisi scene (misal `<SceneTransition>`) tepat pada ketukan ke-1 birama (*downbeat*) untuk dampak visual yang memuaskan.
+Use Remotion Studio (`npm run dev`) to preview visual timing and audio together. Do not use the legacy `scripts/preview.js` server. Export only when requested, using the installed Remotion CLI and a format suitable for the target platform. Inspect the final audio mix and sync after rendering when a render is part of the task.
 
----
+## Official references
 
-## 3. Kurva Volume & Otomasi Audio Ducking
-
-Saat suara narator (*voice-over*) aktif, volume musik latar wajib diturunkan secara mulus (*ducking*) agar vokal terdengar jernih tanpa tabrakan frekuensi:
-
-```typescript
-export function computeBgmVolume(frame: number, voiceActiveRanges: Array<[number, number]>): number {
-  const baseVolume = 0.40;   // Volume musik saat tidak ada vokal
-  const duckedVolume = 0.12; // Volume musik saat vokal sedang berbicara
-  const fadeFrames = 8;      // Durasi transisi fade (8 frame = ~260ms @30fps)
-
-  for (const [start, end] of voiceActiveRanges) {
-    if (frame >= start - fadeFrames && frame <= end + fadeFrames) {
-      if (frame < start) {
-        // Fade down
-        const progress = (frame - (start - fadeFrames)) / fadeFrames;
-        return baseVolume - progress * (baseVolume - duckedVolume);
-      } else if (frame > end) {
-        // Fade up
-        const progress = (frame - end) / fadeFrames;
-        return duckedVolume + progress * (baseVolume - duckedVolume);
-      } else {
-        return duckedVolume;
-      }
-    }
-  }
-
-  return baseVolume;
-}
-```
-
-### Standar Loudness Broadcast
-- **Voice-over**: `-16 LUFS` (terkompresi lembut, EQ high-pass di `80Hz`, cut di `300Hz`).
-- **Background Music**: `-24 LUFS` normal, `-32 LUFS` saat ducking.
-- **Combined Final Master**: `-14 LUFS` dengan true peak limit `-1.0 dBFS`.
-
----
-
-## 4. Alur Kerja Preview Real-Time (Motion Dev Server)
-
-Untuk menghindari proses render ulang MP4 yang memakan waktu saat mengatur kurva pegas dan timing:
-
-1. **Jalankan Dev Server**:
-   ```bash
-   node scripts/preview.js --port 3000
-   ```
-2. **Fitur Dev Server**:
-   - Timeline scrubber interaktif dengan zoom frame presisi.
-   - Hot module reload (HMR) instan saat berkas scene diubah.
-   - Audio playback yang tersinkronisasi dengan posisi kursor timeline.
-   - Pengecekan safe-area untuk preset `16:9` (`1920x1080`) dan `9:16` (`1080x1920`).
+- [Remotion video and audio](https://www.remotion.dev/docs/videos)
+- [Remotion audio component](https://www.remotion.dev/docs/media/audio)
+- [Remotion audio controls](https://www.remotion.dev/docs/using-audio)

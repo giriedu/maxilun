@@ -62,3 +62,10 @@ out/
 # Promo materials (local only)
 promosi/
 scripts/generate_promo_images.py
+scripts/generate_30days_carousel.py
+scripts/graphics_engine.py
+scripts/build_content_*.py
+scripts/compile_content_*.py
+scripts/content_data*.py
+scripts/test_*renderer*.py
+scripts/test_day*.py

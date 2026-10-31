@@ -13,6 +13,9 @@ Use this matrix to prevent trigger collisions. The first skill is the primary ow
 | Write a Feature PRD or Engineering RFC | `maxilun-docsmith` | `maxilun-craft` (UI references/states), `maxilun-architect` (system boundaries) | `maxilun-content` as spec owner |
 | Bootstrap initial `docs/` folder (10 files) | `maxilun-scaffold` | `maxilun-craft` (DESIGN.md references), `maxilun-architect` | `maxilun-docsmith` as bootstrap owner |
 | Create a landing page | `maxilun-craft` | `maxilun-content`, `maxilun-frontend`, `maxilun-verify`, `maxilun-seo-audit` | `maxilun-docsmith` |
+| Build an immersive website or full interactive 3D scene | `maxilun-motion` | `maxilun-craft` (art direction), `maxilun-frontend` (React/Next lifecycle) | `maxilun-cinecode` |
+| Build a motion-led site from supplied website/screenshot references | `maxilun-motion` | `maxilun-craft` (art direction), `maxilun-frontend` (framework integration) | `maxilun-cinecode` |
+| Redesign UI/UX or fix generic AI look ("ganti UI UX nya") | `maxilun-craft` | `maxilun-content`, `maxilun-frontend`, `maxilun-verify` | `maxilun-engineer` as design owner |
 | Render an MP4 or WebM | `maxilun-cinecode` | `maxilun-motion` for motion direction | `maxilun-craft` as implementation owner |
 
 ## Handoff format

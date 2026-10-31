@@ -75,18 +75,28 @@ flowchart LR
 - **Bukan**: *"Merevolusi cara Anda bekerja dengan kecerdasan buatan terdepan."* (Generik, klise).
 - **Ya**: *"Otomasi migrasi database tanpa downtime dalam 3 menit."* (Konkret, terukur, jelas).
 
-### 2. Microcopy Antarmuka (UX Copywriting)
-- **Tombol CTA (Call to Action)**:
-  - Gunakan kata kerja aktif spesifik: *"Mulai Coba Gratis 14 Hari"*, *"Unduh Laporan PDF"*, *"Hubungkan Akun GitHub"*.
-  - Hindari tombol generik: *"Submit"*, *"Klik di Sini"*, *"Pelajari Lebih Lanjut"*.
-- **Pesan Error yang Membantu (Constructive Error Messages)**:
-  - Jelaskan apa yang terjadi + apa yang harus dilakukan pengguna selanjutnya.
-  - **Bukan**: *"Terjadi kesalahan tak terduga."*
-  - **Ya**: *"Kata sandi minimal 8 karakter. Tambahkan minimal 1 angka atau simbol."*
-- **Empty State (Kondisi Kosong)**:
-  - Berikan penjelasan ramah + tombol aksi pertama untuk membuat konten.
-  - *"Belum ada proyek dibuat. Buat proyek pertamamu untuk mulai melacak performa."* → `[ + Buat Proyek Baru ]`
-
+### 2. Microcopy Antarmuka (UX Copywriting & Interface Engineering)
+- **Inventarisasi Kosakata Domain (Vocabulary Inventory)**:
+  - Buat daftar kata benda objek dan kata kerja aksi baku sebelum menulis copy antarmuka.
+  - Dilarang menamai objek yang sama dengan dua istilah berbeda (misal: *"Proyek"* di sidebar vs *"Workspace"* di breadcrumb/toast).
+  - Gunakan istilah teknis nyata sesuai domain operasional, bukan metafora fiksi ilmiah palsu (*"Arsitektur Ruang Virtual 3D"*, *"Chamber 01"*).
+- **Tombol CTA (Call to Action) Berorientasi Verba + Objek**:
+  - Gunakan format kata kerja aksi spesifik + objek: *"Buka Sesi Baru"*, *"Salin Perintah cURL"*, *"Unduh Laporan PDF"*, *"Hubungkan Akun GitHub"*.
+  - Hindari tombol generik: *"Submit"*, *"OK"*, *"Ya"*, *"Tidak"*, *"Klik di Sini"*, *"Explore"*, *"Get Started"*.
+- **Pesan Error yang Solutif Tepat di Samping Kerusakan**:
+  - Letakkan instruksi error tepat di bawah field yang gagal (`aria-describedby`), bukan hanya toast global.
+  - Beri tahu secara jelas cara memperbaikinya tanpa menyalahkan pengguna, tanpa tanda seru, dan tanpa kata klise *"Oops!"*.
+  - **Bukan**: *"Oops! Terjadi kesalahan tak terduga."* atau *"Input tidak valid!"*
+  - **Ya**: *"Kata sandi minimal 8 karakter dan mengandung 1 angka."*
+- **Undo Lebih Unggul daripada Konfirmasi Modal**:
+  - Untuk tindakan reversibel (arsip data, hapus ke tempat sampah), jalankan seketika dan sediakan opsi **Undo** pada toast notifikasi selama 5–8 detik.
+  - Dialog konfirmasi modal hanya untuk aksi destruktif permanen yang tidak dapat dipulihkan.
+- **Tautan Menjelaskan Tujuan (Self-Descriptive Links)**:
+  - Teks link harus masuk akal di luar konteks: tulis *"Baca panduan webhook"*, bukan *"Klik di sini"*.
+  - Jika ada tombol bantuan, sertakan topiknya: *"Pelajari batas sesi"* daripada bare *"Pelajari lebih lanjut"*.
+- **Empty State yang Mengarahkan ke Depan**:
+  - Berikan orientasi fungsi tempat tersebut + satu tombol aksi pertama konkret.
+  - *"Belum ada sesi WhatsApp aktif. Pindai kode QR untuk menghubungkan nomor pertama."* → `[ Hubungkan Sesi ]`
 ### 3. Uji Autentisitas (The Identity Swap Test)
 > Jika nama produk Anda ditukar dengan produk kompetitor, apakah teks ini masih terbaca sama persis seperti teks umum?
 
@@ -174,17 +184,14 @@ Copywriting Bahasa Indonesia memiliki pola klise terjemahan yang berbeda dari ba
 ## 7. Naskah Motion Video & Storyboard Copy (`maxilun-motion` + `maxilun-cinecode`)
 
 Saat menulis teks untuk animasi interaktif (`maxilun-motion`) atau video produk (`maxilun-cinecode` — lihat `../maxilun-cinecode/references/video-production-pipeline.md`), terapkan aturan khusus layar bergerak:
-1. **Aturan Maksimal 8 Kata per Scene**: Penonton video tidak bisa membaca kalimat panjang yang sedang bergerak. Pangkas setiap scene menjadi 1 ide tajam (`<= 8 kata` untuk headline layar, `<= 14 kata` untuk subtitle/voice-over per 3 detik).
-2. **Struktur 4 Beat Naskah Video (12–15 Detik)**:
-   - **Beat 1 — Hook (`0s–3s` / `f0..90`)**: Sebutkan masalah terukur atau perubahan kecepatan ekstrem (*"Deploy CI turun dari 18 menit ke 40 detik."*).
-   - **Beat 2 — Mechanism (`3s–8s` / `f90..240`)**: Tunjukkan cara kerja dengan label aksi aktif 2–4 kata per langkah.
-   - **Beat 3 — Proof (`8s–11.5s` / `f240..345`)**: Tampilkan angka perbandingan faktual tanpa kata sifat kosong.
-   - **Beat 4 — Action (`11.5s–14s` / `f345..420`)**: Satu perintah CLI atau satu tombol CTA spesifik.
+1. **Copy sesuai shot**: Susun informasi mengikuti storyboard. Panjang teks ditentukan oleh ukuran, crop, bahasa, kompleksitas gagasan, gerak, dan waktu baca; jangan terapkan batas kata per scene atau struktur beat secara otomatis.
+2. **Narasi yang membawa cerita**: Pastikan tiap shot mengubah pemahaman penonton, bukan hanya mengulang headline. Pesan, hook, proof, dan CTA digunakan bila relevan; angka atau klaim harus disediakan atau diverifikasi.
+3. **Sinkronisasi handoff**: Serahkan beat narasi/copy, fakta sumber, pengucapan nama/angka, jeda penting, dan maksud emosional ke `maxilun-cinecode`. Timing dan durasi shot diputuskan bersama storyboard serta footage, bukan template durasi baku.
 
-3. **Narasi Spoken & Google Cloud TTS (`references/cinematic-scriptwriting.md`)**:
+4. **Narasi Spoken & TTS (`references/cinematic-scriptwriting.md`)**:
    - Narasi video didengar telinga, bukan dibaca mata. Terapkan ritme, jeda hening (`0.4s - 1.2s`), dan satu ide per napas.
-   - Sertakan anotasi SSML (`<break time="..."/>`, `<emphasis>`, `<prosody>`) dan pilih voice engine yang tepat (`id-ID-Wavenet-B` untuk narator berwibawa, `id-ID-Wavenet-A` untuk narasi ramah/jernih).
-   - Angka metrik wajib ditulis fonetik di dalam teks TTS (misal "sembilan puluh empat persen" bukan "94%") agar intonasi suara sintetis tidak terdengar kaku.
+   - Gunakan SSML dan pemilihan voice bila didukung oleh TTS yang tersedia; cek dokumentasi/runtime saat ini alih-alih mematok ID voice.
+   - Sediakan teks pengucapan angka/nama untuk delivery audio bila mesin membutuhkannya; pertahankan angka tertulis yang benar pada caption/grafis.
 ## Companion Skills Awareness
 
 `maxilun-content` menyusun copywriting produk dan microcopy UI. Jalankan mandiri untuk copy yang brief-nya cukup; pilih companion jika konteks tambahan mengubah hasil:
@@ -195,7 +202,7 @@ Saat menulis teks untuk animasi interaktif (`maxilun-motion`) atau video produk 
 | `maxilun-frontend` | Konteks halaman dan routing | Gunakan jika copy perlu ditempatkan dalam struktur halaman |
 | `maxilun-docsmith` | Readability dokumentasi teknis | Gunakan untuk dokumentasi teknis yang juga memerlukan penyelarasan bahasa |
 | `maxilun-seo-audit` | SEO copy optimization | Gunakan jika optimasi search masuk lingkup |
-| `maxilun-motion` & `maxilun-cinecode` | Menyusun naskah hook 3 detik, teks kinetic typography, dan subtitle `.vtt` | Mencegah video produk berisi kalimat brosur panjang yang gagal dibaca penonton |
+| `maxilun-motion` & `maxilun-cinecode` | Menyusun copy per shot, choreography, teks bergerak, dan subtitle bila diperlukan | Menjaga narasi, timing, footage, dan gerak tetap satu cerita |
 
 **Penggunaan companion**: Libatkan `maxilun-craft` jika copy bergantung pada hierarki visual atau keadaan UI tertentu, `maxilun-motion` / `maxilun-cinecode` untuk naskah animasi/video, dan `maxilun-frontend` jika copy harus dipasang ke struktur/routing halaman. Untuk teks mandiri, sampaikan copy serta asumsi yang relevan tanpa menahan hasil.
 

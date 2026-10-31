@@ -25,6 +25,7 @@ The **Maxilun Purity Gate** is an engineering delivery constraint, not a writing
 - Avoid default purple-blue gradients, generic glass panels, unexplained pill controls, decorative glow, and clone layouts.
 - Use the bundled design corpus as evidence for principles, never as a copy source.
 - Every major visual choice needs a one-line reason tied to audience, task, brand, or platform.
+- When UI/UX is flagged as generic AI, do not patch minor styling over a cliché layout. Stop and ask what visual style is desired using concrete reference choices from the design corpus, then re-architect.
 
 ## Motion & Video rules (maxilun-motion · maxilun-cinecode)
 

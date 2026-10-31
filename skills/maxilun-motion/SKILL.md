@@ -1,12 +1,14 @@
 ---
 name: maxilun-motion
 description: >
-  Motion design specialist untuk animasi interaktif dan aset motion web seperti Lottie/SVG,
-  termasuk choreography berbasis fisika, kinetic typography, camera motion, dan audio reactivity.
+  Motion specialist untuk animasi browser dan pengalaman 3D interaktif penuh seperti situs imersif,
+  scene WebGL, scroll-driven camera choreography, serta aset Lottie/SVG dan kinetic typography.
   Menurunkan Motion DNA langsung dari token maxilun-craft (100 referensi design-md) dan menghasilkan
   spesifikasi koreografi frame deterministik saat berkolaborasi dengan maxilun-cinecode.
   Triggers: "/maxilun-motion", "/msal-motion", "animasi web", "interactive animation", "Lottie",
-  "SVG animation", "kinetic typography", "scroll animation", "audio-reactive animation", "choreography".
+  "SVG animation", "kinetic typography", "scroll animation", "audio-reactive animation", "choreography",
+  "3D scene", "immersive website", "Three.js", "React Three Fiber", "WebGL experience",
+  "motion-led website", "web visual reference", "scroll storytelling".
 metadata:
   version: "1.0.0"
   ecosystem: maxilun
@@ -25,23 +27,29 @@ metadata:
     - references/index.md
     - references/motion-components.md
     - references/choreography-styles.md
+    - references/3d-scenes.md
+    - references/visual-reference-workflow.md
 ---
 
-# Maxilun Motion: Interactive Motion Design & Frame Choreography
+# Maxilun Motion: Interactive Motion, 3D Scenes & Frame Choreography
 
-Bertanggung jawab atas perancangan dan implementasi sistem gerak tingkat produksi: animasi antarmuka berbasis fisika pegas (*spring dynamics*), aset **Lottie JSON** dan **Animated SVG**, *kinetic typography*, koreografi scroll/kamera, serta spesifikasi koreografi frame deterministik untuk produksi video bersama `maxilun-cinecode`.
+Bertanggung jawab atas animasi browser tingkat produksi, termasuk scene WebGL 3D interaktif penuh, animasi antarmuka berbasis fisika pegas (*spring dynamics*), aset **Lottie JSON** dan **Animated SVG**, *kinetic typography*, koreografi scroll/kamera, serta spesifikasi koreografi frame deterministik untuk produksi video bersama `maxilun-cinecode`.
 
 ## Skill Contract
 
-- **Owns**: browser/UI animation, motion timing and spring physics, Lottie/SVG motion assets, kinetic typography, audio-reactive browser visuals, and deterministic frame choreography specs.
+- **Owns**: browser/UI animation; interactive 3D scenes and camera choreography; motion timing and spring physics; Lottie/SVG motion assets; kinetic typography; audio-reactive browser visuals; and deterministic frame choreography specs.
 - **Does not own**: static visual design system ownership (`maxilun-craft`) or final MP4/WebM/GIF video encoding (`maxilun-cinecode`).
 - **Inputs**: interaction or narrative intent, reduced-motion requirements, performance budget, `references/index.md`, and design tokens or up to two brand references from `../maxilun-craft/references/design-md/index.md`.
-- **Outputs**: production-ready interactive animation code (CSS/WAAPI/GSAP/Canvas), Lottie/SVG assets with `prefers-reduced-motion` fallbacks, or a frame-accurate choreography spec for `maxilun-cinecode`.
-- **Handoff**: send static visual system decisions to `maxilun-craft`, React/Next.js lifecycle integration to `maxilun-frontend`, final MP4/WebM/GIF rendering to `maxilun-cinecode`, and automated visual/a11y checks to `maxilun-verify`.
+- **Outputs**: production-ready interactive animation or 3D scene code (CSS/WAAPI/Canvas/WebGL), a concise motion direction derived from user references when supplied, accessible DOM controls and non-WebGL fallback, Lottie/SVG assets with `prefers-reduced-motion` variants, or a frame-accurate choreography spec for `maxilun-cinecode`.
+- **Handoff**: send static visual system decisions to `maxilun-craft`, React/Next.js lifecycle integration to `maxilun-frontend`, complex project boundaries to `maxilun-architect` only when needed, final MP4/WebM/GIF rendering to `maxilun-cinecode`, and requested visual/a11y checks to `maxilun-verify`.
 
 ### Reference & Brand DNA Contract
 
 The bundled corpus in `references/index.md` (`references/motion-components.md` and `references/choreography-styles.md`) is part of this skill. Read `references/index.md` and `references/choreography-styles.md` before designing motion. When project tokens are missing or generic, read `../maxilun-craft/references/design-md/index.md` to derive timing scales, spring stiffness/damping, and accent colors from a comparable real-world product system, and record `References`, `Motion Signature`, `Spring Config`, and `Reduced-Motion Fallback`.
+
+For a complete 3D environment, read `references/3d-scenes.md` before choosing the renderer or implementing the scene. Do not treat a request for a full 3D world as a request for CSS parallax or a decorative 3D hero.
+
+When the user supplies example websites, read `references/visual-reference-workflow.md` and inspect the references with available browser/preview tools before proposing or implementing visual direction. Separate observed design/motion qualities from assumptions; do not claim an effect was present if it was not inspectable.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)
@@ -62,7 +70,7 @@ Detail lengkap: `../maxilun/references/engines.md`.
 
 Delta domain terhadap Core Rules di atas. Override motion:
 - **Purity Gate Wajib**: Setiap elemen animasi wajib lulus *Purpose Gate* (§4). Tolak animasi dekoratif tanpa tujuan komunikasi/umpan balik. Tunduk pada `../maxilun/references/purity-catalog.md`.
-- **Minimalist & GPU-First**: Utamakan CSS native (`@keyframes`, CSS transitions) dan Web Animations API (WAAPI) sebelum menambah library. Hanya animasikan properti kompositor GPU (`transform`, `opacity`) atau Canvas/WebGL/SVG path.
+- **Minimalist & GPU-First**: For ordinary interface motion, prefer native CSS and WAAPI. For a requested full 3D scene, use the project's existing 3D runtime or select Three.js directly / React Three Fiber for React after checking current official docs and project compatibility. Do not replace a requested 3D environment with layered DOM/CSS effects.
 - **Accessibility First**: `@media (prefers-reduced-motion: reduce)` wajib tertanam di setiap definisi animasi sejak baris pertama.
 
 ## Workflow
@@ -74,29 +82,50 @@ flowchart LR
     D --> E[Deliver Web Asset or Handoff CineCode]
 ```
 
+For full 3D scene requests, follow the scene-specific workflow in `references/3d-scenes.md`; keep DOM interface controls separate from the rendered world and hand off framework lifecycle concerns to `maxilun-frontend` when applicable.
+
+For motion-led websites with supplied references, use `references/visual-reference-workflow.md` to choose one coherent art direction and write a short scene/scroll plan before implementation. Treat preview-based visual review as part of delivery when a local browser is available.
+
+For immersive/editorial scene pages, omit breadcrumbs and eyebrow/kicker/overline labels above the hero H1; begin with the main heading. Avoid breadcrumb-like `h2` trails. Use a separate scene index only when orientation is needed. Do not apply this visual rule to conventional application screens where breadcrumbs clarify deep navigation.
+
 ## 2. Pipeline Brand DNA → Motion DNA & 14 Style Signatures
 
 Acuan lengkap matriks pemetaan ada di `references/choreography-styles.md`. Langkah eksekusi wajib:
 
 1. **Ekstrak Token Visual (`maxilun-craft`)**:
-   - Skala spasi (`--space-2`, `--space-4`, `--space-8`) → skala durasi (`90ms`, `180ms`, `340ms` atau `3f`, `6f`, `10f` pada `30fps`).
-   - Ketebalan tipografi & radius sudut → parameter pegas (`stiffness`, `damping`, `mass`).
+   - Untuk animasi UI, skala spasi dan bentuk dapat menginformasikan skala waktu dan fisika gerak. Nilai di tabel adalah titik awal, bukan durasi universal.
+   - Untuk video, tentukan durasi dari aksi, framing, narasi, musik yang benar-benar dipakai, dan waktu baca; jangan menerjemahkan skala UI secara langsung ke shot.
+   - Ketebalan tipografi & radius sudut dapat menginformasikan karakter easing, bukan menentukan angka pegas secara otomatis.
    - Jika proyek belum memiliki `DESIGN.md`, pilih 1 referensi masalah serupa dari `../maxilun-craft/references/design-md/index.md` (misal: `linear.app.md` untuk *Kinetic Minimal*, `stripe.md` untuk *Financial Precision*, `apple.md` untuk *Architectural Depth*).
-2. **Kunci Satu Style Signature**:
-   Pilih 1 dari **14 Style Signatures** di `references/choreography-styles.md` (seperti *Kinetic Minimal*, *Fluid Organic*, *Data Flow Cascade*, *Editorial Crisp*, *Financial Precision*, *Command-First Micro*) agar seluruh gerakan berbicara dalam satu bahasa fisika yang konsisten.
-3. **Pilih Hook Narasi / Opener**:
-   Untuk animasi hero, onboarding, atau video explainer, pilih dari **22 Konsep Opener & Promo Hook** di `references/choreography-styles.md` (misal: *Logo Assembly*, *Type Scramble Decode*, *Grid Construct*, *Code-to-UI Live Compile*, *Architecture Node Activation*).
+2. **Tentukan art direction sebelum signature**:
+   Catat subjek, pesan utama, audiens, medium, dan satu referensi visual yang benar-benar sudah diperiksa. Tuliskan ciri yang dipinjam (mis. framing, kontras, ritme potongan) dan ciri yang sengaja tidak ditiru. Referensi adalah bukti arah, bukan alasan untuk menyalin layout.
+3. **Rancang storyboard, lalu tentukan motion grammar**:
+   Buat urutan shot dengan tujuan komunikasi, perubahan visual, gerak utama, transisi, dan durasi. Signature opsional: pilih satu pengaruh dominan bila membantu konsistensi; gabungkan elemen yang kompatibel atau gunakan bahasa gerak orisinal jika lebih sesuai. Pilih opener dari katalog hanya jika ia menyampaikan brief, bukan sekadar karena efeknya tersedia.
+4. **Batasi motif visual**:
+   Tetapkan satu palet, satu sistem tipografi, satu motif grafis, dan satu gerak kamera dominan untuk tiap shot. Efek seperti scramble, glow, grain, grid, partikel, glitch, dan parallax harus punya alasan spesifik; jangan menumpuknya sebagai tanda “cinematic”.
+
+### Jalur Produksi Motion Video
+
+Pilih salah satu jalur sebelum membuat frame choreography:
+
+- **Motion graphics**: komposisi tipografi, bentuk, diagram, grafik, dan UI yang dirancang serta dianimasikan langsung. Setiap elemen menjelaskan pesan atau mengarahkan perhatian.
+- **Footage-led / AI video**: footage menjadi konten utama. Rancang shot dan gerak kamera per klip; gunakan alat generasi video atau footage yang tersedia untuk membuat/menyediakan klip. CineCode mengompilasi shot tersebut dan menambahkan tipografi, diagram, label, atau transisi grafis sebagai lapisan terpisah.
+- **Hybrid**: gabungkan keduanya dengan fungsi yang jelas per shot. Jangan menyamarkan batas antara artefak grafis dan footage.
+
+`maxilun-motion` tidak menghasilkan footage sinematik atau transfer gerak. Bila pengguna menginginkan hasil seperti video generatif dengan gerak subjek/kamera yang realistis, nyatakan kebutuhan footage dan siapkan shot list serta arahan kamera untuk generator yang tersedia. Jangan klaim komposisi CSS/React meniru kemampuan tersebut.
 
 ## 3. Katalog Komponen Motion, Efek Visual & Text Kinetics
 
-Implementasi kode lengkap tersedia di `references/motion-components.md`, `references/choreography-styles.md`, serta template kanvas siap pakai di `assets/starter-opener.html` dan `assets/starter-explainer.html`:
+Primitif dan contoh kode UI ada di `references/motion-components.md`; katalog lain adalah kosakata desain dan koreografi. Untuk video, terjemahkan spesifikasi gerak ke API Remotion yang benar-benar tersedia di proyek. Nama primitif Maxilun bukan komponen Remotion dan bukan jaminan API. Kanvas di `assets/starter-opener.html` dan `assets/starter-explainer.html` hanya kerangka teknis: selalu ganti arah visual, warna, tipografi, copy, dan motif sesuai brief. Jangan menyalin tampilannya menjadi default untuk proyek baru:
 
 | Kategori | Primitif & Efek yang Tersedia | Target Runtime |
 |---|---|---|
-| **12 Motion Primitives** | `Reveal` (directional/mask), `Cascade` (staggered), `Spring` (analytical oscillator), `Trace` (SVG `stroke-dashoffset`), `Morph` (SVG `d`), `Scramble`, `Orbit`, `Pulse`, `Breathe`, `Wave`, `Drag`, `Scatter` | CSS / WAAPI / SVG / Canvas / CineCode |
-| **10 Efek Text Kinetics** | `Scramble` (decode monospace), `Elastic` (spring words), `MaskReveal` (line slide), `Typewriter`, `HighlightSweep`, `Wave`, `SplitReunite`, `GradientFlow`, `GlitchClean`, `CounterOdometer` (`tabular-nums`) | DOM (`aria-label` utuh) / CineCode |
-| **6 Efek Kamera & Kompositor** | `Portal Iris Wipe` (`clip-path: circle`), `Rack Focus Blur` (depth-of-field), `Parallax Depth Planes` (5-layer stage), `Light Sweep / Sheen`, `Film Grain Overlay` (SVG `feTurbulence`), `Chromatic Impact` | CSS / SVG Filter / CineCode `Effects.tsx` |
-| **8 Mode Audio-Reactive** | `Waveform Ribbon`, `Circular Spectrum`, `Particle Field`, `Typography Pulse`, `Color Shift` (OKLCH), `Geometry Morph`, `Grid Distortion`, `Spotlight Transient` | Web Audio API / Canvas 2D / CineCode |
+| **12 Motion Primitives** | `Reveal` (directional/mask), `Cascade` (staggered), `Spring` (analytical oscillator), `Trace` (SVG `stroke-dashoffset`), `Morph` (SVG `d`), `Scramble`, `Orbit`, `Pulse`, `Breathe`, `Wave`, `Drag`, `Scatter` | CSS / WAAPI / SVG / Canvas; video: authored Remotion layers |
+| **10 Efek Text Kinetics** | `Scramble` (decode monospace), `Elastic` (spring words), `MaskReveal` (line slide), `Typewriter`, `HighlightSweep`, `Wave`, `SplitReunite`, `GradientFlow`, `GlitchClean`, `CounterOdometer` (`tabular-nums`) | DOM (`aria-label` utuh); video: authored Remotion layers |
+| **6 Efek Kamera & Kompositor 2D** | `Portal Iris Wipe` (`clip-path: circle`), `Rack Focus Blur` (depth-of-field), `Parallax Depth Planes` (multi-layer stage), `Light Sweep / Sheen`, `Film Grain Overlay` (SVG `feTurbulence`), `Chromatic Impact` | CSS / SVG Filter; video: authored Remotion layers dengan API yang terpasang |
+| **Full 3D Scene** | Lingkungan multi-zona, scene graph, model/geometry, material & lighting, kamera, hotspot interaktif, state loading/error, serta WebGL fallback | Three.js / React Three Fiber / renderer yang sudah dipakai proyek; detail workflow di `references/3d-scenes.md` |
+| **Reference-Led Web Experience** | Pemetaan visual dan motion dari URL/screenshot ke art direction dan storyboard orisinal, diikuti preview review | Browser/preview + workflow di `references/visual-reference-workflow.md` |
+| **8 Mode Audio-Reactive** | `Waveform Ribbon`, `Circular Spectrum`, `Particle Field`, `Typography Pulse`, `Color Shift` (OKLCH), `Geometry Morph`, `Grid Distortion`, `Spotlight Transient` | Web Audio API / Canvas 2D; video: data analisis audio yang deterministic + Remotion |
 
 **Aturan Komposisi Ketat**:
 - Maksimal **3 primitif per elemen** dan maksimal **2 area gerak aktif bersamaan** dalam satu layar.
@@ -110,24 +139,26 @@ Ketika pengguna meminta **Motion Video** berkualitas tinggi (promo produk, pelun
 flowchart LR
     Craft["1. maxilun-craft\n(Design Tokens & 100 Brand Refs)"] --> Motion["2. maxilun-motion\n(Motion DNA & Frame Choreography)"]
     Content["maxilun-content\n(Hook Copy & Script Beats)"] --> Motion
-    Motion --> Cine["3. maxilun-cinecode\n(React Frame Composition & FFmpeg Render)"]
+    Motion --> Cine["3. maxilun-cinecode\n(Remotion Composition & Studio Preview)"]
     Cine --> Verify["4. maxilun-verify\n(Frame Integrity & Budget Check)"]
 ```
 
 ### Kontrak Handoff `maxilun-motion` → `maxilun-cinecode`
-Saat menyerahkan rancangan ke `maxilun-cinecode` (`../maxilun-cinecode/references/index.md`), berikan tabel **Frame Choreography Spec** yang siap dikompilasi menjadi `<Sequence>` dan `<Spring>`:
+Saat menyerahkan rancangan ke `maxilun-cinecode` (`../maxilun-cinecode/references/index.md`), berikan tabel **Shot Choreography Spec** yang dapat diterapkan ke timeline Remotion. Frame range adalah spesifikasi editorial; jangan mengasumsikan API komponen milik Maxilun.
 
 ```markdown
-### Motion-to-CineCode Choreography Spec (`30 FPS`, `1920x1080`)
+### Motion-to-CineCode Shot Choreography Spec (`30 FPS`, `1920x1080`)
 - **Brand & Style Reference**: `../maxilun-craft/references/design-md/vercel.md` (`Kinetic Minimal`)
 - **Spring Profile**: `{ stiffness: 170, damping: 19, mass: 1 }`
-- **Audio Grid**: `120 BPM` (`1 beat = 15 frames`, `1 bar = 60 frames`)
+- **Audio Grid**: opsional; hitung dari musik yang benar-benar dipakai. Bila belum ada audio, jangan mengunci frame ke BPM rekaan.
 
 | Scene ID | Frame Range | Visual & Kinetic Action | Camera / Transition | Copy / Caption (`maxilun-content`) |
 |---|---|---|---|---|
-| `01-hook` | `0..90` (`3.0s`) | `Grid Construct` (`f0..24`) diikuti `Scramble` judul utama (`f15..45`) | Static lock → `dolly` `1.0 -> 1.04` | *"Deploy dalam 4 detik, tanpa konfigurasi YAML."* |
-| `02-proof` | `90..270` (`6.0s`) | `Cascade` 3 kartu metrik (`stagger: 6 frames`) + angka `tabular-nums` berputar | Hard cut pada beat `f90` | *"Latensi global p95 turun dari 420ms ke 38ms."* |
-| `03-cta` | `270..360` (`3.0s`) | Elemen latar meredup (`opacity: 0.3`), tombol CTA masuk dengan `Spring` | `Portal Iris Wipe` di `f270` | *"Mulai gratis dengan 1 baris perintah CLI."* |
+| `01-hook` | `0..90` (`3.0s`) | Satu titik bercabang menjadi tiga jalur grafis; headline masuk sesudah arah cabang terbaca | Lock awal → dolly halus bila mendukung fokus | *"Satu event. Tiga jalur."* |
+| `02-mechanism` | `90..270` (`6.0s`) | Jalur aktif satu per satu; node diberi label `Masuk`, `Rute`, `Respons` | Cut mengikuti perubahan alur, tanpa grid dekoratif | *"Masuk. Rute. Respons."* |
+| `03-close` | `270..360` (`3.0s`) | Jalur menyatu ke komposisi akhir; copy menutup ide tanpa metrik produk | Match cut dari node akhir ke judul | *"Buat alurnya terlihat."* |
+
+Contoh di atas adalah diagram konseptual (`illustrative`), bukan klaim atau demonstrasi kemampuan produk.
 ```
 
 ## 5. Gate Performa, Aksesibilitas & Purity (Wajib Sebelum Ship)

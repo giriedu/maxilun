@@ -5,10 +5,11 @@ description: >
   Technical Design Documents (TDD), READMEs, API specifications (OpenAPI 3.1/AsyncAPI/TypeSpec),
   ADRs, operational runbooks, migration guides, and AI-ready llms.txt files. Bridges product
   requirements, UI/UX interaction states (via maxilun-craft design references), and API/data
-  contracts into precise, no-fluff engineering specifications.
+  contracts into precise, no-fluff engineering specifications. Also structures evidence-based
+  business reports from supplied KPIs, operational data, and stakeholder notes.
   Triggers: "/maxilun-docsmith", "/msal-docs", "tulis README", "buat PRD fitur", "tulis RFC",
   "spesifikasi teknis", "dokumentasi API", "buat changelog", "panduan migrasi", "buat runbook",
-  "llms.txt", or developer documentation and technical specification tasks.
+  "llms.txt", "laporan bisnis", "business report", "laporan KPI", or documentation and specification tasks.
 metadata:
   version: "1.0.0"
   ecosystem: maxilun
@@ -29,23 +30,24 @@ metadata:
     - references/openapi-contracts.md
     - references/runbooks-adr.md
     - references/llms-txt-spec.md
+    - references/business-reporting.md
 ---
 
-# Maxilun Docsmith: Technical Specifications, PRDs & API Contracts
+# Maxilun Docsmith: Technical Specifications, Business Reports & API Contracts
 
-Bertanggung jawab atas penyusunan spesifikasi teknis dan dokumentasi kelas produksi: **Feature PRD & Engineering RFC**, **README repositori**, **spesifikasi kontrak API (OpenAPI 3.1 / AsyncAPI 3.0 / TypeSpec)**, **Architecture Decision Records (ADR)**, **runbook operasional**, **changelog & panduan migrasi**, serta **dokumentasi siap-AI (`llms.txt` & `llms-full.txt`)**.
+Bertanggung jawab atas penyusunan laporan bisnis berbasis bukti serta dokumentasi kelas produksi: **Feature PRD & Engineering RFC**, **README repositori**, **spesifikasi kontrak API (OpenAPI 3.1 / AsyncAPI 3.0 / TypeSpec)**, **Architecture Decision Records (ADR)**, **runbook operasional**, **changelog & panduan migrasi**, serta **dokumentasi siap-AI (`llms.txt` & `llms-full.txt`)**.
 
 ## Skill Contract
 
-- **Owns**: Feature PRDs/RFCs, technical design specifications, `README.md`, API specifications (OpenAPI/AsyncAPI/TypeSpec), ADR presentation, changelogs, operational runbooks, migration guides, and `llms.txt` / `llms-full.txt` for engineers, operators, and AI agents.
+- **Owns**: Evidence-based business reports, Feature PRDs/RFCs, technical design specifications, `README.md`, API specifications (OpenAPI/AsyncAPI/TypeSpec), ADR presentation, changelogs, operational runbooks, migration guides, and `llms.txt` / `llms-full.txt` for engineers, operators, and AI agents.
 - **Does not own**: 10-file initial project folder bootstrap (`maxilun-scaffold`), user-facing marketing copy (`maxilun-content`), unverified architecture decisions (`maxilun-architect`), or undocumented claims.
 - **Inputs**: repository facts (`package.json`, schemas, routes, tests), verified behavior, architecture decisions, `references/index.md`, and (when specifying UI/UX flows) up to two relevant design references from `../maxilun-craft/references/design-md/index.md`.
-- **Outputs**: authoritative, evidence-backed technical specifications and documentation with explicit certainty labels (`[CONFIRMED]`, `[ASSUMED]`, `[TBD: reason]`), deterministic acceptance criteria, 4-state UI matrices, and version boundaries.
+- **Outputs**: authoritative, evidence-backed technical specifications, business reports, and documentation with explicit certainty labels (`[CONFIRMED]`, `[ASSUMED]`, `[TBD: reason]`); deterministic acceptance criteria, 4-state UI matrices, and version boundaries when relevant to the deliverable.
 - **Handoff**: request initial 10-doc project bootstrap from `maxilun-scaffold`, structural decisions from `maxilun-architect`, UI implementation from `maxilun-craft`, code implementation from `maxilun-engineer`, verification facts from `maxilun-verify`, and marketing/UX copy polish from `maxilun-content`.
 
 ### Reference & UI/UX Specification Contract
 
-The bundled corpus in `references/index.md` (`references/prd-rfc-specs.md`, `references/openapi-contracts.md`, `references/runbooks-adr.md`, `references/llms-txt-spec.md`) is part of this skill. Read `references/index.md` and the matching domain reference before drafting. When writing a Feature PRD, RFC, or Technical Spec that includes user-facing screens or workflows, also read `../maxilun-craft/references/design-md/index.md` (and `../maxilun-craft/references/design-md/README.md`), select at most two comparable product references, and document `References`, `Applied`, `Rejected`, and `Reason` alongside the mandatory 4-state UI matrix.
+The bundled corpus in `references/index.md` (`references/prd-rfc-specs.md`, `references/openapi-contracts.md`, `references/runbooks-adr.md`, `references/llms-txt-spec.md`, `references/business-reporting.md`) is part of this skill. Read `references/index.md` and the matching domain reference before drafting. When writing a Feature PRD, RFC, or Technical Spec that includes user-facing screens or workflows, also read `../maxilun-craft/references/design-md/index.md` (and `../maxilun-craft/references/design-md/README.md`), select at most two comparable product references, and document `References`, `Applied`, `Rejected`, and `Reason` alongside the mandatory 4-state UI matrix.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)
@@ -147,6 +149,10 @@ Acuan lengkap: `references/llms-txt-spec.md`.
 - **`/llms.txt`**: Peta indeks ringkas di root proyek/web publik yang mencantumkan aturan konteks kritis (stack, aturan tipe data moneter, auth guard) dan daftar tautan ke dokumen inti di `docs/` beserta penjelasan 1 kalimat kapan agen harus membacanya.
 - **`/llms-full.txt`**: Gabungan dokumen teknis inti dalam satu berkas Markdown bersih tanpa duplikasi elemen navigasi, siap dimuat langsung ke context window agen AI.
 
+### 3.8 Laporan Bisnis Berbasis Bukti
+
+Untuk laporan KPI, review kinerja, diagnosis operasional, atau ringkasan eksekutif, baca `references/business-reporting.md`. Susun alur dari bukti menuju keputusan: temuan berperingkat, konteks tren, dampak, keterbatasan data, dan rekomendasi yang terhubung ke temuan. Gunakan format dan alat Maxilun yang diminta pengguna.
+
 ## 4. Delivery Gate Dokumentasi (Wajib Sebelum Ship)
 
 Sebelum menyerahkan dokumen kepada pengguna, jalankan pemeriksaan berikut:
@@ -167,6 +173,7 @@ Sebelum menyerahkan dokumen kepada pengguna, jalankan pemeriksaan berikut:
 | `maxilun-architect` | Memvalidasi batas modul, state machine, dan trade-off di ADR/RFC | Memastikan klaim arsitektur dan kontrak sistem akurat secara struktural |
 | `maxilun-scaffold` | Berbagi fondasi 10 dokumen `docs/` saat inisialisasi proyek | Menjaga konsistensi antara bootstrap awal (`scaffold`) dan spesifikasi mendalam (`docsmith`) |
 | `maxilun-content` | Menyelaraskan microcopy UI (pesan error, empty state, CTA) di dalam spesifikasi | Memastikan teks antarmuka yang terdokumentasi terdengar natural dan manusiawi |
+| `maxilun-data` | Menyediakan definisi metrik, konteks skema, dan validasi agregasi dari sumber yang tersedia | Menjaga angka laporan bisa ditelusuri ke sumber dan metodologi |
 
 ## Related Skills
 - **maxilun-scaffold**: Bootstrap awal 10 dokumen konteks proyek di `docs/` (`../maxilun-scaffold/references/doc-templates.md`)

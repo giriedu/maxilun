@@ -3,7 +3,7 @@
  * Proper implementations (bukan hanya window shim)
  */
 
-import { useState, useEffect, useMemo } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 
 declare global {
   interface Window {
@@ -39,6 +39,9 @@ let globalHeight = 1080;
 let globalDuration = 450;
 const listeners = new Set<() => void>();
 
+/** Accumulated frame offset for the currently rendered sequence. */
+export const FrameOffsetContext = createContext(0);
+
 export function setCineCodeContext(ctx: CineCodeContextConfig) {
   if (ctx.frame !== undefined) globalFrame = ctx.frame;
   if (ctx.fps !== undefined) globalFps = ctx.fps;
@@ -70,6 +73,7 @@ if (typeof window !== 'undefined') {
  */
 export function useCurrentFrame(): number {
   const [frame, setFrame] = useState(globalFrame);
+  const frameOffset = useContext(FrameOffsetContext);
 
   useEffect(() => {
     const handler = () => setFrame(globalFrame);
@@ -79,7 +83,7 @@ export function useCurrentFrame(): number {
     };
   }, []);
 
-  return frame;
+  return frame - frameOffset;
 }
 
 /**

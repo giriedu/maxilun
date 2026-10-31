@@ -169,6 +169,29 @@ Pilih strategi pengujian berdasarkan risiko, jenis produk, tooling, dan kebutuha
 - **Retry on Flake**: Configure automatic retry untuk failed tests (max 2 retries). Tag retried tests sebagai flaky untuk investigasi lanjutan. Jangan retry tests yang deterministically fail — itu bug, bukan flake.
 - **Test Result Reporting**: Aggregate results dari semua shards ke single report (JUnit XML, HTML dashboard). Track metrics: total duration, pass rate, flake rate, slowest tests. Alert jika flake rate >2% atau total duration naik >20%.
 
+### 9. Interface & Anti-Cliché Verification (Cross-Discipline Audit)
+Saat memvalidasi antarmuka web atau PR frontend, gunakan protokol inspeksi dari `../maxilun-craft/references/interface-engineering.md` dan `../maxilun/references/purity-catalog.md`:
+1. **13 Escalation Triggers (HIGH on Sight — Wajib BLOCK jika ditemukan)**:
+   - Kontrol interaktif tanpa nama aksesibel (`aria-label` / `<label>`).
+   - Kontrol keyboard tanpa indikator cincin fokus terlihat (`:focus-visible`).
+   - Jalur interaksi mouse tanpa alternatif kontrol keyboard lengkap.
+   - Animasi / autoplay tanpa pelindung `@media (prefers-reduced-motion: reduce)`.
+   - Konten terpotong/meluap pada lebar layar 320px atau zoom teks 200%.
+   - Rasio kontras teks terukur gagal terhadap background rendered aktual (<4.5:1 / <3:1).
+   - Makna atau status sistem disampaikan hanya melalui warna tunggal.
+   - Tindakan destruktif tanpa konfirmasi dialog atau mekanisme *undo*.
+   - Teks terpotong tanpa affordance akses nilai penuh (*peek/tooltip/expand*).
+   - Konten penting tersembunyi di balik scroll/drawer tanpa petunjuk visual (*peek cue 16-32px*).
+   - Pesan error tanpa instruksi pemulihan yang dapat ditindaklanjuti.
+   - Warna semantik bahaya digunakan pada aksi non-destruktif.
+   - Perubahan status hanya diindikasikan oleh animasi tanpa jejak visual statis permanen.
+2. **Anti-Cliché & Layout Purity Check**:
+   - Tidak ada badge kapsul pill melayang dengan titik di atas H1 (`CMP-015`).
+   - Tidak ada tumpukan seksi monoton yang semuanya rata tengah (*Center-Everything Cascade*, `LAY-011`).
+   - Tidak ada metafora fiksi ilmiah palsu (*"Chamber 01"*, *"Ruang Virtual 3D"*) pada app utilitas (`CMP-016`).
+   - Tidak ada dua tombol pill primer berdampingan di hero section (`CMP-017`).
+   - Tidak ada strip 4 kotak metrik KPI seragam melayang di atas radial glow (`LAY-012`).
+3. **Verdict**: Keluarkan status biner `BLOCK` jika ada temuan severity HIGH, atau `APPROVE` jika seluruh surface yang diinspeksi lolos.
 ## Companion Skills Awareness
 
 `maxilun-verify` memeriksa keadaan repo dan deliverable yang diminta, termasuk tanpa output dari skill lain:

@@ -67,8 +67,9 @@ Setiap elemen berikut dilarang ditambahkan tanpa fungsi nyata. Jika muncul tanpa
 18. **Grid misalignment** — elements tidak snap ke baseline/grid. Optical alignment ±1px acceptable, random placement tidak.
 19. **Overflow issues** — horizontal scroll unintended, text truncation tanpa ellipsis, content clipping.
 20. **Cookie-cutter 3-card grid** — 3 cards berdampingan berukuran dan format identik (`grid-cols-3` seragam) dengan icon lingkaran di atas, judul, dan 2 baris teks. Wajib diganti dengan Asymmetric Bento Grid (`2:1` atau `1:2:1`) di mana setiap kartu memiliki fungsi dan peran visual yang berbeda.
-21. **Generic 4-metric KPI top strip** — strip 4 kotak statis simetris di atas dashboard dengan angka besar dan badge persentase hijau palsu (`+12.5%`) tanpa filter waktu atau data riil. Gantikan dengan panel telemetri operasional atau alur antrean tugas nyata.
-22. **Centered hero dual-button cliché** — hero section dengan judul rata tengah, subteks rata tengah, dan dua tombol pill simetris berdampingan yang berebut aksi primer. Wajib satu aksi primer tegas didukung elemen bukti asimetris.
+21. **Generic 4-metric KPI top strip** — strip 4 kotak statis simetris di atas dashboard dengan angka besar dan badge persentase hijau palsu (`+12.5%`) tanpa filter waktu atau data riil. Gantikan dengan panel telemetri operasional atau alur antrean tugas nyata (`LAY-009`, `LAY-012`).
+22. **Centered hero dual-button cliché** — hero section dengan judul rata tengah, subteks rata tengah, dan dua tombol pill simetris berdampingan yang berebut aksi primer. Wajib satu aksi primer tegas didukung elemen bukti asimetris (`LAY-010`, `CMP-017`).
+23. **Monotonous "Center-Everything Cascade"** — seluruh seksi halaman mengulang tumpukan simetris rata tengah: mini uppercase overline -> H2 tebal rata tengah -> subteks 2-3 baris rata tengah -> kartu/elemen senter (`LAY-011`). Ini adalah ciri paling kentara dari template AI. Wajib ganti dengan tata letak asimetris, penyejajaran tepi kiri (*text-align: start*), split layout editorial, atau Asymmetric Bento Grid (`2:1`, `1:2:1`).
 
 ### B4. Component & Pattern Issues
 23. **Breadcrumb Navigation (AI-Generated Web Tell — DILARANG DEFAULT)** — `Home > Section > Page` atau `Dashboard / Settings / Profile` di bagian atas halaman adalah salah satu sinyal terkuat bahwa sebuah website di-generate oleh template AI. **DILARANG merender komponen breadcrumb secara default** pada landing page, SaaS dashboard, form, login/register, 404, maupun aplikasi web modern. Gunakan navigasi kembali kontekstual (`← Kembali ke Daftar Tagihan`), command palette (`Cmd+K`), atau tab/header langsung. Pengecualian hanya jika pengguna secara eksplisit meminta breadcrumb untuk katalog e-commerce/dokumentasi bersarang `>= 4` level.
@@ -84,7 +85,10 @@ Setiap elemen berikut dilarang ditambahkan tanpa fungsi nyata. Jika muncul tanpa
 33. **Generic menu names & IA** — sidebar/nav menggunakan "Dashboard", "Settings", "Profile", "Admin", "Features" tanpa konteks produk. Menu names wajib mencerminkan struktur informasi aktual berbasis kata benda & kata kerja domain nyata.
 34. **Non-functional navigation elements** — bilah navigasi dengan kotak pencarian mati, lonceng notifikasi tanpa hitungan/isi, atau avatar tanpa menu popover. Setiap elemen interaktif wajib berfungsi nyata atau dihilangkan.
 35. **Clumsy mobile hamburger overlay** — menu mobile yang membuka daftar teks vertikal satu layar penuh yang kaku. Wajib menggunakan Bottom Tab Bar (3–4 tujuan utama) di zona ibu jari dan Bottom Sheet Drawer untuk menu sekunder.
-36. **Missing active route indicator** — item menu tanpa penanda rute aktif semantik (`aria-current="page"`) atau visual (sliding pill highlight).
+36. **Missing active route indicator** — item menu tanpa penanda rute aktif semantik (`aria-current="page"`) atau visual (sliding pill highlight) (`CMP-014`).
+37. **Floating Hero Pill Tagline / Badge Capsule** — kapsul pill kecil mengambang di atas judul H1 dengan titik/bullet (`• INFRASTRUKTUR ... •`) (`CMP-015`). Ciri utama landing page buatan AI. Hapus kapsul pill klise; gunakan heading kuat atau eyebrow editorial fungsional.
+38. **Pseudo-Sci-Fi Hallucinated Gimmicks** — menciptakan metafora fiksi ilmiah palsu (*"Arsitektur Ruang Virtual 3D"*, *"Chamber 01"*, *"Telemetry Observatory"*, kubus wireframe 3D melayang dengan cincin orbit) untuk utilitas backend/developer tools biasa (seperti WhatsApp gateway) (`CMP-016`). Wajib digantikan dengan artefak teknis nyata: live terminal session, simulator pairing QR-code interaktif, webhook payload JSON inspector, atau tabel status sesi dengan telemetri RAM aktual.
+39. **Dual Competing Rounded-Full Pill Buttons** — dua tombol pill berdampingan di hero section dengan bobot visual sama yang berebut perhatian (`CMP-017`). Terapkan aturan satu aksi primer solid; tombol pendamping wajib netral/link.
 ### B5. Animation & Motion Issues
 29. **Animation overload** — glow, floating, parallax, hover effects tanpa functional purpose. Motion clarifies cause-effect only.
 30. **Bounce/elastic easing** — cubic-bezier dengan overshoot (bounce, elastic) terasa dated. Use spring physics or ease-out.
@@ -102,6 +106,7 @@ Setiap elemen berikut dilarang ditambahkan tanpa fungsi nyata. Jika muncul tanpa
 40. **Icon inconsistency** — mixing emoji, SVG, different icon families. One set, one style, one stroke width.
 41. **Generic UI text** — "Click here", "Learn more", "Submit" tanpa context. Labels must be specific ("Download report", "Save profile").
 42. **Template layout** — structure identical to thousands of AI sites. Structure follows content needs, not default patterns.
+43. **Patching cliché layout instead of redesigning** — menambal border radius, margin, atau token warna pada layout yang dasarnya klise AI saat pengguna mengeluh "UI generik AI". Wajib stop, tanyakan arah referensi visual, dan rombak total arsitektur tata letak.
 
 ### Visual Gate Checklist
 Prinsip tunggal: **jangan menambahkan elemen hanya agar terlihat canggih.** Setiap komponen wajib punya:
@@ -152,6 +157,8 @@ Gunakan ID berikut untuk menyebut temuan secara konsisten. Nilai source, preview
 | LAY-008 | Cookie-cutter 3-card grid with identical height/iconography | ERROR | ❌ Replace with asymmetric bento grid |
 | LAY-009 | Generic 4-metric KPI top strip without telemetry/filter | WARNING | ❌ Replace with operational workflow panel |
 | LAY-010 | Centered hero with competing symmetric dual pill buttons | ERROR | ❌ Single clear primary action + asymmetric proof |
+| LAY-011 | Monotonous center-everything cascade (overline→h2→subtext→card) | ERROR | ❌ Use asymmetric or left-aligned layout |
+| LAY-012 | Generic 4-metric floating KPI strip over radial glow | WARNING | ❌ Replace with operational telemetry panel |
 
 ### C4. Component Checks
 | ID | Check | Severity | Suggested action |
@@ -170,6 +177,9 @@ Gunakan ID berikut untuk menyebut temuan secara konsisten. Nilai source, preview
 | CMP-012 | Non-functional navigation element (search/bell/avatar with no action) | ERROR | ❌ Wire functional action or remove |
 | CMP-013 | Mobile menu using clumsy full-screen list instead of thumb-zone tab bar/sheet | ERROR | ❌ Implement ergonomic bottom navigation/sheet |
 | CMP-014 | Navigation item missing active route state (`aria-current="page"` or sliding highlight) | ERROR | ✅ Add active state & aria-current |
+| CMP-015 | Floating hero pill tagline / badge capsule (`• BADGE •`) | ERROR | ❌ Remove badge capsule; use editorial eyebrow |
+| CMP-016 | Pseudo-sci-fi hallucinated gimmicks (Chamber 01, wireframe 3D cubes) | ERROR | ❌ Replace with tangible developer artifacts |
+| CMP-017 | Dual competing rounded-full pill buttons in hero | ERROR | ❌ One solid primary action; secondary is neutral/link |
 
 ### C5. Animation & Performance Checks
 | ID | Check | Severity | Suggested action |

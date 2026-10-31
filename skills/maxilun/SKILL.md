@@ -89,7 +89,7 @@ Pilih berdasarkan **hasil yang diminta**, bukan kata kunci yang disebut sambil l
 |---|---|---|
 | `maxilun-engineer` | Kode berubah, bug hilang, refactor selesai | `/maxilun-engineer`, "fix bug", "implementasi" |
 | `maxilun-architect` | Batas modul, kontrak API, ADR, keputusan struktur | `/maxilun-architect`, `/maxilun-think`, "rancang sistem" |
-| `maxilun-craft` | UI/UX, design token, aksesibilitas, state desain | `/maxilun-craft`, `/maxilun-ui`, "desain antarmuka" |
+| `maxilun-craft` | UI/UX, design token, aksesibilitas, state desain | `/maxilun-craft`, `/maxilun-ui`, "desain antarmuka", "ganti UI UX", "redesign" |
 | `maxilun-frontend` | RSC, App Router, Server Actions, batas server/client | `/maxilun-frontend`, "Next.js", "Server Action" |
 | `maxilun-data` | Skema, migrasi, index, query plan | `/maxilun-data`, "skema database", "query lambat" |
 | `maxilun-sentinel` | Auth, otorisasi, validasi batas trust, threat model | `/maxilun-sentinel`, "audit keamanan", "OAuth" |
@@ -98,7 +98,7 @@ Pilih berdasarkan **hasil yang diminta**, bukan kata kunci yang disebut sambil l
 | `maxilun-deploy` | Pipeline, container, environment, rollback, observability | `/maxilun-deploy`, "CI/CD", "Docker", "deploy" |
 | `maxilun-docsmith` | Feature PRD/RFC, README, OpenAPI, ADR, runbook, changelog, `llms.txt` | `/maxilun-docsmith`, "dokumentasi API", "buat PRD fitur", "tulis RFC" |
 | `maxilun-content` | Copy produk, microcopy, brand voice, lokalisasi | `/maxilun-content`, "copywriting", "teks CTA" |
-| `maxilun-motion` | Animasi browser, Lottie/SVG, kinetic type | `/maxilun-motion`, "animasi web", "Lottie" |
+| `maxilun-motion` | Animasi browser, Lottie/SVG, kinetic type, scene 3D interaktif/WebGL | `/maxilun-motion`, "animasi web", "Lottie", "scene 3D", "immersive website", "Three.js", "WebGL" |
 | `maxilun-cinecode` | File video final (MP4/WebM/GIF), pipeline render | `/maxilun-cinecode`, "render MP4", "batch video" |
 | `maxilun-diagrams` | Diagram Mermaid/SVG: C4, sequence, alur data | `/maxilun-diagrams`, "buat diagram" |
 | `maxilun-seo-audit` | Temuan SEO teknis, JSON-LD, CWV, indexing | `/maxilun-seo-audit`, "audit SEO" |
@@ -156,6 +156,8 @@ Urutan keputusan, berhenti di aturan pertama yang menjawab:
 | Pasangan | Batas |
 |---|---|
 | `maxilun-craft` vs `maxilun-frontend` | craft = visual, token, aksesibilitas, state UI. frontend = arsitektur Next.js, RSC, Server Action, bundle. |
+| `maxilun-motion` vs `maxilun-craft` / `maxilun-frontend` | For immersive 3D websites, motion owns the real-time scene, camera and world interactions; craft owns art direction and DOM design; frontend owns framework lifecycle/integration. Route motion primary with only the companions needed for requested artifacts. |
+| `maxilun-motion` vs `maxilun-craft` for reference-led websites | If the requested result is an implemented motion/3D experience, motion is primary and craft contributes the visual system. If the requested result is static visual design or UI redesign, craft is primary. Inspect supplied URLs/screenshots before choosing the direction. |
 | `maxilun-motion` vs `maxilun-cinecode` | motion = animasi browser/aset motion. cinecode = file video final. Video final dengan koreografi khusus → cinecode utama, motion untuk rancangan. |
 | `maxilun-insight` vs `maxilun-engineer` | insight = menemukan penyebab (profiling, tracing, evidence gathering). engineer = memperbaiki kode setelah penyebab diketahui. Jika stack trace sudah menunjuk ke fungsi spesifik → langsung engineer. Jika "lambat tapi tidak tahu kenapa" → insight dulu. Insight tidak menulis fix; engineer tidak melakukan profiling mendalam. |
 | `maxilun-docsmith` vs `maxilun-content` | docsmith = spesifikasi teknis & dokumen yang dibaca engineer/AI (Feature PRD/RFC, API, README, runbook, `llms.txt`). content = copy yang dibaca pengguna akhir (tombol, error, landing). |
@@ -170,7 +172,7 @@ Jangan jalankan untuk: bug dengan stack trace, rename, tambah field, atau tugas 
 
 Ringkasan protokol (detail: `references/discovery.md`):
 
-1. Empat hal harus terisi: **outcome**, **batasan**, **non-goals**, **kriteria selesai**.
+1. Empat hal harus terisi: **outcome**, **batasan**, **non-goals**, **kriteria selesai**. Untuk tugas antarmuka visual (UI/UX) atau redesign, wajib menyepakati preferensi gaya visual & referensi brand sebelum menulis kode antarmuka (detail: `references/discovery.md`).
 2. Satu pertanyaan per giliran. Tanya hanya yang mengubah keputusan.
 3. Baca repo dulu; jangan menanyakan hal yang terlihat di `package.json` atau struktur folder.
 4. Berhenti bertanya ketika empat elemen terisi, pengguna menyerahkan keputusan, atau dua pertanyaan berturut-turut tidak mengubah rencana.
@@ -309,10 +311,11 @@ Untuk tugas satu langkah: cukup hasil + bukti satu baris. Jangan membungkus jawa
 
 | Umpan balik | Tindakan |
 |---|---|
-| "Masih generik / klise AI" | Sebut pola spesifik yang terdeteksi, tulis ulang, tunjukkan diff |
+| "UI/UX generik AI" / "Desain seperti template AI" / "Tampilan membosankan" / "Ganti UI/UX" / "Rombak desain" | **DILARANG KERAS hanya menyesuaikan/patching kosmetik.** Hentikan penulisan kode tampilan. Muat `maxilun-craft`, aktifkan protokol visual pivot: ajukan pertanyaan *"UI/UX mau seperti apa?"*, sodorkan 3–4 opsi arketipe referensi konkret dari katalog `references/design-md/` (disesuaikan dengan domain produk) atau 20 Art Directions, atau minta URL/brand acuan pengguna. Setelah referensi disepakati, rombak total arsitektur visualnya. |
+| "Masih generik / klise AI" (umum/teks) | Sebut pola spesifik yang terdeteksi, tulis ulang, tunjukkan diff |
 | "Copy kaku / formal" | Muat `maxilun-content`, jalankan gerbang kontennya |
 | "Kode terlihat generik" | Terapkan `references/code-hygiene.md` + pola Purity `maxilun-engineer` §6 |
-| "UI biasa saja" | Muat `maxilun-craft`, jalankan delivery gate-nya |
+| "UI biasa saja / kurang berkarakter" | Muat `maxilun-craft`, tawarkan pivot referensi visual baru dari katalog, jalankan delivery gate-nya |
 | "Terlalu banyak penjelasan" | Pangkas 50%, langsung ke hasil |
 | "Tidak sesuai konteks" | Satu pertanyaan fokus, lalu kerjakan |
 
@@ -320,10 +323,10 @@ Aturan iterasi:
 
 1. Jangan membela output. Perbaiki.
 2. Sebut pola yang salah sebelum menunjukkan versi baru.
-3. Tunjukkan diff, bukan hanya hasil akhir.
-4. Maksimal 2 putaran. Setelah itu minta contoh output yang dianggap benar.
-5. Koreksi yang berulang dicatat sebagai kandidat perbaikan skill.
-
+3. Tunjukkan diff untuk perubahan kode logika, namun untuk reset UI/UX lakukan perombakan arsitektural menyeluruh setelah arah visual disetujui.
+4. **Keluhan "UI/UX generik AI" adalah sinyal penolakan arah visual fundamental, BUKAN bug fixing.** Jangan pernah melakukan patch kecil (misal hanya ubah border-radius atau padding). Wajib tanyakan arah UI/UX dengan referensi konkret sebelum menyentuh kode.
+5. Maksimal 2 putaran. Setelah itu minta contoh output atau link referensi yang dianggap benar.
+6. Koreksi yang berulang dicatat sebagai kandidat perbaikan skill.
 ## 11. Self-Check Sebelum Kirim
 
 Jawab dengan bukti, bukan centang:

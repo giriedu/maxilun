@@ -9,6 +9,11 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Enhanced
+- **Interface Engineering & Anti-Slop Hardening (Jakub Krehel Synthesis)**:
+  - Bundled `skills/maxilun-craft/references/interface-engineering.md` establishing exact mathematical UI tolerances: concentric radius formula ($R_{outer} = R_{inner} + padding + border$), layered shadows over borders for elevation, 1px pure black/white image inset outlines, 0.96 active button press scale over 150ms, hover gating `@media (hover: hover)`, and `overscroll-behavior: contain`.
+  - Codified 5 explicit AI-slop visual anti-patterns in `skills/maxilun/references/purity-catalog.md`: `CMP-015` (floating hero pill tagline capsule `• BADGE •`), `LAY-011` (monotonous center-everything cascade), `CMP-016` (pseudo-sci-fi hallucinated gimmicks vs authentic developer tooling), `CMP-017` (dual competing rounded-full pill buttons), and `LAY-012` (symmetrical 4-metric floating KPI strip over radial glow).
+  - Integrated Cross-Discipline Review Protocol & 13 Escalation Triggers (HIGH on sight with binary BLOCK/APPROVE verdict) into `maxilun-verify` and `maxilun-craft`.
+  - Fortified `maxilun-content` UX writing rules: object/verb terminology inventory, verb-first button labels (`[Action] + [Object]`), contextual error recovery beside the field, and undo-over-modal confirmation for reversible actions.
 - **Craft & UI/UX Standards**: Added concentric inner radius formula (`radius_inner = max(0, radius_outer - padding)`), 8-state interactive feedback system, Web Interface Guidelines (WIG) compliance (paste unblocking, spellcheck discipline, flex truncation `min-w-0`, `overscroll-behavior: contain`), and "One Live Thing" subject inventory protocol.
 - **Motion & Micro-interactions**: Codified Emil Kowalski action frequency matrix (0ms instant for high-frequency actions) and Disney animation principles adapted for web micro-interactions.
 - **Architecture & Deep Modules**: Integrated Deep Modules vocabulary (Module, Interface, Depth, Seam, Adapter), The Deletion Test, and Two-Adapter Seam rule into `maxilun-architect`.
