@@ -40,7 +40,6 @@ def _load_or_build_graph(graph_path=None, project_path="."):
     if graph_path and Path(graph_path).is_file():
         with open(graph_path, 'r', encoding='utf-8') as f:
             return json.load(f)
-
     default_cache = Path(project_path) / '.maxilun' / 'graph.json'
     if default_cache.is_file():
         try:
@@ -49,7 +48,14 @@ def _load_or_build_graph(graph_path=None, project_path="."):
         except Exception:
             pass
 
-    # Build fresh graph
+    # Check graphify-out/graph.json (Graphify compatibility)
+    graphify_cache = Path(project_path) / 'graphify-out' / 'graph.json'
+    if graphify_cache.is_file():
+        try:
+            with open(graphify_cache, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception:
+            pass
     builder = GraphBuilder()
     resolved_path = str(Path(project_path).resolve())
     graph = builder.scan_project(resolved_path)
@@ -59,6 +65,15 @@ def _load_or_build_graph(graph_path=None, project_path="."):
             json.dump(graph, f, indent=2, ensure_ascii=False)
     except Exception:
         pass
+
+    # If graphify-out exists or was scanned, also sync graphify-out/graph.json
+    if graphify_cache.parent.is_dir():
+        try:
+            with open(graphify_cache, 'w', encoding='utf-8') as f:
+                json.dump(graph, f, indent=2, ensure_ascii=False)
+        except Exception:
+            pass
+
     return graph
 
 
@@ -91,6 +106,25 @@ def cmd_scan(args):
     output_path = args.output or str(Path(args.paths[0]) / '.maxilun' / 'graph.json')
     builder.save_graph(output_path)
     print(f"\n  Graph cached to: {output_path}")
+    # Mirror to graphify-out/ if requested via flag or if graphify-out directory exists
+    graphify_dir = Path(args.paths[0]) / 'graphify-out'
+    if getattr(args, 'graphify', False) or graphify_dir.exists():
+        graphify_dir.mkdir(parents=True, exist_ok=True)
+        graphify_path = str(graphify_dir / 'graph.json')
+        builder.save_graph(graphify_path)
+        try:
+            report_path = graphify_dir / 'GRAPH_REPORT.md'
+            report_content = (
+                f"# Graph Report\n\n"
+                f"- Total Projects: {stats['total_projects']}\n"
+                f"- Total Nodes: {total_nodes}\n"
+                f"- Total Edges: {total_edges}\n"
+                f"- Engine: Maxilun Knowledge Graph (Graphify Compatible)\n"
+            )
+            report_path.write_text(report_content, encoding='utf-8')
+        except Exception:
+            pass
+        print(f"  Graphify compatibility mirrored to: {graphify_path}")
 
     if args.view:
         server = MaxilunServer(port=args.port or 8765)
@@ -300,6 +334,7 @@ def main():
     scan_parser.add_argument('--view', '-v', action='store_true', help='Open visualizer in browser')
     scan_parser.add_argument('--port', '-p', type=int, default=8765, help='Server port (default: 8765)')
     scan_parser.add_argument('--output', '-o', help='Save graph JSON to file (default: .maxilun/graph.json)')
+    scan_parser.add_argument('--graphify', action='store_true', help='Mirror output to graphify-out/ (graph.json and GRAPH_REPORT.md)')
 
     # query
     query_parser = subparsers.add_parser('query', help='Query symbols from knowledge graph')

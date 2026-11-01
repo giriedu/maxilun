@@ -4,7 +4,7 @@ description: >
   Code discovery foundation. Maps symbols, imports, caller/callee as directed graph.
   Use for code discovery and dependency mapping before structural or multi-file changes. For a small isolated text edit, use direct inspection; when graph tooling is unavailable, fall back to the repository's available search/read tools. Triggers: "/maxilun-knowledge-graph", "/msal-trace",
   "/msal-graph", "cari kode", "di mana fungsi", "petakan dependensi", "siapa panggil",
-  "relasi modul", "analisis impor", codebase lookup, navigation, pre-edit mapping.
+  "relasi modul", "analisis impor", codebase lookup, navigation, pre-edit mapping, "graphify", "graphify-out".
 metadata:
   version: "1.0.0"
   ecosystem: maxilun
@@ -74,7 +74,8 @@ Ikuti urutan ini; jangan melompat ke tier berat tanpa alasan:
 
 - **Tier 0 — Memori Konteks**: Gunakan graf yang sudah dipetakan dalam percakapan ini. Jika relasi sudah diketahui, langsung pakai. Tidak ada query ulang.
 - **Tier 1 — Indeks Struktural & CLI**:
-  - `python cli.py query <operator> <simbol>`: Query cepat cache graf (`defOf:`, `callsIn:`, dll.) dengan output `file:line`.
+  - `python cli.py query <operator> <simbol>`: Query cepat cache graf (`defOf:`, `callsIn:`, dll.) dengan output `file:line`. Mendukung cache `.maxilun/graph.json` dan `graphify-out/graph.json`.
+  - Jika direktori `graphify-out/` atau `.maxilun/` ada di repositori, anggap knowledge graph sudah tersedia dan gunakan langsung sebagai Tier 1 tanpa re-scan.
   - `python scripts/repomap.py [path]`: Pemetaan arsitektur instan tanpa dependensi (bahasa, titik masuk, modul paling banyak diimpor).
   - Indeks simbol bawaan lingkungan jika tersedia (CodeGraph MCP, LSP, language indexer).
 - **Tier 2 — Pencarian Terstruktur**: Glob + grep terfokus PER SIMBOL (nama fungsi/kelas/impor), bukan kata kunci luwes. Jalankan paralel jika independen.
