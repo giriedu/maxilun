@@ -55,6 +55,7 @@ Detail lengkap: `../maxilun/references/engines.md`.
 Delta domain terhadap Core Rules di atas. Override engineer:
 - **Purity**: Tolak abstraksi spekulatif (interface dengan 1 implementor). Wrapper kosong = hapus.
 - **Minimalist**: Diff terkecil yang valid. Reuse helper existing > layer baru.
+- **Surgical Precision**: Sentuh hanya yang wajib disentuh. Dilarang perbaikan liar (*no drive-by refactoring*) atau merapikan formatting/komentar sekitar. Bersihkan hanya orphan imports/variabel yang menjadi usang akibat editan sendiri; biarkan dead code lama yang tidak terkait. Setiap baris perubahan wajib terlacak langsung ke instruksi pengguna.
 
 ## Workflow
 ```mermaid
@@ -90,6 +91,12 @@ flowchart LR
    - Sederhanakan kontrol alur yang bercabang ruwet.
    - Hapus kode mati (*dead code*) yang berada di sekitar area perubahan.
 
+5. **Radical Simplicity (Disiplin Rekayasa Bedah)**:
+   - Tidak ada fitur atau konfigurabilitas spekulatif di luar yang diminta.
+   - Tidak ada abstraksi untuk kode sekali pakai (*no single-use abstractions*).
+   - Jika 200 baris bisa ditulis dalam 50 baris bersih, tulis ulang (*rewrite*).
+   - Uji senior engineer: jika senior engineer menganggapnya *overcomplicated*, sederhanakan.
+
 ### Fase 3: Higienitas Komentar Kode
 Ikuti `../maxilun/references/code-hygiene.md` tanpa pengecualian.
 
@@ -103,6 +110,9 @@ Ikuti `../maxilun/references/code-hygiene.md` tanpa pengecualian.
    - `fix(scope): perbaikan akar masalah spesifik`
    - `refactor(scope): penyederhanaan struktur tanpa ubah perilaku eksternal`
    - `test(scope): penambahan atau perbaikan kasus uji`
+
+3. **Protokol Bedah Presisi (Surgical Protocol)**:
+   - Terapkan `../maxilun/references/surgical-discipline.md` untuk membatasi radius perubahan hanya pada target terisolasi.
 
 ### Fase 5: Self-Check Minimal
 Setiap fungsi yang memiliki logika non-sepele (percabangan, parsing, kalkulasi keuangan/keamanan) harus dilengkapi 1 pengecekan mandiri minimal (assertion atau unit test ringkas).

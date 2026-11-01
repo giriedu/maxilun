@@ -37,4 +37,16 @@ Bagian ini menetapkan kebiasaan kerja pendukung dan bukan engine terpisah:
 
 ---
 
+## Disiplin Rekayasa Bedah (Maxilun Surgical Discipline)
+
+Disiplin rekayasa presisi tinggi untuk menekan kesalahan laten model AI saat menulis dan mengubah kode:
+
+1. **Pre-flight Reasoning**: Nyatakan asumsi eksplisit (`[ASUMSI]`), jangan memilih cabang tafsir diam-diam, paparkan trade-off, dan usulkan pendekatan lebih sederhana jika overengineered.
+2. **Radical Simplicity**: Kode minimal yang menyelesaikan masalah. Tolak abstraksi untuk kode sekali pakai (*no single-use abstractions*). Jika 200 baris bisa ditulis dalam 50 baris bersih, tulis ulang. Uji Senior Engineer: sederhanakan jika dinilai *overcomplicated*.
+3. **Surgical Precision**: Sentuh hanya yang diminta (*touch only what you must*). Dilarang perbaikan liar (*no drive-by refactoring*). Bersihkan orphan variabel/import buatan sendiri, jangan hapus dead code lama di luar cakupan tanpa izin. Setiap baris perubahan wajib terlacak ke permintaan pengguna.
+4. **Verifiable Goal Loop**: Ubah tugas imperatif menjadi target verifikasi (test reproduksi sebelum fix bug, cek sebelum dan sesudah refactor). Tetapkan rencana `[Langkah] → verifikasi: [cek]`.
+
+Rujukan lengkap: [`skills/maxilun/references/surgical-discipline.md`](../skills/maxilun/references/surgical-discipline.md).
+---
+
 Selengkapnya lihat [`skills/maxilun/references/engines.md`](../skills/maxilun/references/engines.md).

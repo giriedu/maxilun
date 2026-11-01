@@ -29,6 +29,7 @@ Contract ownership dan routing lintas-skill ada di [SKILL-CONTRACTS.md](SKILL-CO
 - **Panduan domain docsmith vs content**: Gunakan `maxilun-docsmith` untuk dokumen yang dibaca engineer (API spec, README, ADR). Gunakan `maxilun-content` untuk teks yang dibaca pengguna akhir (landing page, tombol, pesan error).
 - **SEO Audit**: Telah terintegrasi penuh sebagai spesialis resmi `maxilun-seo-audit`.
 - **Diagram Mandiri**: `maxilun-diagrams` menghasilkan diagram Mermaid serta berkas standalone SVG/HTML secara mandiri tanpa ketergantungan pada tool eksternal.
+- **Disiplin Rekayasa Bedah (Surgical Discipline)**: Aturan bedah presisi (Pre-flight Reasoning, Radical Simplicity, Surgical Precision, Verifiable Goal Loop) terintegrasi di `skills/maxilun/references/surgical-discipline.md` serta ditegakkan pada protokol implementasi `maxilun-engineer` dan evaluasi pengiriman `maxilun`.
 
 ## Roadmap Skill (Belum Tersedia)
 

@@ -28,6 +28,7 @@ metadata:
     - references/discovery.md
     - references/purity-catalog.md
     - references/code-hygiene.md
+    - references/surgical-discipline.md
 ---
 
 # Maxilun: Master Orchestrator v1.0
@@ -60,6 +61,17 @@ Berlaku pada setiap respons dan setiap perubahan kode. Tidak bisa di-override ol
 
 Detail lengkap: `../maxilun/references/engines.md`.
 <!-- CORE-RULES:END -->
+
+## Disiplin Rekayasa Bedah (Selalu Aktif)
+
+Saat mengerjakan tugas coding dan refaktoring, terapkan empat pilar presisi bersama Core Rules:
+
+1. **Pre-flight Reasoning** — Nyatakan asumsi yang memengaruhi hasil (`[ASUMSI]`). Jika ada beberapa tafsir yang berdampak pada keputusan, paparkan pilihannya; berhenti dan minta klarifikasi hanya bila pekerjaan memang tidak bisa dilanjutkan tanpa menebak.
+2. **Radical Simplicity** — Bangun solusi terkecil yang memenuhi permintaan. Tolak abstraksi spekulatif untuk komponen sekali pakai (*no single-use abstractions*). Jika 200 baris bisa ditulis dalam 50 baris bersih, tulis ulang.
+3. **Surgical Precision** — Ubah hanya bagian yang terkait langsung dengan permintaan. Pertahankan gaya dan baris sekitar; dilarang *drive-by refactoring*; bersihkan hanya sisa yang ditimbulkan oleh perubahan sendiri (*orphan cleanup*).
+4. **Verifiable Goal Loop** — Rumuskan kriteria selesai yang dapat diuji (test/reproduksi sebelum fix). Untuk tugas bertahap, sebutkan rencana singkat dan bukti verifikasi (`[Langkah] → verifikasi: [cek]`).
+
+Detail lengkap: `references/surgical-discipline.md`.
 
 ## 0. Batas Tanggung Jawab
 
@@ -255,7 +267,7 @@ Aturan keras: **jangan duplikasi pekerjaan yang sudah selesai**. Jika user sebel
 
 Cache invalidation hanya jika: file baru/dihapus, refactor besar yang mengubah nama publik, >3 file diedit dalam satu sesi, atau user eksplisit minta re-scan.
 
-**Progressive disclosure:** `references/` hanya dibaca saat relevan. `engines.md` untuk detail aturan, `discovery.md` untuk brief kabur, `purity-catalog.md` untuk audit copy/visual, `code-hygiene.md` untuk review komentar dan naming. Jangan memuat keempatnya sekaligus.
+**Progressive disclosure:** `references/` hanya dibaca saat relevan. `engines.md` untuk detail aturan, `discovery.md` untuk brief kabur, `purity-catalog.md` untuk audit copy/visual, `code-hygiene.md` untuk review komentar dan naming, `surgical-discipline.md` untuk disiplin rekayasa bedah presisi (pre-flight reasoning, radical simplicity, surgical precision, verifiable goal loop). Jangan memuat semuanya sekaligus.
 
 **Fallback untuk references yang tidak tersedia:** Jika skill di-install tanpa orchestrator (misal `npx skills add --skill maxilun-craft`), path `../maxilun/references/` tidak akan resolve. Dalam kasus ini:
 
@@ -338,6 +350,8 @@ Jawab dengan bukti, bukan centang:
 - [ ] Tidak ada rujukan ke skill yang tidak ada di ekosistem ini?
 - [ ] Copy/UI/kode sudah melewati gate domain yang relevan?
 - [ ] Ada satu rekomendasi jelas, bukan dua opsi tanpa keputusan?
+- [ ] Perubahan kode bersifat bedah (surgical): menyentuh hanya yang diminta tanpa perbaikan liar (*no drive-by refactoring*)?
+- [ ] Asumsi tidak diambil diam-diam; trade-off dipaparkan jika ambigu?
 
 Satu butir gagal → perbaiki sebelum kirim.
 

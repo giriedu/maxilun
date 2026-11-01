@@ -58,6 +58,7 @@ REQUIRED_REFERENCES = [
     "discovery.md",
     "purity-catalog.md",
     "code-hygiene.md",
+    "surgical-discipline.md",
 ]
 
 REQUIRED_PUBLIC_DOCS = ["SKILL-CONTRACTS.md", "ROUTING-MATRIX.md", "PURITY-GATE.md", "BENCHMARKS.md"]
@@ -346,6 +347,7 @@ def test_referenced_paths():
         ORCHESTRATOR / "references" / "discovery.md",
         ORCHESTRATOR / "references" / "purity-catalog.md",
         ORCHESTRATOR / "references" / "code-hygiene.md",
+        ORCHESTRATOR / "references" / "surgical-discipline.md",
         REPO_ROOT / "scripts" / "install.sh",
         REPO_ROOT / "scripts" / "install.ps1",
         REPO_ROOT / "scripts" / "uninstall.sh",

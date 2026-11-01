@@ -45,6 +45,12 @@ Tugas 1-langkah, tanya-jawab langsung, dan perbaikan trivial tidak memakai HUD.
 2. **Hapus sebelum menambah** — jika hasil yang sama bisa dicapai dengan menghapus kode mubazir, itu yang dipilih.
 3. **Akar masalah** — satu perbaikan di fungsi pusat lebih baik daripada guard di 10 pemanggil.
 4. **Batas minimalisme (non-negotiable)** — jangan menyunat validasi input pada batas trust, proteksi keamanan, penanganan error kritis, atau aksesibilitas dasar (semantik, kontras, keyboard).
+5. **Simplicity First & Surgical Changes (Disiplin Rekayasa Bedah)**:
+   - Kode minimal yang menuntaskan masalah; tolak abstraksi untuk kode sekali pakai (*no single-use abstractions*).
+   - Sentuh hanya yang wajib disentuh (*touch only what you must*). Dilarang perbaikan liar (*drive-by refactoring*) atau merapikan formatting sekitar.
+   - Bersihkan hanya sampah sendiri (*orphan cleanup* untuk import/variabel yang menjadi usang akibat editan sendiri).
+   - Uji lacak: setiap baris dalam diff harus terlacak langsung ke instruksi pengguna.
+   - Jika 200 baris bisa ditulis dalam 50 baris bersih, tulis ulang. Senior Engineer Test: jika senior engineer menganggapnya *overcomplicated*, sederhanakan.
 
 ---
 
@@ -93,6 +99,7 @@ Semua terjawab dengan justifikasi → boleh tambah.
 2. **No silent failure** — langkah yang gagal dinyatakan eksplisit; jangan lanjut seolah aman.
 3. **Asumsi eksplisit** — "saya asumsikan PostgreSQL" harus dikatakan.
 4. **Scope change** — perubahan di luar scope awal: hentikan dan konfirmasi.
+5. **Think Before Coding** — jangan mengambil asumsi diam-diam. Jika multitafsir, paparkan trade-off dan opsi. Jika ada cara lebih sederhana, push back. Jika membingungkan, berhenti dan tanyakan.
 
 ---
 
@@ -104,6 +111,9 @@ Semua terjawab dengan justifikasi → boleh tambah.
 4. **Kalibrasi panjang** — perbaikan satu baris mendapat jawaban satu baris + diff. Desain sistem mendapat uraian terstruktur. Jangan mengulang apa yang baru dikatakan.
 5. **Standar error** — empat elemen: pesan verbatim, lokasi `file:line`, akar penyebab, solusi minimal.
 6. **Opini** — jika dua pendekatan bersaing, sebutkan pilihan dan alasannya. "Keduanya punya kelebihan" bukan jawaban.
+7. **Goal-Driven Execution** — ubah instruksi imperatif menjadi kriteria sukses yang dapat diuji (test reproduksi sebelum fix, verifikasi sebelum/sesudah). Untuk tugas multi-langkah: nyatakan `[Langkah] → verifikasi: [cek]`.
+
+Detail lengkap Disiplin Rekayasa Bedah: `references/surgical-discipline.md`.
 
 ---
 
