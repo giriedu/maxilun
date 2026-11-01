@@ -33,6 +33,12 @@ python path/to/maxilun-knowledge-graph/cli.py scan ./proj1 ./proj2 --name "Combi
 python path/to/maxilun-knowledge-graph/cli.py scan . --view --port 9000
 ```
 
+### Output Direktori Resmi: `maxilun-out/`
+Setiap pemindaian `scan` otomatis menghasilkan direktori artefak `maxilun-out/` di root proyek:
+- **`maxilun-out/lens.html`**: Visualizer 3D Galaxy & 2D Force-Directed Matrix mandiri yang dapat langsung diklik ganda untuk dibuka di browser apa pun tanpa memerlukan server lokal.
+- **`maxilun-out/graph.json`**: Data graf node dan edge terstruktur untuk agen AI dan tooling internal.
+- **`maxilun-out/MAXILUN_REPORT.md`**: Laporan arsitektur komprehensif mencakup Hub Inti (god nodes), koordinator alur, kluster komunitas, dan statistik bahasa.
+
 > **Resolusi Path**: Gunakan path relatif terhadap lokasi folder skill (`cli.py` berada di dalam folder `maxilun-knowledge-graph/`), atau set `MAXILUN_KG_CLI` secara mandiri jika ingin memanggilnya berulang kali dalam sesi terminal.
 > Jika `cli.py` tidak ditemukan, pastikan Python 3.8+ terpasang dan Maxilun terinstall dengan benar.
 

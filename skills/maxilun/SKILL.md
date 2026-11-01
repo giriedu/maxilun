@@ -259,7 +259,7 @@ Routing tanpa mekanisme eksekusi hanya saran. Ikuti tabel ini sesuai platform.
 Orchestrator TIDAK boleh memulai analisis kode dari nol jika knowledge graph sudah tersedia. Cek berurutan:
 
 1. **Sesi aktif**: Apakah `maxilun-knowledge-graph` sudah dipetakan dalam percakapan ini? Jika ya, gunakan hasil yang ada (Tier 0). Jangan re-scan.
-2. **Cache file**: Apakah `.maxilun/graph.json` atau `graphify-out/` (`graphify-out/graph.json`) ada di root project? Jika ya, load via CLI (`python cli.py query`) sebagai Tier 1. Jangan re-scan kecuali cache invalidation trigger terpenuhi.
+2. **Cache file**: Apakah `maxilun-out/graph.json` atau `.maxilun/graph.json` ada di root project? Jika ya, load via CLI (`python cli.py query`) sebagai Tier 1. Jangan re-scan kecuali cache invalidation trigger terpenuhi.
 3. **CodeGraph MCP / LSP**: Apakah environment menyediakan index simbol? Jika ya, gunakan sebagai Tier 1.
 4. **Baru scan**: Hanya jika tidak ada satupun di atas, jalankan pemetaan penuh via `maxilun-knowledge-graph`.
 

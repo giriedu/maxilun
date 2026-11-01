@@ -2834,6 +2834,11 @@ initGL();
 setMode('2d');
 renderProjectList();
 (async function bootLoad() {
+  if (window.MAXILUN_GRAPH_DATA && window.MAXILUN_GRAPH_DATA.nodes && window.MAXILUN_GRAPH_DATA.nodes.length > 0) {
+    loadGraph(window.MAXILUN_GRAPH_DATA);
+    showToast(`Loaded ${window.MAXILUN_GRAPH_DATA.name || 'Graph'} (${window.MAXILUN_GRAPH_DATA.nodes.length} nodes)`);
+    return;
+  }
   try {
     const resp = await fetch('/api/graph');
     if(resp.ok) {
@@ -2841,6 +2846,17 @@ renderProjectList();
       if(data && data.nodes && data.nodes.length > 0) {
         loadGraph(data);
         showToast(`Loaded ${data.name || 'Graph'} (${data.nodes.length} nodes)`);
+        return;
+      }
+    }
+  } catch(e) {}
+  try {
+    const localResp = await fetch('./graph.json');
+    if(localResp.ok) {
+      const localData = await localResp.json();
+      if(localData && localData.nodes && localData.nodes.length > 0) {
+        loadGraph(localData);
+        showToast(`Loaded ${localData.name || 'Graph'} (${localData.nodes.length} nodes)`);
         return;
       }
     }

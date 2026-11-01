@@ -42,6 +42,7 @@ build/
 .hermes/
 skills-lock.json
 .maxilun/
+maxilun-out/
 graphify-out/
 
 # Environment

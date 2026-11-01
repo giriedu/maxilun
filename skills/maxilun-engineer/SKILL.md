@@ -65,7 +65,7 @@ flowchart LR
     C --> D[Self-check]
 ```
 
-**Sebelum analisis kode**: Cek apakah knowledge graph sudah tersedia (sesi aktif, `.maxilun/graph.json`, `graphify-out/`, atau CodeGraph/LSP). Jika ya, gunakan langsung — jangan re-analyze dari nol. Lihat orchestrator §6 "Context inheritance".
+**Sebelum analisis kode**: Cek apakah knowledge graph sudah tersedia (sesi aktif, `maxilun-out/graph.json`, `.maxilun/graph.json`, atau CodeGraph/LSP). Jika ya, gunakan langsung — jangan re-analyze dari nol. Lihat orchestrator §6 "Context inheritance".
 
 ## 2. Protokol Rekayasa Kode (The Engineering Protocol)
 

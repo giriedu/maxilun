@@ -36,10 +36,140 @@ from graph_builder import GraphBuilder
 from server import MaxilunServer
 
 
+def _generate_maxilun_report(graph, stats):
+    nodes = graph.get('nodes', [])
+    edges = graph.get('edges', [])
+    clusters = graph.get('clusters', {})
+
+    in_degree = {}
+    out_degree = {}
+    node_by_id = {n.get('id'): n for n in nodes}
+    for e in edges:
+        src = e.get('source')
+        tgt = e.get('target')
+        out_degree[src] = out_degree.get(src, 0) + 1
+        in_degree[tgt] = in_degree.get(tgt, 0) + 1
+
+    top_inbound = sorted(in_degree.items(), key=lambda x: x[1], reverse=True)[:10]
+    top_outbound = sorted(out_degree.items(), key=lambda x: x[1], reverse=True)[:10]
+
+    lang_counts = {}
+    for n in nodes:
+        lang = n.get('language') or 'other'
+        lang_counts[lang] = lang_counts.get(lang, 0) + 1
+
+    lines = [
+        "# Maxilun Knowledge Graph — Architecture Report",
+        "",
+        "Laporan pemetaan struktural basis kode yang dihasilkan secara deterministik oleh **Maxilun Knowledge Graph Engine**.",
+        "",
+        "## 1. Ringkasan Eksekutif",
+        "",
+        f"- **Total Simbol / Node**: {len(nodes)}",
+        f"- **Total Relasi / Edge**: {len(edges)}",
+        f"- **Total Kluster Arsitektur**: {len(clusters)}",
+        f"- **Total Proyek Dipindai**: {stats.get('total_projects', 1)}",
+        f"- **Komposisi Bahasa**: " + ", ".join(f"`{k}`: {v}" for k, v in sorted(lang_counts.items(), key=lambda x: x[1], reverse=True)),
+        "",
+        "## 2. Hub Inti (Simbol dengan Derajat Ketergantungan Tertinggi)",
+        "",
+        "Simbol atau modul ini paling banyak dipanggil atau diimpor oleh berkas lain. Perubahan pada simbol ini memiliki radius dampak tinggi:",
+        "",
+        "| Peringkat | Simbol / Target | Inbound Edges (Pemanggil/Pengimpor) | File Sumber |",
+        "|:---:|---|:---:|---|",
+    ]
+
+    for i, (nid, deg) in enumerate(top_inbound, 1):
+        n = node_by_id.get(nid, {})
+        label = n.get('label') or nid
+        path = n.get('path') or '-'
+        lines.append(f"| {i} | `{label}` | **{deg}** | `{path}` |")
+
+    lines.extend([
+        "",
+        "## 3. Titik Koordinasi (Highest Fan-Out)",
+        "",
+        "Komponen yang memanggil banyak dependensi eksternal/internal (koordinator alur):",
+        "",
+        "| Peringkat | Simbol Pengkoordinasi | Outbound Calls | File Sumber |",
+        "|:---:|---|:---:|---|",
+    ])
+
+    for i, (nid, deg) in enumerate(top_outbound, 1):
+        n = node_by_id.get(nid, {})
+        label = n.get('label') or nid
+        path = n.get('path') or '-'
+        lines.append(f"| {i} | `{label}` | **{deg}** | `{path}` |")
+
+    if clusters:
+        lines.extend([
+            "",
+            "## 4. Kluster & Komunitas Arsitektur",
+            "",
+            "| Kluster | Anggota Node | Label Dominan |",
+            "|---|:---:|---|",
+        ])
+        for cname, cdata in sorted(clusters.items()):
+            c_nodes = cdata.get('nodes', [])
+            dom = cdata.get('dominant_type') or '-'
+            lines.append(f"| **{cname}** | {len(c_nodes)} | `{dom}` |")
+
+    lines.extend([
+        "",
+        "## 5. Cara Penggunaan Artefak Maxilun-Out",
+        "",
+        "1. **Buka Visualizer Offline**: Klik ganda `lens.html` di browser apa pun untuk eksplorasi 3D Galaxy & 2D Force-Directed Matrix.",
+        "2. **Kueri Cepat CLI**: Jalankan `python path/to/cli.py query <operator> <simbol>`.",
+        "3. **Integrasi Agen**: Orchestrator Maxilun dan `maxilun-engineer` membaca `maxilun-out/graph.json` secara otomatis untuk penelusuran dampak sebelum modifikasi kode.",
+        "",
+        "---",
+        "*Dihasilkan oleh Maxilun Knowledge Graph Engine v1.0.0*",
+    ])
+    return "\n".join(lines)
+
+
+def _export_maxilun_out(target_root, graph, stats):
+    out_dir = Path(target_root) / 'maxilun-out'
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    # 1. Save graph.json
+    graph_json_path = out_dir / 'graph.json'
+    with open(graph_json_path, 'w', encoding='utf-8') as f:
+        json.dump(graph, f, indent=2, ensure_ascii=False)
+
+    # 2. Save standalone lens.html
+    lens_src = Path(__file__).parent / 'graph-viewer' / 'lens.html'
+    if lens_src.is_file():
+        try:
+            lens_content = lens_src.read_text(encoding='utf-8')
+            data_script = f"\n<script>\nwindow.MAXILUN_GRAPH_DATA = {json.dumps(graph, ensure_ascii=False)};\n</script>\n"
+            injected = lens_content.replace('</head>', f'{data_script}</head>', 1)
+            (out_dir / 'lens.html').write_text(injected, encoding='utf-8')
+        except Exception:
+            pass
+
+    # 3. Save MAXILUN_REPORT.md
+    report_content = _generate_maxilun_report(graph, stats)
+    (out_dir / 'MAXILUN_REPORT.md').write_text(report_content, encoding='utf-8')
+
+    return out_dir
+
+
 def _load_or_build_graph(graph_path=None, project_path="."):
     if graph_path and Path(graph_path).is_file():
         with open(graph_path, 'r', encoding='utf-8') as f:
             return json.load(f)
+
+    # 1. Native Maxilun output directory
+    maxilun_out = Path(project_path) / 'maxilun-out' / 'graph.json'
+    if maxilun_out.is_file():
+        try:
+            with open(maxilun_out, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception:
+            pass
+
+    # 2. Internal dotfile cache
     default_cache = Path(project_path) / '.maxilun' / 'graph.json'
     if default_cache.is_file():
         try:
@@ -48,7 +178,7 @@ def _load_or_build_graph(graph_path=None, project_path="."):
         except Exception:
             pass
 
-    # Check graphify-out/graph.json (Graphify compatibility)
+    # 3. Compatibility fallback
     graphify_cache = Path(project_path) / 'graphify-out' / 'graph.json'
     if graphify_cache.is_file():
         try:
@@ -56,23 +186,20 @@ def _load_or_build_graph(graph_path=None, project_path="."):
                 return json.load(f)
         except Exception:
             pass
+
+    # Build fresh graph
     builder = GraphBuilder()
     resolved_path = str(Path(project_path).resolve())
     graph = builder.scan_project(resolved_path)
+
     try:
+        stats = builder.get_stats()
+        _export_maxilun_out(project_path, graph, stats)
         default_cache.parent.mkdir(parents=True, exist_ok=True)
         with open(default_cache, 'w', encoding='utf-8') as f:
             json.dump(graph, f, indent=2, ensure_ascii=False)
     except Exception:
         pass
-
-    # If graphify-out exists or was scanned, also sync graphify-out/graph.json
-    if graphify_cache.parent.is_dir():
-        try:
-            with open(graphify_cache, 'w', encoding='utf-8') as f:
-                json.dump(graph, f, indent=2, ensure_ascii=False)
-        except Exception:
-            pass
 
     return graph
 
@@ -103,9 +230,15 @@ def cmd_scan(args):
     total_edges = sum(p['edges'] for p in stats['projects'].values())
     print(f"  Combined: {total_nodes} nodes, {total_edges} edges")
 
+    out_dir = _export_maxilun_out(args.paths[0], merged, stats)
+    print(f"\n  Maxilun artifacts generated in: {out_dir}")
+    print(f"    - {out_dir / 'graph.json'} (AST Knowledge Graph)")
+    print(f"    - {out_dir / 'lens.html'} (Standalone 3D/2D Lens Visualizer)")
+    print(f"    - {out_dir / 'MAXILUN_REPORT.md'} (Architecture & Hub Analysis Report)")
+
     output_path = args.output or str(Path(args.paths[0]) / '.maxilun' / 'graph.json')
     builder.save_graph(output_path)
-    print(f"\n  Graph cached to: {output_path}")
+    print(f"  Internal cache saved to: {output_path}")
     # Mirror to graphify-out/ if requested via flag or if graphify-out directory exists
     graphify_dir = Path(args.paths[0]) / 'graphify-out'
     if getattr(args, 'graphify', False) or graphify_dir.exists():
