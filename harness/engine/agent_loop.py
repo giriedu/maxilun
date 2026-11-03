@@ -48,11 +48,11 @@ class MaxilunAgentLoop:
 
         active_skill = self.loader.match_skill(prompt)
         context.active_skill = active_skill.name
+        context.record_swarm_event(active_skill.name, "Routed task", prompt[:80])
 
         if self.verbose:
             print(f"\n🌑 Maxilun Harness Engine: [Active Specialist: {active_skill.name}] (Type {decision_type})")
             print(f"   Contract: Owns {active_skill.contract.get('Owns', 'implementation')[:60]}...")
-
         # 2. Compile Active System Prompt
         system_prompt = self.loader.build_system_prompt(active_skill.name)
         context.add_system_message(system_prompt)
@@ -118,9 +118,12 @@ class MaxilunAgentLoop:
                 # Track changes in context
                 if fn_name in ("write_file", "edit_file"):
                     context.record_file_edit(args.get("path", ""))
+                    context.record_swarm_event(active_skill.name, f"Modified file", args.get("path", ""))
                 elif fn_name == "execute_bash":
                     context.record_command(args.get("command", ""))
-
+                    context.record_swarm_event(active_skill.name, "Executed command", args.get("command", "")[:50])
+                else:
+                    context.record_swarm_event(active_skill.name, f"Tool call {fn_name}", str(args)[:50])
                 # Execute tool
                 result = self.registry.execute(fn_name, args)
                 result_str = json.dumps(result, ensure_ascii=False)
@@ -137,5 +140,13 @@ class MaxilunAgentLoop:
             print(f"   Commands   : {summary['commands_run_count']} command(s)")
             print(f"   Duration   : {summary['duration_seconds']}s")
             print("=" * 50)
+
+        # Save swarm events artifact
+        out_dir = self.root / "maxilun-out"
+        out_dir.mkdir(exist_ok=True)
+        try:
+            (out_dir / "swarm_events.json").write_text(json.dumps(context.swarm_events, indent=2), encoding="utf-8")
+        except Exception:
+            pass
 
         return context

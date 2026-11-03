@@ -98,6 +98,15 @@ def cmd_dashboard(args):
             pass
 
 
+def cmd_swarm(args):
+    out_path = DashboardGenerator.generate()
+    print(f"✨ Launching Maxilun Live Swarm Studio: {out_path}")
+    try:
+        webbrowser.open(str(out_path.resolve()))
+    except Exception:
+        pass
+
+
 def cmd_check(args):
     validator = PurityValidator()
     ast_inspector = ASTInspector()
@@ -347,6 +356,9 @@ def main():
     dash_parser = subparsers.add_parser("dashboard", help="Generate and open the interactive visual HTML dashboard")
     dash_parser.add_argument("--open", action="store_true", default=True, help="Automatically open in browser")
 
+    # swarm
+    subparsers.add_parser("swarm", help="Launch the Live Swarm Studio multiplayer agent visualizer in browser")
+
     # check
     check_parser = subparsers.add_parser("check", help="Validate a file, text, or directory against Purity Gate & AST")
     check_parser.add_argument("path", nargs="?", default=None, help="Target file/folder or '-' for stdin")
@@ -388,6 +400,7 @@ def main():
         "run": cmd_run,
         "skills": cmd_skills,
         "dashboard": cmd_dashboard,
+        "swarm": cmd_swarm,
         "check": cmd_check,
         "route": cmd_route,
         "bench": cmd_bench,

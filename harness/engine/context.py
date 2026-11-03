@@ -43,6 +43,7 @@ class SessionContext:
     purity_warnings: List[str] = field(default_factory=list)
     tokens_in: int = 0
     tokens_out: int = 0
+    swarm_events: List[Dict[str, Any]] = field(default_factory=list)
 
     def add_system_message(self, content: str):
         self.messages.append(Message(role="system", content=content))
@@ -70,6 +71,14 @@ class SessionContext:
     def record_command(self, cmd: str):
         self.commands_run.append(cmd)
 
+    def record_swarm_event(self, specialist: str, action: str, target: str = "", metadata: Optional[Dict[str, Any]] = None):
+        self.swarm_events.append({
+            "timestamp": round(time.time() - self.created_at, 2),
+            "specialist": specialist,
+            "action": action,
+            "target": target,
+            "metadata": metadata or {}
+        })
     def summary(self) -> Dict[str, Any]:
         duration_s = time.time() - self.created_at
         return {
@@ -81,5 +90,6 @@ class SessionContext:
             "commands_run_count": len(self.commands_run),
             "purity_warnings_count": len(self.purity_warnings),
             "duration_seconds": round(duration_s, 2),
+            "swarm_events_count": len(self.swarm_events),
             "tokens": {"in": self.tokens_in, "out": self.tokens_out}
         }
