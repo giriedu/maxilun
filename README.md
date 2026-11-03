@@ -23,15 +23,35 @@
 
 **Maxilun** is an ecosystem of 18 AI skills for software engineering teams: one orchestrator and 17 specialists. Every skill carries the same **Core Rules** block, so the four quality engines travel with the skill instead of living in a separate folder. The orchestrator enforces reversibility-gated decision triage (act from repository evidence first; clarify only irreversible decisions), single-owner routing cohesion, wave coordination when genuinely multi-domain, and real execution proof without ceremonial HUD banners. Deeper material (engine detail, purity catalog, code hygiene, surgical engineering discipline, discovery, and reference corpora) lives in `references/` inside each skill and is loaded only when needed.
 
-## Quick Install
+## Two Ways to Use Maxilun
 
+### Option A: Autonomous Agent Runtime (Standalone "Rumah Sendiri")
+Run Maxilun directly as an autonomous terminal agent with native tools, active Purity Gate middleware, and in-process Knowledge Graph — zero pip dependencies required:
+```bash
+# 1. Start an interactive terminal agent session:
+python harness/cli.py chat
+
+# 2. Execute an autonomous engineering task:
+python harness/cli.py run "Inspect package.json and verify build scripts"
+
+# 3. Open the Interactive Visual Dashboard in browser:
+python harness/cli.py dashboard --open
+
+# 4. Run with any model provider (free local Ollama, DeepSeek, OpenAI, OpenRouter):
+python harness/cli.py chat --provider ollama      # 100% Free & Local offline
+python harness/cli.py chat --provider deepseek    # DeepSeek API
+python harness/cli.py chat --provider openai      # GPT-4o
+python harness/cli.py chat --provider openrouter  # Claude 3.5 Sonnet
+```
+
+### Option B: Install as Skill Pack into your AI Editor
+Install all 18 skills into Claude Code, Cursor, Codex, OpenCode, Zed, or Antigravity:
 ```bash
 npx skills add giriedu/maxilun
 ```
-
 > Track and explore all 18 skills on [skills.sh/giriedu/maxilun](https://skills.sh/giriedu/maxilun).  
-> **Non-interactive (all skills)**: `npx skills add giriedu/maxilun -y` (add `-g` for global availability across projects).  
-> **Windows Note**: If symlink creation is restricted, add `--copy` flag (`npx skills add giriedu/maxilun --copy -y`) or use the PowerShell installer in [docs/INSTALL.md](docs/INSTALL.md).
+> **Non-interactive**: `npx skills add giriedu/maxilun -y` (add `-g` for global availability across projects).  
+> **Native Installers**: Use `./scripts/install.sh` (Linux/macOS) or `.\scripts\install.ps1` (Windows) — see [docs/INSTALL.md](docs/INSTALL.md).
 
 ---
 
@@ -153,6 +173,27 @@ Use `maxilun-knowledge-graph` for structural or multi-file code changes when its
 
 ---
 
+## Maxilun Engineering Harness
+
+Maxilun ships with a complete built-in autonomous agent runtime, AST security inspector, and empirical benchmark suite in `harness/` (100% zero-dependency Python stdlib):
+
+```bash
+# Inspect all 18 specialist skills, line budgets (<=300), and triggers:
+python harness/cli.py skills
+
+# Run empirical benchmark suite (+55% quality improvement over Raw AI):
+python harness/cli.py bench --view
+
+# Verify code with AST inspection & in-memory SQLite sandbox:
+python harness/cli.py verify-code src/db/migration.sql
+
+# Install Git pre-commit hook to automatically block AI slop before commit:
+python harness/cli.py install-hook
+```
+
+Full runtime architecture, provider configurations, and tool schemas are documented in [**docs/HARNESS.md**](docs/HARNESS.md).
+
+---
 ## Platform Support
 
 | AI Coding Platform | Support Status | Note |

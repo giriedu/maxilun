@@ -23,15 +23,35 @@
 
 **Maxilun** adalah ekosistem 18 skill AI untuk tim rekayasa perangkat lunak: satu orchestrator dan 17 spesialis. Setiap skill membawa blok **Core Rules** yang sama, sehingga empat engine kualitas ikut terpasang bersama skill, bukan tertinggal di folder terpisah. Orchestrator menegakkan triase keputusan berbasis reversibilitas (eksekusi dari bukti repositori lebih dulu; tanyakan hanya keputusan yang mahal dibalik), kohesi satu pemilik per permukaan kerja, koordinasi wave saat benar-benar lintas-domain, dan bukti verifikasi nyata tanpa banner HUD seremonial. Materi mendalam (detail engine, katalog purity, higienitas kode, disiplin rekayasa bedah, discovery, dan corpus referensi) ada di `references/` dalam masing-masing skill dan hanya dimuat saat dibutuhkan.
 
-## Instalasi Cepat
+## Dua Cara Menggunakan Maxilun
 
+### Opsi A: Runtime Agen Otonom (Mandiri "Rumah Sendiri")
+Jalankan Maxilun langsung sebagai agen terminal otonom dengan tool bawaan, middleware Purity Gate aktif, dan Knowledge Graph in-process — tanpa wajib install dependensi pip:
+```bash
+# 1. Mulai sesi chat agen terminal interaktif:
+python harness/cli.py chat
+
+# 2. Eksekusi tugas rekayasa otonom:
+python harness/cli.py run "Baca package.json dan verifikasi skrip build"
+
+# 3. Buka Dashboard Visual Interaktif di browser:
+python harness/cli.py dashboard --open
+
+# 4. Hubungkan ke provider model apa pun (Ollama lokal gratis, DeepSeek, OpenAI, OpenRouter):
+python harness/cli.py chat --provider ollama      # 100% Gratis & Lokal offline
+python harness/cli.py chat --provider deepseek    # DeepSeek API
+python harness/cli.py chat --provider openai      # GPT-4o
+python harness/cli.py chat --provider openrouter  # Claude 3.5 Sonnet
+```
+
+### Opsi B: Pasang sebagai Skill Pack di Editor AI Anda
+Pasang seluruh 18 skill ke Claude Code, Cursor, Codex, OpenCode, Zed, atau Antigravity:
 ```bash
 npx skills add giriedu/maxilun
 ```
-
 > Pantau dan jelajahi 18 skill Maxilun di [skills.sh/giriedu/maxilun](https://skills.sh/giriedu/maxilun).  
-> **Mode Non-interaktif (semua skill)**: `npx skills add giriedu/maxilun -y` (tambahkan `-g` untuk instalasi global).  
-> **Catatan Windows**: Jika symlink dibatasi hak akses Windows, tambahkan opsi `--copy` (`npx skills add giriedu/maxilun --copy -y`) atau jalankan script PowerShell di [docs/INSTALL.md](docs/INSTALL.md).
+> **Mode Non-interaktif**: `npx skills add giriedu/maxilun -y` (tambahkan `-g` untuk instalasi global).  
+> **Installer Bawaan**: Gunakan `./scripts/install.sh` (Linux/macOS) atau `.\scripts\install.ps1` (Windows) — lihat [docs/INSTALL.md](docs/INSTALL.md).
 
 ---
 
@@ -153,6 +173,27 @@ Gunakan `maxilun-knowledge-graph` untuk perubahan kode struktural atau lintas-fi
 
 ---
 
+## Maxilun Engineering Harness
+
+Maxilun dilengkapi dengan runtime agen otonom bawaan, inspektor keamanan AST, dan runner benchmark empiris di folder `harness/` (100% zero-dependency Python stdlib):
+
+```bash
+# Inspeksi 18 spesialis, kepatuhan batas baris (<=300), dan pemicunya:
+python harness/cli.py skills
+
+# Jalankan benchmark komparatif empiris (+55% peningkatan atas Raw AI):
+python harness/cli.py bench --view
+
+# Verifikasi kode dengan inspeksi AST & sandbox in-memory SQLite:
+python harness/cli.py verify-code src/db/migration.sql
+
+# Pasang Git pre-commit hook otomatis untuk memblokir AI slop:
+python harness/cli.py install-hook
+```
+
+Arsitektur runtime lengkap, konfigurasi provider, dan skema tool didokumentasikan di [**docs/HARNESS.md**](docs/HARNESS.md).
+
+---
 ## Dukungan Platform AI
 
 | Platform AI | Status Dukungan | Catatan |
