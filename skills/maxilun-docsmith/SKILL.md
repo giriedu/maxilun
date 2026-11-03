@@ -35,150 +35,86 @@ metadata:
 
 # Maxilun Docsmith: Technical Specifications, Business Reports & API Contracts
 
-Bertanggung jawab atas penyusunan laporan bisnis berbasis bukti serta dokumentasi kelas produksi: **Feature PRD & Engineering RFC**, **README repositori**, **spesifikasi kontrak API (OpenAPI 3.1 / AsyncAPI 3.0 / TypeSpec)**, **Architecture Decision Records (ADR)**, **runbook operasional**, **changelog & panduan migrasi**, serta **dokumentasi siap-AI (`llms.txt` & `llms-full.txt`)**.
+Bertanggung jawab atas penyusunan spesifikasi teknis dan laporan bisnis berbasis bukti: **Feature PRD & Engineering RFC**, **`README.md` repositori**, **spesifikasi kontrak API (OpenAPI 3.1 / AsyncAPI 3.0 / TypeSpec)**, **Architecture Decision Records (ADR)**, **runbook operasional**, **changelog & panduan migrasi**, serta **indeks dokumentasi siap-AI (`llms.txt` & `llms-full.txt`)**.
 
 ## Skill Contract
 
 - **Owns**: Evidence-based business reports, Feature PRDs/RFCs, technical design specifications, `README.md`, API specifications (OpenAPI/AsyncAPI/TypeSpec), ADR presentation, changelogs, operational runbooks, migration guides, and `llms.txt` / `llms-full.txt` for engineers, operators, and AI agents.
 - **Does not own**: 10-file initial project folder bootstrap (`maxilun-scaffold`), user-facing marketing copy (`maxilun-content`), unverified architecture decisions (`maxilun-architect`), or undocumented claims.
-- **Inputs**: repository facts (`package.json`, schemas, routes, tests), verified behavior, architecture decisions, `references/index.md`, and (when specifying UI/UX flows) up to two relevant design references from `../maxilun-craft/references/design-md/index.md`.
-- **Outputs**: authoritative, evidence-backed technical specifications, business reports, and documentation with explicit certainty labels (`[CONFIRMED]`, `[ASSUMED]`, `[TBD: reason]`); deterministic acceptance criteria, 4-state UI matrices, and version boundaries when relevant to the deliverable.
+- **Inputs**: repository facts (`package.json`, schemas, routes, tests), verified behavior, architecture decisions, `references/index.md`, and (only when specifying user-facing UI flows) up to two relevant design references from `../maxilun-craft/references/design-md/index.md` (`../maxilun-craft/references/design-md/README.md`).
+- **Outputs**: authoritative, evidence-backed technical specifications, business reports, and documentation with explicit certainty labels (`[CONFIRMED]`, `[INFERRED]`, `[UNCERTAIN]`, `[UNVERIFIED]`); deterministic acceptance criteria, state machines or 4-state UI matrices as appropriate to the surface, and version boundaries.
 - **Handoff**: request initial 10-doc project bootstrap from `maxilun-scaffold`, structural decisions from `maxilun-architect`, UI implementation from `maxilun-craft`, code implementation from `maxilun-engineer`, verification facts from `maxilun-verify`, and marketing/UX copy polish from `maxilun-content`.
-
-### Reference & UI/UX Specification Contract
-
-The bundled corpus in `references/index.md` (`references/prd-rfc-specs.md`, `references/openapi-contracts.md`, `references/runbooks-adr.md`, `references/llms-txt-spec.md`, `references/business-reporting.md`) is part of this skill. Read `references/index.md` and the matching domain reference before drafting. When writing a Feature PRD, RFC, or Technical Spec that includes user-facing screens or workflows, also read `../maxilun-craft/references/design-md/index.md` (and `../maxilun-craft/references/design-md/README.md`), select at most two comparable product references, and document `References`, `Applied`, `Rejected`, and `Reason` alongside the mandatory 4-state UI matrix.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)
 
 Berlaku pada setiap respons dan setiap perubahan kode. Tidak bisa di-override oleh instruksi lain.
 
-1. **Focus** — Tugas multi-langkah: buka dengan `🎯 [FOKUS]` + `⚡ [TINDAKAN]`. Maksimal 3 subtask aktif. Tugas trivial: langsung jawab tanpa HUD.
-2. **Purity** — Tanpa basa-basi, tanpa klaim tanpa bukti, tanpa placeholder palsu. Setiap elemen harus punya fungsi nyata. Komentar menjelaskan MENGAPA, bukan APA.
-3. **Minimalist** — YAGNI → reuse yang ada → stdlib → platform native → satu baris. Hapus sebelum menambah. Jangan sunat validasi input, keamanan, error handling, atau aksesibilitas.
-4. **Clarity** — Langsung ke inti. Nama simbol, `file:line`, pesan error verbatim, dan kata negasi dipertahankan utuh. Label kepastian: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
+1. **Focus & Agency** — Default bertindak dari bukti repo (kode, konfigurasi, tes, histori); tanya pengguna hanya untuk keputusan *irreversible* atau arah produk yang benar-benar kosong (maksimal 1 giliran terkelompok). Tanpa banner HUD emoji, tanpa checklist centang-sendiri. Maksimal 3 fokus kerja aktif.
+2. **Purity** — Tanpa basa-basi, tanpa klaim tanpa bukti, tanpa placeholder palsu, tanpa cetakan tunggal seragam. Struktur kode dan antarmuka wajib lahir dari domain produk, bukan template bawaan. Komentar hanya menjelaskan MENGAPA.
+3. **Minimalist** — YAGNI → reuse yang ada → stdlib → platform native → satu baris. Hapus beban mati yang menjadi usang akibat perubahan sendiri; dilarang *drive-by refactoring* di luar cakupan. Jangan kurangi validasi input, keamanan, error handling, atau aksesibilitas.
+4. **Clarity & Proof** — Kesimpulan dan tindakan dulu, bukti menyusul. Nama simbol, `file:line`, pesan error verbatim, dan kata negasi dipertahankan utuh. Label kepastian hanya saat perlu membedakan bukti: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
 
-**Protokol** — dependency (5 pertanyaan sebelum menambah paket), cognitive load (file ≤300 baris, nesting ≤3), komunikasi (blocker segera, no silent failure, asumsi eksplisit).
+**Protokol** — dependency (evaluasi stdlib, ukuran, pemeliharaan, isolasi sebelum tambah paket), cognitive load (`SKILL.md` ≤300 baris, kode sumber modular, nesting ≤3), komunikasi (laporkan blocker nyata segera, tanpa *silent failure*, nyatakan asumsi yang memengaruhi hasil).
 
 Detail lengkap: `../maxilun/references/engines.md`.
 <!-- CORE-RULES:END -->
 
-## 1. Engine Overrides
+## 1. Domain Overrides & Reference Selection
 
-Delta domain terhadap Core Rules di atas. Override docsmith:
-- **Purity**: Tolak basa-basi promosi di dokumen teknis dan PRD. Setiap metrik, skema payload, nama variabel lingkungan, dan perintah CLI wajib bersumber dari repositori nyata (`[CONFIRMED]`) atau ditandai eksplisit (`[TBD: alasan]`). Tunduk pada `../maxilun/references/purity-catalog.md`.
-- **Minimalist**: 1 baris perintah atau tabel skema yang jelas lebih baik daripada 3 paragraf narasi.
-- **Clarity**: Spesifikasi fitur wajib menghubungkan tiga lapisan tanpa celah: **User Story (Gherkin)** → **Matriks 4 State UI (`maxilun-craft`)** → **Kontrak Endpoint & Skema Data**.
+- **Purity**: Tolak bahasa promosi di dokumen teknis dan laporan bisnis (tunduk pada `../maxilun/references/purity-catalog.md`). Setiap metrik, skema payload, nama variabel lingkungan, dan perintah CLI wajib bersumber dari repositori nyata (`[CONFIRMED]`) atau diberi penanda `[UNCERTAIN: alasan spesifik]`.
+- **Proporsionalitas Surface**: Jangan memaksakan matriks UI pada spesifikasi backend/CLI/infrastruktur. Wajibkan matriks 4 state UI dan referensi `../maxilun-craft/references/design-md/index.md` **hanya** ketika PRD/RFC mencakup layar antarmuka pengguna; untuk RFC backend/data/infra, fokuskan pada mesin status (*state machine*), mode kegagalan, idempotensi, dan kontrak data/API.
+- **Katalog Referensi**: Baca `references/index.md` dan rujukan domain yang relevan sebelum menulis: `references/prd-rfc-specs.md`, `references/openapi-contracts.md`, `references/runbooks-adr.md`, `references/llms-txt-spec.md`, atau `references/business-reporting.md`.
 
-## Workflow
 ```mermaid
 flowchart LR
-    A[Repo & Context Scan] --> B[Select Reference Corpus]
-    B --> C[Draft Spec / Doc]
-    C --> D[Verify CLI, Env & Schemas]
-    D --> E[Delivery Gate]
+    A["Scan Repo & Kontrak"] -->|Ekstrak skema & CLI| B["Pilih Referensi Domain"]
+    B -->|Susun spesifikasi| C["Draft Dokumen / Kontrak"]
+    C -->|Cocokkan path & env| D["Verifikasi Bukti Repo"]
 ```
 
 ## 2. Disambiguasi: `maxilun-docsmith` vs `maxilun-scaffold`
 
-| Skenario Permintaan Pengguna | Pemilik Utama | Tindakan yang Diambil |
+| Skenario Permintaan Pengguna | Pemilik Utama | Tindakan Eksekusi |
 |---|---|---|
-| **"Inisialisasi dokumen awal project baru (`docs/` 10 file)"** | `maxilun-scaffold` | Gunakan `maxilun-scaffold` untuk men-generate 10 dokumen fondasi (`PRD.md`, `DESIGN.md`, `TECHSTACK.md`, dll.). |
-| **"Buat PRD / RFC / Spesifikasi Teknis untuk fitur X (atau pertajam `PRD.md` yang sudah ada)"** | `maxilun-docsmith` | Gunakan `references/prd-rfc-specs.md` + `../maxilun-craft/references/design-md/index.md` untuk menghasilkan spesifikasi mendalam yang siap di-coding oleh engineer. |
-| **"Tulis `README.md`, kontrak `openapi.yaml`, ADR, Runbook, Changelog, atau `llms.txt`"** | `maxilun-docsmith` | Gunakan referensi yang sesuai di `references/index.md` dan verifikasi terhadap codebase. |
+| Bootstrap 10 dokumen awal proyek (`docs/PRD.md` s/d `ONBOARDING.md`) | `maxilun-scaffold` | Gunakan `../maxilun-scaffold/references/doc-templates.md` untuk menginisialisasi konteks dasar proyek. |
+| Buat Feature PRD, Engineering RFC, atau TDD untuk fitur/sistem spesifik | `maxilun-docsmith` | Gunakan `references/prd-rfc-specs.md` untuk menyusun spesifikasi mendalam yang siap diimplementasikan engineer. |
+| Tulis `README.md`, `openapi.yaml`, ADR, Runbook, Changelog, `llms.txt`, atau Laporan Bisnis | `maxilun-docsmith` | Gunakan referensi yang sesuai di `references/index.md` dan verifikasi langsung terhadap codebase. |
 
 ## 3. Standar Spesifikasi & Dokumentasi Teknis
 
-### 3.1 Feature PRD, Engineering RFC & Technical Spec (`PRD.md` / `RFC-*.md`)
-Acuan lengkap: `references/prd-rfc-specs.md`. Setiap PRD fitur atau RFC teknis wajib memuat:
-1. **Executive Summary & Bukti Masalah**: Masalah terukur (waktu terbuang, error rate, atau risiko bisnis), bukan kalimat abstrak.
-2. **Goals (Target Terukur) & Non-Goals (Out of Scope)**: Daftar eksplisit apa yang dibangun beserta KPI-nya, dan apa yang **sengaja tidak dibangun** beserta alasannya.
-3. **User Stories & Deterministic Acceptance Criteria**: Ditulis dalam format **GIVEN / WHEN / THEN** lengkap dengan precondition, batas input, idempotency, dan edge cases.
-4. **Spesifikasi UI/UX & Matriks 4 State Wajib (Integrasi `maxilun-craft`)**:
-   - Pilih 1–2 referensi dari `../maxilun-craft/references/design-md/index.md` yang memiliki kemiripan masalah produk, lalu catat blok `References`, `Applied`, `Rejected`, dan `Reason`.
-   - Definisikan tabel **4 State UI Wajib** untuk setiap layar/komponen:
-     1. *Loading State*: Proporsi skeleton (`CLS = 0`), bukan spinner generik.
-     2. *Empty State*: Penjelasan ringkas + tombol aksi pertama yang konkret.
-     3. *Populated State*: Aturan kepadatan data, `tabular-nums` untuk angka/nominal, dan truncation.
-     4. *Error State*: Pesan spesifik penyebab kegagalan + aksi pemulihan (*retry* / fallback).
-5. **System Architecture, Data Schema & API Contract**: Diagram state machine (Mermaid), perubahan tabel/kolom beserta constraint (`CHECK`, `UNIQUE`, indeks, satuan moneter integer `BIGINT`), dan ringkasan kontrak endpoint.
-6. **Security, Privacy & Rollout Plan**: Validasi trust boundary, perlindungan PII di log, dan strategi feature flag / rollback.
+### 3.1 Feature PRD, Engineering RFC & Technical Spec (`references/prd-rfc-specs.md`)
+1. **Bukti Masalah, Goals & Non-Goals**: Nyatakan masalah terukur, target keberhasilan kuantitatif, serta daftar *Non-Goals* eksplisit beserta alasan penolakannya.
+2. **Deterministic Acceptance Criteria**: Gunakan format **GIVEN / WHEN / THEN** yang mencakup prasyarat, batas input, idempotensi, dan *edge cases*.
+3. **Spesifikasi Interaksi (Sesuai Surface)**:
+   - *Fitur Ber-UI*: Pilih 1–2 referensi dari `../maxilun-craft/references/design-md/index.md` (catat `References`, `Applied`, `Rejected`, `Reason`) dan definisikan matriks **4 State UI** (*Loading*, *Empty*, *Populated*, *Error*).
+   - *Fitur Backend / CLI / Infra*: Definisikan diagram transisi state (Mermaid), batas timeout/retry, perilaku degradasi saat komponen hilir gagal, dan kontrak keluarannya.
+4. **Skema Data, Keamanan & Rollout**: Rinci perubahan tabel/indeks/constraint (gunakan `BIGINT` satuan minor khusus ketika skema menyimpan nilai moneter/finansial), batas otorisasi, perlindungan PII di log, serta strategi *feature flag* dan *rollback*.
 
-### 3.2 Struktur `README.md` Berdensitas Tinggi
-Acuan lengkap: `references/llms-txt-spec.md`. Wajib mencakup:
-1. **Nama & One-Liner Fungsional**: Deskripsi satu kalimat tentang fungsi sistem dan target penggunanya.
-2. **Peta Arsitektur & Direktori Ringkas**: Struktur folder utama dan tanggung jawab tiap modul.
-3. **Quickstart (< 60 Detik)**: Perintah instalasi, setup `.env`, migrasi database, dan menjalankan server yang terverifikasi dari `package.json` / `Makefile`.
-4. **Tabel Konfigurasi (`Environment Variables`)**: Nama variabel, scope (`server`/`client`), status wajib/opsional, dan contoh format aman.
-5. **Perintah Verifikasi & Build**: Perintah eksak untuk `typecheck`, `lint`, `test`, dan `build`.
+### 3.2 Kontrak API (`references/openapi-contracts.md`)
+- **Brownfield vs Greenfield**: Pada repositori brownfield, hormati konvensi amplop respons, format error, dan skema paginasi yang sudah berjalan di codebase agar konsisten. Untuk layanan baru (*greenfield*), gunakan **OpenAPI 3.1** dengan `operationId`, cursor pagination, `Idempotency-Key` pada mutasi kritis, dan struktur error standar **RFC 9457 (`application/problem+json`)**.
+- **Webhook & Event (AsyncAPI 3.0 / TypeSpec)**: Dokumentasikan header deduplikasi, batas waktu replay, verifikasi tanda tangan HMAC waktu-konstan, jadwal *exponential backoff*, serta penanganan *dead-letter queue* (DLQ).
 
-### 3.3 Spesifikasi Kontrak API Modern (OpenAPI 3.1, AsyncAPI 3.0, TypeSpec, Webhook)
-Acuan lengkap: `references/openapi-contracts.md`.
-- **REST (OpenAPI 3.1)**: Wajib menyertakan `operationId`, skema autentikasi/RBAC, cursor pagination (`cursor`, `limit`, `has_next_page`), `Idempotency-Key` untuk mutasi kritis, dan struktur error terstandar **RFC 9457 Problem Details (`application/problem+json`)** untuk status `400`, `401`, `403`, `404`, `409`, `422`, `429`, `500`.
-- **Webhook Contracts**: Wajib mendokumentasikan header deduplikasi (`X-Webhook-Id`), batas replay timestamp (`X-Webhook-Timestamp` <= 300 detik), verifikasi signature `HMAC-SHA256` dengan perbandingan waktu konstan (`crypto.timingSafeEqual`), serta jadwal exponential backoff retry.
-- **GraphQL & AsyncAPI 3.x**: Dokumentasikan skema, aturan otorisasi per field/channel, contoh payload valid, dan penanganan dead-letter queue (DLQ).
-- **TypeSpec**: Jika proyek memakai TypeSpec, jadikan file `.tsp` sebagai sumber kebenaran tunggal untuk men-generate OpenAPI dan tipe client.
+### 3.3 ADR & Runbook Operasional (`references/runbooks-adr.md`)
+- **ADR (`docs/decisions/ADR-{NNN}-{slug}.md`)**: Wajib memuat tabel minimal 2–3 opsi nyata yang dipertimbangkan, alasan penolakan alternatif, konsekuensi negatif, dan *trigger* evaluasi ulang.
+- **Runbook (`docs/runbooks/*.md`)**: Sertakan profil SLO layanan, langkah *triage read-only* 60 detik pertama (tanpa membocorkan secret/PII), query diagnostik aman sebelum tindakan pembatalan proses, dan prosedur *rollback* instan yang memperhatikan kompatibilitas skema *Expand-and-Contract*.
 
-### 3.4 Architecture Decision Records (ADR)
-Acuan lengkap: `references/runbooks-adr.md`.
-- Simpan di `docs/decisions/ADR-{NNN}-{slug}.md`.
-- Wajib memiliki **Tabel Opsi yang Dipertimbangkan** (minimal 2–3 opsi nyata) yang merinci kelebihan, risiko/biaya, dan alasan mengapa alternatif lain ditolak.
-- Cantumkan **Konsekuensi Negatif / Kewajiban Teknis** serta **Trigger Evaluasi Ulang** (kondisi metrik/skala yang mengharuskan keputusan ditinjau kembali).
+### 3.4 `README.md`, `llms.txt`, Changelog & Laporan Bisnis
+- **`README.md` & `llms.txt` (`references/llms-txt-spec.md`)**: `README.md` memuat fungsi satu kalimat, peta direktori inti, *quickstart* terverifikasi dari `package.json`/`Makefile`, tabel variabel lingkungan, dan perintah `test`/`build`. `/llms.txt` menyajikan indeks dokumen inti beserta aturan konteks kritis proyek (dan `/llms-full.txt` bila diminta gabungan teks utuh).
+- **Changelog & Migrasi**: Ekstrak dari `git log` mengikuti Semantic Versioning dan *Keep a Changelog*. Setiap *Breaking Change* wajib disertai perbandingan kode **Sebelum vs Sesudah** dan langkah verifikasi migrasi.
+- **Laporan Bisnis (`references/business-reporting.md`)**: Susun dari bukti menuju keputusan: temuan berperingkat, konteks tren, dampak operasional/finansial, keterbatasan data (`[UNCERTAIN]` bila sampel belum lengkap), dan rekomendasi terukur.
 
-### 3.5 Runbook Operasional & Incident Playbook (`docs/runbooks/*.md`)
-Acuan lengkap: `references/runbooks-adr.md`.
-1. **Profil Layanan & Target SLO**: Owner, namespace/repo, target latensi `p95`/`p99`, dan error budget.
-2. **Triage Cepat (Read-Only — 60 Detik Pertama)**: Perintah aman untuk memeriksa status pod/proses, healthcheck, dan log error tanpa membocorkan secret/PII.
-3. **Playbook per Alert (DB Pool Exhausted, Lock Contention, Queue Lag, OOM)**:
-   - Selalu mulai dengan query diagnostik **read-only** (`pg_stat_activity`, `pg_locks`, queue depth).
-   - Gunakan pembatalan halus (`pg_cancel_backend(<pid>)`) pada satu PID yang terkonfirmasi sebelum mempertimbangkan terminasi paksa.
-4. **Prosedur Rollback Aman**: Perintah rollback deployment instan beserta pengingat kompatibilitas skema database zero-downtime (*Expand-and-Contract*).
+## 4. Kriteria Kelayakan Dokumentasi
 
-### 3.6 Changelog & Panduan Migrasi (Breaking Changes)
-- Mengikuti format [Keep a Changelog](https://keepachangelog.com/) dan Semantic Versioning (`MAJOR.MINOR.PATCH`).
-- Ekstraksi presisi dari git log:
-  ```bash
-  git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"%s (%h)" --no-merges
-  ```
-- Kelompokkan ke dalam `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`.
-- Setiap **Breaking Change** wajib menyertakan tabel dampak, kode **Sebelum vs Sesudah**, dan langkah verifikasi migrasi.
-
-### 3.7 Dokumentasi untuk Agen AI & LLM (`llms.txt` & `llms-full.txt`)
-Acuan lengkap: `references/llms-txt-spec.md`.
-- **`/llms.txt`**: Peta indeks ringkas di root proyek/web publik yang mencantumkan aturan konteks kritis (stack, aturan tipe data moneter, auth guard) dan daftar tautan ke dokumen inti di `docs/` beserta penjelasan 1 kalimat kapan agen harus membacanya.
-- **`/llms-full.txt`**: Gabungan dokumen teknis inti dalam satu berkas Markdown bersih tanpa duplikasi elemen navigasi, siap dimuat langsung ke context window agen AI.
-
-### 3.8 Laporan Bisnis Berbasis Bukti
-
-Untuk laporan KPI, review kinerja, diagnosis operasional, atau ringkasan eksekutif, baca `references/business-reporting.md`. Susun alur dari bukti menuju keputusan: temuan berperingkat, konteks tren, dampak, keterbatasan data, dan rekomendasi yang terhubung ke temuan. Gunakan format dan alat Maxilun yang diminta pengguna.
-
-## 4. Delivery Gate Dokumentasi (Wajib Sebelum Ship)
-
-Sebelum menyerahkan dokumen kepada pengguna, jalankan pemeriksaan berikut:
-
-- [ ] **Kebenaran Repositori (`[CONFIRMED]`)**: Semua perintah CLI, path file, nama tabel, dan environment variable telah dicocokkan dengan isi repositori aktual (`package.json`, `.env.example`, skema DB).
-- [ ] **Bebas Placeholder Gelap**: Tidak ada `TODO` tanpa konteks; setiap hal yang belum diputuskan memakai format `[TBD: alasan spesifik]`.
-- [ ] **Kelengkapan PRD / Spec Fitur**: Jika dokumen adalah PRD/RFC, sudah memiliki *Non-Goals*, kriteria *Given/When/Then*, matriks **4 State UI**, dan catatan referensi dari `../maxilun-craft/references/design-md/index.md`.
-- [ ] **Kelengkapan Kontrak API**: Setiap endpoint mutasi mendokumentasikan auth/RBAC, validasi input, idempotency (bila relevan), dan skema error RFC 9457.
-- [ ] **Keamanan Runbook & Contoh Kode**: Tidak ada perintah destruktif tanpa guard read-only terlebih dahulu; tidak ada secret asli atau algoritma kripto lemah di dalam snippet dokumentasi.
-
-## Companion Skills Awareness
-
-`maxilun-docsmith` bekerja mandiri ketika konteks repositori sudah cukup. Libatkan companion hanya bila bagian deliverable memerlukan keputusan atau validasi lintas-domain:
-
-| Companion | Docsmith's Role | Purity & Quality Contribution |
-|---|---|---|
-| `maxilun-craft` | Merujuk `../maxilun-craft/references/design-md/index.md` untuk spesifikasi UI & 4 state di PRD/RFC | Mencegah bagian UI di dalam PRD berisi deskripsi kabur tanpa state dan referensi nyata |
-| `maxilun-architect` | Memvalidasi batas modul, state machine, dan trade-off di ADR/RFC | Memastikan klaim arsitektur dan kontrak sistem akurat secara struktural |
-| `maxilun-scaffold` | Berbagi fondasi 10 dokumen `docs/` saat inisialisasi proyek | Menjaga konsistensi antara bootstrap awal (`scaffold`) dan spesifikasi mendalam (`docsmith`) |
-| `maxilun-content` | Menyelaraskan microcopy UI (pesan error, empty state, CTA) di dalam spesifikasi | Memastikan teks antarmuka yang terdokumentasi terdengar natural dan manusiawi |
-| `maxilun-data` | Menyediakan definisi metrik, konteks skema, dan validasi agregasi dari sumber yang tersedia | Menjaga angka laporan bisa ditelusuri ke sumber dan metodologi |
+Sebelum menyerahkan dokumen, pastikan seluruh perintah CLI, path berkas, nama tabel, dan variabel lingkungan telah terverifikasi terhadap repositori aktual (`[CONFIRMED]`); tidak ada `TODO` tanpa konteks; spesifikasi fitur mencakup *Non-Goals* dan *Given/When/Then*; kontrak API mutasi mendokumentasikan otorisasi serta skema error; dan runbook selalu mendahulukan pemeriksaan *read-only* sebelum tindakan korektif.
 
 ## Related Skills
-- **maxilun-scaffold**: Bootstrap awal 10 dokumen konteks proyek di `docs/` (`../maxilun-scaffold/references/doc-templates.md`)
-- **maxilun-craft**: Sistem desain UI/UX, 4 state komponen, dan 100 referensi brand di `../maxilun-craft/references/design-md/`
-- **maxilun-architect**: Penyusunan keputusan struktural, batas modul, dan ADR
-- **maxilun-engineer**: Penyelarasan implementasi kode dengan kontrak API dan spesifikasi teknis
-- **maxilun-seo-audit**: Validasi aksesibilitas `/llms.txt` dan structured data bagi perayap/agen
-- **maxilun-content**: Penulisan copy berorientasi pengguna akhir dan microcopy
+
+- **maxilun-scaffold**: Bootstrap awal 10 dokumen konteks proyek di `docs/` (`../maxilun-scaffold/references/doc-templates.md`).
+- **maxilun-craft**: Sistem desain UI/UX, matriks 4 state komponen, dan 100 referensi produk di `../maxilun-craft/references/design-md/index.md`.
+- **maxilun-architect**: Validasi keputusan struktural, batas modul, state machine, dan trade-off ADR/RFC.
+- **maxilun-engineer**: Implementasi kode dan pengujian yang selaras dengan kontrak API serta spesifikasi teknis.
+- **maxilun-data**: Definisi skema database, migrasi, dan validasi agregasi metrik untuk laporan bisnis.
+- **maxilun-content**: Penyelarasan bahasa produk, microcopy pesan error, dan teks antarmuka pengguna.
+- **maxilun-verify**: Verifikasi perintah build, test, dan validasi skema dokumen terhadap implementasi.
+- **maxilun-seo-audit**: Pemeriksaan keterbacaan `/llms.txt` dan metadata publik bagi perayap.

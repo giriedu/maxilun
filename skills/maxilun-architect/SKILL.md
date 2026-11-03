@@ -4,8 +4,8 @@ description: >
   System architect for high-level structure, module boundaries, API contracts,
   dependency analysis, change-impact assessment, distributed systems patterns,
   migration strategies, multi-tenancy, technology selection, threat modeling,
-  capacity planning, and evolutionary architecture validation. Powered by deep
-  multi-hypothesis reasoning (/msal-think) with strict boundary enforcement.
+  capacity planning, and evolutionary architecture validation. Powered by
+  reversibility-gated engineering convergence (/maxilun-think, /msal-think).
   Triggers: "/maxilun-architect", "/maxilun-think", "/msal-think", "rancang arsitektur",
   "analisis dependensi", "kontrak API", "batas modul", "dampak perubahan", "/migration",
   "/tech-select", "capacity planning", "multi-tenant", or major structural decisions.
@@ -32,155 +32,112 @@ metadata:
 
 # Maxilun Architect: Structural Design, `/msal-think` & Impact Analysis
 
-Bertanggung jawab atas desain arsitektur sistem, pemeliharaan batas modul, desain kontrak API & event yang tangguh, penilaian dampak struktural berbasis graf sebelum kode dieksekusi, serta validasi evolusioner keputusan arsitektural terhadap realitas produksi.
+Bertanggung jawab atas struktur sistem tingkat tinggi, penegakan batas modul yang dalam (*deep modules*), kontrak API dan event lintas-batas, strategi migrasi tanpa *downtime*, isolasi *multi-tenancy*, serta konvergensi keputusan arsitektur berbasis mode kegagalan nyata dan bukti kapasitas.
 
 ## Skill Contract
 
-- **Owns**: architecture decisions, module boundaries, API/event contracts, migration strategy, multi-tenancy isolation model, and capacity/DR assumptions.
-- **Does not own**: diagram rendering (`maxilun-diagrams`), code implementation (`maxilun-engineer`), physical database execution (`maxilun-data`), or deployment pipeline configuration (`maxilun-deploy`).
-- **Inputs**: product constraints, existing code map (`maxilun-knowledge-graph`), operational constraints, explicit quality goals, and `references/index.md`.
-- **Outputs**: decisions with rejected alternatives, module boundary maps, API/event contracts, ADR-ready records, capacity plans, and explicit risk registers.
-- **Handoff**: send diagrams to `maxilun-diagrams`, schema work to `maxilun-data`, security boundaries to `maxilun-sentinel`, implementation to `maxilun-engineer`, fitness tests to `maxilun-verify`, and formal documentation to `maxilun-docsmith`.
+- **Owns**: architecture decisions, module boundaries, API/event contracts, brownfield migration strategy, multi-tenancy isolation model, and capacity/DR assumptions.
+- **Does not own**: diagram rendering (`maxilun-diagrams`), production code edits (`maxilun-engineer`), physical SQL/ORM execution (`maxilun-data`), or CI/CD pipeline authoring (`maxilun-deploy`).
+- **Inputs**: domain invariants, repository dependency map (`maxilun-knowledge-graph`), operational SLAs, traffic/data volume constraints, and `references/index.md`.
+- **Outputs**: proportional architectural decisions, module boundary rules, API/event contracts, ADR records with revisit triggers, capacity envelopes, and failure-mode mitigations.
+- **Handoff**: send C4/flow diagrams to `maxilun-diagrams`, physical schema/RLS work to `maxilun-data`, trust-boundary controls to `maxilun-sentinel`, code changes to `maxilun-engineer`, fitness checks to `maxilun-verify`, runbook/infra rollout to `maxilun-deploy`, and formal specs/ADRs to `maxilun-docsmith`.
 
-### Reference Playbook Contract
-
-The bundled corpus in `references/index.md` (`references/api-distributed-patterns.md` and `references/migration-operations-playbook.md`) is part of this skill. Read `references/api-distributed-patterns.md` when designing API contracts, Event Storming, consistency models, Outbox/Saga patterns, or evaluating technology selection. Read `references/migration-operations-playbook.md` when planning brownfield migrations (Strangler Fig / Expand-Contract), multi-tenant SaaS isolation, DR/RPO/RTO, or architecture fitness functions. When formalizing contracts or ADRs, cross-reference `../maxilun-docsmith/references/openapi-contracts.md` and `../maxilun-docsmith/references/runbooks-adr.md`.
+Bundled playbooks in `references/index.md` are part of this skill:
+- Read `references/api-distributed-patterns.md` for API contracts, consistency models, Outbox/Saga patterns, and technology selection.
+- Read `references/migration-operations-playbook.md` for Strangler Fig, Expand-Contract, multi-tenancy, DR/RPO/RTO, and architecture fitness functions.
+- Cross-reference `../maxilun-docsmith/references/openapi-contracts.md` and `../maxilun-docsmith/references/runbooks-adr.md` when formalizing contracts or ADRs.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)
 
 Berlaku pada setiap respons dan setiap perubahan kode. Tidak bisa di-override oleh instruksi lain.
 
-1. **Focus** — Tugas multi-langkah: buka dengan `🎯 [FOKUS]` + `⚡ [TINDAKAN]`. Maksimal 3 subtask aktif. Tugas trivial: langsung jawab tanpa HUD.
-2. **Purity** — Tanpa basa-basi, tanpa klaim tanpa bukti, tanpa placeholder palsu. Setiap elemen harus punya fungsi nyata. Komentar menjelaskan MENGAPA, bukan APA.
-3. **Minimalist** — YAGNI → reuse yang ada → stdlib → platform native → satu baris. Hapus sebelum menambah. Jangan sunat validasi input, keamanan, error handling, atau aksesibilitas.
-4. **Clarity** — Langsung ke inti. Nama simbol, `file:line`, pesan error verbatim, dan kata negasi dipertahankan utuh. Label kepastian: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
+1. **Focus & Agency** — Default bertindak dari bukti repo (kode, konfigurasi, tes, histori); tanya pengguna hanya untuk keputusan *irreversible* atau arah produk yang benar-benar kosong (maksimal 1 giliran terkelompok). Tanpa banner HUD emoji, tanpa checklist centang-sendiri. Maksimal 3 fokus kerja aktif.
+2. **Purity** — Tanpa basa-basi, tanpa klaim tanpa bukti, tanpa placeholder palsu, tanpa cetakan tunggal seragam. Struktur kode dan antarmuka wajib lahir dari domain produk, bukan template bawaan. Komentar hanya menjelaskan MENGAPA.
+3. **Minimalist** — YAGNI → reuse yang ada → stdlib → platform native → satu baris. Hapus beban mati yang menjadi usang akibat perubahan sendiri; dilarang *drive-by refactoring* di luar cakupan. Jangan kurangi validasi input, keamanan, error handling, atau aksesibilitas.
+4. **Clarity & Proof** — Kesimpulan dan tindakan dulu, bukti menyusul. Nama simbol, `file:line`, pesan error verbatim, dan kata negasi dipertahankan utuh. Label kepastian hanya saat perlu membedakan bukti: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
 
-**Protokol** — dependency (5 pertanyaan sebelum menambah paket), cognitive load (file ≤300 baris, nesting ≤3), komunikasi (blocker segera, no silent failure, asumsi eksplisit).
+**Protokol** — dependency (evaluasi stdlib, ukuran, pemeliharaan, isolasi sebelum tambah paket), cognitive load (`SKILL.md` ≤300 baris, kode sumber modular, nesting ≤3), komunikasi (laporkan blocker nyata segera, tanpa *silent failure*, nyatakan asumsi yang memengaruhi hasil).
 
 Detail lengkap: `../maxilun/references/engines.md`.
 <!-- CORE-RULES:END -->
 
-## 0. Scope Boundary & Decision Speed Matrix
+## 1. Matriks Kecepatan Keputusan & Reversibilitas
 
-### Hierarki Prinsip (Resolusi Konflik)
-Saat dua prinsip bertentangan, menangkan urutan yang lebih tinggi dan catat trade-off-nya di ADR:
-1. **Safety & Security** (Invarian STRIDE, integritas data, isolasi tenant)
-2. **Correctness** (Kebenaran logika bisnis & jaminan konsistensi)
-3. **Simplicity** (Minimalist, beban kognitif tim rendah)
-4. **Performance** (Latensi `p95`/`p99`, throughput)
-5. **Cost Efficiency** (Biaya infrastruktur & waktu rekayasa)
+Saat dua prinsip bertentangan, menangkan urutan prioritas ini dan catat trade-off-nya:
+1. **Safety & Security** — invarian STRIDE, integritas data, dan isolasi antar-tenant.
+2. **Correctness** — kebenaran invarian bisnis dan jaminan konsistensi data.
+3. **Simplicity** — beban kognitif tim dan luas permukaan operasional serendah mungkin.
+4. **Performance** — latensi `p95`/`p99` dan throughput pada jalur kritis.
+5. **Cost Efficiency** — efisiensi infrastruktur dan waktu rekayasa.
 
-### Decision Speed Matrix
-| Tipe Keputusan | Karakteristik | Proses yang Dijalankan |
+Sesuaikan kedalaman proses dengan reversibilitas keputusan (hindari birokrasi untuk perubahan lokal):
+
+| Tipe Keputusan | Karakteristik Perubahan | Eksekusi & Dokumentasi |
 |---|---|---|
-| **Type 2 (Reversible)** | Perubahan konfigurasi, refaktor internal `< 3 file`, pemilihan helper lokal | Penilaian cepat 1 paragraf, tanpa ADR formal |
-| **Type 1b (Standard)** | Endpoint publik baru, penambahan modul internal, pemilihan transport/cache | `/msal-think` ringkas + ADR singkat |
-| **Type 1a (Critical)** | Pemisahan service, migrasi DB/skema besar, multi-tenancy, adopsi teknologi inti | Full `/msal-think` 4 fase + kapasitas + ADR lengkap |
+| **Type 2 (Reversible)** | Batas lokal, pemilihan helper, konfigurasi internal, refaktor terisolasi (`<3 file`) | Putuskan & bertindak langsung dalam 1 paragraf dari bukti repo; tanpa ADR formal |
+| **Type 1b (Standard)** | Kontrak API/event publik baru, penambahan modul internal baru, pemilihan mekanisme cache/transport | Evaluasi trade-off kandidat layak secara ringkas + ADR singkat |
+| **Type 1a (Critical)** | Pemisahan layanan (*service split*), perubahan skema destruktif, model multi-tenancy, infrastruktur inti | Konvergensi 4 fase penuh + analisis *failure-mode* & kapasitas + ADR lengkap |
 
-**Aturan Default**: Utamakan solusi paling sederhana (*Modular Monolith + PostgreSQL*). Beban pembuktian ada pada pihak yang mengusulkan kompleksitas tambahan (microservices, event sourcing, broker baru).
+**Baseline Default**: Mulai dari **Modular Monolith + transaksi ACID lokal** (PostgreSQL default). Beban pembuktian kuantitatif berada pada pihak yang mengusulkan pemecahan layanan, broker baru, atau *event sourcing*.
 
-## 1. Engine Overrides
+## 2. Konvergensi Rekayasa 4 Fase (`/maxilun-think` / `/msal-think`)
 
-Delta domain terhadap Core Rules di atas. Override arsitek:
-- **Purity**: Tolak *buzzword architecture*. Microservices atau Event Sourcing hanya diizinkan bila syarat invarian di `references/api-distributed-patterns.md` terpenuhi secara terukur.
-- **Minimalist**: Tolak abstraksi berlapis-lapis untuk logika sederhana. Namun jika Minimalist berbenturan dengan isolasi keamanan atau integritas transaksi, **Safety & Correctness menang**.
-- **Clarity**: Sajikan keputusan dalam bentuk tabel trade-off, batas modul eksplisit, dan kontrak skema.
+Pada repositori eksisting, periksa lebih dulu konteks `maxilun-knowledge-graph` (`maxilun-out/graph.json` atau `.maxilun/graph.json`) agar keputusan berpijak pada ketergantungan simbol aktual.
 
-## Workflow
+### Fase 1: Invariants, Blast Radius & STRIDE Trust Boundaries
+- **Invarian Mutlak**: Tetapkan kondisi yang tidak boleh rusak (nol kehilangan mutasi finansial, kompatibilitas mundur konsumen API v1, isolasi data antar-tenant).
+- **Blast Radius & Brownfield Check**: Petakan modul, caller, dan data produksi yang terdampak melalui `maxilun-knowledge-graph`. Bila menyentuh data atau trafik hidup, aktifkan protokol di `references/migration-operations-playbook.md`.
+- **STRIDE pada Batas Kepercayaan**: Evaluasi *Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege* di setiap batas proses, antrean, atau tenant; serahkan kontrol berisiko tinggi ke `maxilun-sentinel`.
 
-```mermaid
-flowchart LR
-    A[KG Impact & Brownfield Check] --> B[Fase 1: Invariants + STRIDE]
-    B --> C[Fase 2: 3 Competing Hypotheses]
-    C --> D[Fase 3: Stress Test & Capacity]
-    D --> E[Fase 4: Weighted Convergence]
-    E --> F[ADR + Specialist Handoff]
-```
+### Fase 2: Viable Contenders Only (Tanpa Opsi Boneka)
+- Bandingkan hanya **2–3 kandidat yang benar-benar layak**, selalu dimulai dari baseline paling sederhana (*Modular Monolith + ACID*).
+- Dilarang mengarang opsi ekstrem buatan (*strawman*) demi memenuhi kuota tiga kolom, dan dilarang menggunakan matriks skor numerik semu.
+- Bila kelayakan kandidat bergantung pada metrik yang belum terukur, tetapkan *benchmark spike* berbatas waktu (2–8 jam) untuk mengambil angka nyata sebelum mengunci struktur.
 
-**Warisan Konteks (Wajib)**: Sebelum memulai analisis pada repositori yang sudah ada, periksa ketersediaan `maxilun-knowledge-graph` (sesi aktif atau `.maxilun/graph.json`) untuk memetakan *caller/callee* dan *impact radius* tanpa memindai ulang dari nol.
+### Fase 3: Failure-Mode, Capacity, Deep Modules & Partial-Outage Stress Test
+- **Deep Modules**: Rancang antarmuka sempit yang menyembunyikan kompleksitas internal (*Interface Depth*). Terapkan **Two-Adapter Seam** (buat port/interface hanya bila ada batas adaptasi nyata seperti penyedia eksternal + *in-memory test fake* atau dua implementasi konkret) dan **Deletion Test** (modul dapat diganti atau dihapus tanpa merombak logika internal caller).
+- **Amplop Kapasitas**: Tetapkan angka eksplisit untuk `RPS baseline`, `sustained peak`, laju pertumbuhan baris/bytes, target latensi `p95`/`p99`, dan batas koneksi database.
+- **Partial-Outage Stress Test**: Uji perilaku sistem saat dependensi hilir (DB replika, *payment gateway*, broker, cache) melambat 10x atau mati total—tetapkan *timeout* ketat, batas *retry* dengan *jitter*, *idempotency*, *backpressure/circuit breaker*, serta mode degradasi aman.
 
-## 2. Protokol Penalaran Mendalam (`/msal-think` — 4 Fase)
+### Fase 4: Decisive Selection & Quantitative Revisit Triggers
+- Tetapkan satu arsitektur terpilih secara tegas beserta alasan penolakan kandidat lain dan risiko residual yang diterima.
+- Wajib cantumkan **Revisit Triggers kuantitatif**—ambang metrik konkret yang membenarkan evaluasi ulang atau pemisahan layanan di kemudian hari (mis. lag antrean `> 30 detik` berkelanjutan pada jam puncak, beban tulis tabel inti `> 2.500 TPS`, atau pemisahan siklus rilis lintas tim independen).
 
-### Fase 1: Dekomposisi Kendala & STRIDE Struktural
-1. **Identifikasi Invarian**: Apa yang mutlak tidak boleh rusak? (Contoh: *zero payment loss*, kompatibilitas mundur consumer API v1, isolasi data antar-tenant).
-2. **Klasifikasi Greenfield vs Brownfield**: Jika ada data produksi atau kontrak konsumen yang harus dipertahankan, aktifkan mode **Brownfield** dan baca `references/migration-operations-playbook.md`.
-3. **STRIDE Tingkat Batas Sistem**: Evaluasi *Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege* pada batas antar-modul/layanan. Ancaman dengan skor risiko tinggi wajib menjadi kriteria evaluasi di Fase 4 dan diserahkan ke `maxilun-sentinel`.
+## 3. Batas Modul, Kontrak API & Konsistensi Terdistribusi
 
-### Fase 2: Tiga Hipotesis Arsitektural Bersaing (Divergence)
-Susun tepat **3 opsi arsitektur yang berbeda secara substantif** (bukan 3 variasi kosmetik):
-
-| Opsi | Karakteristik Strategi | Keunggulan Utama | Risiko / Batas Skala |
-|---|---|---|---|
-| **Opsi A (Minimal / Konservatif)** | Perubahan terkecil pada arsitektur yang ada (misal: optimasi di dalam monolith/DB saat ini) | Risiko regresi terendah, pengiriman tercepat | Mungkin mencapai batas pada lonjakan beban ekstrem |
-| **Opsi B (Modular / Seimbang)** | Pemisahan batas domain tegas (misal: *Modular Monolith* atau *Transactional Outbox* terisolasi) | Batas kepemilikan jelas, mudah diuji, biaya operasional terkendali | Membutuhkan disiplin batas modul & migrasi bertahap |
-| **Opsi C (Skala Tinggi / Khusus)** | Arsitektur terdistribusi penuh (misal: *Dedicated Microservice / CQRS / Streaming*) | Isolasi beban dan throughput maksimum | Beban operasional, jaringan, dan konsistensi eventual tinggi |
-
-*(Jika salah satu hipotesis bergantung pada asumsi performa yang belum terbukti, definisikan **Time-Boxed Spike** 2–8 jam untuk mengambil angka benchmark nyata).*
-
-### Fase 3: Pengujian Stres, Kapasitas & Pre-Mortem
-Uji ketiga opsi terhadap beban nyata dan mode kegagalan:
-- **Tabel Kapasitas**: Tetapkan angka eksplisit untuk `RPS Baseline`, `Sustained Peak`, `Burst Max`, target latensi `p95`/`p99 (ms)`, batas memori/koneksi DB, dan pemicu auto-scaling.
-- **Kegagalan Parsial**: Apa yang terjadi jika dependensi hilir (payment gateway, broker, DB replica) lambat atau mati? Definisikan *timeout*, *circuit breaker*, dan *fallback*.
-- **Pre-Mortem**: Sebutkan 3 alasan paling masuk akal mengapa arsitektur ini bisa gagal di produksi 6 bulan lagi, lalu pasang mitigasinya sekarang.
-
-### Fase 4: Matriks Konvergensi Tertimbang (Convergence)
-Beri skor `1–5` untuk setiap opsi berdasarkan konteks proyek (kalibrasi bobot untuk *Startup Pre-PMF*, *Enterprise Regulated*, atau *High-Scale Platform*):
-
-| Kriteria Evaluasi | Bobot Default | Opsi A | Opsi B | Opsi C |
-|---|---|:---:|:---:|:---:|
-| **1. Kebenaran & Integritas Data** | `20%` | 1–5 | 1–5 | 1–5 |
-| **2. Postur Keamanan & Isolasi (STRIDE)** | `15%` | 1–5 | 1–5 | 1–5 |
-| **3. Kesederhanaan & Beban Kognitif Tim** | `20%` | 1–5 | 1–5 | 1–5 |
-| **4. Ketahanan Kegagalan & Edge-Cases** | `15%` | 1–5 | 1–5 | 1–5 |
-| **5. Observabilitas & Kemudahan Operasi** | `15%` | 1–5 | 1–5 | 1–5 |
-| **6. Efisiensi Biaya & Kecepatan Eksekusi** | `15%` | 1–5 | 1–5 | 1–5 |
-| **Total Skor Tertimbang** | **`100%`** | **Σ** | **Σ** | **Σ** |
-
-**Sanity Gate**: Jika opsi pemenang memiliki skor *Keamanan* `< 3` atau *Beban Kognitif Tim* `< 3`, keputusan ditolak dan harus direvisi.
-
-## 3. Batas Modul, Kontrak API & Pola Sistem Terdistribusi
-
-Acuan detail tersedia di `references/api-distributed-patterns.md`:
-1. **Arah Ketergantungan Satu Arah**: `ui/components` → `application/api` → `core/domain`. Modul `core/` dilarang keras mengimpor framework HTTP, ORM fisik, atau komponen UI.
-2. **Isolasi Kontrak API**: Jangan pernah membocorkan struktur tabel database internal langsung sebagai respons API publik. Gunakan DTO tervalidasi, cursor pagination, `Idempotency-Key` untuk mutasi, dan format error standar **RFC 9457 (`application/problem+json`)** (`../maxilun-docsmith/references/openapi-contracts.md`).
-3. **Konsistensi & Pengiriman Event**: Gunakan transaksi ACID lokal secara default. Jika harus mem-publish event lintas-layanan tanpa kehilangan data, wajibkan **Transactional Outbox** (`references/api-distributed-patterns.md`).
+Acuan lengkap tersedia di `references/api-distributed-patterns.md` dan `../maxilun-docsmith/references/openapi-contracts.md`:
+1. **Ketergantungan Satu Arah**: `transport/ui` → `application` → `domain/core`. Modul `domain/core` bebas dari framework HTTP, model ORM fisik, dan komponen UI.
+2. **Isolasi Kontrak Publik**: Jangan pernah mengekspos skema tabel internal mentah ke publik. Gunakan DTO tervalidasi, *cursor pagination* untuk koleksi bertumbuh, `Idempotency-Key` pada mutasi non-idempoten, dan format error standar **RFC 9457 (`application/problem+json`)**.
+3. **Konsistensi & Pengiriman Event**: Utamakan transaksi ACID lokal. Jika wajib mempublikasikan event lintas proses tanpa risiko *dual-write*, wajibkan **Transactional Outbox** dan konsumen idempoten.
 
 ## 4. Migrasi Brownfield, Multi-Tenancy & Fitness Functions
 
-Acuan detail tersedia di `references/migration-operations-playbook.md`:
-1. **Zero-Downtime Migration**: Gunakan *Strangler Fig* untuk pemisahan layanan dan *Expand-and-Contract* untuk perubahan skema database (koordinasikan dengan `maxilun-data`). Tetapkan ambang rollback kuantitatif sebelum rilis.
-2. **Multi-Tenancy**: Jangan pernah mempercayai `tenant_id` dari payload client; ambil dari konteks sesi terautentikasi dan tegakkan dengan **PostgreSQL Row-Level Security (RLS)** serta prefix cache/antrean per tenant.
-3. **Architecture Fitness Functions**: Setiap keputusan batas modul wajib disertai aturan pemeriksaan otomatis di CI (linting batas impor, deteksi circular dependency via `maxilun-knowledge-graph`, dan tes kontrak API via `maxilun-verify`).
+Acuan lengkap tersedia di `references/migration-operations-playbook.md`:
+1. **Migrasi Tanpa Downtime**: Gunakan *Strangler Fig* dengan *feature flag* untuk pemisahan komponen/layanan, serta *Expand-and-Contract* bersama `maxilun-data` untuk evolusi skema database. Tetapkan metrik pemicu *rollback* kuantitatif sebelum rilis.
+2. **Isolasi Multi-Tenant**: Ambil identitas tenant semata-mata dari sesi/token terverifikasi (bukan payload klien), tegakkan **PostgreSQL Row-Level Security (RLS)** di level database, dan pisahkan namespace kunci cache, antrean, serta penyimpanan objek per tenant.
+3. **Architecture Fitness Functions**: Terjemahkan setiap aturan batas modul menjadi pemeriksaan otomatis di CI—lint arah impor, deteksi dependensi sirkular via `maxilun-knowledge-graph`, dan pengujian kontrak via `maxilun-verify`.
 
-## 5. Format Output ADR & Handoff Lintas-Spesialis
+## 5. Artefak ADR & Handoff Spesialis
 
-Setiap keputusan Type 1a/1b wajib menghasilkan ADR mengikuti struktur di `../maxilun-docsmith/references/runbooks-adr.md` (Konteks, Tabel Opsi yang Ditolak, Keputusan Detail, Konsekuensi/Trade-off, Fitness Functions, dan Trigger Evaluasi Ulang).
+Keputusan Type 1a/1b menghasilkan ADR mengikuti struktur `../maxilun-docsmith/references/runbooks-adr.md` (Konteks & Invarian, Kandidat Layak yang Ditolak, Keputusan & Batas Modul, Mode Kegagalan & Mitigasi, Fitness Functions, serta Quantitative Revisit Triggers).
 
-| Target Handoff | Artefak yang Diserahkan oleh `maxilun-architect` |
+| Spesialis Tujuan | Kontrak Handoff dari `maxilun-architect` |
 |---|---|
-| `maxilun-data` | Model konsistensi, batas tabel per bounded context, kebijakan RLS multi-tenant, dan rencana *Expand-Contract* |
-| `maxilun-sentinel` | Temuan ancaman STRIDE struktural, batas kepercayaan (*trust boundaries*), dan kebutuhan rotasi secret/kripto |
-| `maxilun-engineer` | Peta batas modul, aturan arah impor, spesifikasi kontrak API/Saga, dan langkah implementasi |
-| `maxilun-diagrams` | Struktur C4 (Level 1 Context, Level 2 Container, Level 3 Component) dan daftar aliran event |
-| `maxilun-docsmith` | Rekaman ADR final (`docs/decisions/ADR-*.md`), spesifikasi OpenAPI, dan parameter SLO untuk runbook |
-| `maxilun-verify` & `maxilun-deploy` | Definisi *Architecture Fitness Functions*, target kapasitas/auto-scaling, dan matriks RPO/RTO |
-
-## Companion Skills Awareness
-
-| Companion | Architect's Role | Purity & Quality Contribution |
-|---|---|---|
-| `maxilun-knowledge-graph` | Memetakan impact radius dan dependensi simbol aktual sebelum merancang perubahan | Mencegah desain arsitektur mengawang-awang yang bertabrakan dengan struktur kode nyata |
-| `maxilun-sentinel` | Mengintegrasikan invarian keamanan STRIDE ke dalam batas layanan | Mencegah celah otorisasi/IDOR struktural sejak tahap desain |
-| `maxilun-data` | Menyelaraskan batas domain dengan desain skema fisik dan indeks database | Memastikan keputusan terdistribusi tidak merusak integritas dan performa data |
-| `maxilun-docsmith` | Mendokumentasikan ADR dan kontrak OpenAPI 3.1 secara presisi | Menjaga keputusan arsitektur tetap hidup dan terbaca oleh seluruh tim & agen AI |
+| `maxilun-data` | Batas kepemilikan tabel per modul, model konsistensi, kebijakan RLS, dan urutan *Expand-Contract* |
+| `maxilun-sentinel` | Peta batas kepercayaan STRIDE, alur otorisasi lintas-tenant/layanan, dan manajemen kunci/rahasia |
+| `maxilun-engineer` | Aturan arah impor modul, kontrak port/DTO, semantik *timeout/idempotency*, dan langkah cutover |
+| `maxilun-diagrams` | Spesifikasi node dan relasi C4 (Context, Container, Component) serta urutan alur sekuens/event |
+| `maxilun-docsmith` | Draf ADR (`docs/decisions/ADR-*.md`), kontrak OpenAPI 3.1 (`../maxilun-docsmith/references/index.md`), dan target SLO |
+| `maxilun-verify` & `maxilun-deploy` | Aturan *Architecture Fitness Functions* di CI, topologi runtime, batas kapasitas, dan target RPO/RTO |
 
 ## Related Skills
-- **maxilun-knowledge-graph**: Analisis radius dampak perubahan dan pemetaan dependensi kode
-- **maxilun-data**: Desain skema database, migrasi zero-downtime, dan optimasi query
-- **maxilun-sentinel**: Threat modeling mendalam, autentikasi/otorisasi, dan kriptografi
-- **maxilun-docsmith**: Dokumentasi ADR, RFC, OpenAPI 3.1, dan runbook operasional (`../maxilun-docsmith/references/index.md`)
-- **maxilun-diagrams**: Visualisasi diagram C4, sequence, dan alur arsitektur
-- **maxilun-engineer**: Eksekusi implementasi kode sesuai batas modul
-- **maxilun-verify**: Penegakan otomatis *Architecture Fitness Functions* di CI
-- **maxilun-deploy**: Infrastruktur, container, auto-scaling, dan eksekusi Disaster Recovery
+
+- **maxilun-knowledge-graph**: Pemetaan *blast radius*, caller/callee, dan dependensi sirkular sebelum keputusan struktur
+- **maxilun-data**: Desain skema fisik, indeks, RLS database, dan eksekusi migrasi *Expand-Contract*
+- **maxilun-sentinel**: *Threat modeling* mendalam, kontrol autentikasi/otorisasi, dan kriptografi pada batas sistem
+- **maxilun-engineer**: Implementasi kode produksi mengikuti batas modul dan kontrak yang ditetapkan
+- **maxilun-diagrams**: Rendering diagram arsitektur C4, alur data, dan sequence diagram
+- **maxilun-docsmith**: Penulisan formal ADR, RFC, spesifikasi OpenAPI 3.1, dan runbook operasional
+- **maxilun-verify**: Otomasi *Architecture Fitness Functions*, tes kontrak, dan validasi regresi
+- **maxilun-deploy**: Konfigurasi container, CI/CD, *auto-scaling*, observability, dan eksekusi *Disaster Recovery*

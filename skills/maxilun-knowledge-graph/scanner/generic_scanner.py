@@ -10,12 +10,15 @@ class GenericScanner(BaseScanner):
 
     PATTERNS = {
         'function': re.compile(
-            r'(?:pub(?:lic)?\s+|priv(?:ate)?\s+|prot(?:ected)?\s+|static\s+|async\s+|fn\s+|func\s+|def\s+|fun\s+|void\s+|int\s+|string\s+)?'
-            r'(?:fn|func|function|def|fun|void|int|string|bool)\s+(\w+)\s*\(',
+            r'(?:(?:pub(?:lic)?|priv(?:ate)?|prot(?:ected)?|static|async|override|final|inline|virtual)\s+)*'
+            r'(?:fn|func|function|def|fun|void|int|string|bool|auto|task)\s+'
+            r'(?:\([^)]+\)\s+)?'
+            r'(?:(?:\w+::)+)?(\w+)\s*\(',
             re.MULTILINE
         ),
         'class': re.compile(
-            r'(?:pub(?:lic)?\s+|abstract\s+|sealed\s+|open\s+)?(?:class|struct|enum)\s+(\w+)',
+            r'(?:(?:pub(?:lic)?|priv(?:ate)?|prot(?:ected)?|abstract|sealed|open|final)\s+)*(?:class|struct|enum|interface|trait)\s+(\w+)'
+            r'|^\s*type\s+(\w+)\s+(?:struct|interface)',
             re.MULTILINE
         ),
         'import_go': re.compile(r'^\s*(?:import\s+(?:"([^"]+)"|(\w+))|"([^"]+)")', re.MULTILINE),
@@ -75,7 +78,7 @@ class GenericScanner(BaseScanner):
                 })
 
                 for match in self.PATTERNS['class'].finditer(source):
-                    class_name = match.group(1)
+                    class_name = match.group(1) or match.group(2)
                     line_no = source[:match.start()].count('\n') + 1
                     class_id = f"class:{rel_path}:{class_name}"
 

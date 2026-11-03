@@ -2,6 +2,15 @@
 set -euo pipefail
 
 VERSION="1.0.0"
+PROJECT_MODE=false
+for arg in "$@"; do
+    case "$arg" in
+        --project|-p|-Project)
+            PROJECT_MODE=true
+            ;;
+    esac
+done
+
 echo "🌑 Installing Maxilun ${VERSION} (18 skills: 1 orchestrator + 17 specialists)"
 echo ""
 
@@ -76,11 +85,25 @@ install_target() {
     local target_dir="$2"
     local legacy_rules_dir="${3:-}"
 
-    if [ -d "$target_dir" ] && [ -n "$(ls -A "$target_dir" 2>/dev/null)" ]; then
+    local existing_maxilun=()
+    if [ -d "$target_dir" ]; then
+        while IFS= read -r -d '' d; do
+            if [ -f "${d}/SKILL.md" ] && grep -Eq '^  ecosystem:\s*maxilun\s*$' "${d}/SKILL.md" 2>/dev/null; then
+                existing_maxilun+=("$d")
+            fi
+        done < <(find "$target_dir" -mindepth 1 -maxdepth 1 -type d \( -name "maxilun" -o -name "maxilun-*" -o -name "msal-*" \) -print0 2>/dev/null)
+    fi
+
+    if [ ${#existing_maxilun[@]} -gt 0 ]; then
+        local ts
+        ts=$(date +%Y%m%d-%H%M%S 2>/dev/null || date +%s)
         local backup_root
-        backup_root="$(dirname "$target_dir")/_maxilun_backup_$(date +%Y%m%d-%H%M%S%N)"
-        mkdir -p "$backup_root"
-        cp -R "$target_dir" "$backup_root/skills"
+        backup_root="$(dirname "$target_dir")/_maxilun_backup_${ts}"
+        mkdir -p "$backup_root/skills"
+        for d in "${existing_maxilun[@]}"; do
+            cp -R "$d" "$backup_root/skills/"
+            rm -rf -- "$d"
+        done
         installed_backups+=("$platform_name: $backup_root")
     fi
 
@@ -88,31 +111,48 @@ install_target() {
     mkdir -p "$target_dir" 2>/dev/null || true
     cp -R "${SKILLS_SRC}/"* "$target_dir/" 2>/dev/null || true
 
-    # Never ship bytecode caches
-    find "$target_dir" -type d -name __pycache__ -prune -exec rm -rf {} + 2>/dev/null || true
+    # Never ship bytecode or local scan caches
+    find "$target_dir" -type d \( -name __pycache__ -o -name .maxilun -o -name maxilun-out -o -name graphify-out \) -prune -exec rm -rf {} + 2>/dev/null || true
     find "$target_dir" -type f -name '*.pyc' -delete 2>/dev/null || true
-
     [ -n "$legacy_rules_dir" ] && clean_legacy_rules "$legacy_rules_dir"
 
     installed_to+=("$platform_name: $target_dir")
 }
 
-install_target "Antigravity CLI/IDE & Zed" "${HOME}/.agents/skills" "${HOME}/.agents/rules"
-install_target "[CC] & Termul" "${HOME}/.claude/skills" "${HOME}/.claude/rules"
+if [ "$PROJECT_MODE" = true ]; then
+    CURRENT_DIR="$(pwd)"
+    install_target "Universal / Antigravity / Zed (Project)" "${CURRENT_DIR}/.agents/skills" "${CURRENT_DIR}/.agents/rules"
+    install_target "[CC] / Termul (Project)" "${CURRENT_DIR}/.claude/skills" "${CURRENT_DIR}/.claude/rules"
+    install_target "Trae (Project)" "${CURRENT_DIR}/.trae/skills"
+    install_target "Windsurf (Project)" "${CURRENT_DIR}/.windsurf/skills"
+    install_target "CodeBuddy (Project)" "${CURRENT_DIR}/.codebuddy/skills"
+else
+    install_target "Antigravity CLI/IDE & Zed" "${HOME}/.agents/skills" "${HOME}/.agents/rules"
+    install_target "[CC] & Termul" "${HOME}/.claude/skills" "${HOME}/.claude/rules"
 
-if [ -d "${HOME}/.codex" ]; then
-    install_target "Codex" "${HOME}/.codex/skills" "${HOME}/.codex/rules"
-fi
-if [ -d "${HOME}/.config/opencode" ]; then
-    install_target "OpenCode" "${HOME}/.config/opencode/skills" "${HOME}/.config/opencode/rules"
-elif [ -d "${HOME}/.opencode" ]; then
-    install_target "OpenCode" "${HOME}/.opencode/skills" "${HOME}/.opencode/rules"
-fi
-if [ -d "${HOME}/.gemini" ]; then
-    install_target "Gemini CLI" "${HOME}/.gemini/config/skills"
-fi
-if [ -d "${HOME}/.cursor" ]; then
-    install_target "Cursor" "${HOME}/.cursor/skills"
+    if [ -d "${HOME}/.codex" ]; then
+        install_target "Codex" "${HOME}/.codex/skills" "${HOME}/.codex/rules"
+    fi
+    if [ -d "${HOME}/.config/opencode" ]; then
+        install_target "OpenCode" "${HOME}/.config/opencode/skills" "${HOME}/.config/opencode/rules"
+    elif [ -d "${HOME}/.opencode" ]; then
+        install_target "OpenCode" "${HOME}/.opencode/skills" "${HOME}/.opencode/rules"
+    fi
+    if [ -d "${HOME}/.gemini" ]; then
+        install_target "Gemini CLI" "${HOME}/.gemini/config/skills"
+    fi
+    if [ -d "${HOME}/.cursor" ]; then
+        install_target "Cursor" "${HOME}/.cursor/skills"
+    fi
+    if [ -d "${HOME}/.trae" ]; then
+        install_target "Trae" "${HOME}/.trae/skills"
+    fi
+    if [ -d "${HOME}/.windsurf" ]; then
+        install_target "Windsurf" "${HOME}/.windsurf/skills"
+    fi
+    if [ -d "${HOME}/.codebuddy" ]; then
+        install_target "CodeBuddy" "${HOME}/.codebuddy/skills"
+    fi
 fi
 
 echo ""

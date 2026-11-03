@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
+PROJECT_MODE=false
+for arg in "$@"; do
+    case "$arg" in
+        --project|-p|-Project)
+            PROJECT_MODE=true
+            ;;
+    esac
+done
 
 echo "🌑 Maxilun Uninstaller"
 echo "──────────────────────────────────────"
-echo ""
 echo "This will remove all Maxilun skills and rules from your system."
 echo ""
 
@@ -14,14 +21,29 @@ if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
 fi
 
 removed=()
-targets=(
-    "Antigravity CLI/IDE:${HOME}/.agents/skills:${HOME}/.agents/rules"
-    "Claude Code:${HOME}/.claude/skills:${HOME}/.claude/rules"
-    "Codex:${HOME}/.codex/skills:${HOME}/.codex/rules"
-    "OpenCode:${HOME}/.config/opencode/skills:${HOME}/.config/opencode/rules"
-    "Gemini CLI:${HOME}/.gemini/config/skills:"
-    "Cursor:${HOME}/.cursor/skills:"
-)
+if [ "$PROJECT_MODE" = true ]; then
+    CURRENT_DIR="$(pwd)"
+    targets=(
+        "Universal / Antigravity / Zed (Project):${CURRENT_DIR}/.agents/skills:${CURRENT_DIR}/.agents/rules"
+        "Claude Code (Project):${CURRENT_DIR}/.claude/skills:${CURRENT_DIR}/.claude/rules"
+        "Trae (Project):${CURRENT_DIR}/.trae/skills:"
+        "Windsurf (Project):${CURRENT_DIR}/.windsurf/skills:"
+        "CodeBuddy (Project):${CURRENT_DIR}/.codebuddy/skills:"
+    )
+else
+    targets=(
+        "Antigravity CLI/IDE:${HOME}/.agents/skills:${HOME}/.agents/rules"
+        "Claude Code:${HOME}/.claude/skills:${HOME}/.claude/rules"
+        "Codex:${HOME}/.codex/skills:${HOME}/.codex/rules"
+        "OpenCode (.config):${HOME}/.config/opencode/skills:${HOME}/.config/opencode/rules"
+        "OpenCode:${HOME}/.opencode/skills:${HOME}/.opencode/rules"
+        "Gemini CLI:${HOME}/.gemini/config/skills:"
+        "Cursor:${HOME}/.cursor/skills:"
+        "Trae:${HOME}/.trae/skills:"
+        "Windsurf:${HOME}/.windsurf/skills:"
+        "CodeBuddy:${HOME}/.codebuddy/skills:"
+    )
+fi
 
 for entry in "${targets[@]}"; do
     IFS=':' read -r name skills_dir rules_dir <<< "$entry"

@@ -9,6 +9,12 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Enhanced
+- **Decision Architecture, Anti-Monoculture & Zero-Ceremony Overhaul**:
+  - Replaced passive multi-turn interview loops and ceremonial emoji HUD/gate templates (`FOKUS`/`TINDAKAN`/`DELIVERY GATE`/`Parking Lot` and self-checked `- [ ]` blocks) across all 18 skills with **Repo-First Agency** and **Reversibility-Gated Decision Triage** (execute Type 2 reversible work directly from repo evidence; limit Type 1 irreversible clarification to at most 1 batched turn).
+  - Eliminated pseudo-quantitative decision theater in `maxilun-architect` (removed LLM-invented `1–5` weighted score matrices and forced strawman options) in favor of invariant verification, failure-mode stress testing, Deep Modules seam checks, and falsifiable revisit triggers.
+  - Eliminated single-style SaaS anchoring bias in `maxilun-craft`, `purity-catalog.md`, and `component-mobile-patterns.md`: removed hardcoded slate-indigo `oklch(... 250)` snippets and universal Asymmetric Bento / `Cmd+K` mandates, introduced `LAY-013` (misplaced SaaS Bento monoculture ban), and established domain-authentic layout/navigation mapping across editorial, clinical/consumer, financial ledger, creative, and developer surfaces.
+  - Enforced Single-Owner Cohesion in `maxilun` and `docs/ROUTING-MATRIX.md` so single pages/endpoints are owned end-to-end without unnecessary 4–5 specialist fragmentation.
+  - Resolved cross-skill and intra-skill rule contradictions (`maxilun-engineer` dead-code & Tailwind rules, `purity-catalog.md` `TYPO-001`/`TYPO-003` vs `design-md` corpus, `maxilun-sentinel` TOTP SHA-1 & HSTS preload caveats, `maxilun-frontend` Next.js 15 / React 19 async request & Flight serialization semantics, `maxilun-diagrams` labeled-edge consistency) and trimmed every `SKILL.md` strictly below the `≤ 300` line cognitive ceiling.
 - **Interface Engineering & Anti-Slop Hardening (Jakub Krehel Synthesis)**:
   - Bundled `skills/maxilun-craft/references/interface-engineering.md` establishing exact mathematical UI tolerances: concentric radius formula ($R_{outer} = R_{inner} + padding + border$), layered shadows over borders for elevation, 1px pure black/white image inset outlines, 0.96 active button press scale over 150ms, hover gating `@media (hover: hover)`, and `overscroll-behavior: contain`.
   - Codified 5 explicit AI-slop visual anti-patterns in `skills/maxilun/references/purity-catalog.md`: `CMP-015` (floating hero pill tagline capsule `• BADGE •`), `LAY-011` (monotonous center-everything cascade), `CMP-016` (pseudo-sci-fi hallucinated gimmicks vs authentic developer tooling), `CMP-017` (dual competing rounded-full pill buttons), and `LAY-012` (symmetrical 4-metric floating KPI strip over radial glow).
@@ -19,6 +25,11 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - **Architecture & Deep Modules**: Integrated Deep Modules vocabulary (Module, Interface, Depth, Seam, Adapter), The Deletion Test, and Two-Adapter Seam rule into `maxilun-architect`.
 - **Diagnostic & Audit**: Codified Senior On-Call review protocol in `maxilun-insight`, ranked cut-list for pruning dead weight, and mandatory residual risk disclosure.
 - **Code Hygiene**: Synchronized form, scroll containment, and micro-typography standards across the ecosystem.
+
+### Fixed
+- **Packaging, Installer & Knowledge Graph Cache Hygiene**: Explicitly whitelisted public scripts and excluded `__pycache__`, `.pyc`, `.maxilun`, `maxilun-out`, and `graphify-out` caches in `package.json`, hardened `scripts/install.ps1` and `scripts/install.sh` to strip local scan caches and support `~/.opencode/skills` without creating empty backup folders, and isolated `cli.py scan -o` so custom output paths no longer write `maxilun-out/` into the scanned directory.
+- **Generic Scanner AST Patterns**: Added Go method receiver extraction (`func (r *Repo) ...`), Go interface/struct type extraction, and C++ scoped method resolution (`void Class::method(...)`) in `GenericScanner`, verified via functional test suite.
+- **Installer & Uninstaller Parity**: Synchronized `scripts/install.sh` to support `--project`/`-p` mode, fixed macOS BSD `date` non-portable `%N` format with portable timestamps, restricted backup creation strictly to existing Maxilun skills, and added `--project`/`-Project` support and full multi-IDE target coverage (Trae, Windsurf, CodeBuddy) across both `scripts/uninstall.sh` and `scripts/uninstall.ps1`.
 
 ## [1.0.0] — 2026-10-24
 

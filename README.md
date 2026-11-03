@@ -21,7 +21,7 @@
 
 ---
 
-**Maxilun** is an ecosystem of 18 AI skills for software engineering teams: one orchestrator and 17 specialists. Every skill carries the same **Core Rules** block, so the four quality engines travel with the skill instead of living in a separate folder. The orchestrator adds outcome-based routing, a discovery protocol for unclear briefs, wave coordination, and evidence-based delivery gates. Deeper material (engine detail, purity catalog, code hygiene, surgical engineering discipline, discovery, and reference corpora) lives in `references/` inside each skill and is loaded only when needed.
+**Maxilun** is an ecosystem of 18 AI skills for software engineering teams: one orchestrator and 17 specialists. Every skill carries the same **Core Rules** block, so the four quality engines travel with the skill instead of living in a separate folder. The orchestrator enforces reversibility-gated decision triage (act from repository evidence first; clarify only irreversible decisions), single-owner routing cohesion, wave coordination when genuinely multi-domain, and real execution proof without ceremonial HUD banners. Deeper material (engine detail, purity catalog, code hygiene, surgical engineering discipline, discovery, and reference corpora) lives in `references/` inside each skill and is loaded only when needed.
 
 ## Quick Install
 
@@ -49,7 +49,7 @@ Most AI skill repositories are thin text wrappers that repeat generic advice (*"
 | **Blind Multi-File Edits** (reading 20 whole files into context and breaking callers) | **Executable AST Knowledge Graph & 3D WebGL Lens** in [`skills/maxilun-knowledge-graph/`](skills/maxilun-knowledge-graph/SKILL.md) (`cli.py` + Python/TS/Polyglot AST scanners returning exact `file:line` `defOf:` / `callsIn:` in `< 1s`) |
 | **Vulnerable Auth & Webhooks** (`!==` timing leaks, float currency drift, ad-hoc error JSON) | **Cryptographic & API Contract Playbooks** in [`maxilun-sentinel`](skills/maxilun-sentinel/references/security-playbook.md) & [`maxilun-docsmith`](skills/maxilun-docsmith/references/openapi-contracts.md) (`timingSafeEqual`, Argon2id, `BIGINT` minor units, OpenAPI 3.1 + RFC 9457 `application/problem+json`) |
 | **Stiff, Unreadable AI Videos** (CSS transition drift, tiny 14px fonts, 30-word paragraphs) | **5-Skill Programmatic Video Studio** in [`maxilun-cinecode`](skills/maxilun-cinecode/references/video-production-pipeline.md) + [`maxilun-motion`](skills/maxilun-motion/references/choreography-styles.md) (React frame compiler, analytical damped springs, 14 style signatures, 22 hooks, FFmpeg `yuv420p`) |
-| **Context Window Bloat** (2,000-line prompt files that degrade LLM reasoning) | **Strict `< 400 Line` Cognitive Ceiling** on all 18 `SKILL.md` files with on-demand `references/` — verified on every commit by [`scripts/test-suite.py`](scripts/test-suite.py) (16 automated validation suites) |
+| **Context Window Bloat & Prompt Ceremony** (2,000-line prompt files, emoji status banners, and single-template SaaS clones) | **Strict `≤ 300 Line` Cognitive Ceiling** on all 18 `SKILL.md` files with on-demand `references/`, domain-authentic UI grounding, and zero self-checked HUD theater — verified on every commit by [`scripts/test-suite.py`](scripts/test-suite.py) |
 
 ---
 
@@ -122,10 +122,10 @@ Embedded in all 18 skills as an identical `CORE-RULES` block, verified by CI:
 
 | Engine | Core Responsibility |
 |---|---|
-| **Focus Engine** | Executive HUD, task decomposition, persistent subtask tracking (max 3 concurrent) |
-| **Purity Engine** | Review for generic output, unsupported claims, and empty placeholders |
-| **Minimalist Engineering** | Simplicity ladder, root-cause fixes, deletion over addition |
-| **Clarity Engine** | Explicit technical signaling: `[CONFIRMED]`, `[INFERRED]`, `[UNCERTAIN]`, `[UNVERIFIED]` |
+| **Focus & Agency Engine** | Repo-first execution, reversibility-gated clarification (max 1 batched turn for irreversible choices), max 3 active workstreams, zero HUD/checkbox theater |
+| **Purity Engine** | Two-way purity: rejects raw AI buzzwords/gradients/fake stats AND rejects single-template SaaS monoculture |
+| **Minimalist Engineering** | Simplicity ladder, convergence-point root-cause fixes, cutover cleanup without drive-by refactoring |
+| **Clarity & Proof Engine** | Conclusion-first reporting, exact `file:line` & verbatim error preservation, proportional certainty tags (`[CONFIRMED]`, `[INFERRED]`, `[UNCERTAIN]`, `[UNVERIFIED]`) |
 
 Three operating protocols support these engines:
 

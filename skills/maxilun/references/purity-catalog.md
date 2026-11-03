@@ -2,279 +2,91 @@
 
 <!-- metadata:
   version: "1.0.0"
-  last_updated: "2026-10-22"
-  sync_target: "scripts/test-suite.py:BANNED_BUZZWORDS"
+  last_updated: "2026-11-02"
+  sync_target: "scripts/test-suite.py:BANNED_WORDS"
   origin: "Maxilun Purity Engine"
-  enhancement: "Documented Review Checklist + Contextual Critique Checks"
 -->
 
-Katalog penolakan pola generik (*Purity Catalog*) yang mengikat seluruh skill Maxilun. Tiga domain: **Konten/Teks**, **Desain Website**, dan **Teknis**. Aturan ini menjadi panduan review agent; repository ini tidak menyertakan executable detector untuk daftar di bawah. Setiap temuan harus dinilai dalam konteks sebelum dihapus atau diganti.
+Katalog penolakan pola generik (*Purity Catalog*) untuk ekosistem Maxilun pada tiga domain: **Konten/Teks**, **Desain Antarmuka**, dan **Kode/Interaksi**. Panduan ini dipakai untuk evaluasi berbasis konteks produk — bukan pemindai buta yang menolak pola sah tanpa melihat fungsinya.
 
-> **Sinkronisasi Test Suite**: Daftar kata terlarang di bawah ini terikat langsung dengan `BANNED_BUZZWORDS` di `scripts/test-suite.py`. Setiap penambahan kosakata terlarang baru wajib diperbarui serentak di dokumen ini dan di test suite untuk menjaga kepatuhan CI.
-
-> **Maxilun Purity Engine**: Katalog ini menetapkan heuristik review kualitas konten, desain, dan kode berbasis konteks. Daftar ini adalah panduan review agen, bukan klaim jumlah rule yang dijalankan oleh pemindai biner otomatis.
+> **Sinkronisasi Test Suite**: Daftar kosakata buzzword terlarang di Bagian A.5 selaras dengan `BANNED_WORDS` pada `scripts/test-suite.py`.
 
 ---
 
-## A. Pola Klise Generik pada Konten & Teks
+## A. Pola Klise pada Konten & Teks
 
-Konten wajib ditulis ulang bila memenuhi salah satu kriteria di bawah (menolak jika ≥1 cocok):
+Tulis ulang teks bila memenuhi satu atau lebih tanda berikut:
 
-1. **Generik tanpa jangkar** — bisa berlaku untuk topik apa pun tanpa berubah. Wajib ada entitas spesifik (nama produk, angka, audiens, kasus).
-2. **Panjang, poin sedikit** — banyak kata, sedikit informasi. Rasio: setiap kalimat harus menambah satu fakta/keputusan baru, jika tidak, hapus.
-3. **Judul heboh, isi dangkal** — klaim superlatif di judul tanpa bukti di badan. Judul dilarang menjanjikan lebih dari yang dibuktikan isi.
-4. **Tanpa data/sumber/contoh/sudut pandang** — wajib ada minimal satu: angka nyata, sumber tertaut, contoh konkret, atau posisi yang jelas. Jika tidak tersedia, nyatakan eksplisit ("data belum tersedia"), jangan dikarang.
-5. **Daftar Kosakata Terlarang Kanonik (Banned Vocabulary)** — kata/frasa AI buzzword yang dilarang keras digunakan dalam konteks positif:
-   - Bahasa Inggris: `delve`, `tapestry`, `synergy`, `holistic`, `leverage`, `seamlessly`, `robust`, `cutting-edge`, `game-changer`, `revolutionary`, `supercharge`, `dive in`, `elevate`, `empower`, `unlock`, `transformative`, `next-level`, `state-of-the-art`, `best-in-class`, `paradigm shift`.
-   - Padanan Bahasa Indonesia: `menyelami`, `merajut harmoni`, `sinergi`, `holistik`, `memanfaatkan secara mulus`, `solusi mutakhir/terdepan`, `pengubah permainan`, `revolusioner`, `meningkatkan ke level berikutnya`, `mari selami`, `memberdayakan`, `membuka potensi`, `transformatif`, `kelas dunia`, `pergeseran paradigma`.
-6. **Frasa template pamungkas** — larangan frasa klise: *"Revolutionize Your Workflow"*, *"Unlock Your Potential"*, *"Di era digital yang serba cepat"*, *"Solusi all-in-one terpercaya"*, *"Elevate your experience"*, *"Empowering innovation"*.
-7. **Tidak menjawab kebutuhan pembaca** — setiap paragraf harus menjawab pertanyaan nyata pembaca sasaran. Konten yang bercerita tentang diri sendiri tanpa manfaat pembaca ditolak.
-
-### Gerbang Konten (Content Gate)
-Sebelum menyerahkan teks, jawab 3 pertanyaan; satu gagal = tulis ulang:
-- Bisakah kalimat ini dipakai di topik lain tanpa perubahan? (jika ya → generik, gagal)
-- Adakah satu fakta/angka/contoh nyata di dalamnya? (jika tidak → gagal)
-- Apakah ini menjawab kebutuhan pembaca spesifik? (jika tidak → gagal)
+1. **Generik tanpa jangkar domain (*Identity Swap Failure*)** — kalimat dapat dipindah ke produk kompetitor atau industri lain tanpa mengubah satu kata pun. Wajib sebut objek kerja, metrik nyata, atau alur tugas spesifik pengguna.
+2. **Rasio sinyal rendah** — banyak kalimat pembuka tetapi miskin fakta atau keputusan. Satu kalimat = satu informasi fungsional baru.
+3. **Klaim superlatif tanpa bukti** — menjanjikan hasil bombastis tanpa mekanisme atau angka terverifikasi.
+4. **Statistik atau testimoni karangan** — angka seperti `"99.9% akurasi"` atau `"10.000+ tim percaya kami"` tanpa sumber riil wajib dihapus.
+5. **Kosakata Buzzword Terlarang (`BANNED_WORDS`)** — dilarang dipakai sebagai klaim positif:
+   - Inggris: `delve`, `tapestry`, `synergy`, `holistic`, `leverage`, `seamlessly`, `robust`, `cutting-edge`, `game-changer`, `revolutionary`, `supercharge`, `dive in`, `elevate`, `empower`, `unlock`, `transformative`, `next-level`, `state-of-the-art`, `best-in-class`, `paradigm shift`.
+   - Indonesia: `menyelami`, `merajut harmoni`, `sinergi`, `holistik`, `memanfaatkan secara mulus`, `solusi mutakhir/terdepan`, `pengubah permainan`, `revolusioner`, `meningkatkan ke level berikutnya`, `mari selami`, `memberdayakan`, `membuka potensi`, `transformatif`, `kelas dunia`, `pergeseran paradigma`.
+6. **Slogan brosur kosong** — frasa cetakan seperti *"Revolutionize Your Workflow"*, *"Unlock Your Potential"*, *"Di era digital yang serba cepat"*, *"Solusi all-in-one terpercaya"*.
 
 ---
 
-## B. Pola Klise Visual pada Desain Website (Visual Anti-Patterns)
+## B. Pola Klise Visual & Monokultur Desain Antarmuka
 
-Setiap elemen berikut dilarang ditambahkan tanpa fungsi nyata. Jika muncul tanpa alasan desain, hapus.
+Prinsip inti: **tolak klise mentah LLM sekaligus tolak monokultur cetakan tunggal.** Desain antarmuka wajib lahir dari karakter subjek, audiens, dan tugas utama produk.
 
-### B1. Typography & Font Issues
-1. **Overused fonts** — Arial, Inter, Roboto, system defaults tanpa modifikasi. Wajib custom typeface atau minimal font pairing yang disengaja.
-2. **Gray text on colored backgrounds** — teks abu-abu (#666, #888) di atas background berwarna. Kontras wajib ≥4.5:1 dengan tinted colors.
-3. **Pure black/gray without tint** — #000000, #333333, #666666 murni. Selalu tint ke brand hue (oklch recommended).
-4. **Inconsistent font sizes** — lebih dari 5 size variants tanpa modular scale. Wajib type scale (1.250 atau 1.333 ratio).
-5. **Line length violations** — body text >75ch atau <45ch. Optimal: 60-70ch untuk readability.
-6. **Missing font smoothing** — tidak ada `-webkit-font-smoothing: antialiased` untuk light-on-dark themes.
+### B1. Tipografi
+1. **Hierarki datar tanpa skala tipografi (`TYPO-001`)** — menggunakan font sistem/standar tanpa pembedaan peran (display vs body vs metadata), tanpa pengaturan `line-height`/`letter-spacing`, atau memakai lebih dari 5 ukuran acak di luar skala (`TYPO-005`). *(Catatan: `Inter`, `Geist`, atau `system-ui` sah untuk aplikasi operasional padat selama skala, kontras bobot, dan `tabular-nums` terkalibrasi; untuk halaman editorial/brand, pasangkan typeface berkarakter).*
+2. **Kontras teks lemah (`TYPO-002` / `CLR-002`)** — teks abu-abu pucat di atas permukaan berwarna dengan rasio `< 4.5:1`.
+3. **Hitam/abu-abu tak terkalibrasi pada tema terang (`TYPO-003`)** — teks `#000000` murni di atas latar putih menyilaukan yang melelahkan bacaan panjang. *(Pengecualian sah: kanvas gelap kontras tinggi seperti `#010102`/`#000000` pada referensi seperti `linear.app.md` atau `vercel.md`, serta garis tepi media `1px` alpha `oklch(0 0 0 / 0.1)`).*
+4. **Panjang baris ekstrem (`TYPO-004`)** — paragraf bacaan melebar `> 75ch` tanpa batas lebar baca (`max-w-[65ch]`).
+5. **Input mobile `< 16px` (`TYPO-007`)** — memicu auto-zoom paksa di iOS Safari.
 
-### B2. Color & Gradient Issues
-7. **Purple-to-blue gradients everywhere** — gradien #667eea→#764ba2 atau serupa sebagai default AI aesthetic. Gradien hanya untuk semantic meaning.
-8. **Rainbow/multi-color chaos** — >3 hue families tanpa sistem warna. Wajib OKLCH/HSL color system dengan ≤3 base hues.
-9. **Low contrast text** — rasio kontras <4.5:1 (AA) atau <7:1 (AAA). Test dengan automated tools.
-10. **Color-only status indicators** — status conveyed by color alone tanpa icon/text label. Redundant cues wajib.
-11. **Dark mode afterthought** — dark mode ditambahkan belakangan tanpa token system. Wajib design tokens dari awal.
-12. **Saturated backgrounds** — background dengan chroma >0.1 di OKLCH. Backgrounds should be subtle (chroma ≤0.05).
+### B2. Warna & Permukaan
+6. **Gradien ungu-biru dekoratif default (`CLR-001`)** — gradien `#667eea → #764ba2` atau glow neon acak tanpa makna merek/status.
+7. **Latar belakang terlalu jenuh (`CLR-005`)** — permukaan kerja utama menggunakan kroma tinggi (`chroma > 0.05` di OKLCH) yang mengganggu keterbacaan konten.
+8. **Status hanya mengandalkan warna (`CLR-004`)** — merah/hijau tanpa ikon atau label teks pendamping.
+9. **Dark mode tempelan (`CLR-007`)** — membalik warna secara naif tanpa sistem token permukaan dan tanpa `color-scheme: dark`.
 
-### B3. Layout & Spacing Issues
-13. **Card nesting overload** — cards within cards within cards. Max 2 levels of containment.
-14. **Everything in cards** — plain text wrapped in card containers tanpa grouping need. Cards only for discrete units.
-15. **Inconsistent spacing** — padding/margin values tidak mengikuti spatial scale (4px/8px grid). Wajib design token spacing.
-16. **Cramped touch targets** — interactive elements <44x44px di mobile, <24x24px di desktop. WCAG 2.2 minimum.
-17. **Whitespace as filler** — large empty spaces tanpa rhythm/hierarchy purpose. Whitespace marks grouping, not fills pages.
-18. **Grid misalignment** — elements tidak snap ke baseline/grid. Optical alignment ±1px acceptable, random placement tidak.
-19. **Overflow issues** — horizontal scroll unintended, text truncation tanpa ellipsis, content clipping.
-20. **Cookie-cutter 3-card grid** — 3 cards berdampingan berukuran dan format identik (`grid-cols-3` seragam) dengan icon lingkaran di atas, judul, dan 2 baris teks. Wajib diganti dengan Asymmetric Bento Grid (`2:1` atau `1:2:1`) di mana setiap kartu memiliki fungsi dan peran visual yang berbeda.
-21. **Generic 4-metric KPI top strip** — strip 4 kotak statis simetris di atas dashboard dengan angka besar dan badge persentase hijau palsu (`+12.5%`) tanpa filter waktu atau data riil. Gantikan dengan panel telemetri operasional atau alur antrean tugas nyata (`LAY-009`, `LAY-012`).
-22. **Centered hero dual-button cliché** — hero section dengan judul rata tengah, subteks rata tengah, dan dua tombol pill simetris berdampingan yang berebut aksi primer. Wajib satu aksi primer tegas didukung elemen bukti asimetris (`LAY-010`, `CMP-017`).
-23. **Monotonous "Center-Everything Cascade"** — seluruh seksi halaman mengulang tumpukan simetris rata tengah: mini uppercase overline -> H2 tebal rata tengah -> subteks 2-3 baris rata tengah -> kartu/elemen senter (`LAY-011`). Ini adalah ciri paling kentara dari template AI. Wajib ganti dengan tata letak asimetris, penyejajaran tepi kiri (*text-align: start*), split layout editorial, atau Asymmetric Bento Grid (`2:1`, `1:2:1`).
+### B3. Tata Letak & Bahaya Monokultur Baru
+10. **Tumpukan rata-tengah monoton (`LAY-011`)** — seluruh halaman mengulang pola *overline kapital tengah → H2 tengah → subteks 2 baris tengah → kartu simetris* dari atas ke bawah.
+11. **Tiga kartu simetris tanpa diferensiasi (`LAY-008`)** — `grid-cols-3` berisi 3 kotak identik dengan ikon bulat di atas dan 2 kalimat basa-basi. Ganti sesuai sifat konten: tabel perbandingan faktual, alur langkah bernomor, *split showcase* artefak kerja nyata, komposisi editorial, atau grid asimetris bila tiap panel punya peran berbeda.
+12. **Monokultur SaaS Bento / `Cmd+K` Salah Tempat (`LAY-013`)** — menyalin mentah estetika dashboard gelap developer tools (Bento gelap, palet biru-slate dingin, badge shortcut `Cmd+K`, label teknis monospaced) untuk produk non-teknis seperti klinik kesehatan, kuliner, pendidikan, media editorial, atau ritel konsumen.
+13. **Strip 4 kotak KPI dekoratif (`LAY-009` / `LAY-012`)** — empat kartu angka statis di puncak halaman dengan persentase hijau karangan (`+12.5%`) tanpa konteks waktu, filter, atau tindakan lanjut.
+14. **Hero dengan dua tombol primer kembar (`LAY-010` / `CMP-017`)** — dua tombol solid/pill berebut fokus utama. Tetapkan tepat satu aksi primer per tampilan; aksi pendamping tampil netral/sekunder.
+15. **Pembungkusan kartu berlapis (`LAY-001` / `LAY-002`)** — kartu di dalam kartu di dalam kartu; gunakan pengelompokan spasi (`2x` jarak antar-grup dibanding intra-grup) sebelum menambah kotak atau garis.
 
-### B4. Component & Pattern Issues
-23. **Breadcrumb Navigation (AI-Generated Web Tell — DILARANG DEFAULT)** — `Home > Section > Page` atau `Dashboard / Settings / Profile` di bagian atas halaman adalah salah satu sinyal terkuat bahwa sebuah website di-generate oleh template AI. **DILARANG merender komponen breadcrumb secara default** pada landing page, SaaS dashboard, form, login/register, 404, maupun aplikasi web modern. Gunakan navigasi kembali kontekstual (`← Kembali ke Daftar Tagihan`), command palette (`Cmd+K`), atau tab/header langsung. Pengecualian hanya jika pengguna secara eksplisit meminta breadcrumb untuk katalog e-commerce/dokumentasi bersarang `>= 4` level.
-24. **Badge inflation** — badges labeled "Powerful", "AI-Powered", "New" tanpa factual basis. Badges only for status (version, count, state).
-25. **Emoji as icons** — emoji menggantikan professional icon set. Icons wajib dari satu family (Lucide, Phosphor, etc.) dengan consistent weight.
-26. **Uniform border radius** — semua elements rounded sama (e.g., all 8px). Nested radii: child ≤ parent, concentric hierarchy.
-27. **Hero cliché** — bombastic headline + generic subtitle + dual CTAs tanpa clear primary. One primary CTA; hero explains value, not sensation.
-28. **Fake statistics** — "99.9% Accuracy", "10k+ happy users" tanpa source. Numbers require citation or deletion.
-29. **Decorative components** — buttons/tabs/dropdowns/search that don't function. If non-functional, don't render.
-30. **Tab bar bloat** — >5 tabs di mobile nav. Mobile tab bars: 3-5 items max dengan icons + labels.
-31. **Modal abuse** — modals untuk content yang bisa inline. Modals only for interrupts requiring focus.
-32. **Login page decoration** — gradient backgrounds, floating shapes, fake product screenshots, marketing copy, atau testimonials pada halaman login/register. Login page fokus pada form functionality, bukan visual impressiveness. Background boleh textured/subtle tapi tidak boleh mengganggu readability form.
-33. **Generic menu names & IA** — sidebar/nav menggunakan "Dashboard", "Settings", "Profile", "Admin", "Features" tanpa konteks produk. Menu names wajib mencerminkan struktur informasi aktual berbasis kata benda & kata kerja domain nyata.
-34. **Non-functional navigation elements** — bilah navigasi dengan kotak pencarian mati, lonceng notifikasi tanpa hitungan/isi, atau avatar tanpa menu popover. Setiap elemen interaktif wajib berfungsi nyata atau dihilangkan.
-35. **Clumsy mobile hamburger overlay** — menu mobile yang membuka daftar teks vertikal satu layar penuh yang kaku. Wajib menggunakan Bottom Tab Bar (3–4 tujuan utama) di zona ibu jari dan Bottom Sheet Drawer untuk menu sekunder.
-36. **Missing active route indicator** — item menu tanpa penanda rute aktif semantik (`aria-current="page"`) atau visual (sliding pill highlight) (`CMP-014`).
-37. **Floating Hero Pill Tagline / Badge Capsule** — kapsul pill kecil mengambang di atas judul H1 dengan titik/bullet (`• INFRASTRUKTUR ... •`) (`CMP-015`). Ciri utama landing page buatan AI. Hapus kapsul pill klise; gunakan heading kuat atau eyebrow editorial fungsional.
-38. **Pseudo-Sci-Fi Hallucinated Gimmicks** — menciptakan metafora fiksi ilmiah palsu (*"Arsitektur Ruang Virtual 3D"*, *"Chamber 01"*, *"Telemetry Observatory"*, kubus wireframe 3D melayang dengan cincin orbit) untuk utilitas backend/developer tools biasa (seperti WhatsApp gateway) (`CMP-016`). Wajib digantikan dengan artefak teknis nyata: live terminal session, simulator pairing QR-code interaktif, webhook payload JSON inspector, atau tabel status sesi dengan telemetri RAM aktual.
-39. **Dual Competing Rounded-Full Pill Buttons** — dua tombol pill berdampingan di hero section dengan bobot visual sama yang berebut perhatian (`CMP-017`). Terapkan aturan satu aksi primer solid; tombol pendamping wajib netral/link.
-### B5. Animation & Motion Issues
-29. **Animation overload** — glow, floating, parallax, hover effects tanpa functional purpose. Motion clarifies cause-effect only.
-30. **Bounce/elastic easing** — cubic-bezier dengan overshoot (bounce, elastic) terasa dated. Use spring physics or ease-out.
-31. **Layout property animation** — animating top/left/width/height causes reflow. Only animate transform + opacity.
-32. **Non-interruptible animations** — animations yang tidak bisa di-cancel oleh user input. All motion must be interruptible.
-33. **Autoplay without control** — auto-playing animations/media tanpa pause control. User must control timing.
-34. **Missing reduced-motion** — tidak ada `@media (prefers-reduced-motion: reduce)` variant. Required for accessibility.
-35. **Flash/seizure triggers** — >3 flashes per second, rapid strobing. WCAG 2.3.1 compliance mandatory.
+### B4. Komponen & Navigasi
+16. **Breadcrumb redundan di halaman datar (`CMP-001` / `CMP-011`)** — menampilkan `Home > Dashboard > Settings` pada landing page, halaman login, atau aplikasi bersarang dangkal. Gunakan judul konteks atau tautan balik tunggal; simpan *breadcrumb* hanya untuk taksonomi dalam (`≥ 3` level seperti dokumentasi besar, sistem berkas, atau katalog multi-kategori).
+17. **Kapsul pill dekoratif di atas H1 (`CMP-015`)** — badge melayang `• FITUR BARU •` dengan titik menyala di setiap hero.
+18. **Gimmick fiksi ilmiah palsu (`CMP-016`)** — menamai utilitas biasa dengan istilah berlebihan (*"Chamber 01"*, *"Quantum Core"*, bola wireframe 3D tanpa fungsi) alih-alih menampilkan artefak produk asli.
+19. **Badge pemasaran tanpa fakta (`CMP-002`)** & **Emoji sebagai ikon fungsional (`CMP-003`)**.
+20. **Radius seragam mengabaikan geometri bersarang (`CMP-004`)** — container dan anak memakai radius sama tanpa memperhitungkan padding konsentris.
+21. **Elemen navigasi/kontrol mati (`CMP-005` / `CMP-012`)** — kotak cari, ikon lonceng, filter, atau tombol yang tidak melakukan apa-apa saat diklik.
+22. **Label navigasi generik tanpa konteks domain (`CMP-010`)** — sidebar hanya menulis *Menu 1, Analytics, Reports* tanpa menyebut entitas bisnis sesungguhnya.
 
-### B6. Visual Hierarchy & Clarity
-36. **Shadow overdose** — shadows on every card/button/section. Layered shadows (ambient + direct) only for elevated elements.
-37. **Glassmorphism stacking** — multiple frosted glass layers bertumpuk. Max 1 glass layer per view.
-38. **Dark glow borders** — glowing borders di semua interactive elements. Borders should be subtle, glows reserved for focus states.
-39. **Side-tab borders** — vertical tabs dengan heavy left borders. Use subtle indicators, not thick borders.
-40. **Icon inconsistency** — mixing emoji, SVG, different icon families. One set, one style, one stroke width.
-41. **Generic UI text** — "Click here", "Learn more", "Submit" tanpa context. Labels must be specific ("Download report", "Save profile").
-42. **Template layout** — structure identical to thousands of AI sites. Structure follows content needs, not default patterns.
-43. **Patching cliché layout instead of redesigning** — menambal border radius, margin, atau token warna pada layout yang dasarnya klise AI saat pengguna mengeluh "UI generik AI". Wajib stop, tanyakan arah referensi visual, dan rombak total arsitektur tata letak.
-
-### Visual Gate Checklist
-Prinsip tunggal: **jangan menambahkan elemen hanya agar terlihat canggih.** Setiap komponen wajib punya:
-1. Fungsi nyata
-2. Alasan desain yang documented
-3. Relevansi terhadap kebutuhan pengguna
-
-Jika salah satu absen → hapus. No exceptions.
+### B5. Gerak & Aksesibilitas
+23. **Animasi properti layout (`ANI-002`)** — menganimasikan `width`, `height`, `top`, `left` yang memicu reflow; gunakan `transform` dan `opacity`.
+24. **Mengabaikan `prefers-reduced-motion` (`ANI-003`)** atau **memutar media otomatis tanpa kendali (`ANI-005`)**.
+25. **Pelanggaran aksesibilitas dasar (`A11Y-001..007`)** — kontrol tanpa nama aksesibel, input tanpa `<label>`, `:focus-visible` dihapus, atau target sentuh mobile `< 44x44px` (`LAY-004`).
 
 ---
 
-## C. Documented Quality Checks (Agent-Assisted Review)
+## C. Ringkasan Kode Pemeriksaan Kontekstual
 
-Gunakan ID berikut untuk menyebut temuan secara konsisten. Nilai source, preview, dan konteks produk; jangan menyatakan pemeriksaan otomatis lulus atau gagal. Tidak ada CLI, pre-commit hook, CI job, waiver parser, atau auto-fix yang disediakan katalog ini.
+Gunakan kode referensi ini saat melaporkan hasil audit desain/kode secara presisi (`file:line` + ID + perbaikan konkret):
 
-### C1. Typography Checks
-| ID | Check | Severity | Suggested action |
-|----|------|----------|----------|
-| TYPO-001 | Overused font family detected (Arial, Inter, Roboto, system-ui) | ERROR | ❌ |
-| TYPO-002 | Gray text (#666, #888, #999) on colored background | ERROR | ✅ Suggest tinted alternative |
-| TYPO-003 | Pure black (#000000) or pure gray without hue tint | WARNING | ✅ Apply brand hue tint |
-| TYPO-004 | Body text line length >75ch or <45ch | WARNING | ❌ |
-| TYPO-005 | More than 5 font size variants without scale | ERROR | ❌ |
-| TYPO-006 | Missing font-smoothing for light-on-dark | WARNING | ✅ Add antialiased |
-| TYPO-007 | Font size <16px on mobile inputs | ERROR | ✅ Set min 16px |
-
-### C2. Color & Contrast Checks
-| ID | Check | Severity | Suggested action |
-|----|------|----------|----------|
-| CLR-001 | Purple-to-blue gradient (#667eea→#764ba2 pattern) | ERROR | ❌ |
-| CLR-002 | Text contrast ratio <4.5:1 (WCAG AA) | ERROR | ✅ Suggest compliant color |
-| CLR-003 | Text contrast ratio <7:1 (WCAG AAA for body) | WARNING | ✅ Suggest compliant color |
-| CLR-004 | Status indicator using color only (no icon/text) | ERROR | ❌ |
-| CLR-005 | Background chroma >0.1 in OKLCH | WARNING | ✅ Reduce saturation |
-| CLR-006 | More than 3 hue families without system | ERROR | ❌ |
-| CLR-007 | Dark mode without color-scheme: dark | ERROR | ✅ Add declaration |
-
-### C3. Layout & Spacing Checks
-| ID | Check | Severity | Suggested action |
-|----|------|----------|----------|
-| LAY-001 | Card nesting >2 levels deep | WARNING | ❌ |
-| LAY-002 | Plain text wrapped in card container | WARNING | ❌ |
-| LAY-003 | Spacing value not in spatial scale (4px grid) | ERROR | ✅ Snap to nearest |
-| LAY-004 | Touch target <44x44px (mobile) or <24x24px (desktop) | ERROR | ✅ Expand hit area |
-| LAY-005 | Horizontal overflow detected (overflow-x: hidden hack) | ERROR | ❌ |
-| LAY-006 | Element misaligned from baseline grid >2px | WARNING | ❌ |
-| LAY-007 | Text truncation without ellipsis/title attribute | WARNING | ✅ Add overflow handling |
-| LAY-008 | Cookie-cutter 3-card grid with identical height/iconography | ERROR | ❌ Replace with asymmetric bento grid |
-| LAY-009 | Generic 4-metric KPI top strip without telemetry/filter | WARNING | ❌ Replace with operational workflow panel |
-| LAY-010 | Centered hero with competing symmetric dual pill buttons | ERROR | ❌ Single clear primary action + asymmetric proof |
-| LAY-011 | Monotonous center-everything cascade (overline→h2→subtext→card) | ERROR | ❌ Use asymmetric or left-aligned layout |
-| LAY-012 | Generic 4-metric floating KPI strip over radial glow | WARNING | ❌ Replace with operational telemetry panel |
-
-### C4. Component Checks
-| ID | Check | Severity | Suggested action |
-|----|------|----------|----------|
-| CMP-001 | Breadcrumb rendered by default (strong AI-generated website tell; use contextual back link `← Back to [Parent]` instead) | ERROR | ❌ Remove breadcrumb |
-| CMP-002 | Badge with marketing adjective ("Powerful", "New") | ERROR | ❌ |
-| CMP-003 | Emoji used as functional icon | ERROR | ✅ Replace with icon component |
-| CMP-004 | Uniform border-radius across all elements | WARNING | ❌ |
-| CMP-005 | Non-functional interactive element (button/link without action) | ERROR | ❌ |
-| CMP-006 | Modal for content displayable inline | WARNING | ❌ |
-| CMP-007 | Tab bar with >5 items (mobile) | ERROR | ❌ |
-| CMP-008 | Login/register page with decorative gradient background | WARNING | ❌ |
-| CMP-009 | Login/register page with marketing copy or testimonials | ERROR | ❌ |
-| CMP-010 | Generic menu name ("Dashboard", "Settings", "Profile") without product context | ERROR | ❌ Derive from domain verbs & entities |
-| CMP-011 | `Home > ...` or `Dashboard / ...` trail on landing, app, auth, or dashboard screen | ERROR | ❌ Remove breadcrumb |
-| CMP-012 | Non-functional navigation element (search/bell/avatar with no action) | ERROR | ❌ Wire functional action or remove |
-| CMP-013 | Mobile menu using clumsy full-screen list instead of thumb-zone tab bar/sheet | ERROR | ❌ Implement ergonomic bottom navigation/sheet |
-| CMP-014 | Navigation item missing active route state (`aria-current="page"` or sliding highlight) | ERROR | ✅ Add active state & aria-current |
-| CMP-015 | Floating hero pill tagline / badge capsule (`• BADGE •`) | ERROR | ❌ Remove badge capsule; use editorial eyebrow |
-| CMP-016 | Pseudo-sci-fi hallucinated gimmicks (Chamber 01, wireframe 3D cubes) | ERROR | ❌ Replace with tangible developer artifacts |
-| CMP-017 | Dual competing rounded-full pill buttons in hero | ERROR | ❌ One solid primary action; secondary is neutral/link |
-
-### C5. Animation & Performance Checks
-| ID | Check | Severity | Suggested action |
-|----|------|----------|----------|
-| ANI-001 | Bounce/elastic easing detected | WARNING | ✅ Suggest spring/ease-out |
-| ANI-002 | Animating layout properties (top/left/width/height) | ERROR | ✅ Convert to transform |
-| ANI-003 | Missing prefers-reduced-motion media query | ERROR | ✅ Add fallback |
-| ANI-004 | Flash rate >3Hz (seizure risk) | ERROR | ❌ |
-| ANI-005 | Autoplay media without pause control | ERROR | ❌ |
-| ANI-006 | transition: all (performance anti-pattern) | WARNING | ✅ List specific properties |
-| ANI-007 | Animation duration >1000ms for micro-interactions | WARNING | ✅ Cap at 300ms |
-
-### C6. Accessibility Checks
-| ID | Check | Severity | Suggested action |
-|----|------|----------|----------|
-| A11Y-001 | Interactive element missing accessible name | ERROR | ❌ |
-| A11Y-002 | Image without alt text or aria-label | ERROR | ❌ |
-| A11Y-003 | Form input without associated label | ERROR | ✅ Wrap with label |
-| A11Y-004 | Focus outline removed without replacement | ERROR | ✅ Add :focus-visible |
-| A11Y-005 | Heading hierarchy skip (h1→h3 without h2) | WARNING | ❌ |
-| A11Y-006 | Link text "click here" or "read more" without context | WARNING | ✅ Make descriptive |
-| A11Y-007 | Color contrast fail in :hover/:focus states | ERROR | ✅ Increase contrast |
-
-### Example Configuration Shape (Not Read by This Repository)
-```json
-{
-  "detector": {
-    "enabled": true,
-    "failOnSeverity": "ERROR",
-    "ignoreRules": ["TYPO-003"],
-    "ignoreFiles": ["legacy/**", "vendor/**"],
-    "ignoreValues": {
-      "CLR-001": ["brand-gradient-primary"]
-    },
-    "designSystem": {
-      "enabled": true,
-      "tokenPath": ".maxilun/design-tokens.json"
-    }
-  }
-}
-```
-
-### Example Waiver Comments (Not Parsed Automatically)
-Komentar berikut hanya mendokumentasikan alasan pengecualian bagi reviewer:
-```css
-/* maxilun-disable CLR-001: brand identity requires this gradient */
-.hero-background {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-/* maxilun-disable-next-line TYPO-002 */
-.caption { color: #888; } /* intentional muted style for decorative element */
-```
+| Kategori | Rentang ID | Fokus Evaluasi Utama |
+|---|---|---|
+| Tipografi | `TYPO-001` .. `TYPO-007` | Hierarki skala peran, lebar baca `60–75ch`, kontras terukur, `tabular-nums`, input mobile `≥16px` |
+| Warna | `CLR-001` .. `CLR-007` | Bebas gradien dekoratif klise, kroma latar tenang, status punya ikon/teks pendamping, `color-scheme` |
+| Tata Letak | `LAY-001` .. `LAY-013` | Bebas cetakan rata-tengah monoton, bebas monokultur Bento salah domain, 1 aksi primer, target sentuh |
+| Komponen | `CMP-001` .. `CMP-017` | Bebas kontrol mati, bebas kapsul/gimmick palsu, radius konsentris, navigasi berbasis entitas domain |
+| Gerak | `ANI-001` .. `ANI-007` | Hanya `transform`/`opacity`, durasi mikro `≤250ms`, hormati `prefers-reduced-motion` |
+| Aksesibilitas | `A11Y-001` .. `A11Y-007` | Nama aksesibel, asosiasi `<label>`, indikator `:focus-visible`, urutan heading semantik |
 
 ---
 
-## D. Contextual Critique Checks
+## D. Evaluasi Kontekstual Sebelum Selesai
 
-Checks ini memerlukan human/AI judgment dan harus dilaporkan sebagai review, bukan hasil pemindaian:
-
-1. **Emotional resonance** — Does the design evoke appropriate feeling for brand/audience?
-2. **Cultural appropriateness** — Are symbols/colors/language appropriate for target locale?
-3. **Brand consistency** — Does visual language align with established brand DNA?
-4. **Information hierarchy clarity** — Can user scan and understand priority in <3 seconds?
-5. **Cognitive load assessment** — Is complexity justified by task requirements?
-6. **Delight vs distraction balance** — Do moments of joy enhance or detract from goals?
-7. **Contextual relevance** — Does design serve specific use case, not generic template?
-8. **Long-term maintainability** — Can team extend this system without breaking coherence?
-
-### Critique Workflow
-Minta review melalui skill `/maxilun-craft critique <target>` saat tersedia. Ini adalah instruksi untuk agent, bukan executable CLI.
-
----
-
-## E. Uji Akhir (Pre-Submit Self-Check)
-
-Sebelum menyerahkan hasil konten atau UI, jawab cepat:
-- Terasa dibuat untuk **algoritma** atau untuk **manusia**? Jika demi algoritma → tulis ulang.
-- Adakah satu elemen yang bisa dihapus tanpa kehilangan informasi/fungsi? Jika ada → hapus.
-- Apakah semua temuan severity ERROR sudah diperbaiki atau dijustifikasi?
-- Apakah LLM critique checks menunjukkan no critical issues?
-
-### Pre-Submit Review
-Minta agent meninjau source/preview, rangkum temuan dengan ID, severity, lokasi, alasan, dan usulan perubahan. Perbaikan hanya diterapkan setelah diminta pengguna.
-
----
-
-## F. Integration dengan Maxilun Ecosystem
-
-### Token System Binding
-Review checklist may be compared manually against `.maxilun/design-tokens.json` when that file exists:
-- Spacing values checked against defined spatial scale
-- Colors validated against semantic color system
-- Typography checked against modular scale
-- Border radius validated against nested hierarchy rules
-
-### Automation Status
-Repository ini belum menyediakan audit executable, CI workflow, atau file-save hook untuk katalog ini. Jangan menambahkan konfigurasi yang memanggil `scripts/audit.js` sebelum tool tersebut benar-benar tersedia.
+Sebelum menyerahkan karya teks atau antarmuka, uji tiga hal ini secara jujur:
+1. **Uji Tukar Identitas**: Jika logo dan nama produk ditutupi, apakah struktur dan bahasanya masih mencerminkan domain spesifik produk ini, atau tampak seperti seribu template AI lainnya?
+2. **Uji Pengurangan**: Adakah kartu, badge, pembungkus `<div>`, atau kalimat pengantar yang jika dihapus justru memperjelas tugas utama pengguna?
+3. **Uji Kejujuran Fungsional**: Apakah setiap tombol, state kosong/gagal, dan angka yang tampil di layar benar-benar bekerja dan jujur?

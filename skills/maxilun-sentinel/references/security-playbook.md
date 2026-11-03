@@ -191,12 +191,13 @@ Prosedur rotasi secret yang terstruktur. Jangan ad-hoc.
 
 ## 5. Security Headers Baseline (Extended)
 
-Melengkapi §8 di SKILL.md. Header ini wajib untuk production.
+Melengkapi kebijakan HTTP security headers di `SKILL.md`. Header ini wajib untuk layanan production.
 
 ### 5.1 Mandatory Headers
 
 ```http
-Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+# Catatan: tambahkan '; preload' hanya jika apex & seluruh subdomain permanen mendukung HTTPS
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
 Referrer-Policy: strict-origin-when-cross-origin
@@ -245,7 +246,7 @@ frame-ancestors 'none'
 
 ## 6. Supply Chain Security Tooling
 
-Melengkapi §6 di SKILL.md. Tools spesifik per ekosistem.
+Melengkapi kebijakan supply chain di `SKILL.md`. Tools spesifik per ekosistem.
 
 | Ecosystem | Dependency Audit | Signature Verification | SBOM |
 |---|---|---|---|

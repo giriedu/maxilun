@@ -100,7 +100,7 @@ Gunakan spasi untuk mengelompokkan elemen terlebih dahulu, kontras latar belakan
 ### 4.2 Keselarasan Tepi Bersama (Align to Shared Edges)
 - Pilih sejumlah kecil garis tepi vertikal dan sejajarkan elemen ke garis tersebut.
 - **Tolak Cetakan Senter-Total (Anti Center-Everything Cascade)**: Hindari menyusun seluruh halaman dengan tumpukan seragam yang semuanya rata tengah (Overline centered -> H2 centered -> Subtitle centered -> Card centered).
-- Gunakan struktur asimetris, penyejajaran ke tepi kiri (*text-align: start*), atau Asymmetric Bento Grid (`2:1`, `1:2`) untuk menciptakan ritme visual berkarakter.
+- Pilih struktur yang mengikuti sifat konten: penyejajaran ke tepi awal (*text-align: start*), komposisi split dengan artefak produk hidup, tabel perbandingan, urutan editorial, atau grid asimetris (`2:1`, `1:2`) ketika setiap panel memiliki bobot fungsi berbeda.
 
 ### 4.3 Properti Logis CSS (Logical Properties)
 Gunakan properti logis untuk seluruh dimensi arah:

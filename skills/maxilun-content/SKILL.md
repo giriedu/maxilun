@@ -27,189 +27,91 @@ metadata:
     - references/cinematic-scriptwriting.md
 ---
 
-# Maxilun Content: Product Copywriting & Microcopy
+# Maxilun Content: Product Copywriting, UX Microcopy & Scriptwriting
 
-Bertanggung jawab atas penyusunan copywriting produk, teks pemasaran teknis, microcopy antarmuka pengguna (CTA, error message, empty state), dan pembentukan nada suara (*brand voice*) yang autentik dan bebas klise generator AI.
+Bertanggung jawab atas penyusunan copywriting produk, teks pemasaran teknis, microcopy antarmuka pengguna (CTA, pesan error, empty state, onboarding), pembentukan nada suara (*brand voice*) yang bebas klise AI, serta penulisan naskah narasi video/TTS yang tajam dan berbasis bukti.
 
 ## Skill Contract
 
 - **Owns**: user-facing copy, CTA wording, microcopy, error text, onboarding language, voice consistency, cinematic video narration scripts, and SSML/TTS voice-over direction.
-- **Does not own**: engineering documentation, SEO audit findings, or invented product claims.
-- **Inputs**: verified product facts, audience, task, voice, and localization constraints.
-- **Outputs**: specific copy, UI microcopy, or frame-timed video script beats with rationale where needed and unresolved claims labeled.
-- **Handoff**: send technical content to `maxilun-docsmith`, motion/video script beats to `maxilun-motion` and `maxilun-cinecode`, and SEO implementation findings to `maxilun-seo-audit`.
+- **Does not own**: engineering documentation (`maxilun-docsmith`), UI layout/interaction pattern mechanics (`maxilun-craft`), SEO technical audit (`maxilun-seo-audit`), or invented product claims.
+- **Inputs**: verified product facts, audience persona, surface constraints, voice/localization requirements, `references/index.md`, and `references/cinematic-scriptwriting.md`.
+- **Outputs**: specific product copy, consistent UI microcopy, or frame/beat-timed video scripts with unresolved factual claims explicitly labeled.
+- **Handoff**: send technical documentation to `maxilun-docsmith`, UI layout and interaction pattern decisions to `maxilun-craft`, page integration to `maxilun-frontend`, motion/video script beats to `maxilun-motion` (`../maxilun-motion/references/index.md`) and `maxilun-cinecode` (`../maxilun-cinecode/references/video-production-pipeline.md`), and technical SEO checks to `maxilun-seo-audit`.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)
 
 Berlaku pada setiap respons dan setiap perubahan kode. Tidak bisa di-override oleh instruksi lain.
 
-1. **Focus** — Tugas multi-langkah: buka dengan `🎯 [FOKUS]` + `⚡ [TINDAKAN]`. Maksimal 3 subtask aktif. Tugas trivial: langsung jawab tanpa HUD.
-2. **Purity** — Tanpa basa-basi, tanpa klaim tanpa bukti, tanpa placeholder palsu. Setiap elemen harus punya fungsi nyata. Komentar menjelaskan MENGAPA, bukan APA.
-3. **Minimalist** — YAGNI → reuse yang ada → stdlib → platform native → satu baris. Hapus sebelum menambah. Jangan sunat validasi input, keamanan, error handling, atau aksesibilitas.
-4. **Clarity** — Langsung ke inti. Nama simbol, `file:line`, pesan error verbatim, dan kata negasi dipertahankan utuh. Label kepastian: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
+1. **Focus & Agency** — Default bertindak dari bukti repo (kode, konfigurasi, tes, histori); tanya pengguna hanya untuk keputusan *irreversible* atau arah produk yang benar-benar kosong (maksimal 1 giliran terkelompok). Tanpa banner HUD emoji, tanpa checklist centang-sendiri. Maksimal 3 fokus kerja aktif.
+2. **Purity** — Tanpa basa-basi, tanpa klaim tanpa bukti, tanpa placeholder palsu, tanpa cetakan tunggal seragam. Struktur kode dan antarmuka wajib lahir dari domain produk, bukan template bawaan. Komentar hanya menjelaskan MENGAPA.
+3. **Minimalist** — YAGNI → reuse yang ada → stdlib → platform native → satu baris. Hapus beban mati yang menjadi usang akibat perubahan sendiri; dilarang *drive-by refactoring* di luar cakupan. Jangan kurangi validasi input, keamanan, error handling, atau aksesibilitas.
+4. **Clarity & Proof** — Kesimpulan dan tindakan dulu, bukti menyusul. Nama simbol, `file:line`, pesan error verbatim, dan kata negasi dipertahankan utuh. Label kepastian hanya saat perlu membedakan bukti: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
 
-**Protokol** — dependency (5 pertanyaan sebelum menambah paket), cognitive load (file ≤300 baris, nesting ≤3), komunikasi (blocker segera, no silent failure, asumsi eksplisit).
+**Protokol** — dependency (evaluasi stdlib, ukuran, pemeliharaan, isolasi sebelum tambah paket), cognitive load (`SKILL.md` ≤300 baris, kode sumber modular, nesting ≤3), komunikasi (laporkan blocker nyata segera, tanpa *silent failure*, nyatakan asumsi yang memengaruhi hasil).
 
 Detail lengkap: `../maxilun/references/engines.md`.
 <!-- CORE-RULES:END -->
 
-## 1. Engine Overrides
+## 1. Domain Overrides & Purity Gate
 
-Delta domain terhadap Core Rules di atas. Override content:
-- **Purity**: Ganti klaim superlatif kosong dengan fakta konkret + manfaat riil. Identity Swap Test wajib.
-- **Minimalist**: 3 kata kuat > 2 kalimat panjang.
+- **Purity & Identity Swap Test**: Baca `references/index.md` dan `../maxilun/references/purity-catalog.md`. Ganti klaim superlatif kosong dengan fakta konkret dan mekanisme nyata. Uji setiap draf dengan **Identity Swap Test**: jika nama produk ditukar dengan kompetitor dan kalimatnya masih terdengar generik, tulis ulang menggunakan fitur spesifik, angka terverifikasi (`[CONFIRMED]`), atau tandai metrik yang belum tersedia dengan `[UNCERTAIN: butuh data aktual]`.
+- **Kalibrasi Panjang Berbasis Surface**: Target keringkasan adalah pedoman kejelasan yang dikalibrasi terhadap konteks layar—bukan batas kata mekanis yang kaku. Utamakan verba + objek yang ringkas pada tombol CTA, masalah + langkah pemulihan yang jelas pada pesan error/toast, serta headline dan narasi yang mudah dipindai sesuai ruang visual maupun durasi baca.
 
-## Workflow
 ```mermaid
 flowchart LR
-    A[Brief] --> B[Draft]
-    B --> C[Identity Swap Test]
-    C --> D[Deliver]
+    A["Ekstrak Fakta & Kosakata Domain"] -->|Tentukan audiens & nada| B["Susun Copy / Naskah"]
+    B -->|Uji Identity Swap & Purity| C["Kalibrasi Surface & Locale"]
 ```
 
-## 2. Prinsip Copywriting Tingkat Produksi
+## 2. Prinsip Product Copywriting & UX Microcopy
 
-### 1. Headline & Hero Section
-- **Pola**: [Hasil yang Diinginkan Pengguna] + [Bagaimana / Tanpa Rasa Sakit yang Biasa Terjadi].
-- **Bukan**: *"Merevolusi cara Anda bekerja dengan kecerdasan buatan terdepan."* (Generik, klise).
-- **Ya**: *"Otomasi migrasi database tanpa downtime dalam 3 menit."* (Konkret, terukur, jelas).
+1. **Headline & Hero Value Proposition**:
+   - Gunakan pola **[Hasil Konkret Pengguna] + [Mekanisme / Bebas Hambatan Spesifik]** (contoh: *"Otomasi migrasi skema PostgreSQL tanpa jeda layanan"*), bukan jargon brosur abstrak.
+2. **Konsistensi Kosakata Domain (*Vocabulary Inventory*)**:
+   - Tetapkan satu istilah kata benda dan kata kerja baku untuk setiap entitas di seluruh antarmuka (jangan mencampur *"Proyek"* di navigasi dengan *"Workspace"* di notifikasi untuk objek yang sama).
+3. **CTA Berorientasi Verba + Objek**:
+   - Tulis tindakan spesifik yang terjadi setelah klik: *"Buat Token API"*, *"Unduh Laporan CSV"*, *"Hubungkan Repositori"*. Hindari label kabur seperti *"Submit"*, *"OK"*, *"Klik di Sini"*, atau *"Pelajari Lebih Lanjut"* tanpa objek.
+4. **Pesan Error & Empty State yang Membantu Pemulihan**:
+   - **Pesan Error**: Jelaskan penyebab kegagalan dan cara memperbaikinya secara langsung tanpa menyalahkan pengguna dan tanpa kata *"Oops!"* (contoh: *"Kata sandi minimal 12 karakter dan wajib memuat 1 simbol."*).
+   - **Empty State**: Jelaskan fungsi area tersebut dalam satu kalimat dan arahkan ke aksi pertama yang konkret. (Untuk pemilihan pola interaksi seperti toast *Undo* vs dialog modal konfirmasi, serahkan keputusan mekanisme UI kepada `maxilun-craft` dan sediakan teks microcopy yang sesuai untuk pola yang dipilih.)
+5. **Tautan Mandiri (*Self-Descriptive Links*)**:
+   - Anchor text harus bermakna saat dibaca tersendiri oleh pengguna maupun pembaca layar: *"Baca dokumentasi tanda tangan webhook"*, bukan *"baca di sini"*.
 
-### 2. Microcopy Antarmuka (UX Copywriting & Interface Engineering)
-- **Inventarisasi Kosakata Domain (Vocabulary Inventory)**:
-  - Buat daftar kata benda objek dan kata kerja aksi baku sebelum menulis copy antarmuka.
-  - Dilarang menamai objek yang sama dengan dua istilah berbeda (misal: *"Proyek"* di sidebar vs *"Workspace"* di breadcrumb/toast).
-  - Gunakan istilah teknis nyata sesuai domain operasional, bukan metafora fiksi ilmiah palsu (*"Arsitektur Ruang Virtual 3D"*, *"Chamber 01"*).
-- **Tombol CTA (Call to Action) Berorientasi Verba + Objek**:
-  - Gunakan format kata kerja aksi spesifik + objek: *"Buka Sesi Baru"*, *"Salin Perintah cURL"*, *"Unduh Laporan PDF"*, *"Hubungkan Akun GitHub"*.
-  - Hindari tombol generik: *"Submit"*, *"OK"*, *"Ya"*, *"Tidak"*, *"Klik di Sini"*, *"Explore"*, *"Get Started"*.
-- **Pesan Error yang Solutif Tepat di Samping Kerusakan**:
-  - Letakkan instruksi error tepat di bawah field yang gagal (`aria-describedby`), bukan hanya toast global.
-  - Beri tahu secara jelas cara memperbaikinya tanpa menyalahkan pengguna, tanpa tanda seru, dan tanpa kata klise *"Oops!"*.
-  - **Bukan**: *"Oops! Terjadi kesalahan tak terduga."* atau *"Input tidak valid!"*
-  - **Ya**: *"Kata sandi minimal 8 karakter dan mengandung 1 angka."*
-- **Undo Lebih Unggul daripada Konfirmasi Modal**:
-  - Untuk tindakan reversibel (arsip data, hapus ke tempat sampah), jalankan seketika dan sediakan opsi **Undo** pada toast notifikasi selama 5–8 detik.
-  - Dialog konfirmasi modal hanya untuk aksi destruktif permanen yang tidak dapat dipulihkan.
-- **Tautan Menjelaskan Tujuan (Self-Descriptive Links)**:
-  - Teks link harus masuk akal di luar konteks: tulis *"Baca panduan webhook"*, bukan *"Klik di sini"*.
-  - Jika ada tombol bantuan, sertakan topiknya: *"Pelajari batas sesi"* daripada bare *"Pelajari lebih lanjut"*.
-- **Empty State yang Mengarahkan ke Depan**:
-  - Berikan orientasi fungsi tempat tersebut + satu tombol aksi pertama konkret.
-  - *"Belum ada sesi WhatsApp aktif. Pindai kode QR untuk menghubungkan nomor pertama."* → `[ Hubungkan Sesi ]`
-### 3. Uji Autentisitas (The Identity Swap Test)
-> Jika nama produk Anda ditukar dengan produk kompetitor, apakah teks ini masih terbaca sama persis seperti teks umum?
+## 3. Lokalisasi & Pola Bahasa Indonesia Natural
 
-Jika ya, copywriting tersebut masih generik. Tulis ulang dengan menonjolkan fitur unik, angka nyata, dan persona audiens yang dituju.
+### 3.1 Kalibrasi Lokalisasi Berdasarkan Audiens & Konteks Teknis
+- **Sistem i18n**: Ikuti arsitektur lokalisasi proyek yang ada. Jangan mencampur bahasa Inggris pada pesan error di antarmuka berbahasa Indonesia kecuali untuk istilah teknis/simbol kode yang memang tidak diterjemahkan.
+- **Sapaan & Nada**: Sesuaikan dengan segmen produk—*"Anda"* untuk B2B/enterprise/finansial, *"kamu"* untuk produk konsumen/kreatif bila sesuai karakter brand.
+- **Mata Uang, Zona Waktu, Pembayaran & Nomor Telepon**: Format sesuai pasar target dan konteks teknis. Untuk audiens domestik Indonesia, gunakan format lokal yang familier (`Rp 150.000/bulan`, zona waktu `WIB/WITA/WIT`, metode lokal yang memang didukung produk, serta format tampilan `0812-xxxx-xxxx`); untuk produk global, form input E.164, atau tautan `wa.me/`, gunakan format internasional (`+62812...`, `UTC`/ISO-8601, atau mata uang pasar terkait) melalui `Intl.NumberFormat` dan `Intl.DateTimeFormat`.
 
-## 3. Gerbang Purity Konten (Reject-Only, Non-Negotiable)
+### 3.2 Filter Klise Terjemahan → Bahasa Indonesia Natural
 
-Rujukan lengkap: `../maxilun/references/purity-catalog.md`. Konten wajib ditulis ulang bila cocok salah satu di bawah:
-
-1. **Generik tanpa jangkar** — bisa dipakai topik apa pun tanpa berubah. Wajib jangkar spesifik (nama, angka, audiens, kasus).
-2. **Panjang, poin sedikit** — setiap kalimat wajib menambah satu fakta/keputusan baru.
-3. **Judul heboh, isi dangkal** — judul dilarang menjanjikan lebih dari yang dibuktikan isi.
-4. **Tanpa data/sumber/contoh/sudut pandang** — wajib minimal satu; jika tidak ada, nyatakan jujur, jangan dikarang.
-5. **Frasa template** — dilarang: *"Revolutionize Your Workflow"*, *"Unlock Your Potential"*, *"Solusi mutakhir"*, *"Solusi terdepan"*, *"Di era digital yang serba cepat"*, *"Tingkatkan ke level berikutnya"*.
-6. **Tidak menjawab kebutuhan pembaca** — paragraf yang bercerita tentang produk tanpa manfaat pembaca ditolak.
-
-*Uji akhir*: terasa dibuat untuk **algoritma** atau **manusia**? Jika demi algoritma → tulis ulang.
+| Klise Generik (Ditolak) | Alternatif Natural (Gunakan) | Alasan Perbaikan |
+|---|---|---|
+| "Solusi mutakhir untuk optimalisasi produktivitas tim" | "Pangkas waktu review kode tim dari 2 hari menjadi 30 menit" | Mengganti jargon abstrak dengan hasil yang terukur |
+| "Platform terintegrasi yang memberdayakan bisnis Anda" | "Kelola stok, pesanan, dan faktur pajak di satu dasbor" | Menyebutkan objek kerja nyata, bukan kata kerja korporat |
+| "Pengiriman laporan dapat dilakukan secara otomatis" | "Laporan terkirim otomatis setiap Senin pukul 08.00 WIB" | Kalimat aktif lebih langsung daripada nominalisasi pasif |
+| "Untuk informasi lebih lanjut, silakan hubungi kami" | "Tanyakan skema enterprise via WhatsApp" | Langsung menyebutkan kanal dan tujuan komunikasi |
 
 ## 4. Copywriting SEO-Native
 
-Konten yang bagus untuk manusia seharusnya juga baik untuk mesin pencari — bukan sebaliknya:
-- **Headline utama**: sertakan kata kunci primer secara alami, jangan dipaksakan.
-- **Paragraf pembuka**: jawab pertanyaan utama pembaca dalam 2 kalimat pertama.
-- **Internal linking**: tautkan ke halaman terkait dengan anchor text deskriptif (bukan "baca di sini").
-- **Meta description**: tulis seperti ringkasan proposisi nilai — bukan keyword stuffing.
-- Jangan tulis konten untuk volume pencarian jika tidak punya keahlian asli di topik itu.
+- **Kesesuaian Niat Pencarian (*Search Intent*)**: Jawab pertanyaan utama pembaca dalam dua kalimat pembuka dan gunakan kata kunci primer secara alami pada judul serta subjudul tanpa *keyword stuffing*.
+- **Meta Description & Anchor Internal**: Tulis *meta description* sebagai ringkasan akurat isi halaman (tambahkan ajakan bertindak pada halaman komersial/landing, atau ringkasan cakupan teknis pada halaman dokumentasi).
 
-## 5. Panduan Lokalisasi (Localization)
+## 5. Naskah Motion Video, Storyboard Copy & TTS (`references/cinematic-scriptwriting.md`)
 
-- **String UI**: Jika proyek sudah memakai i18n atau brief meminta multi-locale, ikuti sistem lokalisasi yang ada dan hindari hardcode teks baru. Untuk prototipe atau aplikasi satu locale tanpa i18n, jangan menambahkan infrastruktur lokalisasi tanpa kebutuhan.
-- **Tone per pasar**: formal untuk B2B enterprise (Indonesia: "Anda"), kasual untuk consumer app ("kamu"). Tentukan tone guide per locale.
-- **Format angka & tanggal**: gunakan `Intl.NumberFormat` dan `Intl.DateTimeFormat` — tidak pernah format manual.
-- **Placeholder & error message**: lokalisasi juga. Error message dalam bahasa Inggris di UI berbahasa Indonesia adalah pengalaman yang buruk.
-- **RTL (Arabic, Hebrew)**: jika target pasar mencakup bahasa RTL, gunakan CSS logical properties (`margin-inline-start`) sejak awal — refactor RTL di akhir sangat mahal.
-
-## 6. Pola Bahasa Indonesia Natural vs Klise Generik
-
-Copywriting Bahasa Indonesia memiliki pola klise terjemahan yang berbeda dari bahasa Inggris. Gunakan tabel ini sebagai filter Purity.
-
-### Tabel Konversi Klise → Natural (Bahasa Indonesia)
-
-| Klise Generik (DILARANG) | Natural (GUNAKAN) | Alasan Ditolak |
-|---|---|---|
-| "Studio desain independen yang merancang identitas visual, arsitektur jenama, dan sistem desain digital" | "Kami membantu brand membangun identitas visual yang konsisten" | Kalimat >25 kata, tumpuk jargon, terasa seperti brosur |
-| "Dilengkapi portal tracking progres proyek dan verifikasi invoice digital transparan" | "Pantau progres proyek dan cek invoice kapan saja" | Buzzword stacking ("portal", "digital", "transparan") |
-| "Solusi mutakhir untuk optimalisasi produktivitas tim Anda" | "Bantu tim Anda bekerja lebih cepat" | "Mutakhir" + "optimalisasi" = double buzzword |
-| "Platform terintegrasi yang memberdayakan bisnis Anda" | "Kelola bisnis Anda dari satu tempat" | "Terintegrasi" + "memberdayakan" = klise korporat |
-| "Di era digital yang serba cepat ini..." | (hapus, langsung ke poin) | Frasa pembuka template yang tidak menambah informasi |
-| "Kami berkomitmen untuk memberikan pelayanan terbaik" | "Tim kami siap membantu dalam 2 jam kerja" | Klaim kosong tanpa bukti; ganti dengan komitmen terukur |
-| "Meningkatkan efisiensi secara signifikan" | "Kurangi waktu laporan dari 3 jam jadi 15 menit" | "Signifikan" tanpa angka = meaningless |
-| "Berbasis teknologi canggih" | (hapus atau jelaskan teknologinya) | "Canggih" = filler word |
-| "Menghadirkan pengalaman yang seamless" | "Proses checkout selesai dalam 3 klik" | "Seamless" = buzzword; buktikan dengan metrik |
-| "Untuk informasi lebih lanjut, silakan hubungi kami" | "Chat via WhatsApp: 0812-xxxx-xxxx" | Formal berlebihan + tidak actionable |
-
-### Prinsip Bahasa Indonesia Natural
-
-1. **Hindari terjemahan literal dari English AI patterns**
-   - "Get started" bukan "Mulai sekarang" → "Buat akun" atau "Coba gratis"
-   - "Learn more" bukan "Pelajari lebih lanjut" → "Lihat cara kerja" atau "Baca panduan"
-   - "Contact us" bukan "Hubungi kami" → "Chat dengan tim" atau "Kirim pesan"
-
-2. **Gunakan kata kerja aktif, bukan nominalisasi**
-   - Bukan: "Pengiriman laporan dapat dilakukan secara otomatis"
-   - Ya: "Laporan terkirim otomatis setiap Senin pagi"
-
-3. **Singkat = hormati waktu pembaca**
-   - Heading max 8 kata
-   - Deskripsi/tagline max 2 kalimat
-   - Label tombol max 3 kata
-   - Error message: 1 kalimat masalah + 1 kalimat solusi
-
-4. **Spesifik ke konteks Indonesia**
-   - Format rupiah: "Rp 150.000/bulan" bukan "$10/month"
-   - Referensi lokal jika relevan: "Transfer bank BCA/Mandiri", "Bayar via GoPay/OVO"
-   - Jam operasional dalam WIB/WITA/WIT, bukan "9AM-5PM"
-   - Nomor telepon format Indonesia: "0812-xxxx-xxxx" bukan "+62 812 xxxx xxxx"
-
-5. **Test baca keras**
-   - Baca copy dengan suara nyaring
-   - Jika terdengar seperti presenter TV/news anchor → terlalu formal, tulis ulang
-   - Jika terdengar seperti teman/kolega yang menjelaskan produk → tepat
-   - Target: orang biasa bisa paham dalam 1x baca, tanpa perlu re-read
-
-
-## 7. Naskah Motion Video & Storyboard Copy (`maxilun-motion` + `maxilun-cinecode`)
-
-Saat menulis teks untuk animasi interaktif (`maxilun-motion`) atau video produk (`maxilun-cinecode` — lihat `../maxilun-cinecode/references/video-production-pipeline.md`), terapkan aturan khusus layar bergerak:
-1. **Copy sesuai shot**: Susun informasi mengikuti storyboard. Panjang teks ditentukan oleh ukuran, crop, bahasa, kompleksitas gagasan, gerak, dan waktu baca; jangan terapkan batas kata per scene atau struktur beat secara otomatis.
-2. **Narasi yang membawa cerita**: Pastikan tiap shot mengubah pemahaman penonton, bukan hanya mengulang headline. Pesan, hook, proof, dan CTA digunakan bila relevan; angka atau klaim harus disediakan atau diverifikasi.
-3. **Sinkronisasi handoff**: Serahkan beat narasi/copy, fakta sumber, pengucapan nama/angka, jeda penting, dan maksud emosional ke `maxilun-cinecode`. Timing dan durasi shot diputuskan bersama storyboard serta footage, bukan template durasi baku.
-
-4. **Narasi Spoken & TTS (`references/cinematic-scriptwriting.md`)**:
-   - Narasi video didengar telinga, bukan dibaca mata. Terapkan ritme, jeda hening (`0.4s - 1.2s`), dan satu ide per napas.
-   - Gunakan SSML dan pemilihan voice bila didukung oleh TTS yang tersedia; cek dokumentasi/runtime saat ini alih-alih mematok ID voice.
-   - Sediakan teks pengucapan angka/nama untuk delivery audio bila mesin membutuhkannya; pertahankan angka tertulis yang benar pada caption/grafis.
-## Companion Skills Awareness
-
-`maxilun-content` menyusun copywriting produk dan microcopy UI. Jalankan mandiri untuk copy yang brief-nya cukup; pilih companion jika konteks tambahan mengubah hasil:
-
-| Companion | Content's Role | Purity & Quality Contribution |
-|---|---|---|
-| `maxilun-craft` | Konteks UI dan visual hierarchy | Gunakan jika hierarki visual memengaruhi copy |
-| `maxilun-frontend` | Konteks halaman dan routing | Gunakan jika copy perlu ditempatkan dalam struktur halaman |
-| `maxilun-docsmith` | Readability dokumentasi teknis | Gunakan untuk dokumentasi teknis yang juga memerlukan penyelarasan bahasa |
-| `maxilun-seo-audit` | SEO copy optimization | Gunakan jika optimasi search masuk lingkup |
-| `maxilun-motion` & `maxilun-cinecode` | Menyusun copy per shot, choreography, teks bergerak, dan subtitle bila diperlukan | Menjaga narasi, timing, footage, dan gerak tetap satu cerita |
-
-**Penggunaan companion**: Libatkan `maxilun-craft` jika copy bergantung pada hierarki visual atau keadaan UI tertentu, `maxilun-motion` / `maxilun-cinecode` untuk naskah animasi/video, dan `maxilun-frontend` jika copy harus dipasang ke struktur/routing halaman. Untuk teks mandiri, sampaikan copy serta asumsi yang relevan tanpa menahan hasil.
+Saat berkolaborasi dengan `maxilun-motion` (`../maxilun-motion/references/index.md`) atau `maxilun-cinecode` (`../maxilun-cinecode/references/video-production-pipeline.md`), baca `references/cinematic-scriptwriting.md` dan terapkan aturan layar bergerak:
+1. **Copy Mengikuti Fungsi Shot**: Kalibrasi panjang teks pada tiap adegan berdasarkan ukuran tipografi, gerak kamera, kompleksitas ide, dan waktu baca (*reading hold time*)—jangan memaksakan rumus jumlah kata atau jumlah beat yang seragam untuk semua video.
+2. **Progresi Narasi**: Setiap shot wajib memajukan pemahaman penonton (masalah → mekanisme → bukti nyata → langkah berikutnya), bukan mengulang slogan yang sama dengan kata berbeda.
+3. **Narasi Audio (Voice-Over & SSML/TTS)**: Tulis untuk didengar telinga—satu gagasan utama per tarikan napas, sisipkan panduan jeda (`0.4s–1.2s`), dan sediakan ejaan fonetik/pengucapan untuk singkatan, simbol teknis, atau angka agar mesin TTS melafalkannya secara natural sementara teks layar tetap menampilkan format tertulis yang presisi.
 
 ## Related Skills
-- **maxilun-craft**: UI/UX design system dan konteks visual untuk microcopy
-- **maxilun-motion**: Koreografi kinetic typography dan animasi teks interaktif (`../maxilun-motion/references/index.md`)
-- **maxilun-cinecode**: Kompilasi naskah dan subtitle ke dalam video programatik (`../maxilun-cinecode/references/video-production-pipeline.md`)
-- **maxilun-frontend**: Page structure dan routing context untuk copy placement
-- **maxilun-docsmith**: Technical documentation readability dan tone consistency
-- **maxilun-seo-audit**: SEO optimization untuk copy dan meta descriptions
+
+- **maxilun-craft**: Sistem desain UI/UX, hierarki visual, dan pola interaksi untuk penempatan microcopy.
+- **maxilun-motion**: Koreografi *kinetic typography* dan animasi teks interaktif (`../maxilun-motion/references/index.md`).
+- **maxilun-cinecode**: Komposisi video programatik, penempatan subtitle, dan sinkronisasi audio (`../maxilun-cinecode/references/video-production-pipeline.md`).
+- **maxilun-frontend**: Integrasi string UI, struktur komponen halaman, dan pipeline lokalisasi (`i18n`).
+- **maxilun-docsmith**: Dokumentasi teknis engineering, spesifikasi API, dan penyelarasan glosarium domain.
+- **maxilun-seo-audit**: Audit teknis metadata, struktur heading, dan visibilitas mesin pencari.

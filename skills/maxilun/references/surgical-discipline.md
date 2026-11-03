@@ -1,167 +1,59 @@
 <!-- metadata:
   version: "1.0.0"
   ecosystem: "maxilun"
-  last_updated: "2026-11-01"
-  source: "Maxilun Architecture (diselaraskan dari observasi rekayasa LLM Andrej Karpathy)"
+  last_updated: "2026-11-02"
 -->
 
 # Maxilun Surgical Engineering Discipline
-# (Disiplin Rekayasa Bedah Maxilun)
 
-Disiplin operasional untuk menekan kegagalan laten model AI (LLM) saat menulis, mengaudit, dan merefaktor kode produksi. Mengintegrasikan prinsip rekayasa presisi tinggi ke dalam empat engine utama Maxilun (**Focus, Purity, Minimalist, Clarity**).
-
-**Trade-off dasar:** Disiplin ini memprioritaskan kehati-hatian (*caution*) dan presisi di atas kecepatan sesaat (*speed*). Untuk tugas trivial (perbaikan typo teks, string tunggal terisolasi), gunakan pertimbangan praktis tanpa memaksakan seluruh seremoni.
+Disiplin operasional untuk mencegah empat mode kegagalan klasik LLM saat memodifikasi kode produksi: asumsi tersembunyi, abstraksi bengkak, kerusakan sampingan (*collateral diff*), dan klaim selesai tanpa pembuktian eksekusi.
 
 ---
 
-## 4 Titik Rawan Rekayasa AI (The 4 Pitfalls)
+## 1. Pre-flight Reasoning (Investigasi Sebelum Edit)
 
-1. **Wrong Assumptions & Hidden Confusion**: Model membuat asumsi sepihak tanpa konfirmasi, menyembunyikan kebingungan, tidak meminta klarifikasi, dan memilih cabang implementasi yang berisiko secara diam-diam.
-2. **Overcomplication & Bloated Abstractions**: Model cenderung merancang kode berlebihan (*overengineering*), menciptakan abstraksi prematur untuk komponen sekali pakai, dan menulis ratusan baris saat puluhan baris sudah cukup.
-3. **Collateral & Orthogonal Damage**: Model mengubah indentasi, merombak komentar sekitar, atau melakukan pembersihan formatting liar (*drive-by refactoring*) pada area yang tidak diminta.
-4. **Weak Success Criteria**: Model berhenti tanpa bukti eksekusi nyata karena bekerja berdasarkan perintah imperatif yang kabur alih-alih kriteria sukses yang dapat diuji.
+1. **Baca fakta repo sebelum mengambil asumsi** — periksa pemanggil simbol (`callsIn:`), tipe data, pola error handling, dan test suite yang sudah ada.
+2. **Bedakan keputusan murah vs mahal**:
+   - Detail implementasi lokal yang mudah dibalik (*Type 2*): pilih pola yang konsisten dengan codebase, nyatakan asumsi yang berdampak bila ada, dan langsung kerjakan.
+   - Perubahan kontrak publik, skema data produksi, atau perilaku bisnis ambigu yang mahal dibalik (*Type 1*): paparkan opsi beserta trade-off secara ringkas dan minta keputusan pengguna dalam satu giliran.
+3. **Tolak rencana berisiko tersembunyi** — jika permintaan pengguna berpotensi merusak kompatibilitas pemanggil atau membuka celah keamanan, tunjukkan buktinya (`file:line`) dan usulkan jalur yang aman.
 
----
-
-## 4 Pilar Disiplin Rekayasa Bedah
-
-| Pilar | Fokus Masalah | Integrasi Engine Maxilun |
-|---|---|---|
-| **1. Pre-flight Reasoning** | Asumsi salah, kebingungan tersembunyi, trade-off hilang | **Clarity Engine & Proactive Communication** |
-| **2. Radical Simplicity** | Overengineering, abstraksi bengkak, konfigurasi spekulatif | **Minimalist Engineering & Purity Engine** |
-| **3. Surgical Precision** | Modifikasi orthogonal, perbaikan liar (*drive-by refactoring*) | **Purity Engine & Code Hygiene** |
-| **4. Verifiable Goal Loop** | Klaim selesai tanpa bukti, ketiadaan verifikasi | **Focus Engine & Verify Gate** |
-
----
-
-## 1. Pre-flight Reasoning (Pikir Sebelum Koding)
-
-**Jangan berasumsi sepihak. Jangan sembunyikan kebingungan. Paparkan trade-off.**
-
-Sebelum memodifikasi kode atau merancang perubahan struktur:
-- **Nyatakan asumsi secara eksplisit**: Jika konteks memiliki ambiguitas, tanyakan kepada pengguna atau beri penanda `[ASUMSI]` yang transparan daripada menebak diam-diam.
-- **Paparkan beberapa interpretasi**: Jika instruksi memiliki lebih dari satu arti teknis, tampilkan opsi dan trade-off masing-masing — jangan memilih satu cabang secara rahasia.
-- **Ajukan alternatif lebih sederhana**: Jika pendekatan yang diminta pengguna terlalu rumit atau ada solusi native/stdlib yang jauh lebih bersih, sampaikan alternatif tersebut dengan bukti.
-- **Berhenti saat membingungkan**: Sebutkan bagian yang kabur dan ajukan satu pertanyaan terarah yang menentukan langkah berikutnya.
-
-### Contoh Kasus
-
-**Permintaan:** *"Buat pencarian data lebih cepat."*
-
-❌ **Pelanggaran Disiplin (Memilih Diam-diam Tanpa Konfirmasi):**
-Langsung menginstal Redis cache, membuat index database, dan menulis async background worker (~200 baris) tanpa verifikasi letak bottleneck nyata.
-
-✅ **Penerapan Benar (Pre-flight Reasoning):**
-```markdown
-Pencarian lebih cepat dapat berarti beberapa hal:
-1. Menurunkan latensi query (optimasi index atau seleksi kolom minimal).
-2. Menangani konkurensi lebih tinggi (connection pooling atau worker terpisah).
-3. Meningkatkan persepsi kecepatan (debouncing UI atau skeleton state).
-
-Profil saat ini: query memakan waktu ~450ms akibat full table scan pada kolom `email`.
-Rekomendasi: tambahkan index pada `users(email)`. Apakah ini yang diinginkan?
-```
+### Contoh
+**Permintaan:** *"Buat pencarian pengguna lebih cepat."*
+- **Buruk**: Langsung memasang Redis dan menulis layer caching 180 baris tanpa mengukur letak lambatnya.
+- **Tepat**: Periksa query aktual → ditemukan full scan pada `WHERE LOWER(email) = $1` di `src/users/repo.ts:84` → tambahkan expression index `users (LOWER(email))` dan buktikan perubahan `EXPLAIN ANALYZE`.
 
 ---
 
 ## 2. Radical Simplicity (Kesederhanaan Radikal)
 
-**Kode minimal yang menuntaskan masalah. Tolak konstruksi spekulatif.**
-
-- **Hanya fitur yang diminta**: Dilarang menambah fungsionalitas ekstra "untuk jaga-jaga masa depan".
-- **Tanpa abstraksi untuk kode sekali pakai**: Jangan membuat interface, factory, atau strategy pattern jika hanya ada 1 implementasi nyata (*no single-use abstractions*).
-- **Tanpa konfigurabilitas spekulatif**: Hindari opsi parameter atau flags yang tidak diminta.
-- **Tanpa error handling skenario mustahil**: Jangan menangani error yang secara struktural mustahil terjadi pada alur yang dibangun.
-- **Aturan 200 ke 50 baris**: Jika solusi ditulis sepanjang 200 baris padahal bisa diselesaikan dalam 50 baris bersih, tulis ulang (*rewrite*).
-- **Senior Engineer Test**: Tanyakan pada diri sendiri: *"Apakah senior engineer akan menilai kode ini overcomplicated?"* Jika ya, sederhanakan.
-
-### Contoh Kasus
-
-**Permintaan:** *"Buat fungsi hitung diskon persentase."*
-
-❌ **Pelanggaran Disiplin (Overengineering):**
-Membuat `interface DiscountStrategy`, `class PercentageDiscountStrategy`, `class DiscountCalculatorFactory`, dan `DiscountConfigDTO` (60+ baris).
-
-✅ **Penerapan Benar (Radical Simplicity):**
-```typescript
-export function calculateDiscount(amount: number, percentage: number): number {
-  if (percentage <= 0) return 0;
-  return amount * (Math.min(percentage, 100) / 100);
-}
-```
+1. **Bangun tepat yang diminta** — tanpa parameter konfigurasi masa depan, tanpa fitur tambahan "sekalian".
+2. **Tanpa abstraksi sekali pakai** — jangan membuat `Interface`, `Factory`, `Strategy`, atau *base class* bila hanya ada satu implementasi nyata.
+3. **Tulis ulang kode bengkak** — jika logika sederhana membengkak menjadi 200 baris wrapper yang bisa diselesaikan bersih dalam 40–50 baris lugas, sederhanakan sekarang.
+4. **Jangan menangani skenario mustahil** — validasi ketat dipasang di batas input eksternal (*trust boundaries*); di dalam fungsi internal bertipe kuat, percayai invarian tipe yang sudah ditegakkan.
 
 ---
 
-## 3. Surgical Precision (Perubahan Bedah Presisi)
+## 3. Surgical Precision (Presisi Radius Perubahan)
 
-**Sentuh hanya yang wajib disentuh. Bersihkan hanya sampah sendiri.**
-
-Ketika memodifikasi berkas yang sudah ada (*existing code*):
-- **Dilarang *drive-by refactoring***: Jangan "memperbaiki", merapikan indentasi, atau mengubah format baris di luar cakupan tugas langsung.
-- **Dilarang menyentuh kode yang tidak rusak**: Jika suatu fungsi berjalan benar dan berada di luar permintaan, pertahankan apa adanya.
-- **Patuhi konvensi setempat**: Ikuti gaya penamaan dan arsitektur kode yang sudah ada di repositori, meskipun Anda memiliki preferensi pribadi yang berbeda.
-- **Penanganan dead code lama**: Jika mendeteksi dead code lawas yang tidak terkait tugas, catat di Parking Lot — jangan menghapusnya tanpa instruksi pengguna.
-- **Pembersihan orphan (*orphan cleanup*)**: Hapus import, variabel, atau helper lokal yang menjadi tidak terpakai HANYA karena perubahan Anda sendiri.
-- **Uji Lacak (The Trace Test)**: Setiap baris dalam `git diff` harus dapat dipertanggungjawabkan dan terlacak langsung ke instruksi pengguna.
-
-### Contoh Kasus
-
-**Permintaan:** *"Perbaiki crash jika email bernilai kosong pada validator user."*
-
-❌ **Pelanggaran Disiplin (Perubahan Liar / Orthogonal):**
-```diff
-- // check email
-- if (!user.email) throw new Error("Email missing");
-+ /**
-+  * Validates user input payload.
-+  */
-+ const trimmedEmail = (user.email || '').trim();
-+ if (!trimmedEmail || !trimmedEmail.includes('@')) {
-+   throw new ValidationError("Invalid email address");
-+ }
-+ // Cleanup tidak diminta pada baris sekitar:
-- if (user.age < 18) throw new Error("Underage");
-+ if (Number(user.age) < 18) throw new ValidationError("Must be 18+");
-```
-
-✅ **Penerapan Benar (Perubahan Bedah Presisi):**
-```diff
-- if (!user.email) throw new Error("Email missing");
-+ const email = typeof user.email === 'string' ? user.email.trim() : '';
-+ if (!email) throw new Error("Email missing");
-```
+1. **Dilarang *drive-by refactoring*** — jangan mengubah indentasi, mengurutkan ulang fungsi, mengganti gaya kutip, atau menulis ulang kode sehat di luar cakupan tugas.
+2. **Aturan tunggal pembersihan kode mati**:
+   - **Wajib hapus**: import, variabel, helper, tipe, atau jalur lama yang **menjadi usang akibat perubahan/migrasi Anda sendiri**.
+   - **Jangan sentuh diam-diam**: kode lama tidak terpakai di modul lain yang sama sekali tidak berhubungan dengan tugas; cukup sebutkan satu baris di akhir laporan bila berisiko.
+3. **Patuhi konvensi repositori setempat** — ikuti sistem styling, ORM, test runner, dan pola penamaan yang sudah dipakai proyek tersebut.
+4. **Uji Lacak Diff (*Trace Test*)** — setiap hunk perubahan harus memiliki alasan langsung dari permintaan pengguna atau pemutakhiran pemanggil yang terdampak.
 
 ---
 
-## 4. Verifiable Goal Loop (Loop Verifikasi Terarah)
+## 4. Verifiable Goal Loop (Bukti Eksekusi Nyata)
 
-**Tetapkan kriteria sukses yang dapat diuji. Ulangi (*loop*) sampai terbukti.**
+Ubah setiap tugas menjadi sasaran yang dapat dibuktikan secara objektif sebelum berhenti:
 
-Ubah instruksi imperatif menjadi target deklaratif yang terverifikasi:
-
-| Perintah Awal | Transformasi Target Terarah |
+| Jenis Tugas | Bukti Verifikasi yang Wajib Dijalankan |
 |---|---|
-| "Tambah validasi payload" | "Tulis test dengan input invalid, lalu buat test lulus." |
-| "Perbaiki bug null pointer" | "Tulis test/skrip reproduksi yang gagal, lalu buat test lulus." |
-| "Refactor fungsi parse" | "Pastikan test yang ada lulus sebelum dan sesudah refactor." |
+| Perbaikan bug | Skrip/tes reproduksi gagal sebelum edit → lulus sesudah edit |
+| Fitur / perubahan API | Tes perilaku batas & jalur gagal lulus + pemanggil lama diperbarui |
+| Refaktor struktural | Suite tes & typecheck lulus tanpa perubahan perilaku eksternal |
+| Antarmuka web / CLI | Jalankan aplikasi/skrip nyata, amati hasil render atau keluaran aktual |
 
-Untuk tugas multi-langkah, tetapkan rencana verifikasi konkret:
-```
-1. [Langkah] → verifikasi: [pemeriksaan konkret]
-2. [Langkah] → verifikasi: [pemeriksaan konkret]
-3. [Langkah] → verifikasi: [pemeriksaan konkret]
-```
-
-Kriteria sukses yang eksplisit memberi arah verifikasi mandiri tanpa perlu tebak-tebakan.
-
----
-
-## Checklist Evaluasi Pra-Delivery
-
-Sebelum menyerahkan hasil perubahan kode:
-
-- [ ] **Trace Test**: Setiap baris dalam diff memiliki korelasi langsung dengan instruksi pengguna.
-- [ ] **No Drive-by Refactor**: Tidak ada pembersihan format atau refactor liar pada kode sekitar.
-- [ ] **Orphan Clean**: Import atau variabel yang menjadi usang akibat editan sendiri telah dibersihkan.
-- [ ] **Senior Engineer Test**: Kode bebas dari layer abstraksi palsu untuk komponen sekali pakai.
-- [ ] **Verifiable Loop**: Ada bukti eksekusi nyata (perintah tes, skrip reproduksi, atau build exit code 0).
+Jika eksekusi terhalang faktor lingkungan (mis. database eksternal tidak aktif), jalankan seluruh verifikasi statis/lokal yang memungkinkan dan tandai sisanya secara jujur dengan `[UNVERIFIED]`.

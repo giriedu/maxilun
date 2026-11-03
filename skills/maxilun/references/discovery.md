@@ -1,136 +1,65 @@
-# Discovery Protocol
+# Evidence-First Discovery & Decision Triage Protocol
 
-Dipakai pada Wave 0 untuk permintaan yang belum jelas hasil akhirnya: fitur baru, produk baru, redesign, atau brief satu baris. Tujuan: mengubah permintaan kabur menjadi hasil yang bisa dieksekusi tanpa menebak.
-
-Protokol ini **tidak** dipakai untuk tugas yang hasilnya sudah jelas (perbaikan bug dengan stack trace, rename simbol, tambah validasi field). Untuk tugas seperti itu, langsung kerjakan.
+Digunakan hanya ketika permintaan memiliki ruang tafsir terbuka yang berdampak material pada arsitektur, kontrak data, atau identitas produk. Protokol ini menggantikan pola wawancara berantai satu-per-satu yang pasif dengan **investigasi repositori lebih dulu + klarifikasi terkelompok berbasis biaya keputusan**.
 
 ---
 
-## 1. Prinsip
+## 1. Urutan Triase Sebelum Bertanya
 
-1. **Satu pertanyaan per giliran.** Daftar 8 pertanyaan sekaligus membuat pengguna berhenti menjawab.
-2. **Tanya hanya yang mengubah keputusan.** Jika jawabannya tidak mengubah file, arsitektur, atau copy yang dihasilkan, jangan tanya.
-3. **Cek dulu, tanya kemudian.** Konteks yang bisa dibaca dari repo (stack, konvensi, entitas, bahasa) tidak perlu ditanyakan.
-4. **Asumsi boleh, asal ditandai.** Jika pengguna menyerahkan keputusan, ambil asumsi minimum, tandai `[ASUMSI]`, lanjutkan.
-5. **Berhenti saat cukup.** Discovery selesai ketika 4 hal di bawah terisi, bukan ketika semua pertanyaan habis.
+Sebelum mengajukan satu pun pertanyaan ke pengguna, jalankan 3 langkah ini secara internal:
 
-## 2. Empat Hal yang Harus Terisi
-
-| Elemen | Pertanyaan inti | Contoh jawaban yang cukup |
-|---|---|---|
-| **Outcome** | Apa yang berubah bagi pengguna setelah ini ada? | "Staf klinik bisa melihat jadwal hari ini tanpa menelepon" |
-| **Batasan** | Apa yang tidak boleh dilanggar? | Stack existing, deadline, integrasi wajib, bahasa UI |
-| **Non-goals** | Apa yang sengaja tidak dibangun? | "Tanpa pembayaran, tanpa multi-bahasa" |
-| **Kriteria selesai** | Bagaimana kita tahu ini berhasil? | "Booking selesai <3 klik, tanpa reload" |
-
-Jika salah satu kosong dan tidak bisa diinferensi dari repo, tanyakan. Selain itu, lanjutkan.
-
-## 3. Urutan Pertanyaan
-
-Ajukan berurutan, lewati yang sudah terjawab:
-
-1. **Siapa penggunanya, dan apa tugas konkret mereka di layar ini?**
-   Hindari "semua orang". Jawaban "semua orang" = belum dijawab.
-2. **Apa yang mereka lakukan sekarang tanpa ini?**
-   Menjawab ini memisahkan fitur yang dibutuhkan dari fitur yang hanya terdengar bagus.
-3. **Apa yang paling tidak boleh salah?**
-   Menentukan di mana effort desain dan verifikasi diarahkan.
-4. **Apa yang jelas tidak termasuk?**
-   Non-goals mencegah scope creep lebih efektif daripada daftar fitur.
-5. **Ada referensi, brand, atau konvensi visual yang harus diikuti?**
-   - Khusus tugas yang melibatkan UI/UX atau halaman baru, tanyakan: *"UI/UX mau seperti apa?"* dengan menyodorkan 2–3 contoh referensi brand konkret dari katalog `references/design-md/index.md` (misal: Linear/Raycast untuk devtools, Midday/Mercury untuk fintech, Vercel/Stripe untuk SaaS modern, Apple untuk consumer) atau minta link/brand referensi dari pengguna.
-   - Jika tugas bukan UI/UX dan tidak ada referensi khusus, nyatakan arah sebagai draft dan lanjut.
-
-### 3.1 Khusus Deliverable UI/UX, Redesign & Penolakan "Generik AI"
-
-Ketika tugas mencakup perancangan antarmuka baru, redesign, atau ketika pengguna menyatakan tampilan saat ini generik AI:
-1. **Dilarang langsung menulis kode dengan layout default.** Asumsi tanpa referensi hampir selalu menghasilkan cetakan klise AI (hero simetris, 3-kartu identik, gradien ungu-biru).
-2. **Kunci acuan visual terlebih dahulu.** Tanyakan preferensi visual pengguna dengan memberikan opsi referensi konkret dari katalog `references/design-md/index.md` atau 20 Art Directions.
-3. **Jika pengguna mengeluh "UI/UX generik AI":** Dilarang hanya melakukan penyesuaian/patching kosmetik (ubah border radius atau margin). Hentikan pembuatan kode dan jalankan Protokol Visual Pivot `maxilun-craft` (§0d).
-
-## 4. Dari Jawaban ke Keputusan
-
-Setelah empat elemen terisi:
-
-1. **Rumuskan satu baris tujuan** — dipakai sebagai target aktif di HUD.
-2. **Pilih 2–3 pendekatan** yang benar-benar berbeda (bukan variasi kosmetik).
-3. **Sebutkan trade-off tiap pendekatan** dalam satu baris masing-masing: biaya, risiko, waktu.
-4. **Rekomendasikan satu**, dengan alasan konkret. Jangan menyerahkan pilihan tanpa opini.
-5. **Konfirmasi hanya jika keputusan mahal untuk dibalik.** Jika murah, ambil rekomendasi dan kerjakan.
-
-## 5. Format Output Discovery
-
-```
-🎯 [FOKUS]: <outcome satu baris>
-📌 [BATASAN]: <stack / integrasi / deadline>
-🚫 [NON-GOALS]: <yang tidak dibangun>
-✅ [SELESAI JIKA]: <kriteria terukur>
-[ASUMSI]: <asumsi yang diambil, jika ada>
-```
-
-Ringkas. Ini bukan dokumen; ini kontrak kerja yang muat di layar.
-
-## 6. Anti-Pattern Discovery
-
-| Dilarang | Alasan | Ganti dengan |
-|---|---|---|
-| 8 pertanyaan sekaligus | Pengguna berhenti menjawab | Satu pertanyaan, pilih yang paling memblokir |
-| "Bisa jelaskan lebih detail?" | Tidak terarah | "Siapa yang memakai layar ini setiap hari?" |
-| Menanyakan stack yang terlihat di `package.json` | Membuang giliran | Baca repo, konfirmasi satu baris |
-| Menunggu brief sempurna | Menunda tanpa hasil | Asumsi bertanda, lalu kerjakan |
-| "Terserah Anda" | Menghindari tanggung jawab | Rekomendasikan satu opsi dengan alasan |
-
-## 7. Kapan Berhenti
-
-Berhenti bertanya ketika:
-
-- Empat elemen §2 terisi, atau
-- Pengguna secara eksplisit menyerahkan keputusan, atau
-- Dua pertanyaan berturut-turut tidak mengubah rencana.
-
-Setelah itu masuk ke routing spesialis. Discovery bukan tahap desain.
-
+1. **Periksa Bukti Repositori**:
+   - Baca manifest (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`), struktur folder, skema DB, variabel environment contoh, token CSS/komponen yang sudah ada, dan `docs/` bila tersedia.
+   - Fakta yang terlihat di repositori **dilarang keras ditanyakan ulang**.
+2. **Ukur Biaya Membalik Keputusan (*Reversibility Check*)**:
+   - **Type 2 (Murah dibalik)**: struktur komponen internal, penamaan lokal, tata letak satu halaman dengan sistem desain yang sudah ada, perbaikan performa/bug, atau endpoint CRUD standar.
+   - **Type 1 (Mahal dibalik)**: pemecahan database/service, skema finansial/multi-tenant, perubahan *breaking* pada kontrak API publik, penghapusan fitur eksisting, atau penciptaan sistem identitas visual dari nol tanpa acuan sama sekali.
+3. **Tentukan Tindakan**:
+   - **Type 2 → Eksekusi langsung.** Pilih opsi paling standar dan kohesif dengan konvensi repo, tulis satu kalimat asumsi bila relevan, lalu selesaikan pekerjaannya.
+   - **Type 1 → Maksimal 1 giliran klarifikasi terkelompok** (2–4 poin krusial yang benar-benar mengubah desain, lengkap dengan opsi konkret dan rekomendasi default).
 
 ---
 
-## 8. Contoh Interaksi Discovery
+## 2. Empat Dimensi yang Harus Jelas Sebelum Implementasi Besar
 
-### Skenario: "Buat fitur booking"
+Jika keempat dimensi ini sudah terjawab dari prompt + pembacaan repo, **jangan jalankan sesi tanya-jawab**:
 
-**User**: Buat fitur booking untuk klinik gigi.
+| Dimensi | Apa yang Dicari | Sumber Utama |
+|---|---|---|
+| **1. Outcome Pengguna** | Perubahan alur kerja nyata apa yang harus bisa dilakukan pengguna? | Prompt pengguna + rute/fitur eksisting |
+| **2. Batasan Keras** | Stack, skema data, batas keamanan, target performa, kompatibilitas mundur | Manifest repo, konfigurasi CI, skema DB |
+| **3. Batas Cakupan (Non-goals)** | Bagian berdekatan apa yang sengaja tidak disentuh di iterasi ini? | Prinsip YAGNI + cakupan eksplisit prompt |
+| **4. Kriteria Terbukti** | Perintah tes, alur interaksi, atau metrik apa yang membuktikan tugas tuntas? | Suite tes repo + alur penerimaan fitur |
 
-**Orchestrator** (Wave 0):
-> 🎯 [FOKUS]: ?
-> 
-> Sebelum mulai, saya perlu satu hal: siapa yang menggunakan fitur booking ini?
-> - Pasien yang booking sendiri?
-> - Staf resepsionis yang booking untuk pasien?
-> - Keduanya?
+---
 
-**User**: Pasien booking sendiri via web.
+## 3. Aturan Klarifikasi Saat Benar-Benar Diperlukan (Type 1)
 
-**Orchestrator**:
-> 📌 [BATASAN]: ?
-> 
-> Stack apa yang dipakai? Saya lihat `package.json` ada Next.js + Prisma. Konfirmasi: pakai stack itu, atau ada constraint lain (deadline, integrasi wajib)?
+1. **Satu Giliran Terkelompok, Bukan Interogasi Cicilan**:
+   - Jangan menahan pekerjaan selama 3–4 putaran tanya-jawab beruntun. Kelompokkan maksimal 2–3 keputusan kunci yang belum terjawab dalam satu pesan ringkas.
+2. **Sajikan Opsi Berbeda Secara Substantif + Rekomendasi**:
+   - Hindari pertanyaan kosong seperti *"Bisa jelaskan lebih detail?"* atau *"UI-nya mau seperti apa?"* tanpa jangkar.
+   - Berikan 2–3 pilihan nyata beserta konsekuensi singkatnya, dan tandai mana yang direkomendasikan.
+3. **Khusus Desain Antarmuka Baru Tanpa Sistem Desain Eksisting**:
+   - Jika repositori sudah punya token warna/tipografi/komponen, **ikuti dan perkuat sistem yang ada** tanpa bertanya.
+   - Jika proyek benar-benar baru (*greenfield*) atau pengguna meminta *redesign total* namun belum menyebutkan arah gaya, tawarkan **3 arketipe visual yang sungguh kontras** sesuai domain produk (lihat `../maxilun-craft/SKILL.md` dan `../maxilun-craft/references/design-md/index.md`) — misal *Editorial Hangat* vs *Operasional Terang Presisi* vs *Minimalis Kontras Tinggi* — bukan tiga variasi dashboard gelap yang mirip.
+   - Jika pengguna menjawab *"terserah / rombak maksimal"*, pilih satu arah paling autentik bagi audiens produk tersebut, nyatakan pilihan + alasannya dalam 2–3 kalimat, dan langsung bangun secara menyeluruh.
 
-**User**: Ya Next.js + Prisma. Deadline 2 minggu. Harus integrate dengan Google Calendar.
+---
 
-**Orchestrator**:
-> 🚫 [NON-GOALS]: ?
-> 
-> Apa yang TIDAK termasuk? Misalnya: payment, reminder email, multi-practitioner, admin dashboard?
+## 4. Perbandingan Pola Buruk vs Pola Maxilun
 
-**User**: Tanpa payment dulu. Reminder email nanti fase 2. Single practitioner saja.
+### Kasus A: Fitur di Repositori yang Sudah Ada
+**Prompt**: *"Tambahkan fitur jadwal reservasi pasien di aplikasi klinik ini."*
 
-**Orchestrator**:
-> ✅ [SELESAI JIKA]: Pasien bisa pilih slot tersedia → konfirmasi booking → booking muncul di Google Calendar. <3 klik dari halaman booking ke konfirmasi.
-> 
-> 🎯 [FOKUS]: Self-service booking untuk pasien klinik gigi
-> 📌 [BATASAN]: Next.js + Prisma, Google Calendar API, deadline 2 minggu
-> 🚫 [NON-GOALS]: Payment, reminder email, multi-practitioner, admin dashboard
-> ✅ [SELESAI JIKA]: Booking selesai <3 klik, sync ke Google Calendar
-> 
-> Lanjut ke Wave 1: `maxilun-architect` (data model + API contract) + `maxilun-craft` (booking UI flow).
+- **Pola Pasif (Ditolak)**: Berhenti bekerja dan mencicil 4 giliran pertanyaan (*"Siapa yang pakai?"*, *"Stack apa?"*, *"Non-goal apa?"*) disertai blok banner emoji kosong.
+- **Pola Aktif Berbasis Bukti (Wajib)**:
+  1. Baca repo: terdeteksi Next.js App Router, Prisma (`Patient`, `Doctor` sudah ada di `schema.prisma`), autentikasi staf resepsionis & portal pasien terpisah, serta palet terang bersih di `globals.css`.
+  2. Hanya ada 1 keputusan Type 1 yang tidak tertulis di skema: aturan pembatalan/slot *double-booking* & sinkronisasi kalender eksternal.
+  3. Jika tidak ada integrasi eksternal di `.env.example`, bangun langsung alur reservasi berbasis constraint unik database (`doctor_id, slot_start`) dengan asumsi eksplisit tanpa payment gateway eksternal, atau ajukan 1 klarifikasi fokus bila ditemukan stub Google Calendar separuh jalan.
 
-Discovery selesai dalam 3 giliran. Empat elemen terisi. Tidak ada pertanyaan tentang warna, font, atau detail implementasi — itu domain specialist.
+### Kasus B: Keluhan "Tampilan Masih Generik AI, Ganti UI/UX"
+- **Pola Tambal Sulam (Ditolak)**: Hanya mengubah `border-radius`, mengganti hex ungu ke biru, atau memaksa layout klinik menjadi dashboard gelap bergaya developer tool.
+- **Pola Rombak Struktural (Wajib)**:
+  1. Identifikasi cacat struktur saat ini (misal: seluruh seksi rata tengah seragam, 3 kartu fitur generik tanpa alur tugas utama, label tombol kabur).
+  2. Jika pengguna meminta langsung dieksekusi, tetapkan arah visual yang sesuai domain klinik (misal: *Calm Clinical Operational* — permukaan terang bersih, kontras keterbacaan tinggi, fokus utama pada antrean hari ini & pemilihan jadwal <3 langkah), nyatakan referensi prinsip yang dipakai dan yang ditolak, lalu rombak total struktur komponennya.

@@ -21,7 +21,7 @@
 
 ---
 
-**Maxilun** adalah ekosistem 18 skill AI untuk tim rekayasa perangkat lunak: satu orchestrator dan 17 spesialis. Setiap skill membawa blok **Core Rules** yang sama, sehingga empat engine kualitas ikut terpasang bersama skill, bukan tertinggal di folder terpisah. Orchestrator menambahkan routing berbasis hasil, protokol discovery untuk brief kabur, koordinasi wave, dan gate delivery berbasis bukti. Materi mendalam (detail engine, katalog purity, higienitas kode, disiplin rekayasa bedah, discovery, dan corpus referensi) ada di `references/` dalam masing-masing skill dan hanya dimuat saat dibutuhkan.
+**Maxilun** adalah ekosistem 18 skill AI untuk tim rekayasa perangkat lunak: satu orchestrator dan 17 spesialis. Setiap skill membawa blok **Core Rules** yang sama, sehingga empat engine kualitas ikut terpasang bersama skill, bukan tertinggal di folder terpisah. Orchestrator menegakkan triase keputusan berbasis reversibilitas (eksekusi dari bukti repositori lebih dulu; tanyakan hanya keputusan yang mahal dibalik), kohesi satu pemilik per permukaan kerja, koordinasi wave saat benar-benar lintas-domain, dan bukti verifikasi nyata tanpa banner HUD seremonial. Materi mendalam (detail engine, katalog purity, higienitas kode, disiplin rekayasa bedah, discovery, dan corpus referensi) ada di `references/` dalam masing-masing skill dan hanya dimuat saat dibutuhkan.
 
 ## Instalasi Cepat
 
@@ -49,7 +49,7 @@ Banyak repositori skill AI hanya berisi prompt tipis (*"tulis kode bersih, buat 
 | **Edit Lintas-File Buta** (membaca puluhan file penuh ke context window dan merusak pemanggil fungsi) | **Executable AST Knowledge Graph & 3D WebGL Lens** di [`skills/maxilun-knowledge-graph/`](skills/maxilun-knowledge-graph/SKILL.md) (`cli.py` + AST scanner Python/TS/Polyglot yang mengembalikan `file:line` `defOf:` / `callsIn:` presisi dalam `< 1 detik`) |
 | **Celah Keamanan & Kontrak API Rapuh** (timing attack `!==`, uang memakai `float`, format error acak) | **Playbook Kriptografi & Kontrak OpenAPI 3.1** di [`maxilun-sentinel`](skills/maxilun-sentinel/references/security-playbook.md) & [`maxilun-docsmith`](skills/maxilun-docsmith/references/openapi-contracts.md) (`timingSafeEqual`, Argon2id, `BIGINT` satuan terkecil, RFC 9457 `application/problem+json`) |
 | **Video Programatik Kaku & Tak Terbaca** (drift CSS transition, font kecil 14px, teks paragraf panjang) | **Pipeline Studio Video 5-Spesialis** di [`maxilun-cinecode`](skills/maxilun-cinecode/references/video-production-pipeline.md) + [`maxilun-motion`](skills/maxilun-motion/references/choreography-styles.md) (kompilator frame React, pegas teredam analitik, 14 style signature, 22 hook, FFmpeg `yuv420p`) |
-| **Context Window Bengkak** (prompt ribuan baris yang menurunkan akurasi penalaran model) | **Batas Keras `< 400 Baris`** di seluruh 18 `SKILL.md` dengan `references/` on-demand — diverifikasi otomatis oleh [`scripts/test-suite.py`](scripts/test-suite.py) (16 suite pengujian CI) |
+| **Context Window Bengkak & Seremoni Prompt** (prompt ribuan baris, banner emoji kaku, dan klon tampilan SaaS seragam) | **Batas Ramping `≤ 300 Baris`** di seluruh 18 `SKILL.md` dengan `references/` on-demand, penjangkaran UI sesuai domain produk, dan nol checklist centang-sendiri — diverifikasi otomatis oleh [`scripts/test-suite.py`](scripts/test-suite.py) |
 
 ---
 
@@ -122,10 +122,10 @@ Digunakan di seluruh 18 skill sebagai blok `CORE-RULES` identik yang diverifikas
 
 | Mesin | Fungsi Utama |
 |---|---|
-| **Focus Engine** | Executive HUD, dekomposisi tugas hierarkis, pelacakan subtask persisten (maks 3 aktif) |
-| **Purity Engine** | Meninjau output generik, klaim tanpa bukti, dan placeholder kosong |
-| **Minimalist Engineering** | Tangga kesederhanaan, perbaikan akar masalah, hapus sebelum menambah |
-| **Clarity Engine** | Penandaan kepastian teknis eksplisit: `[CONFIRMED]`, `[INFERRED]`, `[UNCERTAIN]`, `[UNVERIFIED]` |
+| **Focus & Agency Engine** | Eksekusi berbasis bukti repo, klarifikasi berbasis reversibilitas (maks 1 giliran untuk keputusan mahal), maks 3 fokus kerja, bebas teater HUD |
+| **Purity Engine** | Kemurnian dua arah: menolak klise mentah AI (buzzword, gradien ungu, angka palsu) sekaligus menolak monokultur satu template SaaS |
+| **Minimalist Engineering** | Tangga kesederhanaan, perbaikan di titik konvergensi pemanggil, pembersihan sisa perubahan tanpa *drive-by refactoring* |
+| **Clarity & Proof Engine** | Kesimpulan di awal, pelestarian `file:line` & error verbatim, label kepastian proporsional (`[CONFIRMED]`, `[INFERRED]`, `[UNCERTAIN]`, `[UNVERIFIED]`) |
 
 Tiga protokol pendukung:
 

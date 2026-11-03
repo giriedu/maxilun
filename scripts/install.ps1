@@ -57,7 +57,8 @@ if ($Project) {
         @{ Name = "Antigravity CLI/IDE & Zed"; Path = "$env:USERPROFILE\.agents\skills";          LegacyRules = "$env:USERPROFILE\.agents\rules" },
         @{ Name = "[CC] & Termul";             Path = "$env:USERPROFILE\.claude\skills";          LegacyRules = "$env:USERPROFILE\.claude\rules" },
         @{ Name = "Codex";                     Path = "$env:USERPROFILE\.codex\skills";           LegacyRules = "$env:USERPROFILE\.codex\rules" },
-        @{ Name = "OpenCode";                  Path = "$env:USERPROFILE\.config\opencode\skills"; LegacyRules = "$env:USERPROFILE\.config\opencode\rules" },
+        @{ Name = "OpenCode (.config)";        Path = "$env:USERPROFILE\.config\opencode\skills"; LegacyRules = "$env:USERPROFILE\.config\opencode\rules" },
+        @{ Name = "OpenCode";                  Path = "$env:USERPROFILE\.opencode\skills";        LegacyRules = "$env:USERPROFILE\.opencode\rules" },
         @{ Name = "Gemini CLI";                Path = "$env:USERPROFILE\.gemini\config\skills";   LegacyRules = $null },
         @{ Name = "Cursor";                    Path = "$env:USERPROFILE\.cursor\skills";          LegacyRules = $null },
         @{ Name = "Trae";                      Path = "$env:USERPROFILE\.trae\skills";            LegacyRules = $null },
@@ -67,33 +68,41 @@ if ($Project) {
 
 foreach ($target in $Targets) {
     $parentDir = Split-Path -Parent $target.Path
-    $shouldInstall = $Project -or $target.Name -like "*Antigravity*" -or $target.Name -like "*Claude*" -or (Test-Path $parentDir)
+    $shouldInstall = $Project -or $target.Name -like "*Antigravity*" -or $target.Name -like "*Termul*" -or (Test-Path $parentDir)
     if (-not $shouldInstall) { continue }
 
+    $existingMaxilun = @()
     if (Test-Path $target.Path -PathType Container) {
+        $existingMaxilun = @(Get-ChildItem -Path $target.Path -Directory -ErrorAction SilentlyContinue | Where-Object {
+            ($_.Name -eq "maxilun" -or $_.Name -like "maxilun-*" -or $_.Name -like "msal-*") -and
+            (Test-Path (Join-Path $_.FullName "SKILL.md")) -and
+            ((Get-Content (Join-Path $_.FullName "SKILL.md") -Raw -ErrorAction SilentlyContinue) -match '(?m)^  ecosystem:\s*maxilun\s*$')
+        })
+    }
+
+    if ($existingMaxilun.Count -gt 0) {
         $backupRoot = Join-Path $parentDir "_maxilun_backup_$Timestamp"
-        New-Item -ItemType Directory -Path $backupRoot -Force | Out-Null
-        Copy-Item -Path $target.Path -Destination (Join-Path $backupRoot "skills") -Recurse -Force
+        $backupSkills = Join-Path $backupRoot "skills"
+        New-Item -ItemType Directory -Path $backupSkills -Force | Out-Null
+        foreach ($dir in $existingMaxilun) {
+            Copy-Item -Path $dir.FullName -Destination (Join-Path $backupSkills $dir.Name) -Recurse -Force
+        }
         $BackedUp += "  $($target.Name): $backupRoot"
+        $existingMaxilun | Remove-Item -Recurse -Force
     }
 
     if (-not (Test-Path $target.Path)) {
         New-Item -ItemType Directory -Path $target.Path -Force | Out-Null
     }
 
-    Get-ChildItem -Path $target.Path -Directory -ErrorAction SilentlyContinue | Where-Object {
-        ($_.Name -eq "maxilun" -or $_.Name -like "maxilun-*" -or $_.Name -like "msal-*") -and
-        (Test-Path (Join-Path $_.FullName "SKILL.md")) -and
-        ((Get-Content (Join-Path $_.FullName "SKILL.md") -Raw -ErrorAction SilentlyContinue) -match '(?m)^  ecosystem:\s*maxilun\s*$')
-    } | Remove-Item -Recurse -Force
-
     Copy-Item -Path "$SkillsSrc\*" -Destination $target.Path -Recurse -Force
 
-    Get-ChildItem -Path $target.Path -Directory -Recurse -Filter "__pycache__" -ErrorAction SilentlyContinue |
-        Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
-    Get-ChildItem -Path $target.Path -File -Recurse -Filter "*.pyc" -ErrorAction SilentlyContinue |
+    foreach ($cacheDir in @("__pycache__", ".maxilun", "maxilun-out", "graphify-out")) {
+        Get-ChildItem -Path $target.Path -Directory -Recurse -Force -Filter $cacheDir -ErrorAction SilentlyContinue |
+            Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+    }
+    Get-ChildItem -Path $target.Path -File -Recurse -Force -Filter "*.pyc" -ErrorAction SilentlyContinue |
         Remove-Item -Force -ErrorAction SilentlyContinue
-
     # Remove v1 rule files that lived outside the skill folder (marked Maxilun only)
     if ($target.LegacyRules -and (Test-Path $target.LegacyRules)) {
         foreach ($ruleName in @("always-on.md", "maxilun-global.md", "code-hygiene.md", "purity-catalog.md")) {

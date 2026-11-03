@@ -1,108 +1,53 @@
 <!-- metadata:
   version: "1.0.0"
-  last_updated: "2026-10-22"
+  last_updated: "2026-11-02"
 -->
 
 # Maxilun Code Hygiene Rules
-# (Aturan Higienitas Kode Maxilun)
 
-Applied automatically when any maxilun-* skill generates or modifies code.
-Berlaku otomatis saat skill apapun dalam ekosistem maxilun menghasilkan atau mengubah kode.
+Standar kebersihan kode yang berlaku otomatis saat spesialis Maxilun menulis atau memodifikasi kode sumber.
 
-## Comment Quality
+## 1. Kualitas Komentar
 
-### Forbidden Comment Patterns
-- Decorative separators (`// ========= SECTION =========`)
-- Restating the obvious (`// Initialize counter` above `let count = 0`)
-- Step narration (`// Step 1:`, `// Step 2:`, `// First...`, `// Next...`)
-- Empty labels (`// Main logic`, `// Helper function`, `// Entry point`)
-- Vague TODOs (`// TODO: Improve this`, `// TODO: Fix later`)
-- Signature echo (JSDoc that only repeats parameter names)
-- Decorative emoji (`// ✅ Done`, `// 🚀 Fast`)
-- End markers (`} // end if`, `// End of function`)
-- Over-explained single facts (4 lines explaining what fits in 1)
+### Pola Komentar yang Dilarang
+- Garis pemisah dekoratif (`// ========= SECTION =========`)
+- Mengulang isi kode (`// Set count to 0` di atas `let count = 0`)
+- Narasi langkah (`// Step 1:`, `// First validate input, then save`)
+- Label kosong (`// Helper functions`, `// Main logic`)
+- TODO kabur tanpa konteks atau syarat selesai (`// TODO: fix later`)
+- JSDoc/docstring yang hanya menyalin ulang nama parameter tanpa informasi kontrak tambahan
+- Emoji dekoratif atau penanda penutup blok (`} // end if`)
 
-### Valuable Comments (Always Keep)
-- Business rules and domain logic
-- Security constraints and reasoning
-- Performance trade-offs with measured data
-- API contracts and protocol details
-- Workarounds for known platform bugs
-- Edge cases and their handling assumptions
-- Licensing and legal notices
+### Komentar yang Wajib Dipertahankan
+- Invarian bisnis dan aturan domain non-intuitif
+- Alasan keamanan dan batasan kepercayaan (*trust boundary*)
+- Kompromi performa yang didasarkan pada hasil ukur nyata
+- Kontrak protokol eksternal, format byte, atau *workaround* bug platform/browser tertentu
 
-### Comment Length Rule
-One line per comment. Two lines only when the second carries a
-genuinely new fact. Never three lines for a single point.
+Ringkas: satu baris untuk satu alasan. Baris kedua hanya jika memuat fakta teknis baru.
 
-## Naming
+## 2. Penamaan & Struktur Kontrol
 
-- Variables and functions: descriptive, no abbreviations that save
-  zero tokens (cfg, impl, req, res, fn — use full words)
-- Boolean variables: read as questions (`isValid`, `hasPermission`,
-  `canEdit`)
-- Functions: verb-first (`validateUser`, `fetchOrders`, `renderCard`)
-- Constants: SCREAMING_SNAKE only for true compile-time constants,
-  not for every config value
+- **Fungsi & Metode**: kata kerja spesifik + objek (`verifyWebhookSignature`, `parseInvoiceCsv`, bukan `process` atau `handleData`).
+- **Boolean**: terbaca sebagai predikat tegas (`isExpired`, `hasActiveSubscription`, `canVoidPayment`).
+- **Variabel State**: kontekstual terhadap domain (`isSubmittingOrder`, `validationErrors`, bukan sekadar `flag` atau `temp`).
+- **Alur Kontrol Datar**: gunakan *guard clauses* dan *early return* di awal fungsi; jaga kedalaman indentasi maksimal 3 level.
+- **Tipe Eksplisit di Batas Modul**: hindari `any` atau objek tak bertipe pada tanda tangan fungsi publik dan kontrak API.
 
-## Structure
+## 3. Kebersihan Markup, CSS & Styling
 
-- Prefer flat over nested (max 3 levels of indentation before
-  extracting a function)
-- Early returns over deep nesting
-- Guard clauses at function top
-- Related code stays together (no "organize by type" when "organize
-  by feature" makes more sense)
+1. **Ikuti Sistem Styling Repositori**:
+   - Jika proyek memakai **Tailwind / utility CSS**, gunakan utility sesuai konfigurasi token proyek dan ekstrak ke komponen hanya saat pola berulang secara fungsional.
+   - Jika proyek memakai **CSS Modules / Vanilla CSS**, beri nama kelas berbasis peran komponen (`.invoice-row`, `.auth-form`), bukan pembungkus tanpa makna (`.wrapper-inner-box`).
+2. **Semantik HTML Lebih Dulu**: gunakan `<main>`, `<nav>`, `<section>`, `<article>`, `<form>`, `<button>`, `<dialog>` sebelum jatuh ke `<div>` generik. Jangan menggunakan `<div onClick>` untuk kontrol interaktif.
+3. **Disiplin Token Visual**: rujuk variabel skala spasi, warna semantik, dan radius yang berlaku di proyek; hindari angka piksel ganjil acak atau warna hex mentah yang memutus konsistensi tema terang/gelap.
+4. **Inline Style**: hanya untuk nilai dinamis yang dihitung saat runtime (mis. koordinat drag, lebar bar progres dari data); properti statis berada di stylesheet atau kelas token.
 
-## CSS & UI Code Purity Rules
+## 4. Higienitas Form & Interaksi Mikro
 
-### Class Naming
-- Forbidden generic names: `container`, `wrapper`, `content`, `section`,
-  `box`, `card`, `inner`, `outer`, `left`, `right` without context
-- Required contextual naming: `login-form-container`, `invoice-card`,
-  `sidebar-nav-section`, `hero-cta-box`
-- Component prefix for scoped styles: `.InvoiceCard__header`,
-  `.LoginForm__input-group` (BEM or project convention)
-- Utility classes allowed only from established system (Tailwind,
-  design tokens). No ad-hoc utility classes invented per-component.
-
-### Inline Styles
-- Forbidden: inline styles for layout, spacing, colors, typography
-- Allowed: dynamic values computed at runtime (position from drag,
-  color from user preference, width from data)
-- All static visual properties belong in CSS/design tokens
-
-### Component Structure Anti-Patterns
-- Forbidden: header + content + footer structure in every component
-  without reason. Structure follows content needs, not template.
-- Forbidden: wrapping plain text in `<div>` or `<Card>` without
-  grouping purpose. Text can exist without container.
-- Forbidden: decorative wrapper elements (`<div className="wrapper">`
-  that does nothing but add a layer)
-- Required: semantic HTML first (`<nav>`, `<main>`, `<article>`,
-  `<form>`, `<dialog>`). Generic `<div>` only when no semantic tag fits.
-
-### Design Token Compliance
-- Spacing values must reference token scale (4px grid), not magic numbers
-- Colors must reference semantic tokens (`--brand-primary`), not raw hex/rgb
-- Border radius must follow nested hierarchy (child <= parent)
-- Font sizes must follow modular scale, not arbitrary px values
-- If design tokens don't exist yet, create them BEFORE writing component CSS
-
-### JavaScript/TypeScript UI Code
-- Event handler naming: `onSubmit`, `handleFormSubmit`, not `click`,
-  `handleClick` (what happens, not what triggers it)
-- State variable naming: `isSubmitting`, `hasError`, `userList`, not
-  `loading`, `error`, `data` (specific to context)
-- Magic strings forbidden: use constants or enums for status values,
-  route paths, event names
-- Type definitions: prefer specific interfaces over `any`, `object`,
-  `Record<string, unknown>`. Define shape explicitly.
-
-### Form & Micro-UX Hygiene Rules (WIG Standards)
-- Forbidden: blocking paste (`onPaste` with `preventDefault()`). Users must always be able to paste credentials, tokens, and form data.
-- Required: `spellCheck={false}` on email, code, license keys, API tokens, and username inputs to eliminate false grammar warnings.
-- Required: explicit `<label>` tied via `htmlFor` or direct wrapping for all inputs. Single shared clickable hit target for checkbox/radio labels without dead zones.
-- Required: `min-w-0` on flex children that contain truncated text (`truncate` / `text-overflow: ellipsis`) to prevent layout blowout.
-- Required: `overscroll-behavior: contain` on modals, sheets, and popovers to prevent scroll-chaining to the underlying viewport.
-- Required: unicode ellipsis `…` instead of `...`, and `text-wrap: balance` or `text-pretty` on display titles and headings.
+- Jangan pernah memblokir tempel (`onPaste` dengan `preventDefault()`) pada input password, kode OTP, atau formulir.
+- Pasang `spellCheck={false}` dan `autoCapitalize="none"` pada input email, username, kode, URL, dan token API.
+- Ikat setiap input ke `<label>` eksplisit (`htmlFor` atau pembungkusan langsung) tanpa celah klik mati pada checkbox/radio.
+- Tambahkan `min-w-0` pada elemen anak flexbox yang menggunakan pemotongan teks (`truncate` / `text-overflow: ellipsis`) agar layout tidak meluber.
+- Pasang `overscroll-behavior: contain` pada modal, sheet, dan popover yang memiliki area scroll sendiri.
+- Gunakan karakter tipografi tepat pada teks antarmuka: elipsis `…` (bukan `...`), `text-wrap: balance` pada judul utama, dan `tabular-nums` pada angka yang berubah atau disejajarkan vertikal.

@@ -230,15 +230,19 @@ def cmd_scan(args):
     total_edges = sum(p['edges'] for p in stats['projects'].values())
     print(f"  Combined: {total_nodes} nodes, {total_edges} edges")
 
-    out_dir = _export_maxilun_out(args.paths[0], merged, stats)
-    print(f"\n  Maxilun artifacts generated in: {out_dir}")
-    print(f"    - {out_dir / 'graph.json'} (AST Knowledge Graph)")
-    print(f"    - {out_dir / 'lens.html'} (Standalone 3D/2D Lens Visualizer)")
-    print(f"    - {out_dir / 'MAXILUN_REPORT.md'} (Architecture & Hub Analysis Report)")
+    if args.output:
+        builder.save_graph(args.output)
+        print(f"\n  Graph saved to: {args.output}")
+    else:
+        out_dir = _export_maxilun_out(args.paths[0], merged, stats)
+        print(f"\n  Maxilun artifacts generated in: {out_dir}")
+        print(f"    - {out_dir / 'graph.json'} (AST Knowledge Graph)")
+        print(f"    - {out_dir / 'lens.html'} (Standalone 3D/2D Lens Visualizer)")
+        print(f"    - {out_dir / 'MAXILUN_REPORT.md'} (Architecture & Hub Analysis Report)")
 
-    output_path = args.output or str(Path(args.paths[0]) / '.maxilun' / 'graph.json')
-    builder.save_graph(output_path)
-    print(f"  Internal cache saved to: {output_path}")
+        output_path = str(Path(args.paths[0]) / '.maxilun' / 'graph.json')
+        builder.save_graph(output_path)
+        print(f"  Internal cache saved to: {output_path}")
     # Mirror to graphify-out/ if requested via flag or if graphify-out directory exists
     graphify_dir = Path(args.paths[0]) / 'graphify-out'
     if getattr(args, 'graphify', False) or graphify_dir.exists():

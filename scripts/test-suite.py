@@ -251,27 +251,47 @@ def test_no_pipe_to_interpreter():
 
 
 def test_section_numbering():
-    print("\n🧪 Validating section numbering...")
+    print("\n🧪 Validating section numbering and spine order...")
     passed = True
     for skill in EXPECTED_SKILLS:
         lines = read_skill(skill).splitlines()
         fence = False
         nums = []
-        for line in lines:
+        h1_line = None
+        contract_line = None
+        last_num_line = None
+        related_line = None
+        for idx, line in enumerate(lines, 1):
             if line.strip().startswith("```"):
                 fence = not fence
                 continue
+            if fence:
+                continue
+            if h1_line is None and re.match(r"^# \S", line):
+                h1_line = idx
+            if contract_line is None and line.strip() in ("## Skill Contract", "## Distribution Contract"):
+                contract_line = idx
+            if line.strip() == "## Related Skills":
+                related_line = idx
             m = re.match(r"^## (\d+)\. ", line)
-            if m and not fence:
+            if m:
                 nums.append(int(m.group(1)))
+                last_num_line = idx
         dupes = sorted({n for n in nums if nums.count(n) > 1})
         if dupes:
             print(f"  ❌ {skill}: duplicate section numbers {dupes}")
             passed = False
-        elif nums and nums != list(range(nums[0], nums[0] + len(nums))):
-            print(f"  ⚠️  {skill}: non-sequential numbering {nums}")
+        elif nums and nums != list(range(1, len(nums) + 1)):
+            print(f"  ❌ {skill}: non-sequential numbering {nums} (expected 1..{len(nums)})")
+            passed = False
+        if h1_line is None or (contract_line is not None and h1_line > contract_line):
+            print(f"  ❌ {skill}: '# Title' must precede contract heading")
+            passed = False
+        if related_line is not None and last_num_line is not None and last_num_line > related_line:
+            print(f"  ❌ {skill}: numbered section appears after '## Related Skills'")
+            passed = False
     if passed:
-        print("  ✅ No duplicate section numbers")
+        print("  ✅ Sequential 1..N section numbering and clean spine order")
     return passed
 
 
@@ -305,20 +325,54 @@ def test_no_foreign_characters():
 
 
 def test_size_budget():
-    print("\n🧪 Checking skill size budget...")
+    print("\n🧪 Checking skill size budget (<= 300 lines ceiling)...")
     warn = False
     hard_fail = False
     for skill in EXPECTED_SKILLS:
         lines = len(read_skill(skill).splitlines())
-        if lines > 1200:
-            print(f"  ❌ {skill}: {lines} lines (hard limit 1200) — split into references/")
+        if lines > 300:
+            print(f"  ❌ {skill}: {lines} lines (hard limit 300) — move detail into references/")
             hard_fail = True
-        elif lines > 400:
-            print(f"  ⚠️  {skill}: {lines} lines — candidate for references/ split")
+        elif lines > 260:
+            print(f"  ⚠️  {skill}: {lines} lines — approaching 300-line ceiling")
             warn = True
     if not hard_fail:
-        print("  ✅ All skills within hard size limit" + (" (warnings above)" if warn else ""))
+        print("  ✅ All 18 skills strictly <= 300 lines" + (" (warnings above)" if warn else ""))
     return not hard_fail
+
+
+def test_no_ceremony_or_self_check_gates():
+    print("\n🧪 Checking skills for ceremonial HUD banners and self-checked gate theater...")
+    forbidden_banners = [
+        "🎯 [FOKUS]",
+        "⚡ [TINDAKAN]",
+        "🔒 DESIGN CONTEXT CHECK",
+        "🔒 DELIVERY GATE",
+        "📋 Parking Lot",
+        "✅ [VERIFIKASI SUKSES]",
+        "⚠️ [TEMUAN KEAMANAN]",
+        "🌐 [KNOWLEDGE GRAPH]",
+        "📋 [AUDIT SEO]",
+        "🔍 [DIAGNOSIS]",
+    ]
+    passed = True
+    for skill in EXPECTED_SKILLS:
+        content = read_skill(skill)
+        for banner in forbidden_banners:
+            if banner in content:
+                print(f"  ❌ {skill}: contains deprecated ceremonial banner '{banner}'")
+                passed = False
+        fence = False
+        for idx, line in enumerate(content.splitlines(), 1):
+            if line.strip().startswith("```"):
+                fence = not fence
+                continue
+            if not fence and re.match(r"^\s*-\s*\[[ xX]\]\s+", line):
+                print(f"  ❌ {skill}:{idx}: contains self-checked checkbox item '{line.strip()}'")
+                passed = False
+    if passed:
+        print("  ✅ Zero ceremonial HUD banners or self-checked checkboxes across all 18 skills")
+    return passed
 
 
 def test_foundation_integration():
@@ -464,6 +518,26 @@ def test_kg_scanner_functional():
                 "};\n",
                 encoding="utf-8",
             )
+            (hidden_root / "repo.go").write_text(
+                "package main\n\n"
+                "type UserRepository interface {\n"
+                "    FindByID(id string) (*User, error)\n"
+                "}\n\n"
+                "type UserRepo struct{}\n\n"
+                "func (r *UserRepo) FindByID(id string) (*User, error) {\n"
+                "    return nil, nil\n"
+                "}\n",
+                encoding="utf-8",
+            )
+            (hidden_root / "service.cpp").write_text(
+                "class Service {\n"
+                "public:\n"
+                "    void run();\n"
+                "};\n\n"
+                "void Service::run() {\n"
+                "}\n",
+                encoding="utf-8",
+            )
 
             graph = GraphBuilder().scan_project(str(hidden_root))
             nodes = graph.get("nodes", [])
@@ -492,7 +566,17 @@ def test_kg_scanner_functional():
             if self_calls:
                 print("  ❌ TS function definition matched as call to itself")
                 return False
+            if "func:repo.go:FindByID" not in node_ids:
+                print("  ❌ Go struct method receiver 'FindByID' failed to extract")
+                return False
 
+            if "class:repo.go:UserRepository" not in node_ids or "class:repo.go:UserRepo" not in node_ids:
+                print("  ❌ Go interface or struct failed to extract")
+                return False
+
+            if "func:service.cpp:run" not in node_ids or "class:service.cpp:Service" not in node_ids:
+                print("  ❌ C++ class or scoped method failed to extract")
+                return False
             print(f"  ✅ Functional KG Scanner passed ({len(nodes)} nodes, {len(edges)} edges)")
             return True
 
@@ -548,6 +632,7 @@ def main():
         test_kg_scanner_functional(),
         test_cross_references(),
         test_no_pipe_to_interpreter(),
+        test_no_ceremony_or_self_check_gates(),
     ]
 
     print("\n" + "=" * 48)

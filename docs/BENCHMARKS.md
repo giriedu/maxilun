@@ -11,19 +11,19 @@ Most AI skill packs fail in one of two ways:
 1. **Empty 40-line prompts** that tell the AI *"write clean code"* without concrete schemas, formulas, or reference tokens.
 2. **Bloated 2,000-line monolithic prompts** that flood the context window on every turn and degrade model reasoning.
 
-Maxilun solves this by enforcing a **strict `< 400 line` ceiling on every `SKILL.md`** (`scripts/test-suite.py:test_size_budget`) while bundling **deep, on-demand `references/`** inside each specialist:
+Maxilun solves this by enforcing a **strict `≤ 300 line` ceiling on every `SKILL.md`** (`scripts/test-suite.py:test_size_budget`) while bundling **deep, on-demand `references/`** inside each specialist:
 
 | Specialist Skill | Active `SKILL.md` Size | On-Demand Bundled Corpus (`references/` & `scaffold/`) | What Loads Only When Needed |
 |---|---:|---|---|
-| `maxilun` (Orchestrator) | `343 lines` | `4 files` (`engines.md`, `discovery.md`, `purity-catalog.md`, `code-hygiene.md`) | Wave 0 discovery protocol, 4 engines detail, banned vocabulary catalog |
-| `maxilun-craft` | `214 lines` | **`101 files`** (`references/design-md/*.md` + `component-mobile-patterns.md`) | 100 real brand design analyses (Stripe, Linear, Vercel, GitHub, Wise, Apple, etc.), 20 art directions, mobile touch & 4-state UI rules |
-| `maxilun-architect` | `202 lines` | `3 files` (`api-distributed-patterns.md`, `migration-operations-playbook.md`) | `/msal-think` 4-phase matrix, Outbox/Saga, Strangler Fig, RLS Multi-Tenancy, DR RPO/RTO, Fitness Functions |
-| `maxilun-docsmith` | `177 lines` | `5 files` (`prd-rfc-specs.md`, `openapi-contracts.md`, `runbooks-adr.md`, `llms-txt-spec.md`) | Gherkin PRD/RFC templates, OpenAPI 3.1 + RFC 9457 `ProblemDetails`, production runbooks, `/llms.txt` |
-| `maxilun-scaffold` | `219 lines` | `3 files` (`prd-archetypes.md`, `doc-templates.md`, `index.md`) | 5 domain archetypes (Fintech, B2B SaaS, DevTools, Commerce, Media) & 10 canonical `docs/` templates |
-| `maxilun-motion` | `176 lines` | `3 files` (`motion-components.md`, `choreography-styles.md`, `index.md`) | Analytical damped harmonic spring evaluator, 14 motion style signatures, 22 opener/promo hooks, beat-grid math |
-| `maxilun-cinecode` | `179 lines` | `3 ref files` + **Full React/TS/FFmpeg `scaffold/`** | `<AbsoluteFill>`, `<Sequence>`, `<Spring>`, `interpolate`, headless frame capture, and 5-skill studio video pipeline |
-| `maxilun-sentinel` | `310 lines` | `2 files` (`security-playbook.md`, `php2shell-advisory.md`) | 10 trust boundaries, 20+ security test patterns, Web Crypto/Argon2id/AES-256-GCM implementations |
-| `maxilun-knowledge-graph` | `178 lines` | **AST Scanners (`python`, `ts`, `generic`) + `cli.py` + `lens.html`** | Zero-dependency AST symbol indexer & 3D WebGL / 2D Canvas dependency visualizer |
+| `maxilun` (Orchestrator) | `157 lines` | `5 files` (`engines.md`, `discovery.md`, `purity-catalog.md`, `code-hygiene.md`, `surgical-discipline.md`) | Reversibility-gated triage, 4 engines detail, purity catalog, surgical discipline |
+| `maxilun-craft` | `126 lines` | **`105 files`** (`references/design-md/*.md` + `interface-engineering.md` + `component-mobile-patterns.md` + `brand-logo-guidelines.md`) | 100 real brand design analyses, mathematical radius/spacing tolerances, 20 art directions, SVG logo & PDF guidelines |
+| `maxilun-architect` | `143 lines` | `3 files` (`api-distributed-patterns.md`, `migration-operations-playbook.md`, `index.md`) | Outbox/Saga, Strangler Fig, RLS Multi-Tenancy, DR RPO/RTO, Fitness Functions |
+| `maxilun-docsmith` | `120 lines` | `6 files` (`prd-rfc-specs.md`, `openapi-contracts.md`, `runbooks-adr.md`, `llms-txt-spec.md`, `business-reporting.md`, `index.md`) | Gherkin PRD/RFC templates, OpenAPI 3.1 + RFC 9457 `ProblemDetails`, production runbooks, `/llms.txt` |
+| `maxilun-scaffold` | `129 lines` | `3 files` (`prd-archetypes.md`, `doc-templates.md`, `index.md`) | 5 domain archetypes (Fintech, B2B SaaS, DevTools, Commerce, Media) & 10 canonical `docs/` templates |
+| `maxilun-motion` | `134 lines` | `5 files` (`motion-components.md`, `choreography-styles.md`, `3d-scenes.md`, `visual-reference-workflow.md`, `index.md`) | Analytical damped harmonic spring evaluator, 14 motion style signatures, 3D WebGL choreography, beat-grid math |
+| `maxilun-cinecode` | `118 lines` | `6 ref files` + **Full React/TS/FFmpeg `scaffold/`** | `<AbsoluteFill>`, `<Sequence>`, `<Spring>`, `interpolate`, headless frame capture, and studio video pipeline |
+| `maxilun-sentinel` | `147 lines` | `2 files` (`security-playbook.md`, `php2shell-advisory.md`) | 10 trust boundaries, 20+ security test patterns, Web Crypto/Argon2id/AES-256-GCM implementations |
+| `maxilun-knowledge-graph` | `137 lines` | **AST Scanners (`python`, `ts`, `generic`) + `cli.py` + `lens.html`** | Zero-dependency AST symbol indexer & 3D WebGL / 2D Canvas dependency visualizer |
 
 ---
 
@@ -35,7 +35,7 @@ Maxilun solves this by enforcing a **strict `< 400 line` ceiling on every `SKILL
 
 | Dimension | Raw LLM Default (Generic AI Clichés) | Maxilun (`maxilun-craft` + `references/design-md/stripe.md`) |
 |---|---|---|
-| **Color & Surface** | Decorative purple-to-blue gradient header (`linear-gradient(135deg, #667eea, #764ba2)`), stacked glassmorphism cards | Semantic OKLCH tokens (`--surface-base: oklch(98.5% 0.004 250)`), `1px` high-contrast hairline borders, zero decorative gradients (`CLR-001` enforced) |
+| **Color & Surface** | Decorative purple-to-blue gradient header (`linear-gradient(135deg, #667eea, #764ba2)`), stacked glassmorphism cards | Domain-calibrated OKLCH semantic tokens, `1px` high-contrast hairline borders, zero decorative gradients (`CLR-001` & `LAY-013` enforced) |
 | **Typography & Numbers** | Proportional font on currency column (digits jitter horizontally when values change) | `font-variant-numeric: tabular-nums` right-aligned on all monetary, timestamp, and ID columns |
 | **UI States** | Only renders the happy path (`transactions.map(...)`) — crashes or shows blank box when empty/loading | Mandatory **4 UI States**: proportional row skeleton (`CLS = 0`), empty state with first-action CTA, populated state, and inline error state with retry |
 | **Labels & Copy** | Generic buttons (`"Submit"`, `"Learn More"`), fake badge `"AI-Powered Analytics"` | Action-specific labels (`"Cairkan Dana"`, `"Ekspor CSV"`), factual status badges (`SETTLED`, `PENDING`), zero marketing badges (`CMP-002` enforced) |
@@ -103,7 +103,7 @@ export function verifyWebhookSignature(rawBody: Buffer, timestampHeader: string,
 
 ## 3. Automated Repository Verification (`scripts/test-suite.py`)
 
-Every commit and pull request in Maxilun is gated by `python scripts/test-suite.py` (16 automated validation suites):
+Every commit and pull request in Maxilun is gated by `python scripts/test-suite.py` (17 automated validation suites):
 ```bash
 cd maxilun
 python scripts/test-suite.py
@@ -111,6 +111,6 @@ python scripts/test-suite.py
 1. **18-Skill Schema & Version Lock**: Verifies frontmatter, semantic version parity (`1.0.0`), and license across all 18 skills.
 2. **Byte-for-Byte `CORE-RULES` Drift Detection**: Guarantees the 4 quality engines are identical in all 18 skills.
 3. **Reference Path Resolution**: Parses every `` `references/*.md` `` and `` `../maxilun-*/references/*.md` `` token in all 18 skills and verifies the target file exists on disk.
-4. **Cognitive Load Size Budget**: Enforces `< 400 lines` warning / `< 1200 lines` hard limit on every `SKILL.md`.
+4. **Cognitive Load & Zero-Ceremony Gate**: Enforces strict `≤ 300 lines` ceiling, sequential `1..N` spine order, and zero ceremonial HUD banners or self-checked `- [ ]` gates on every `SKILL.md`.
 5. **Security Scanner Compliance (`skills.sh`)**: Blocks any `curl/wget | sh/bash/python/node` pipe-to-interpreter pattern across all markdown files.
 6. **Functional AST Knowledge Graph Test**: Executes real Python and TypeScript AST parsing, relative import resolution, and call-graph construction in an isolated temp environment.

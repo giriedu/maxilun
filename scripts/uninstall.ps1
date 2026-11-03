@@ -1,3 +1,7 @@
+param(
+    [switch]$Project
+)
+
 #Requires -Version 5.1
 Write-Host ""
 Write-Host "  MAXILUN Uninstaller" -ForegroundColor Cyan
@@ -13,16 +17,29 @@ if ($confirm -notmatch '^[Yy]$') {
 }
 
 $Removed = @()
-$Targets = @(
-    @{ Name = "Antigravity CLI/IDE"; SkillsPath = "$env:USERPROFILE\.agents\skills"; RulesPath = "$env:USERPROFILE\.agents\rules" },
-    @{ Name = "Claude Code";         SkillsPath = "$env:USERPROFILE\.claude\skills"; RulesPath = "$env:USERPROFILE\.claude\rules" },
-    @{ Name = "Codex";               SkillsPath = "$env:USERPROFILE\.codex\skills"; RulesPath = "$env:USERPROFILE\.codex\rules" },
-    @{ Name = "OpenCode";            SkillsPath = "$env:USERPROFILE\.config\opencode\skills"; RulesPath = "$env:USERPROFILE\.config\opencode\rules" },
-    @{ Name = "Gemini CLI";          SkillsPath = "$env:USERPROFILE\.gemini\config\skills"; RulesPath = $null },
-    @{ Name = "Cursor";              SkillsPath = "$env:USERPROFILE\.cursor\skills"; RulesPath = $null },
-    @{ Name = "Trae";                SkillsPath = "$env:USERPROFILE\.trae\skills"; RulesPath = $null },
-    @{ Name = "CodeBuddy";           SkillsPath = "$env:USERPROFILE\.codebuddy\skills"; RulesPath = $null }
-)
+if ($Project) {
+    $CurrentDir = Get-Location
+    $Targets = @(
+        @{ Name = "Universal / Antigravity / Zed (Project)"; SkillsPath = "$CurrentDir\.agents\skills"; RulesPath = "$CurrentDir\.agents\rules" },
+        @{ Name = "Claude Code (Project)";                 SkillsPath = "$CurrentDir\.claude\skills"; RulesPath = "$CurrentDir\.claude\rules" },
+        @{ Name = "Trae (Project)";                          SkillsPath = "$CurrentDir\.trae\skills"; RulesPath = $null },
+        @{ Name = "Windsurf (Project)";                      SkillsPath = "$CurrentDir\.windsurf\skills"; RulesPath = $null },
+        @{ Name = "CodeBuddy (Project)";                     SkillsPath = "$CurrentDir\.codebuddy\skills"; RulesPath = $null }
+    )
+} else {
+    $Targets = @(
+        @{ Name = "Antigravity CLI/IDE"; SkillsPath = "$env:USERPROFILE\.agents\skills"; RulesPath = "$env:USERPROFILE\.agents\rules" },
+        @{ Name = "Claude Code";         SkillsPath = "$env:USERPROFILE\.claude\skills"; RulesPath = "$env:USERPROFILE\.claude\rules" },
+        @{ Name = "Codex";               SkillsPath = "$env:USERPROFILE\.codex\skills"; RulesPath = "$env:USERPROFILE\.codex\rules" },
+        @{ Name = "OpenCode (.config)"; SkillsPath = "$env:USERPROFILE\.config\opencode\skills"; RulesPath = "$env:USERPROFILE\.config\opencode\rules" },
+        @{ Name = "OpenCode";            SkillsPath = "$env:USERPROFILE\.opencode\skills";        RulesPath = "$env:USERPROFILE\.opencode\rules" },
+        @{ Name = "Gemini CLI";          SkillsPath = "$env:USERPROFILE\.gemini\config\skills"; RulesPath = $null },
+        @{ Name = "Cursor";              SkillsPath = "$env:USERPROFILE\.cursor\skills"; RulesPath = $null },
+        @{ Name = "Trae";                SkillsPath = "$env:USERPROFILE\.trae\skills"; RulesPath = $null },
+        @{ Name = "Windsurf";            SkillsPath = "$env:USERPROFILE\.windsurf\skills"; RulesPath = $null },
+        @{ Name = "CodeBuddy";           SkillsPath = "$env:USERPROFILE\.codebuddy\skills"; RulesPath = $null }
+    )
+}
 
 foreach ($target in $Targets) {
     if (Test-Path $target.SkillsPath) {
