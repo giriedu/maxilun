@@ -79,6 +79,38 @@ Companions: maxilun-data
 Pre-flight: Check webhook replay window, raw body HMAC, and database idempotency table.
 ```
 
+### D. Evaluasi Live Model (OpenAI / DeepSeek / Ollama)
+Mengirim prompt secara live ke endpoint model dan membandingkan Raw vs Maxilun-governed output:
+```bash
+# Default menggunakan deepseek-chat (atau mock fallback saat offline):
+python harness/cli.py eval
+
+# Menggunakan API key & endpoint kustom:
+python harness/cli.py eval --model deepseek-chat --endpoint https://api.deepseek.com/v1 --api-key $DEEPSEEK_API_KEY
+
+# Menggunakan Ollama lokal:
+python harness/cli.py eval --model llama3 --endpoint http://localhost:11434/v1
+```
+
+### E. Verifikasi AST Struktural & Eksekusi Sandbox
+Memeriksa kode dengan AST parser dan menjalankan kompilasi/DDL di sandbox terisolasi:
+```bash
+python harness/cli.py verify-code src/db/migration.sql
+python harness/cli.py verify-code src/auth/session.py
+```
+
+### F. Pemasangan Git Pre-Commit Hook Otomatis
+Mencegah AI slop dan kode rentan masuk ke riwayat git:
+```bash
+# Pasang hook ke .git/hooks/pre-commit
+python harness/cli.py install-hook
+
+# Copot hook jika tidak diperlukan lagi
+python harness/cli.py uninstall-hook
+
+# Hasilkan workflow CI GitHub Actions (.github/workflows/maxilun-harness.yml)
+python harness/cli.py generate-ci
+
 ---
 
 ## 3. Skenario Benchmark Bawaan

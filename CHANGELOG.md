@@ -10,10 +10,13 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 - **Maxilun Engineering Harness (`harness/`)**:
-  - Shipped the official zero-dependency Maxilun Harness (`harness/cli.py`) offering deterministic output validation, reversibility-gated triage simulation, and automated benchmark evaluations.
+  - Shipped the official zero-dependency Maxilun Harness (`harness/cli.py`) offering deterministic output validation, AST security inspection, in-memory sandboxes, live LLM evaluations, and Git hooks.
   - **Purity Gate Validator (`harness/purity_validator.py`)**: Programmatic enforcement of 12 banned AI buzzwords (`VOC-001..VOC-012`), 6 ceremonial HUD banner patterns (`HUD-001..HUD-006`), 4 UI states (`UI-004`), tabular-nums typography (`TYPO-002`), anti-cliché gradients (`CLR-001`), and backend security invariants (constant-time `timingSafeEqual`, 300s replay tolerance, parameterized SQL).
-  - **Deterministic Router (`harness/router.py`)**: Standalone reversibility triage (Type 1 vs Type 2) and single-owner specialist dispatch with pre-flight check recommendations.
-  - **Empirical Benchmarks Runner (`harness/benchmarks.py`)**: 5 canonical engineering benchmark scenarios (Fintech UI, Webhook Idempotency, Zero-Downtime Migration, Surgical Refactor, Communication Purity) proving +55% quality improvement over Raw AI outputs, with auto-generated artifacts in `maxilun-out/`.
+  - **AST Structural Inspector (`harness/ast_inspector.py`)**: Real AST parsing for Python (`ast.parse`) catching f-string SQL injections, bare exception handlers, and hardcoded secrets, plus comment-stripped structural inspection for TypeScript/JavaScript and SQL DDL.
+  - **Execution Sandbox Runner (`harness/sandbox_runner.py`)**: In-memory runtime verification executing Python code compilation, Node/JavaScript syntax checks, and in-memory SQLite DDL execution proof.
+  - **Live Model Evaluator (`harness/live_evaluator.py`)**: Real-time comparative prompt runner against any OpenAI-compatible API (DeepSeek, OpenRouter, Ollama, OpenAI) measuring purity scores, latencies, and violation deltas with deterministic mock fallback.
+  - **Triage & Anti-Interrogation Evaluator (`harness/triage_evaluator.py`)**: Enforces Maxilun decision architecture, blocking unprompted question loops on Type 2 tasks and ensuring bounded options on Type 1 tasks.
+  - **Git Hook & CI Automation (`harness/hook_installer.py`)**: Added `python harness/cli.py install-hook` for `.git/hooks/pre-commit` slop prevention and `generate-ci` for automated GitHub Actions workflows.
   - Added `docs/HARNESS.md`, npm scripts `"harness"` and `"bench"`, and end-to-end test suite coverage in `scripts/test-suite.py`.
 
 ### Enhanced

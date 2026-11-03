@@ -462,6 +462,11 @@ def test_referenced_paths():
         REPO_ROOT / "harness" / "purity_validator.py",
         REPO_ROOT / "harness" / "router.py",
         REPO_ROOT / "harness" / "benchmarks.py",
+        REPO_ROOT / "harness" / "ast_inspector.py",
+        REPO_ROOT / "harness" / "sandbox_runner.py",
+        REPO_ROOT / "harness" / "live_evaluator.py",
+        REPO_ROOT / "harness" / "hook_installer.py",
+        REPO_ROOT / "harness" / "triage_evaluator.py",
     ]
     all_ok = True
     for p in paths_to_verify:
@@ -626,6 +631,10 @@ def test_harness_functional():
         from harness.purity_validator import PurityValidator
         from harness.router import MaxilunRouter
         from harness.benchmarks import BenchmarkRunner
+        from harness.ast_inspector import ASTInspector
+        from harness.sandbox_runner import SandboxRunner
+        from harness.live_evaluator import LiveModelEvaluator
+        from harness.triage_evaluator import TriageEvaluator
 
         # 1. Purity Validator Test
         val = PurityValidator()
@@ -658,7 +667,35 @@ def test_harness_functional():
             print("  ❌ BenchmarkRunner failed to produce positive score delta")
             return False
 
-        print(f"  ✅ Maxilun Harness functional tests passed ({report.total_benchmarks} benchmarks, +{report.overall_improvement:.1f}% delta)")
+        # 4. AST Inspector Test
+        ast_insp = ASTInspector()
+        bad_py = "def query(db, uid):\n    sql = f'SELECT * FROM users WHERE id = {uid}'\n    db.execute(sql)\n"
+        ast_res = ast_insp.inspect_python(bad_py)
+        if ast_res.passed or not any(f.rule_id == "SEC-003" for f in ast_res.findings):
+            print("  ❌ ASTInspector failed to catch Python f-string SQL injection")
+            return False
+
+        # 5. Sandbox Runner Test
+        sb_sql = SandboxRunner.verify_sql_migration("CREATE TABLE t (id INTEGER PRIMARY KEY);")
+        if not sb_sql.passed:
+            print(f"  ❌ SandboxRunner failed on valid SQLite DDL: {sb_sql.error}")
+            return False
+
+        # 6. Triage Evaluator Test
+        te = TriageEvaluator()
+        t_res = te.evaluate_response("Fix typo pada navbar", "Bisa jelaskan lebih detail typo-nya di mana?")
+        if t_res.passed or not any("ANTI_INTERROGATION" in v for v in t_res.violations):
+            print("  ❌ TriageEvaluator failed to catch anti-interrogation violation on Type 2 task")
+            return False
+
+        # 7. Live Model Evaluator (Mock fallback)
+        live_eval = LiveModelEvaluator()
+        live_rep = live_eval.run_evaluation()
+        if live_rep.total_scenarios < 3 or live_rep.overall_delta <= 0:
+            print("  ❌ LiveModelEvaluator failed to produce valid comparative report")
+            return False
+
+        print(f"  ✅ Complete Maxilun Harness verification passed (Purity, Router, Benchmarks, AST, Sandbox, Triage, LiveEval)")
         return True
     except Exception as e:
         print(f"  ❌ Maxilun Harness test error: {e}")
