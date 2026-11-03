@@ -456,6 +456,12 @@ def test_referenced_paths():
         REPO_ROOT / "LICENSE",
         REPO_ROOT / "package.json",
         REPO_ROOT / "skills.sh.json",
+        REPO_ROOT / "docs" / "HARNESS.md",
+        REPO_ROOT / "harness" / "__init__.py",
+        REPO_ROOT / "harness" / "cli.py",
+        REPO_ROOT / "harness" / "purity_validator.py",
+        REPO_ROOT / "harness" / "router.py",
+        REPO_ROOT / "harness" / "benchmarks.py",
     ]
     all_ok = True
     for p in paths_to_verify:
@@ -613,6 +619,53 @@ def test_cross_references():
     return passed
 
 
+def test_harness_functional():
+    print("\n🧪 Running functional Maxilun Harness test...")
+    try:
+        sys.path.insert(0, str(REPO_ROOT))
+        from harness.purity_validator import PurityValidator
+        from harness.router import MaxilunRouter
+        from harness.benchmarks import BenchmarkRunner
+
+        # 1. Purity Validator Test
+        val = PurityValidator()
+        clean_res = val.validate_text("Clean production code without fluff.")
+        if not clean_res.passed:
+            print("  ❌ PurityValidator failed on clean input")
+            return False
+
+        dirty_res = val.validate_text("We delve into this game-changer solution.\n🎯 [FOKUS] Step 1")
+        if dirty_res.passed or len(dirty_res.violations) < 2:
+            print("  ❌ PurityValidator failed to catch buzzwords or HUD banner")
+            return False
+
+        # 2. Router Test
+        router = MaxilunRouter()
+        route1 = router.route("Bikin migrasi database drop column di postgres")
+        if route1.primary_owner != "maxilun-data" or route1.decision_type != 1:
+            print("  ❌ MaxilunRouter failed on Type 1 migration routing")
+            return False
+
+        route2 = router.route("Fix typo pada header navbar")
+        if route2.primary_owner != "maxilun-engineer" or route2.decision_type != 2:
+            print("  ❌ MaxilunRouter failed on Type 2 bugfix routing")
+            return False
+
+        # 3. Benchmark Runner Test
+        runner = BenchmarkRunner()
+        report = runner.run_all()
+        if report.total_benchmarks < 5 or report.overall_improvement <= 0:
+            print("  ❌ BenchmarkRunner failed to produce positive score delta")
+            return False
+
+        print(f"  ✅ Maxilun Harness functional tests passed ({report.total_benchmarks} benchmarks, +{report.overall_improvement:.1f}% delta)")
+        return True
+    except Exception as e:
+        print(f"  ❌ Maxilun Harness test error: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
 def main():
     print("🌑 Starting Maxilun 18-Skill Test Suite\n" + "=" * 48)
     results = [
@@ -633,6 +686,7 @@ def main():
         test_cross_references(),
         test_no_pipe_to_interpreter(),
         test_no_ceremony_or_self_check_gates(),
+        test_harness_functional(),
     ]
 
     print("\n" + "=" * 48)

@@ -176,6 +176,7 @@ Use `maxilun-knowledge-graph` for structural or multi-file code changes when its
 | [docs/EXAMPLES.md](docs/EXAMPLES.md) | Real-world engineering scenarios & multi-specialist Wave Patterns |
 | [docs/SKILL-CONTRACTS.md](docs/SKILL-CONTRACTS.md) | Ownership, standalone behavior, inputs, outputs, and handoffs for every skill |
 | [docs/BENCHMARKS.md](docs/BENCHMARKS.md) | Side-by-side Raw LLM vs. Maxilun code/UI/video proofs & token efficiency metrics |
+| [docs/HARNESS.md](docs/HARNESS.md) | Automated evaluation, Purity Gate verification, and benchmark CLI harness |
 | [docs/ROUTING-MATRIX.md](docs/ROUTING-MATRIX.md) | Primary-owner routing and trigger collision boundaries |
 | [docs/PURITY-GATE.md](docs/PURITY-GATE.md) | Distribution-safe Purity Gate and evidence delivery rules |
 | [docs/RELEASE.md](docs/RELEASE.md) | Automated GitHub Releases, tag dispatch, and versioning protocols |

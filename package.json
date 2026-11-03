@@ -39,6 +39,8 @@
   },
   "scripts": {
     "test": "python scripts/test-suite.py",
+    "harness": "python harness/cli.py",
+    "bench": "python harness/cli.py bench",
     "install-skills": "node -e \"const{execSync}=require('child_process');const p=require('path');const s=p.join(__dirname,'scripts');process.platform==='win32'?execSync('powershell -ExecutionPolicy Bypass -File '+p.join(s,'install.ps1'),{stdio:'inherit'}):execSync('bash '+p.join(s,'install.sh'),{stdio:'inherit'})\"",
     "update-skills": "node -e \"const{execSync}=require('child_process');const p=require('path');const s=p.join(__dirname,'scripts');process.platform==='win32'?execSync('powershell -ExecutionPolicy Bypass -File '+p.join(s,'install.ps1'),{stdio:'inherit'}):execSync('bash '+p.join(s,'install.sh'),{stdio:'inherit'})\"",
     "uninstall-skills": "node -e \"const{execSync}=require('child_process');const p=require('path');const s=p.join(__dirname,'scripts');process.platform==='win32'?execSync('powershell -ExecutionPolicy Bypass -File '+p.join(s,'uninstall.ps1'),{stdio:'inherit'}):execSync('bash '+p.join(s,'uninstall.sh'),{stdio:'inherit'})\""
@@ -63,6 +65,9 @@
     "CONTRIBUTING.md",
     "CHANGELOG.md",
     "LICENSE",
-    "skills.sh.json"
+    "skills.sh.json",
+    "harness/",
+    "!harness/**/__pycache__/**",
+    "!harness/**/*.pyc"
   ]
 }

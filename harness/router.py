@@ -1,0 +1,161 @@
+"""Maxilun Reversibility-Gated Triage & Specialist Router.
+
+Simulates the Master Orchestrator decision logic:
+- Type 1 (Irreversible / High-Cost) vs Type 2 (Reversible / Low-Cost) classification
+- Single-owner routing across the 17 specialists
+- Conditional companion attachment at hard capability boundaries
+- Pre-flight Knowledge Graph inspection recommendation
+"""
+
+from dataclasses import dataclass, field
+from typing import List
+
+
+@dataclass
+class RoutingDecision:
+    prompt: str
+    primary_owner: str
+    reversibility: str  # "Type 1 (Irreversible)" or "Type 2 (Reversible)"
+    decision_type: int  # 1 or 2
+    companions: List[str] = field(default_factory=list)
+    pre_flight: str = ""
+    rationale: str = ""
+
+    def summary(self) -> str:
+        lines = [
+            f"Prompt: \"{self.prompt}\"",
+            f"Primary Owner: {self.primary_owner}",
+            f"Reversibility: {self.reversibility}",
+            f"Companions: {', '.join(self.companions) if self.companions else 'None (single cohesive owner)'}",
+            f"Pre-flight: {self.pre_flight}",
+            f"Rationale: {self.rationale}"
+        ]
+        return "\n".join(lines)
+
+
+class MaxilunRouter:
+    """Deterministic routing and decision reversibility classifier."""
+
+    TYPE_1_KEYWORDS = [
+        "drop column", "drop table", "migrasi destruktif", "pemecahan service",
+        "redesign total dari nol", "greenfield identity", "multi-tenant isolation",
+        "breaking change", "kontrak publik baru", "delete production data",
+        "split monolith", "schema split"
+    ]
+
+    def route(self, prompt: str) -> RoutingDecision:
+        p = prompt.lower()
+
+        # 1. Reversibility Triage (Type 1 vs Type 2)
+        is_type_1 = any(kw in p for kw in self.TYPE_1_KEYWORDS)
+        if is_type_1:
+            reversibility = "Type 1 (Irreversible / High-Cost — max 1 batched clarification turn)"
+            decision_type = 1
+        else:
+            reversibility = "Type 2 (Reversible / Low-Cost — execute directly from repo evidence)"
+            decision_type = 2
+
+        # 2. Single Cohesive Owner Assignment
+        owner = "maxilun-engineer"
+        companions = []
+        pre_flight = "Inspect callers via callsIn: or read affected file range before modifying."
+        rationale = "General production code modification or feature implementation."
+
+        if any(k in p for k in ["login", "auth", "token", "password", "oauth", "jwt", "csrf", "xss", "keamanan", "enkripsi", "secret", "totp"]):
+            owner = "maxilun-sentinel"
+            rationale = "Authentication, authorization, or trust-boundary hardening."
+            pre_flight = "Review trust boundaries, secrets storage, and session lifecycles."
+            if any(k in p for k in ["tabel", "skema", "db", "user table"]):
+                companions.append("maxilun-data")
+
+        elif any(k in p for k in ["webhook", "signature", "hmac"]):
+            owner = "maxilun-sentinel"
+            companions.append("maxilun-data")
+            rationale = "Cryptographic webhook signature verification and idempotent payload mutation."
+            pre_flight = "Check webhook replay window, raw body HMAC, and database idempotency table."
+
+        elif any(k in p for k in ["app router", "rsc", "server component", "server action", "next.js", "nextjs", "hydration", "flight"]):
+            owner = "maxilun-frontend"
+            rationale = "Next.js 15 App Router topology, RSC vs Client boundaries, or Server Actions."
+            pre_flight = "Check existing app/ directory layout and 'use client' leaf boundary placement."
+
+        elif any(k in p for k in ["desain ui", "redesign", "landing page", "komponen ui", "sistem desain", "ui/ux", "tampilan", "logo svg", "brand identity"]):
+            owner = "maxilun-craft"
+            rationale = "Domain-authentic visual design, OKLCH tokens, 4 UI states, or brand assets."
+            pre_flight = "Select 1-2 matching design systems from references/design-md/ and verify tokens."
+
+        elif any(k in p for k in ["skema", "tabel", "database", "migrasi", "index", "query plan", "rls", "postgres", "sql", "explain"]):
+            owner = "maxilun-data"
+            rationale = "Physical schema modeling, expand-contract migrations, indexing, or RLS isolation."
+            pre_flight = "Check existing ORM models, migration lockfiles, and EXPLAIN query plan."
+
+        elif any(k in p for k in ["root cause", "kenapa lambat", "memory leak", "audit kode", "diagnosis", "profiling"]):
+            owner = "maxilun-insight"
+            rationale = "Diagnostic symptom tracing and blast-radius investigation before writing fixes."
+            pre_flight = "Run Knowledge Graph query callsIn: to map callers of the failing codepath."
+
+        elif any(k in p for k in ["arsitektur", "microservice", "batas modul", "adr", "migration plan", "system design"]):
+            owner = "maxilun-architect"
+            rationale = "Module boundary definition, cross-service contracts, or architecture decision records."
+            pre_flight = "Evaluate bounded contexts, deep module seams, and failure mode invariants."
+
+        elif any(k in p for k in ["diagram", "sequence diagram", "er diagram", "mermaid"]):
+            owner = "maxilun-diagrams"
+            rationale = "Structural architecture, sequence, or entity-relationship diagram authoring."
+            pre_flight = "Extract confirmed entities and relationships from codebase or schema."
+
+        elif any(k in p for k in ["video", "remotion", "mp4", "webm", "render video"]):
+            owner = "maxilun-cinecode"
+            companions.append("maxilun-motion")
+            rationale = "Programmatic React/Remotion video compilation to MP4/WebM."
+            pre_flight = "Verify frame-indexed composition math (useCurrentFrame) and FFmpeg availability."
+
+        elif any(k in p for k in ["animasi", "three.js", "webgl", "motion", "pegas"]):
+            owner = "maxilun-motion"
+            rationale = "Interactive web motion, analytical springs, or 3D WebGL scenes."
+            pre_flight = "Check spring physics parameters (stiffness, damping) and GPU frame budget."
+
+        elif any(k in p for k in ["copywriting", "microcopy", "naskah", "copy produk"]):
+            owner = "maxilun-content"
+            rationale = "Product UI microcopy, terminology inventory, or cinematic video scripts."
+            pre_flight = "Audit existing domain nouns, action-specific button verbs, and brand tone."
+
+        elif any(k in p for k in ["seo", "sitemap", "json-ld", "canonical", "core web vitals"]):
+            owner = "maxilun-seo-audit"
+            rationale = "Technical SEO crawlability, canonical link hygiene, or JSON-LD structured data."
+            pre_flight = "Inspect robot.txt, sitemap indices, and head metadata serialization."
+
+        elif any(k in p for k in ["init docs", "scaffold docs", "buat prd awal", "bootstrap context"]):
+            owner = "maxilun-scaffold"
+            rationale = "Bootstrapping initial project context documents in docs/ from codebase evidence."
+            pre_flight = "Inspect package.json, schema files, and existing folder structure."
+
+        elif any(k in p for k in ["rfc", "openapi", "runbook", "llms.txt", "tulis spesifikasi"]):
+            owner = "maxilun-docsmith"
+            rationale = "In-depth engineering RFC, OpenAPI 3.1 contract, production runbook, or llms.txt."
+            pre_flight = "Read OpenAPI templates and align API payload schemas with data models."
+
+        elif any(k in p for k in ["jalankan tes", "typecheck", "cek build", "uji regresi", "lint kode"]):
+            owner = "maxilun-verify"
+            rationale = "Quality assurance, typechecking, build gates, and factual verification reporting."
+            pre_flight = "Check package.json scripts / Makefile to find repository native test runner."
+
+        elif any(k in p for k in ["ci/cd", "docker", "pipeline", "deploy", "ssl", "kubernetes"]):
+            owner = "maxilun-deploy"
+            rationale = "CI/CD automation, container hardening, zero-downtime release, or observability."
+            pre_flight = "Check runtime environment variables, lockfiles, and hosting target topology."
+
+        elif any(k in p for k in ["petakan kode", "cari simbol", "siapa panggil", "blast radius", "knowledge graph"]):
+            owner = "maxilun-knowledge-graph"
+            rationale = "Codebase symbol lookup, call hierarchy mapping, or dependency graph generation."
+            pre_flight = "Query maxilun-out/graph.json cache or run python cli.py scan."
+
+        return RoutingDecision(
+            prompt=prompt,
+            primary_owner=owner,
+            reversibility=reversibility,
+            decision_type=decision_type,
+            companions=companions,
+            pre_flight=pre_flight,
+            rationale=rationale
+        )
