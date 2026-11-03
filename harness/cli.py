@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
-"""Maxilun Harness CLI.
+"""Maxilun Harness CLI — Complete Agent Runtime & Governance Center.
 
 Usage:
+    python -m harness chat
+    python -m harness run "<task prompt>"
+    python -m harness skills
+    python -m harness dashboard [--open]
     python -m harness check [<path> | -]
     python -m harness route "<prompt>"
-    python -m harness bench [--json] [-o <report.json>]
+    python -m harness bench [--json] [--view] [-o <report.json>]
     python -m harness eval [--model <model>] [--endpoint <url>] [--api-key <key>]
     python -m harness verify-code <path>
     python -m harness install-hook
@@ -16,6 +20,7 @@ import argparse
 import sys
 import os
 import json
+import webbrowser
 from pathlib import Path
 
 # Add repo root to sys.path
@@ -28,6 +33,67 @@ from harness.ast_inspector import ASTInspector
 from harness.sandbox_runner import SandboxRunner
 from harness.live_evaluator import LiveModelEvaluator
 from harness.hook_installer import HookInstaller
+from harness.dashboard import DashboardGenerator
+from harness.engine.skills_loader import SkillsLoader
+from harness.engine.provider import UniversalProvider
+from harness.engine.agent_loop import MaxilunAgentLoop
+
+
+def cmd_run(args):
+    provider = UniversalProvider(
+        endpoint=args.endpoint,
+        api_key=args.api_key,
+        model=args.model
+    )
+    agent = MaxilunAgentLoop(provider=provider, max_turns=args.max_turns)
+    agent.run_task(args.task)
+
+
+def cmd_chat(args):
+    provider = UniversalProvider(
+        endpoint=args.endpoint,
+        api_key=args.api_key,
+        model=args.model
+    )
+    agent = MaxilunAgentLoop(provider=provider, max_turns=args.max_turns)
+    print("🌑 Maxilun Harness Agent Session (type 'exit' or 'quit' to end)")
+    print("   Governed by Maxilun Core Rules & 18 Specialist Skills")
+    print("=" * 60)
+
+    while True:
+        try:
+            prompt = input("\nmaxilun> ").strip()
+            if not prompt:
+                continue
+            if prompt.lower() in ("exit", "quit"):
+                print("Session ended.")
+                break
+            agent.run_task(prompt)
+        except (KeyboardInterrupt, EOFError):
+            print("\nSession interrupted.")
+            break
+
+
+def cmd_skills(args):
+    loader = SkillsLoader()
+    skills = loader.list_skills()
+    print(f"\n🌑 Maxilun Ecosystem Skills ({len(skills)} specialists discovered):")
+    print("=" * 75)
+    for s in skills:
+        status = "✅ PASS" if s.line_count <= 300 else "❌ OVER"
+        triggers = ", ".join(s.triggers[:3]) if s.triggers else "none"
+        print(f"[{status}] {s.name:<25} ({s.line_count:3d} lines, {len(s.references):2d} refs) | Triggers: {triggers}")
+    print("=" * 75)
+
+
+def cmd_dashboard(args):
+    out_path = DashboardGenerator.generate()
+    print(f"✅ Maxilun Interactive Dashboard generated: {out_path}")
+    if args.open:
+        try:
+            webbrowser.open(str(out_path.resolve()))
+        except Exception:
+            pass
 
 
 def cmd_check(args):
@@ -153,6 +219,14 @@ def cmd_bench(args):
     print(f"  - JSON Report: {report_file}")
     print(f"  - Markdown Report: {md_file}")
 
+    if args.view:
+        dashboard_path = DashboardGenerator.generate()
+        print(f"  - Interactive Dashboard: {dashboard_path}")
+        try:
+            webbrowser.open(str(dashboard_path.resolve()))
+        except Exception:
+            pass
+
 
 def cmd_eval(args):
     print(f"🌑 Starting Live Model Evaluation (Model: {args.model})...")
@@ -241,12 +315,34 @@ def cmd_generate_ci(args):
 def main():
     parser = argparse.ArgumentParser(
         prog="maxilun-harness",
-        description="Maxilun Automated Evaluation, Purity Gate, AST Inspector & Triage Harness."
+        description="Maxilun Autonomous Agent Runtime, Purity Gate & Quality Governance Center."
     )
     subparsers = parser.add_subparsers(dest="command")
 
+    # chat
+    chat_parser = subparsers.add_parser("chat", help="Start an interactive Maxilun agent session in terminal")
+    chat_parser.add_argument("--model", default=None, help="Model name (e.g. deepseek-chat)")
+    chat_parser.add_argument("--endpoint", default=None, help="LLM endpoint URL")
+    chat_parser.add_argument("--api-key", default=None, help="LLM API key")
+    chat_parser.add_argument("--max-turns", type=int, default=10, help="Max interaction turns")
+
+    # run
+    run_parser = subparsers.add_parser("run", help="Execute an autonomous task through Maxilun agent harness")
+    run_parser.add_argument("task", help="Task description or prompt to execute")
+    run_parser.add_argument("--model", default=None, help="Model name")
+    run_parser.add_argument("--endpoint", default=None, help="LLM endpoint URL")
+    run_parser.add_argument("--api-key", default=None, help="LLM API key")
+    run_parser.add_argument("--max-turns", type=int, default=10, help="Max interaction turns")
+
+    # skills
+    subparsers.add_parser("skills", help="List and inspect all 18 Maxilun specialist skills")
+
+    # dashboard
+    dash_parser = subparsers.add_parser("dashboard", help="Generate and open the interactive visual HTML dashboard")
+    dash_parser.add_argument("--open", action="store_true", default=True, help="Automatically open in browser")
+
     # check
-    check_parser = subparsers.add_parser("check", help="Validate a file, text, or directory against Purity Gate")
+    check_parser = subparsers.add_parser("check", help="Validate a file, text, or directory against Purity Gate & AST")
     check_parser.add_argument("path", nargs="?", default=None, help="Target file/folder or '-' for stdin")
 
     # route
@@ -256,11 +352,12 @@ def main():
     # bench
     bench_parser = subparsers.add_parser("bench", help="Run canonical Maxilun engineering benchmarks")
     bench_parser.add_argument("--json", action="store_true", help="Output JSON instead of Markdown")
+    bench_parser.add_argument("--view", action="store_true", help="Generate and open interactive visual dashboard")
     bench_parser.add_argument("-o", "--output", default="benchmark_report.json", help="Output JSON file name")
 
     # eval
     eval_parser = subparsers.add_parser("eval", help="Run live model comparison evaluation against OpenAI/DeepSeek endpoint")
-    eval_parser.add_argument("--model", default="deepseek-chat", help="Target model name (default: deepseek-chat)")
+    eval_parser.add_argument("--model", default="deepseek-chat", help="Target model name")
     eval_parser.add_argument("--endpoint", default=None, help="OpenAI-compatible base URL")
     eval_parser.add_argument("--api-key", default=None, help="Model provider API key")
     eval_parser.add_argument("--json", action="store_true", help="Output JSON instead of Markdown")
@@ -280,6 +377,10 @@ def main():
         sys.exit(1)
 
     dispatch = {
+        "chat": cmd_chat,
+        "run": cmd_run,
+        "skills": cmd_skills,
+        "dashboard": cmd_dashboard,
         "check": cmd_check,
         "route": cmd_route,
         "bench": cmd_bench,

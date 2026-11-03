@@ -10,32 +10,30 @@ Jika skill Maxilun bertindak sebagai **governance & instruction layer** bagi mod
 
 ```
 ┌────────────────────────────────────────────────────────┐
-│  Agent Runtime / User Prompt                           │
+│  User Prompt / CLI Terminal / Interactive Session      │
 └──────────────────────────┬─────────────────────────────┘
                            │
 ┌──────────────────────────▼─────────────────────────────┐
-│  Maxilun Router (harness/router.py)                    │
-│  - Reversibility Triage (Type 1 vs Type 2)             │
-│  - Single Cohesive Owner Assignment                    │
-│  - Pre-flight Knowledge Graph Recommendation           │
+│  Maxilun Autonomous Agent Engine (harness/engine/)     │
+│  - Skills Loader: parses 18 specialists on disk        │
+│  - Reversibility Gate: Type 1 vs Type 2 triage         │
+│  - ReAct Execution Loop: tool calls & state tracking   │
+└───────────┬────────────────────────────────┬───────────┘
+            │                                │
+┌───────────▼───────────┐        ┌───────────▼───────────┐
+│ Native Tool Registry  │        │ Runtime Middleware    │
+│ - read, write, edit   │        │ - PreFlightGraphHook  │
+│ - glob, grep, bash    │        │ - PurityInterceptor   │
+│ - in-process kg_query │        │ - ReversibilityGuard  │
+└───────────┬───────────┘        └───────────┬───────────┘
+            │                                │
+┌───────────▼────────────────────────────────▼───────────┐
+│  Universal LLM Provider (DeepSeek / Ollama / OpenAI)   │
 └──────────────────────────┬─────────────────────────────┘
                            │
 ┌──────────────────────────▼─────────────────────────────┐
-│  Candidate Generation (Model / Codebase)               │
-└──────────────────────────┬─────────────────────────────┘
-                           │
-┌──────────────────────────▼─────────────────────────────┐
-│  Purity Validator (harness/purity_validator.py)        │
-│  - Banned Buzzwords (VOC-001..VOC-012)                 │
-│  - Ceremonial HUD Theater (HUD-001..HUD-006)           │
-│  - 4 UI States & Tabular Numbers (UI-004, TYPO-002)    │
-│  - Security Invariants (SEC-001, SEC-002, SEC-003)     │
-└──────────────────────────┬─────────────────────────────┘
-                           │
-┌──────────────────────────▼─────────────────────────────┐
-│  Verdict: PASS / FAIL + Scorecard (harness/cli.py)     │
+│  Verified Delivery / Interactive Visual Dashboard      │
 └────────────────────────────────────────────────────────┘
-```
 
 ---
 
@@ -43,20 +41,39 @@ Jika skill Maxilun bertindak sebagai **governance & instruction layer** bagi mod
 
 Harness dapat dijalankan tanpa dependensi eksternal (stdlib Python 3.8+):
 
-### A. Menjalankan Benchmark Suite Komparatif
+### A. Sesi Interaktif & Eksekusi Tugas Otonom
+Menjalankan sesi agen terminal lengkap dengan 18 spesialis dan pemanggilan tool bawaan:
+```bash
+# Sesi chat interaktif mandiri:
+python harness/cli.py chat
+
+# Menjalankan satu tugas otonom:
+python harness/cli.py run "Baca package.json dan verifikasi skrip build"
+```
+
+### B. Inspeksi 18 Spesialis Ekosistem
+Memeriksa status, kepatuhan batas baris (`≤ 300`), dan pemicu seluruh spesialis:
+```bash
+python harness/cli.py skills
+```
+
+### C. Dashboard Visual Interaktif
+Membuka dashboard HTML visual mandiri di peramban:
+```bash
+python harness/cli.py dashboard --open
+```
+
+### D. Menjalankan Benchmark Suite Komparatif
 Membandingkan kualitas generasi Raw AI tanpa batas vs output yang diatur oleh Maxilun:
 ```bash
-python harness/cli.py bench
-```
-Untuk format JSON terstruktur:
-```bash
-python harness/cli.py bench --json -o benchmark_report.json
+python harness/cli.py bench --view
 ```
 Artefak otomatis disimpan ke:
 - `maxilun-out/benchmark_report.json`
 - `maxilun-out/BENCHMARK_REPORT.md`
+- `maxilun-out/dashboard.html`
 
-### B. Memvalidasi Berkas / Output terhadap Purity Gate
+### E. Memvalidasi Berkas / Output terhadap Purity Gate
 Memeriksa file kode, diff, atau dokumen markdown:
 ```bash
 python harness/cli.py check src/components/Dashboard.tsx

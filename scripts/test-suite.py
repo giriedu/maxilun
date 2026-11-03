@@ -467,6 +467,18 @@ def test_referenced_paths():
         REPO_ROOT / "harness" / "live_evaluator.py",
         REPO_ROOT / "harness" / "hook_installer.py",
         REPO_ROOT / "harness" / "triage_evaluator.py",
+        REPO_ROOT / "harness" / "dashboard.py",
+        REPO_ROOT / "harness" / "engine" / "__init__.py",
+        REPO_ROOT / "harness" / "engine" / "skills_loader.py",
+        REPO_ROOT / "harness" / "engine" / "context.py",
+        REPO_ROOT / "harness" / "engine" / "provider.py",
+        REPO_ROOT / "harness" / "engine" / "middleware.py",
+        REPO_ROOT / "harness" / "engine" / "agent_loop.py",
+        REPO_ROOT / "harness" / "tools" / "__init__.py",
+        REPO_ROOT / "harness" / "tools" / "registry.py",
+        REPO_ROOT / "harness" / "tools" / "fs_tools.py",
+        REPO_ROOT / "harness" / "tools" / "bash_tool.py",
+        REPO_ROOT / "harness" / "tools" / "kg_tool.py",
     ]
     all_ok = True
     for p in paths_to_verify:
@@ -695,7 +707,17 @@ def test_harness_functional():
             print("  ❌ LiveModelEvaluator failed to produce valid comparative report")
             return False
 
-        print(f"  ✅ Complete Maxilun Harness verification passed (Purity, Router, Benchmarks, AST, Sandbox, Triage, LiveEval)")
+        # 8. Autonomous Agent Loop Test
+        from harness.engine.agent_loop import MaxilunAgentLoop
+        from harness.engine.provider import UniversalProvider
+        mock_prov = UniversalProvider(mock_mode=True)
+        agent = MaxilunAgentLoop(provider=mock_prov, max_turns=3, verbose=False)
+        ctx = agent.run_task("Tolong baca package.json")
+        if len(ctx.messages) < 2 or not ctx.active_skill:
+            print("  ❌ MaxilunAgentLoop failed to execute autonomous task")
+            return False
+
+        print(f"  ✅ Complete Maxilun Harness verification passed (Purity, Router, Benchmarks, AST, Sandbox, Triage, LiveEval, AgentLoop)")
         return True
     except Exception as e:
         print(f"  ❌ Maxilun Harness test error: {e}")

@@ -9,8 +9,11 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
-- **Maxilun Engineering Harness (`harness/`)**:
-  - Shipped the official zero-dependency Maxilun Harness (`harness/cli.py`) offering deterministic output validation, AST security inspection, in-memory sandboxes, live LLM evaluations, and Git hooks.
+- **Maxilun Autonomous Agent Engine & Engineering Harness (`harness/`)**:
+  - Shipped the official self-contained Maxilun Agent Runtime Engine (`harness/engine/agent_loop.py`) and unified CLI (`harness/cli.py`) offering autonomous task execution (`run`), interactive terminal agent sessions (`chat`), specialist skill discovery (`skills`), and interactive visual dashboard generation (`dashboard`).
+  - **Native Tool Registry (`harness/tools/`)**: Built-in zero-dependency toolset supporting safe file reading/writing/editing (`FSTools`), shell execution (`BashTool`), and in-process Knowledge Graph AST querying (`KnowledgeGraphTool`) with OpenAI/DeepSeek function calling schemas.
+  - **Active Runtime Middleware (`harness/engine/middleware.py`)**: Intercepts the agent loop with pre-flight Knowledge Graph caller discovery before file edits, Purity Gate correction feedback loops before yielding, and Type 1/Type 2 reversibility enforcement.
+  - **Interactive Visual Dashboard (`harness/dashboard.py`)**: Generates an offline single-file HTML/CSS/JS control center (`maxilun-out/dashboard.html`) featuring side-by-side benchmark diffs, 18 specialist skill status cards, quality gauges, and live triage simulator.
   - **Purity Gate Validator (`harness/purity_validator.py`)**: Programmatic enforcement of 12 banned AI buzzwords (`VOC-001..VOC-012`), 6 ceremonial HUD banner patterns (`HUD-001..HUD-006`), 4 UI states (`UI-004`), tabular-nums typography (`TYPO-002`), anti-cliché gradients (`CLR-001`), and backend security invariants (constant-time `timingSafeEqual`, 300s replay tolerance, parameterized SQL).
   - **AST Structural Inspector (`harness/ast_inspector.py`)**: Real AST parsing for Python (`ast.parse`) catching f-string SQL injections, bare exception handlers, and hardcoded secrets, plus comment-stripped structural inspection for TypeScript/JavaScript and SQL DDL.
   - **Execution Sandbox Runner (`harness/sandbox_runner.py`)**: In-memory runtime verification executing Python code compilation, Node/JavaScript syntax checks, and in-memory SQLite DDL execution proof.
