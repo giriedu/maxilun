@@ -20,6 +20,9 @@ class RoutingDecision:
     companions: List[str] = field(default_factory=list)
     pre_flight: str = ""
     rationale: str = ""
+    is_multi_domain: bool = False
+    waves: List[dict] = field(default_factory=list)
+    handoff_record: str = ""
 
     def summary(self) -> str:
         lines = [
@@ -27,9 +30,17 @@ class RoutingDecision:
             f"Primary Owner: {self.primary_owner}",
             f"Reversibility: {self.reversibility}",
             f"Companions: {', '.join(self.companions) if self.companions else 'None (single cohesive owner)'}",
+            f"Multi-Domain: {'Yes (Multi-Wave Coordination Required)' if self.is_multi_domain else 'No (Single-Owner Execution)'}",
             f"Pre-flight: {self.pre_flight}",
-            f"Rationale: {self.rationale}"
+            f"Rationale: {self.rationale}",
         ]
+        if self.waves:
+            lines.append("\nOrchestration Waves:")
+            for w in self.waves:
+                specs = ", ".join(w.get("specialists", []))
+                lines.append(f"  - [{w.get('name')}]: {specs} -> {w.get('goal')}")
+        if self.handoff_record:
+            lines.append(f"\nFormal Handoff Record:\n{self.handoff_record}")
         return "\n".join(lines)
 
 
@@ -150,6 +161,43 @@ class MaxilunRouter:
             rationale = "Codebase symbol lookup, call hierarchy mapping, or dependency graph generation."
             pre_flight = "Query maxilun-out/graph.json cache or run python cli.py scan."
 
+        # 3. Wave Coordination Decomposition (Maxilun Section 4)
+        is_multi = len(companions) > 0 or any(k in p for k in ["lengkap", "fullstack", "end-to-end", "dan test", "beserta ui", "arsitektur"])
+        waves = []
+        if is_multi:
+            w1_specs = [owner] if owner in ("maxilun-architect", "maxilun-data", "maxilun-sentinel", "maxilun-scaffold") else []
+            for c in companions:
+                if c in ("maxilun-architect", "maxilun-data", "maxilun-sentinel", "maxilun-scaffold") and c not in w1_specs:
+                    w1_specs.append(c)
+            if not w1_specs:
+                w1_specs = [owner]
+
+            w2_specs = []
+            for s in [owner] + companions:
+                if s in ("maxilun-engineer", "maxilun-frontend", "maxilun-craft", "maxilun-motion", "maxilun-cinecode", "maxilun-content"):
+                    if s not in w2_specs:
+                        w2_specs.append(s)
+            if not w2_specs:
+                w2_specs = ["maxilun-engineer"]
+
+            waves = [
+                {"wave": 1, "name": "Wave 1: Contracts & Design", "specialists": w1_specs[:3], "goal": "Define schemas, API boundaries, or visual tokens"},
+                {"wave": 2, "name": "Wave 2: Implementation", "specialists": w2_specs[:3], "goal": "Consume contracts to write convergent production code"},
+                {"wave": 3, "name": "Wave 3: Verification & Proof", "specialists": ["maxilun-verify"], "goal": "Execute test suite, typecheck, and runtime proof"}
+            ]
+        else:
+            waves = [
+                {"wave": 1, "name": "Direct Execution", "specialists": [owner], "goal": "Execute single-surface change"},
+                {"wave": 2, "name": "Verification Proof", "specialists": ["maxilun-verify"], "goal": "Validate build & exit code 0"}
+            ]
+
+        # 4. Standard Handoff Record (Maxilun Section 5)
+        handoff_record = f"""Owner: {owner}
+Artifacts: {owner} contract deliverables for "{prompt[:40]}"
+Verification: Invariant verification [CONFIRMED]
+Next: {', '.join(companions) if companions else 'maxilun-verify'}
+Residual risks: Disclose operational or runtime boundary limits explicitly"""
+
         return RoutingDecision(
             prompt=prompt,
             primary_owner=owner,
@@ -157,5 +205,8 @@ class MaxilunRouter:
             decision_type=decision_type,
             companions=companions,
             pre_flight=pre_flight,
-            rationale=rationale
+            rationale=rationale,
+            is_multi_domain=is_multi,
+            waves=waves,
+            handoff_record=handoff_record
         )

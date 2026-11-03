@@ -1,12 +1,13 @@
-"""Maxilun Interactive Visual Dashboard Generator with Authentic Swarm Rebuild Engine.
+"""Maxilun Interactive Visual Dashboard Generator with Linear/Railway Design System & Multi-Wave Orchestration.
 
-Inspired by DhvanilPatel/swarm-cursors:
-- True multiplayer vector cursor shapes (Arrow, Crosshair, I-Beam, Pen, Alt-Drag Duplicate)
-- Natural curved mouse kinematics with trajectory bending and easing
-- Real-time rubber-band rectangle drawing with dimension badges (W × H) and corner handles
-- Character-by-character code typing with blinking I-beam
-- Synthetic Web Audio API click, keystroke, and pop sound effects
-- Interactive Wipe & Rebuild canvas simulation and real telemetry support
+Adheres strictly to maxilun-craft, linear.app.md, and railway.md standards:
+- Deep black canvas (#010102) with hairline borders (#23252a) and signature lavender accent (#5e6ad2)
+- Zero generic 4-metric KPI strips (eliminates LAY-012 anti-pattern)
+- Zero generic Bento monoculture (eliminates LAY-013 anti-pattern)
+- Real 2D Multi-Wave Orchestration Topology canvas (Railway canvas over hierarchy)
+- Authentic vector multiplayer cursors (Figma/DhvanilPatel arrow, cross, ibeam, pen, dup)
+- Full Wave 1 / Wave 2 / Wave 3 execution workflow with formal Handoff Records
+- Synthetic Web Audio API feedback
 Zero external dependencies.
 """
 
@@ -16,6 +17,7 @@ from typing import Optional
 
 from .engine.skills_loader import SkillsLoader
 from .benchmarks import BenchmarkRunner
+from .router import MaxilunRouter
 
 
 HTML_TEMPLATE = """<!DOCTYPE html>
@@ -23,223 +25,230 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maxilun Engineering Harness — Live Swarm Studio</title>
+  <title>Maxilun Orchestrator — Live Swarm Control Center</title>
   <style>
     :root {
-      --bg: #07090e;
-      --surface: #0f1420;
-      --surface-border: #1e2638;
-      --fg: #e2e8f0;
-      --muted: #8492a6;
-      --accent: #3b82f6;
-      --success: #10b981;
+      --bg: #010102;
+      --canvas: #06080d;
+      --surface-1: #0b0e17;
+      --surface-2: #101420;
+      --hairline: #1c2233;
+      --hairline-strong: #2a334a;
+      --ink: #f7f8f8;
+      --ink-muted: #8a8f98;
+      --ink-subtle: #565d6d;
+      --primary: #5e6ad2;
+      --primary-hover: #717de3;
+      --success: #27a644;
       --warning: #f59e0b;
       --error: #ef4444;
+      --architect: #a855f7;
+      --data: #f43f5e;
+      --craft: #f97316;
+      --sentinel: #10b981;
+      --engineer: #38bdf8;
+      --verify: #eab308;
       --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background: var(--bg);
-      color: var(--fg);
+      color: var(--ink);
       font-family: var(--font-sans);
       line-height: 1.5;
-      padding: 20px;
+      padding: 20px 24px;
       overflow-x: hidden;
+      letter-spacing: -0.01em;
     }
+
+    /* LINEAR COMPACT HEADER */
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--surface-border);
-      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--hairline);
+      margin-bottom: 14px;
     }
-    h1 { font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .brand-title {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-mark {
+      width: 14px;
+      height: 14px;
+      background: var(--primary);
+      border-radius: 3px;
+      display: inline-block;
+      box-shadow: 0 0 10px rgba(94, 106, 210, 0.5);
+    }
     .badge {
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #94a3b8;
       font-size: 11px;
       font-family: var(--font-mono);
-      padding: 3px 8px;
+      padding: 2px 7px;
       border-radius: 4px;
+      background: #111420;
+      border: 1px solid var(--hairline-strong);
+      color: var(--ink-muted);
     }
-    .metrics-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--surface-border);
-      border-radius: 8px;
-      padding: 16px;
-    }
-    .metric-value {
-      font-size: 28px;
-      font-weight: 800;
-      font-family: var(--font-mono);
-      font-variant-numeric: tabular-nums;
-      margin: 4px 0;
-    }
-    .metric-value.success { color: var(--success); }
-    .metric-value.accent { color: var(--accent); }
-    .metric-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
 
-    .nav-tabs {
+    /* LINEAR SINGLE-LINE TELEMETRY STATUS BAR (Replaces generic 4-card KPI strip LAY-012) */
+    .telemetry-bar {
       display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-      border-bottom: 1px solid var(--surface-border);
-      padding-bottom: 8px;
-    }
-    .tab-btn {
-      background: transparent;
-      color: var(--muted);
-      border: none;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface-1);
+      border: 1px solid var(--hairline);
       padding: 8px 16px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      border-radius: 4px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-muted);
+    }
+    .status-pill {
       display: flex;
       align-items: center;
       gap: 6px;
     }
-    .tab-btn.active {
-      background: #1e293b;
-      color: var(--fg);
-    }
-
-    /* SWARM STUDIO LAYOUT */
-    .swarm-layout {
-      display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 16px;
-    }
-    @media (max-width: 1080px) {
-      .swarm-layout { grid-template-columns: 1fr; }
-    }
-    .stage-container {
-      position: relative;
-      background: #06080d;
-      border: 1px solid var(--surface-border);
-      border-radius: 8px;
-      height: 600px;
-      overflow: hidden;
-      user-select: none;
-      box-shadow: inset 0 0 40px rgba(0,0,0,0.8);
-    }
-    .stage-grid {
-      position: absolute;
-      inset: 0;
-      background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-      background-size: 24px 24px;
-      pointer-events: none;
-    }
-
-    .canvas-layer {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
-    /* Rubber-Band Bounding Box */
-    .rubber-box {
-      position: absolute;
-      border: 1.5px dashed var(--accent);
-      background: rgba(59, 130, 246, 0.05);
-      pointer-events: none;
-      border-radius: 2px;
-      z-index: 10;
-    }
-    .rubber-box .handle {
-      position: absolute;
+    .status-dot {
       width: 6px;
       height: 6px;
-      background: white;
-      border: 1px solid var(--accent);
-      border-radius: 1px;
-    }
-    .rubber-box .handle.tl { top: -3px; left: -3px; }
-    .rubber-box .handle.tr { top: -3px; right: -3px; }
-    .rubber-box .handle.bl { bottom: -3px; left: -3px; }
-    .rubber-box .handle.br { bottom: -3px; right: -3px; }
-    
-    .dimension-pill {
-      position: absolute;
-      bottom: -24px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #0f172a;
-      border: 1px solid #334155;
-      color: #93c5fd;
-      font-size: 10px;
-      font-family: var(--font-mono);
-      font-variant-numeric: tabular-nums;
-      padding: 1px 6px;
-      border-radius: 3px;
-      white-space: nowrap;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
     }
 
-    /* Snapping Guide Line */
-    .snap-guide {
-      position: absolute;
-      pointer-events: none;
-      z-index: 15;
+    /* NAVIGATION TABS */
+    .nav-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--hairline);
+      padding-bottom: 6px;
     }
-    .snap-guide.vert {
-      top: 0; bottom: 0; width: 1px;
-      background: #ec4899;
-      box-shadow: 0 0 6px #ec4899;
+    .tab-btn {
+      background: transparent;
+      color: var(--ink-subtle);
+      border: none;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    .tab-btn:hover { color: var(--ink); }
+    .tab-btn.active {
+      background: #161a29;
+      color: var(--ink);
+      font-weight: 600;
     }
 
-    /* Reconstructed Page Elements */
-    .rebuilt-element {
-      position: absolute;
-      border: 1px solid #28334a;
-      background: #111624;
-      border-radius: 6px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    /* RAILWAY 2D TOPOLOGY CANVAS (Canvas over hierarchy) */
+    .orchestration-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 14px;
+    }
+    @media (max-width: 1120px) {
+      .orchestration-layout { grid-template-columns: 1fr; }
+    }
+
+    .canvas-stage {
+      position: relative;
+      background: var(--canvas);
+      background-image: 
+        radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+      background-size: 20px 20px;
+      border: 1px solid var(--hairline);
+      border-radius: 8px;
+      height: 620px;
       overflow: hidden;
-      transition: opacity 0.2s;
-      z-index: 5;
+      user-select: none;
+      box-shadow: inset 0 0 60px rgba(0,0,0,0.9);
     }
-    .rebuilt-header {
-      background: #1a2236;
-      border-bottom: 1px solid #28334a;
-      padding: 8px 12px;
-      font-size: 11px;
-      font-family: var(--font-mono);
+
+    /* ORTHOGONAL WAVE TOPOLOGY NODES */
+    .topo-node {
+      position: absolute;
+      background: var(--surface-1);
+      border: 1px solid var(--hairline-strong);
+      border-radius: 6px;
+      padding: 12px 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      z-index: 10;
+      transition: border-color 0.2s;
+    }
+    .topo-node.active-wave {
+      border-color: var(--primary);
+      box-shadow: 0 0 20px rgba(94, 106, 210, 0.25);
+    }
+    .node-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      color: #94a3b8;
+      margin-bottom: 6px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .node-title {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .node-body {
+      font-size: 11px;
+      color: var(--ink-muted);
+      line-height: 1.4;
     }
 
-    /* Vector Multiplayer Cursor */
+    /* ORTHOGONAL CONNECTORS */
+    .connector-line {
+      position: absolute;
+      background: var(--hairline-strong);
+      z-index: 2;
+    }
+
+    /* CODE & SPECIFICATION SURFACES */
+    .code-surface {
+      position: absolute;
+      background: rgba(11, 14, 23, 0.95);
+      border: 1px solid var(--hairline-strong);
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #93c5fd;
+      line-height: 1.5;
+      padding: 12px;
+      white-space: pre-wrap;
+      z-index: 8;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.7);
+    }
+
+    /* FIGMA VECTOR MULTIPLAYER CURSORS */
     .swarm-cursor {
       position: absolute;
       pointer-events: none;
       z-index: 100;
       will-change: transform;
-      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.6));
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.7));
     }
     .cursor-svg {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       display: block;
     }
-    .cursor-tag {
+    .cursor-pill {
       position: absolute;
       left: 12px;
       top: 12px;
-      padding: 2px 7px;
+      padding: 2px 6px;
       border-radius: 3px;
       font-size: 10px;
       font-weight: 700;
@@ -249,24 +258,22 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       align-items: center;
       gap: 4px;
       color: white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
     .cursor-action {
       position: absolute;
       left: 12px;
-      top: 32px;
+      top: 30px;
       padding: 2px 6px;
       border-radius: 3px;
       font-size: 9px;
       font-family: var(--font-mono);
-      background: rgba(10, 14, 23, 0.95);
-      border: 1px solid #334155;
+      background: rgba(6, 8, 13, 0.95);
+      border: 1px solid var(--hairline-strong);
       color: #cbd5e1;
       white-space: nowrap;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
     }
 
-    /* Stage Controls Bar */
+    /* CONTROLS BAR */
     .stage-bar {
       display: flex;
       justify-content: space-between;
@@ -274,13 +281,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       margin-bottom: 10px;
     }
     .btn-group { display: flex; gap: 6px; }
-    .btn-control {
-      background: #161d2e;
-      border: 1px solid #28334a;
-      color: var(--fg);
-      padding: 6px 12px;
+    .btn-action {
+      background: var(--surface-1);
+      border: 1px solid var(--hairline);
+      color: var(--ink);
+      padding: 5px 12px;
       border-radius: 4px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       cursor: pointer;
       display: flex;
@@ -288,183 +295,212 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       gap: 6px;
       transition: all 0.15s;
     }
-    .btn-control:hover { background: #1e293b; border-color: #3b82f6; }
-    .btn-control.active { background: #2563eb; border-color: #3b82f6; color: white; }
-    .btn-danger { background: #7f1d1d; border-color: #991b1b; color: white; }
-    .btn-danger:hover { background: #991b1b; }
+    .btn-action:hover { border-color: var(--primary); color: white; }
+    .btn-action.active { background: var(--primary); border-color: var(--primary); color: white; }
 
-    /* Activity Feed Sidebar */
-    .activity-feed {
-      background: var(--surface);
-      border: 1px solid var(--surface-border);
+    /* RAILWAY STYLE SIDEBAR DRAWER (Formal Handoff & Activity Log) */
+    .telemetry-drawer {
+      background: var(--surface-1);
+      border: 1px solid var(--hairline);
       border-radius: 8px;
       padding: 16px;
-      height: 600px;
+      height: 620px;
       display: flex;
       flex-direction: column;
     }
-    .activity-list {
+    .drawer-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .drawer-content {
       flex: 1;
       overflow-y: auto;
       font-family: var(--font-mono);
       font-size: 11px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
       margin-top: 10px;
     }
-    .activity-item {
-      background: #07090e;
-      border-left: 3px solid #334155;
-      padding: 8px 10px;
-      border-radius: 0 4px 4px 0;
-      line-height: 1.4;
-      animation: fadeIn 0.15s ease-out;
-    }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-      gap: 14px;
-    }
-    .skill-card {
-      background: var(--surface);
-      border: 1px solid var(--surface-border);
-      border-radius: 6px;
-      padding: 14px;
-    }
-    .skill-card-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-    .skill-name {
-      font-weight: 700;
-      font-family: var(--font-mono);
-      font-size: 14px;
-      color: #60a5fa;
-    }
-    .skill-info { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-    .triggers-box {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: #94a3b8;
-      background: #07090e;
-      padding: 6px 8px;
+    .handoff-box {
+      background: #06080d;
+      border: 1px solid var(--hairline-strong);
       border-radius: 4px;
-      overflow-x: auto;
+      padding: 10px;
+      line-height: 1.5;
+      color: #cbd5e1;
     }
+    .handoff-box strong { color: var(--primary); }
+
+    .activity-row {
+      background: #06080d;
+      border-left: 2px solid var(--hairline-strong);
+      padding: 6px 8px;
+      border-radius: 0 3px 3px 0;
+      line-height: 1.4;
+    }
+
+    /* DIRECTORY TABLES */
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
-      font-size: 13px;
+      font-size: 12px;
     }
     th, td {
-      padding: 10px 12px;
+      padding: 9px 12px;
       text-align: left;
-      border-bottom: 1px solid var(--surface-border);
+      border-bottom: 1px solid var(--hairline);
     }
-    th { background: #07090e; color: var(--muted); font-size: 11px; text-transform: uppercase; }
+    th { background: #06080d; color: var(--ink-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
     .tabular { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+    
     input[type="text"] {
       width: 100%;
-      background: #161d2e;
-      border: 1px solid #28334a;
-      padding: 10px 14px;
+      background: #06080d;
+      border: 1px solid var(--hairline-strong);
+      padding: 9px 12px;
       color: white;
       border-radius: 4px;
-      font-size: 13px;
+      font-size: 12px;
       margin-bottom: 10px;
+      font-family: var(--font-sans);
     }
-    button.btn-primary {
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 4px;
-      font-weight: 600;
-      cursor: pointer;
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--primary);
     }
   </style>
 </head>
 <body>
 
+  <!-- HEADER -->
   <header>
-    <div>
-      <h1>🌑 Maxilun Engineering Harness <span class="badge">Swarm Rebuild Studio</span></h1>
-      <p style="color: var(--muted); font-size: 13px; margin-top: 3px;">Autonomous Multi-Agent Cursors & Ground-Truth Engineering Governance Center</p>
+    <div class="brand-title">
+      <span class="brand-mark"></span>
+      <span>Maxilun Orchestrator <span style="color:var(--ink-muted); font-weight:400;">/ Swarm Telemetry Control Center</span></span>
     </div>
-    <div style="display: flex; gap: 8px; align-items: center;">
-      <span class="badge" style="color: var(--success); border-color: rgba(16,185,129,0.3);">18 Skills Online</span>
-      <span class="badge" style="color: #60a5fa; border-color: rgba(96,165,250,0.3);">Swarm Engine v2.0</span>
+    <div style="display:flex; gap:8px;">
+      <span class="badge" style="color:var(--success)">18 Specialists Active</span>
+      <span class="badge">Linear · Railway Design MD Calibrated</span>
     </div>
   </header>
 
-  <div class="metrics-row">
-    <div class="card">
-      <div class="metric-label">Swarm Specialists</div>
-      <div class="metric-value accent">18 / 18</div>
-      <p style="color: var(--muted); font-size: 12px;">1 Orchestrator + 17 Specialists</p>
+  <!-- TELEMETRY STATUS BAR (Compact & Pure) -->
+  <div class="telemetry-bar">
+    <div class="status-pill">
+      <span class="status-dot"></span>
+      <span style="color:var(--ink)">Multi-Wave Orchestration Engine Operational</span>
     </div>
-    <div class="card">
-      <div class="metric-label">Maxilun Quality Score</div>
-      <div class="metric-value success">100.0%</div>
-      <p style="color: var(--muted); font-size: 12px;">Raw AI baseline: 45.0%</p>
-    </div>
-    <div class="card">
-      <div class="metric-label">Purity Improvement</div>
-      <div class="metric-value success">+55.0%</div>
-      <p style="color: var(--muted); font-size: 12px;">22 Slop & security bugs prevented</p>
-    </div>
-    <div class="card">
-      <div class="metric-label">Cognitive Budget Limit</div>
-      <div class="metric-value">≤ 300</div>
-      <p style="color: var(--muted); font-size: 12px;">100% skills meet line budget ceiling</p>
+    <div style="display:flex; gap:16px;">
+      <span>Wave 1: Contracts [LOCKED]</span>
+      <span>Wave 2: Implementation [ISOLATED]</span>
+      <span>Wave 3: Proof [EXIT 0]</span>
+      <span style="color:var(--primary); font-weight:700;">Zero Slop</span>
     </div>
   </div>
 
+  <!-- NAVIGATION TABS -->
   <div class="nav-tabs">
-    <button class="tab-btn active" onclick="showTab('swarm')">✨ Live Swarm Rebuild Studio</button>
+    <button class="tab-btn active" onclick="showTab('swarm')">✨ Multi-Wave Swarm Topology</button>
     <button class="tab-btn" onclick="showTab('benchmarks')">Benchmarks & Purity Gate</button>
     <button class="tab-btn" onclick="showTab('skills')">18 Specialist Skills</button>
     <button class="tab-btn" onclick="showTab('triage')">Live Triage Simulator</button>
   </div>
 
-  <!-- TAB: LIVE SWARM STUDIO -->
+  <!-- TAB: SWARM TOPOLOGY STAGE -->
   <div id="tab-swarm">
     <div class="stage-bar">
       <div class="btn-group">
-        <button class="btn-control btn-danger" onclick="wipeAndRebuild()">💥 Wipe & Rebuild</button>
-        <button class="btn-control active" id="btn-play" onclick="togglePlay()">⏸️ Pause</button>
-        <button class="btn-control" id="btn-sound" onclick="toggleSound()">🔊 Sound: ON</button>
+        <button class="btn-action active" id="btn-play" onclick="togglePlay()">⏸️ Pause</button>
+        <button class="btn-action" onclick="restartOrchestration()">🔄 Replay Swarm</button>
+        <button class="btn-action" id="btn-sound" onclick="toggleSound()">🔊 Audio: ON</button>
       </div>
       <div class="btn-group">
-        <span style="font-size: 12px; color: var(--muted); align-self: center; margin-right: 4px;">Pace:</span>
-        <button class="btn-control" onclick="setPace(0.5, this)">0.5x</button>
-        <button class="btn-control active" onclick="setPace(1.0, this)">1x</button>
-        <button class="btn-control" onclick="setPace(2.0, this)">2x</button>
-        <button class="btn-control" onclick="setPace(4.0, this)">4x</button>
+        <span style="font-size:11px; color:var(--ink-muted); align-self:center; margin-right:4px;">Execution Pace:</span>
+        <button class="btn-action" onclick="setPace(0.5, this)">0.5x</button>
+        <button class="btn-action active" onclick="setPace(1.0, this)">1x</button>
+        <button class="btn-action" onclick="setPace(2.0, this)">2x</button>
       </div>
     </div>
 
-    <div class="swarm-layout">
-      <!-- Swarm Stage Canvas -->
-      <div class="stage-container" id="stage" onmousemove="onUserMouseMove(event)">
-        <div class="stage-grid"></div>
-        <div class="canvas-layer" id="canvas-layer"></div>
-        <!-- Cursors injected here -->
+    <div class="orchestration-layout">
+      <!-- 2D Topology Canvas -->
+      <div class="canvas-stage" id="stage" onmousemove="onStageMouseMove(event)">
+        <!-- Node 1: User Request -->
+        <div class="topo-node" id="node-request" style="left: 30px; top: 40px; width: 220px;">
+          <div class="node-header">
+            <span>INPUT GATEWAY</span>
+            <span class="badge" style="color:var(--primary)">Triggered</span>
+          </div>
+          <div class="node-title">Payment Webhook Flow</div>
+          <div class="node-body">Idempotent mutation & HMAC verification</div>
+        </div>
+
+        <!-- Node 2: Wave 1 Contracts -->
+        <div class="topo-node" id="node-w1" style="left: 310px; top: 40px; width: 220px;">
+          <div class="node-header">
+            <span style="color:var(--architect)">WAVE 1: CONTRACTS</span>
+            <span class="badge">Seam Locked</span>
+          </div>
+          <div class="node-title">Architect · Data · Sentinel</div>
+          <div class="node-body">3NF schema, UUIDv7, timingSafeEqual rule</div>
+        </div>
+
+        <!-- Node 3: Wave 2 Implementation -->
+        <div class="topo-node" id="node-w2" style="left: 310px; top: 380px; width: 220px;">
+          <div class="node-header">
+            <span style="color:var(--engineer)">WAVE 2: CODING</span>
+            <span class="badge">Convergent</span>
+          </div>
+          <div class="node-title">Engineer · Craft · Frontend</div>
+          <div class="node-body">Surgical implementation & 4 UI states</div>
+        </div>
+
+        <!-- Node 4: Wave 3 Verification -->
+        <div class="topo-node" id="node-w3" style="left: 580px; top: 380px; width: 200px;">
+          <div class="node-header">
+            <span style="color:var(--verify)">WAVE 3: PROOF</span>
+            <span class="badge" style="color:var(--success)">Exit Code 0</span>
+          </div>
+          <div class="node-title">Verify · Deploy</div>
+          <div class="node-body">Playwright E2E & AST proof</div>
+        </div>
+
+        <!-- Live Code Inspector Surface on Canvas -->
+        <div class="code-surface" id="code-surface" style="left: 30px; top: 160px; width: 500px; height: 190px;">
+          <div style="color:var(--ink-muted); font-size:10px; margin-bottom:6px; border-bottom:1px solid #1c2233; padding-bottom:4px; display:flex; justify-content:space-between;">
+            <span>src/auth/webhook.ts — Convergent Implementation</span>
+            <span id="ts-badge" style="color:var(--warning)">Compiling...</span>
+          </div>
+          <div id="code-content"></div>
+        </div>
+
+        <!-- Cursors container -->
       </div>
 
-      <!-- Real-time Activity Telemetry -->
-      <div class="activity-feed">
-        <div style="font-weight: 700; font-size: 12px; display: flex; justify-content: space-between; align-items: center;">
-          <span>Swarm Telemetry Stream</span>
-          <span class="badge" id="telemetry-badge" style="color: #60a5fa;">Active</span>
+      <!-- Railway-style Telemetry & Handoff Drawer -->
+      <div class="telemetry-drawer">
+        <div class="drawer-title">
+          <span>ORCHESTRATOR HANDOFF DRAWER</span>
+          <span class="badge" style="color:var(--primary)">Live Log</span>
         </div>
-        <div class="activity-list" id="activity-log"></div>
+        <div class="drawer-content" id="drawer-feed">
+          <div class="handoff-box" id="active-handoff">
+            <div><strong>Owner:</strong> maxilun-sentinel</div>
+            <div><strong>Artifacts:</strong> verifyWebhookSignature() [SRC]</div>
+            <div><strong>Verification:</strong> timingSafeEqual [CONFIRMED]</div>
+            <div><strong>Next:</strong> maxilun-data (Idempotency Table)</div>
+            <div><strong>Residual risks:</strong> Replay tolerance cap 300s</div>
+          </div>
+          <div id="log-list" style="display:flex; flex-direction:column; gap:6px; margin-top:8px;"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -472,7 +508,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <!-- TAB: BENCHMARKS -->
   <div id="tab-benchmarks" style="display: none;">
     <div class="card">
-      <h2 style="font-size: 16px; margin-bottom: 10px;">Canonical Engineering Benchmarks</h2>
+      <h2 style="font-size: 15px; margin-bottom: 8px;">Maxilun Empirical Engineering Benchmarks</h2>
       <table>
         <thead>
           <tr>
@@ -496,13 +532,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <!-- TAB: TRIAGE -->
   <div id="tab-triage" style="display: none;">
     <div class="card">
-      <h2 style="font-size: 16px; margin-bottom: 6px;">Live Decision Reversibility & Specialist Triage</h2>
-      <p style="color: var(--muted); font-size: 13px; margin-bottom: 14px;">Test how Maxilun Master Orchestrator classifies tasks between Type 1 (Irreversible) and Type 2 (Reversible):</p>
-      <input type="text" id="triage-input" value="Bikin migrasi database drop column pada tabel users produksi" placeholder="Enter task prompt...">
-      <button class="btn-primary" onclick="simulateTriage()">Simulate Triage</button>
+      <h2 style="font-size: 15px; margin-bottom: 6px;">Live Decision Reversibility & Specialist Triage</h2>
+      <p style="color: var(--ink-muted); font-size: 12px; margin-bottom: 12px;">Simulates Master Orchestrator reversibility triage and multi-wave decomposition:</p>
+      <input type="text" id="triage-input" value="Bikin webhook pembayaran lengkap beserta update saldo database dan verifikasi testing" placeholder="Enter task prompt...">
+      <button class="btn-action active" onclick="simulateTriage()">Decompose & Route</button>
 
-      <div class="interactive-box" id="triage-output" style="margin-top: 14px; font-family: var(--font-mono); font-size: 12px; line-height: 1.6; background: #07090e; padding: 14px; border-radius: 6px; border: 1px solid var(--surface-border);">
-        Press Simulate Triage to classify prompt.
+      <div id="triage-output" style="margin-top: 12px; font-family: var(--font-mono); font-size: 11px; line-height: 1.6; background: #06080d; padding: 12px; border-radius: 4px; border: 1px solid var(--hairline-strong);">
+        Press Decompose to run orchestrator triage.
       </div>
     </div>
   </div>
@@ -513,444 +549,226 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     const telemetryData = __TELEMETRY_JSON__;
 
     /*
-     * Maxilun Swarm Rebuild Physics Engine
-     * Exact SVG vector paths from DhvanilPatel/swarm-cursors
+     * Authentic Figma / DhvanilPatel Vector Cursors
      */
     const ARROW_D = "M4.6 3.9 C4.2 3.1 4.9 2.4 5.7 2.8 L20.6 9.4 C21.5 9.8 21.4 11.1 20.4 11.3 L13.9 12.9 C13.4 13 13 13.4 12.9 13.9 L11.3 20.4 C11.1 21.4 9.8 21.5 9.4 20.6 Z";
-    
+
     function cursorSVG(shape, c) {
       const st = 'stroke="#fff" stroke-width="1.5" stroke-linejoin="round"';
       switch (shape) {
         case "arrow":
           return `<path d="${ARROW_D}" fill="${c}" ${st}/>`;
-        case "dup":
-          return (
-            `<path d="${ARROW_D}" transform="translate(4 3.5)" fill="#fff" stroke="${c}" stroke-width="1.3" stroke-linejoin="round"/>` +
-            `<path d="${ARROW_D}" fill="${c}" ${st}/>`
-          );
-        case "pen":
-          return (
-            `<path d="M17.4 10.6 L20.6 13.8 L13.8 20.6 L10.6 17.4 Z" fill="${c}" ${st}/>` +
-            `<path d="M3 3 L13.1 6.3 L17.4 10.6 L10.6 17.4 L6.3 13.1 Z" fill="${c}" ${st}/>` +
-            `<path d="M3.6 3.6 L8.9 8.9" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/>` +
-            `<circle cx="10.2" cy="10.2" r="1.75" fill="none" stroke="#fff" stroke-width="1.2"/>`
-          );
         case "cross":
-          return (
-            `<g stroke-linecap="round"><path d="M12 3.5 V20.5 M3.5 12 H20.5" stroke="#fff" stroke-width="3.6"/>` +
-            `<path d="M12 3.5 V20.5 M3.5 12 H20.5" stroke="${c}" stroke-width="1.5"/></g>`
-          );
+          return `<g stroke-linecap="round"><path d="M12 3.5 V20.5 M3.5 12 H20.5" stroke="#fff" stroke-width="3.6"/><path d="M12 3.5 V20.5 M3.5 12 H20.5" stroke="${c}" stroke-width="1.5"/></g>`;
         case "ibeam":
           const d = "M8.5 4.5 H10.5 Q12 4.5 12 6 Q12 4.5 13.5 4.5 H15.5 M12 6 V18 M8.5 19.5 H10.5 Q12 19.5 12 18 Q12 19.5 13.5 19.5 H15.5";
-          return (
-            `<g fill="none" stroke-linecap="round"><path d="${d}" stroke="#fff" stroke-width="3.6"/>` +
-            `<path d="${d}" stroke="${c}" stroke-width="1.5"/></g>`
-          );
+          return `<g fill="none" stroke-linecap="round"><path d="${d}" stroke="#fff" stroke-width="3.6"/><path d="${d}" stroke="${c}" stroke-width="1.5"/></g>`;
         default:
           return `<path d="${ARROW_D}" fill="${c}" ${st}/>`;
       }
     }
 
-    // 6 Canonical Specialists in the Concurrent Swarm
-    const SWARM_AGENTS = {
-      architect: { id: "architect", name: "Architect", color: "#A259FF", bg: "#581c87", x: 40, y: 30 },
-      craft:     { id: "craft",     name: "Craft",     color: "#F24E1E", bg: "#7c2d12", x: 500, y: 40 },
-      data:      { id: "data",      name: "Data",      color: "#FF7262", bg: "#7f1d1d", x: 60, y: 450 },
-      engineer:  { id: "engineer",  name: "Engineer",  color: "#1ABCFE", bg: "#1e3a8a", x: 400, y: 200 },
-      sentinel:  { id: "sentinel",  name: "Sentinel",  color: "#0ACF83", bg: "#064e3b", x: 650, y: 350 },
-      verify:    { id: "verify",    name: "Verify",    color: "#FFD028", bg: "#713f12", x: 250, y: 500 }
+    const AGENTS = {
+      architect: { name: "Architect", color: "#a855f7", bg: "#4c1d95", x: 40, y: 50 },
+      data:      { name: "Data",      color: "#f43f5e", bg: "#881337", x: 320, y: 50 },
+      sentinel:  { name: "Sentinel",  color: "#10b981", bg: "#064e3b", x: 420, y: 50 },
+      engineer:  { name: "Engineer",  color: "#38bdf8", bg: "#0c4a6e", x: 320, y: 390 },
+      verify:    { name: "Verify",    color: "#eab308", bg: "#713f12", x: 600, y: 390 }
     };
 
-    // Web Audio Sound Synthesizer (Zero file dependencies)
-    class SoundFX {
-      constructor() {
-        this.ctx = null;
-        this.enabled = true;
-      }
+    class AudioSynth {
+      constructor() { this.ctx = null; this.enabled = true; }
       init() {
         if (!this.ctx) {
-          try {
-            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-          } catch(e) {}
+          try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
         }
       }
       click() {
         if (!this.enabled || !this.ctx) return;
-        const osc = this.ctx.createOscillator();
-        const g = this.ctx.createGain();
-        osc.frequency.setValueAtTime(950, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.03);
-        g.gain.setValueAtTime(0.06, this.ctx.currentTime);
+        const o = this.ctx.createOscillator(); const g = this.ctx.createGain();
+        o.frequency.setValueAtTime(800, this.ctx.currentTime);
+        o.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.03);
+        g.gain.setValueAtTime(0.04, this.ctx.currentTime);
         g.gain.linearRampToValueAtTime(0.001, this.ctx.currentTime + 0.03);
-        osc.connect(g);
-        g.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.03);
+        o.connect(g); g.connect(this.ctx.destination);
+        o.start(); o.stop(this.ctx.currentTime + 0.03);
       }
       type() {
         if (!this.enabled || !this.ctx) return;
-        const osc = this.ctx.createOscillator();
-        const g = this.ctx.createGain();
-        const f = 1800 + (Math.random() * 400 - 200);
-        osc.frequency.setValueAtTime(f, this.ctx.currentTime);
-        g.gain.setValueAtTime(0.02, this.ctx.currentTime);
-        g.gain.linearRampToValueAtTime(0.001, this.ctx.currentTime + 0.02);
-        osc.connect(g);
-        g.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.02);
-      }
-      snap() {
-        if (!this.enabled || !this.ctx) return;
-        const osc = this.ctx.createOscillator();
-        const g = this.ctx.createGain();
-        osc.frequency.setValueAtTime(400, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(80, this.ctx.currentTime + 0.06);
-        g.gain.setValueAtTime(0.08, this.ctx.currentTime);
-        g.gain.linearRampToValueAtTime(0.001, this.ctx.currentTime + 0.06);
-        osc.connect(g);
-        g.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.06);
+        const o = this.ctx.createOscillator(); const g = this.ctx.createGain();
+        o.frequency.setValueAtTime(1600 + Math.random()*200, this.ctx.currentTime);
+        g.gain.setValueAtTime(0.015, this.ctx.currentTime);
+        g.gain.linearRampToValueAtTime(0.001, this.ctx.currentTime + 0.015);
+        o.connect(g); g.connect(this.ctx.destination);
+        o.start(); o.stop(this.ctx.currentTime + 0.015);
       }
     }
 
-    const sound = new SoundFX();
+    const audio = new AudioSynth();
+    const stage = document.getElementById('stage');
+    const logList = document.getElementById('log-list');
+    const codeContent = document.getElementById('code-content');
+    const cursorEls = {};
     let isPlaying = true;
     let pace = 1.0;
-    const stageEl = document.getElementById('stage');
-    const canvasLayer = document.getElementById('canvas-layer');
-    const activityLog = document.getElementById('activity-log');
+    let swarmTimers = [];
 
-    // DOM Cursors map
-    const cursorNodes = {};
-
-    function initSwarmNodes() {
-      for (const [key, agent] of Object.entries(SWARM_AGENTS)) {
-        const node = document.createElement('div');
-        node.className = 'swarm-cursor';
-        node.id = 'cur-' + key;
-        node.innerHTML = `
-          <svg class="cursor-svg" viewBox="0 0 24 24">${cursorSVG("arrow", agent.color)}</svg>
-          <div class="cursor-tag" style="background: ${agent.bg}; border: 1px solid ${agent.color};">
-            ${agent.name}
-          </div>
-          <div class="cursor-action" id="act-${key}">Ready</div>
+    function initCursors() {
+      for (const [k, a] of Object.entries(AGENTS)) {
+        const el = document.createElement('div');
+        el.className = 'swarm-cursor';
+        el.id = 'cursor-' + k;
+        el.innerHTML = `
+          <svg class="cursor-svg" viewBox="0 0 24 24">${cursorSVG("arrow", a.color)}</svg>
+          <div class="cursor-pill" style="background:${a.bg}; border:1px solid ${a.color}">${a.name}</div>
+          <div class="cursor-action" id="act-${k}">Standby</div>
         `;
-        node.style.transform = `translate(${agent.x}px, ${agent.y}px)`;
-        stageEl.appendChild(node);
-        cursorNodes[key] = node;
+        el.style.transform = `translate(${a.x}px, ${a.y}px)`;
+        stage.appendChild(el);
+        cursorEls[k] = el;
       }
     }
 
-    function setCursorShape(key, shape) {
-      const node = cursorNodes[key];
-      if (!node) return;
-      const agent = SWARM_AGENTS[key];
-      const svgEl = node.querySelector('.cursor-svg');
-      if (svgEl) svgEl.innerHTML = cursorSVG(shape, agent.color);
-    }
-
-    function logTelemetry(agentKey, message) {
-      const agent = SWARM_AGENTS[agentKey] || { name: agentKey, color: "#94a3b8" };
+    function addLog(role, msg, color) {
       const now = new Date();
       const timeStr = now.toTimeString().split(' ')[0];
-      const it = document.createElement('div');
-      it.className = 'activity-item';
-      it.style.borderLeftColor = agent.color;
-      it.innerHTML = `<span style="color:#64748b">${timeStr}</span> <strong style="color:${agent.color}">[${agent.name}]</strong> ${message}`;
-      activityLog.prepend(it);
-      if (activityLog.children.length > 25) activityLog.lastChild.remove();
+      const row = document.createElement('div');
+      row.className = 'activity-row';
+      row.style.borderLeftColor = color || '#5e6ad2';
+      row.innerHTML = `<span style="color:#64748b">${timeStr}</span> <strong style="color:${color || '#cbd5e1'}">[${role}]</strong> ${msg}`;
+      logList.prepend(row);
+      if (logList.children.length > 20) logList.lastChild.remove();
     }
 
-    /*
-     * Realistic Trajectory Tweening with Bezier Arch Bending
-     */
-    function tweenCursor(agentKey, targetX, targetY, actionText, durationMs, onStep, onComplete) {
-      const node = cursorNodes[agentKey];
-      if (!node) return;
-      const agent = SWARM_AGENTS[agentKey];
-      const actEl = document.getElementById('act-' + agentKey);
-      if (actEl && actionText) actEl.innerText = actionText;
+    function tweenAgent(key, targetX, targetY, action, durMs, onComplete) {
+      const el = cursorEls[key];
+      if (!el) return;
+      const a = AGENTS[key];
+      const actEl = document.getElementById('act-' + key);
+      if (actEl && action) actEl.innerText = action;
 
-      const x0 = agent.x;
-      const y0 = agent.y;
-      const dx = targetX - x0;
-      const dy = targetY - y0;
+      const x0 = a.x; const y0 = a.y;
+      const dx = targetX - x0; const dy = targetY - y0;
       const dist = Math.hypot(dx, dy);
-      
-      // Arc curvature bend factor
-      const bend = (Math.random() < 0.5 ? -1 : 1) * Math.min(dist * 0.15, 60);
+      const bend = (Math.random() < 0.5 ? -1 : 1) * Math.min(dist * 0.12, 40);
       const L = dist || 1;
-
       const startTime = performance.now();
-      const dur = (durationMs || 500) / pace;
+      const dur = (durMs || 600) / pace;
 
       function frame(now) {
-        if (!isPlaying) {
-          requestAnimationFrame(frame);
-          return;
-        }
-        const elapsed = now - startTime;
-        const progress = Math.min(1, elapsed / dur);
-        // easeInOutQuad
-        const e = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        if (!isPlaying) { requestAnimationFrame(frame); return; }
+        const p = Math.min(1, (now - startTime) / dur);
+        const e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
         const off = Math.sin(Math.PI * e) * bend;
+        const cx = x0 + dx * e + (-dy / L) * off;
+        const cy = y0 + dy * e + (dx / L) * off;
 
-        const curX = x0 + dx * e + (-dy / L) * off;
-        const curY = y0 + dy * e + (dx / L) * off;
+        a.x = cx; a.y = cy;
+        el.style.transform = `translate(${cx}px, ${cy}px)`;
 
-        agent.x = curX;
-        agent.y = curY;
-        node.style.transform = `translate(${curX}px, ${curY}px)`;
-
-        if (onStep) onStep(curX, curY, progress);
-
-        if (progress < 1) {
-          requestAnimationFrame(frame);
-        } else {
-          agent.x = targetX;
-          agent.y = targetY;
-          node.style.transform = `translate(${targetX}px, ${targetY}px)`;
+        if (p < 1) requestAnimationFrame(frame);
+        else {
+          a.x = targetX; a.y = targetY;
+          el.style.transform = `translate(${targetX}px, ${targetY}px)`;
           if (onComplete) onComplete();
         }
       }
       requestAnimationFrame(frame);
     }
 
-    /*
-     * Live Rubber-Band Rect Drawing with Live Dimension Tooltip
-     */
-    function drawRubberBand(agentKey, x1, y1, x2, y2, label, onDone) {
-      setCursorShape(agentKey, "cross");
-      tweenCursor(agentKey, x1, y1, `Move to origin (${x1}, ${y1})`, 400, null, () => {
-        sound.click();
-        const box = document.createElement('div');
-        box.className = 'rubber-box';
-        box.style.left = x1 + 'px';
-        box.style.top = y1 + 'px';
-        box.style.width = '0px';
-        box.style.height = '0px';
-        box.style.borderColor = SWARM_AGENTS[agentKey].color;
-        box.innerHTML = `
-          <div class="handle tl"></div><div class="handle tr"></div>
-          <div class="handle bl"></div><div class="handle br"></div>
-          <div class="dimension-pill">0 × 0</div>
-        `;
-        canvasLayer.appendChild(box);
-        const pill = box.querySelector('.dimension-pill');
+    function runOrchestrationPlayback() {
+      clearTimers();
+      audio.init();
+      codeContent.innerText = "";
+      logList.innerHTML = "";
+      document.getElementById('ts-badge').innerText = "Compiling...";
+      document.getElementById('ts-badge').style.color = "var(--warning)";
 
-        tweenCursor(agentKey, x2, y2, `Drag box: ${label}`, 700, (cx, cy) => {
-          const w = Math.max(0, cx - x1);
-          const h = Math.max(0, cy - y1);
-          box.style.width = w + 'px';
-          box.style.height = h + 'px';
-          if (pill) pill.innerText = `${Math.round(w)} × ${Math.round(h)}`;
-        }, () => {
-          sound.snap();
-          setCursorShape(agentKey, "arrow");
-          if (onDone) onDone(box);
+      addLog("maxilun", "Orchestrator decomposing multi-domain request into 3 Waves", "#5e6ad2");
+
+      // 1. WAVE 1: Architect locks contract
+      swarmTimers.push(setTimeout(() => {
+        tweenAgent("architect", 320, 60, "Locking Seam Interface", 500, () => {
+          audio.click();
+          addLog("Architect", "Established Deep Seam: verifyWebhookSignature() contract", "#a855f7");
+          document.getElementById('node-w1').classList.add('active-wave');
         });
-      });
-    }
+      }, 400 / pace));
 
-    /*
-     * Master Swarm Rebuild Workflow (Simulating the 18 specialists building together)
-     */
-    let rebuildTimeouts = [];
-
-    function schedule(fn, delayMs) {
-      const id = setTimeout(fn, delayMs / pace);
-      rebuildTimeouts.push(id);
-    }
-
-    function runSwarmRebuild() {
-      clearAllTimers();
-      canvasLayer.innerHTML = "";
-      activityLog.innerHTML = "";
-      sound.init();
-
-      logTelemetry("architect", "🚀 Swarm initialized: starting synchronous multiplayer rebuild");
-
-      // 1. ARCHITECT draws Application Root Container (0.5s)
-      schedule(() => {
-        drawRubberBand("architect", 30, 20, 780, 560, "App Container 750×540", (rubber) => {
-          rubber.remove();
-          const frame = document.createElement('div');
-          frame.className = 'rebuilt-element';
-          frame.style.left = '30px'; frame.style.top = '20px';
-          frame.style.width = '750px'; frame.style.height = '540px';
-          frame.innerHTML = `
-            <div class="rebuilt-header">
-              <span>✦ Maxilun Production Environment</span>
-              <span class="badge" style="color:var(--success)">Verified Contract</span>
-            </div>
-            <div id="app-body" style="padding:16px; position:relative; height:calc(100% - 35px);"></div>
-          `;
-          canvasLayer.appendChild(frame);
-          logTelemetry("architect", "✅ Application root boundary established [DEEP MODULE]");
+      // 2. WAVE 1: Sentinel hardens constant-time rule & Data checks schema
+      swarmTimers.push(setTimeout(() => {
+        tweenAgent("sentinel", 430, 60, "Enforcing timingSafeEqual", 500, () => {
+          audio.click();
+          addLog("Sentinel", "Mandated timingSafeEqual & 300s replay window", "#10b981");
         });
-      }, 300);
-
-      // 2. CRAFT draws Navbar & Navigation Tokens (1.8s)
-      schedule(() => {
-        drawRubberBand("craft", 46, 62, 764, 110, "Nav Header 718×48", (rubber) => {
-          rubber.remove();
-          const nav = document.createElement('div');
-          nav.style.position = 'absolute';
-          nav.style.left = '46px'; nav.style.top = '62px';
-          nav.style.width = '718px'; nav.style.height = '48px';
-          nav.style.background = '#182033';
-          nav.style.border = '1px solid #2b3856';
-          nav.style.borderRadius = '5px';
-          nav.style.display = 'flex';
-          nav.style.alignItems = 'center';
-          nav.style.justifyContent = 'space-between';
-          nav.style.padding = '0 16px';
-          nav.innerHTML = `
-            <span style="font-weight:700; font-size:13px; color:#e2e8f0; font-family:var(--font-mono);">⚡ Payment Orchestration Dashboard</span>
-            <div style="display:flex; gap:8px;">
-              <span class="badge" style="color:#60a5fa">4 UI States Active</span>
-              <button style="background:#2563eb; color:white; border:none; padding:4px 10px; border-radius:4px; font-size:11px; font-weight:600;">+ New Webhook</button>
-            </div>
-          `;
-          canvasLayer.appendChild(nav);
-          logTelemetry("craft", "🎨 Enforced concentric radius (R_outer = R_inner + padding)");
+        tweenAgent("data", 380, 80, "Verifying BIGINT units", 600, () => {
+          addLog("Data", "Validated PostgreSQL idempotency schema (UUIDv7 + BIGINT)", "#f43f5e");
         });
-      }, 1600);
+      }, 1500 / pace));
 
-      // 3. DATA draws Schema & Invariants Table (3.2s)
-      schedule(() => {
-        drawRubberBand("data", 46, 122, 380, 480, "DB Schema 334×358", (rubber) => {
-          rubber.remove();
-          const dbCard = document.createElement('div');
-          dbCard.className = 'rebuilt-element';
-          dbCard.style.left = '46px'; dbCard.style.top = '122px';
-          dbCard.style.width = '334px'; dbCard.style.height = '358px';
-          dbCard.innerHTML = `
-            <div class="rebuilt-header" style="background:#201015; border-color:#4a1525; color:#fca5a5;">
-              <span>TABLE invoices (PostgreSQL)</span>
-              <span class="badge" style="color:#f87171">Expand-Contract</span>
-            </div>
-            <div style="padding:12px; font-family:var(--font-mono); font-size:11px; line-height:1.6; color:#cbd5e1;">
-              <div>id : <span style="color:#fca5a5">UUIDv7 PRIMARY KEY</span></div>
-              <div>amount_cents : <span style="color:#fca5a5">BIGINT NOT NULL</span></div>
-              <div>status : <span style="color:#fca5a5">VARCHAR(20)</span></div>
-              <div>created_at : <span style="color:#fca5a5">TIMESTAMPTZ</span></div>
-              <hr style="border-color:#2e1520; margin:8px 0;"/>
-              <div style="color:var(--success)">+ CREATE INDEX idx_inv_status</div>
-              <div style="color:var(--success)">+ CHECK (amount_cents &gt;= 0)</div>
-            </div>
-          `;
-          canvasLayer.appendChild(dbCard);
-          logTelemetry("data", "💾 Invariant: BIGINT minor units enforced, avoiding float drift");
-        });
-      }, 2900);
+      // 3. WAVE 2: Transition to Engineer for convergent implementation
+      swarmTimers.push(setTimeout(() => {
+        addLog("Orchestrator", "Handoff to Wave 2: Implementation (maxilun-engineer)", "#5e6ad2");
+        tweenAgent("engineer", 60, 220, "Writing convergent code", 700, () => {
+          audio.click();
+          document.getElementById('node-w2').classList.add('active-wave');
+          
+          // Type code
+          const codeSnippet = `import { createHmac, timingSafeEqual } from 'node:crypto';
 
-      // 4. ENGINEER types Code Block live with character reveal (4.6s)
-      schedule(() => {
-        drawRubberBand("engineer", 396, 122, 764, 480, "Code Window 368×358", (rubber) => {
-          rubber.remove();
-          const codeCard = document.createElement('div');
-          codeCard.className = 'rebuilt-element';
-          codeCard.style.left = '396px'; codeCard.style.top = '122px';
-          codeCard.style.width = '368px'; codeCard.style.height = '358px';
-          codeCard.innerHTML = `
-            <div class="rebuilt-header" style="background:#0f1c33; border-color:#1e3a8a; color:#93c5fd;">
-              <span>src/auth/webhook.ts</span>
-              <span id="ts-status" class="badge" style="color:var(--warning)">Typing...</span>
-            </div>
-            <div id="code-content" style="padding:12px; font-family:var(--font-mono); font-size:11px; line-height:1.5; color:#93c5fd; white-space:pre-wrap;"></div>
-          `;
-          canvasLayer.appendChild(codeCard);
-          logTelemetry("engineer", "💻 Initiating surgical implementation of verifyWebhookSignature()");
-
-          // Type out code
-          setCursorShape("engineer", "ibeam");
-          const codeTarget = "import { createHmac, timingSafeEqual } from 'node:crypto';\\n\\nexport function verifyWebhook(\\n  rawBody: Buffer,\\n  timestamp: string,\\n  signature: string,\\n  secret: string\\n): boolean {\\n  const ts = Number(timestamp);\\n  if (Math.abs(Date.now()/1000 - ts) > 300) {\\n    return false; // Replay window\\n  }\\n\\n  const exp = Buffer.from(\\n    'v1=' + createHmac('sha256', secret)\\n      .update(ts + '.' + rawBody)\\n      .digest('hex')\\n  );\\n  const rec = Buffer.from(signature);\\n  return exp.length === rec.length &&\\n         timingSafeEqual(exp, rec);\\n}";
-          const codeEl = document.getElementById('code-content');
-          let charIndex = 0;
-          const typingTimer = setInterval(() => {
+export function verifyWebhookSignature(rawBody: Buffer, ts: string, sig: string, secret: string): boolean {
+  if (Math.abs(Date.now() / 1000 - Number(ts)) > 300) return false;
+  const exp = Buffer.from('v1=' + createHmac('sha256', secret).update(ts + '.' + rawBody).digest('hex'));
+  const rec = Buffer.from(sig);
+  return exp.length === rec.length && timingSafeEqual(exp, rec);
+}`;
+          let idx = 0;
+          const typer = setInterval(() => {
             if (!isPlaying) return;
-            charIndex += 4;
-            if (charIndex > codeTarget.length) charIndex = codeTarget.length;
-            codeEl.innerText = codeTarget.slice(0, charIndex) + "▍";
-            sound.type();
+            idx += 6;
+            if (idx > codeSnippet.length) idx = codeSnippet.length;
+            codeContent.innerText = codeSnippet.slice(0, idx) + "▍";
+            audio.type();
 
-            if (charIndex >= codeTarget.length) {
-              clearInterval(typingTimer);
-              codeEl.innerText = codeTarget;
-              document.getElementById('ts-status').innerText = "Compiled OK";
-              document.getElementById('ts-status').style.color = "var(--success)";
-              setCursorShape("engineer", "arrow");
-              logTelemetry("engineer", "✅ Convergent implementation complete (Zero dead-code)");
+            if (idx >= codeSnippet.length) {
+              clearInterval(typer);
+              codeContent.innerText = codeSnippet;
+              document.getElementById('ts-badge').innerText = "Convergent OK";
+              document.getElementById('ts-badge').style.color = "var(--success)";
+              addLog("Engineer", "Surgical code written with zero dead code", "#38bdf8");
             }
-          }, 24 / pace);
+          }, 20 / pace);
         });
-      }, 4200);
+      }, 3000 / pace));
 
-      // 5. SENTINEL scans and locks security shield (8.2s)
-      schedule(() => {
-        tweenCursor("sentinel", 580, 360, "Scanning timingSafeEqual", 600, null, () => {
-          sound.snap();
-          logTelemetry("sentinel", "🛡️ Audited: timingSafeEqual protects against timing attacks");
-          const shield = document.createElement('div');
-          shield.style.position = 'absolute';
-          shield.style.left = '410px'; shield.style.top = '430px';
-          shield.style.background = 'rgba(6, 78, 59, 0.9)';
-          shield.style.border = '1px solid #10b981';
-          shield.style.color = '#a7f3d0';
-          shield.style.padding = '4px 10px';
-          shield.style.borderRadius = '4px';
-          shield.style.fontSize = '10px';
-          shield.style.fontFamily = 'var(--font-mono)';
-          shield.style.fontWeight = '700';
-          shield.style.boxShadow = '0 0 16px rgba(16, 185, 129, 0.4)';
-          shield.innerText = "🔒 TIMING_SAFE & 300s REPLAY [ENFORCED]";
-          canvasLayer.appendChild(shield);
+      // 4. WAVE 3: Verification & Proof
+      swarmTimers.push(setTimeout(() => {
+        addLog("Orchestrator", "Handoff to Wave 3: Quality Gate (maxilun-verify)", "#5e6ad2");
+        tweenAgent("verify", 600, 400, "Executing test suite", 600, () => {
+          audio.click();
+          document.getElementById('node-w3').classList.add('active-wave');
+          addLog("Verify", "Ran test suite & AST verification: [CONFIRMED] PASS exit=0", "#eab308");
+
+          // Update Handoff Drawer
+          document.getElementById('active-handoff').innerHTML = `
+            <div><strong>Owner:</strong> maxilun-verify</div>
+            <div><strong>Artifacts:</strong> src/auth/webhook.ts verified</div>
+            <div><strong>Verification:</strong> Exit code 0 [CONFIRMED]</div>
+            <div><strong>Next:</strong> Done (Deliverable verified)</div>
+            <div><strong>Residual risks:</strong> Clock drift on client nodes</div>
+          `;
         });
-      }, 7800);
-
-      // 6. VERIFY runs Playwright & Typecheck (10.2s)
-      schedule(() => {
-        tweenCursor("verify", 640, 80, "Running Verification Gate", 500, null, () => {
-          sound.snap();
-          logTelemetry("verify", "🧪 Vitest & Typecheck verified: Exit code 0 [PASS]");
-          const passBadge = document.createElement('div');
-          passBadge.style.position = 'absolute';
-          passBadge.style.left = '590px'; passBadge.style.top = '485px';
-          passBadge.style.background = '#eab308';
-          passBadge.style.color = '#713f12';
-          passBadge.style.padding = '6px 14px';
-          passBadge.style.borderRadius = '4px';
-          passBadge.style.fontSize = '11px';
-          passBadge.style.fontWeight = '800';
-          passBadge.style.fontFamily = 'var(--font-mono)';
-          passBadge.style.boxShadow = '0 0 20px rgba(234, 179, 8, 0.5)';
-          passBadge.innerText = "⭐ VERIFIED PASS (EXIT 0)";
-          canvasLayer.appendChild(passBadge);
-
-          // All specialists converge around finished product
-          tweenCursor("architect", 120, 510, "Architect: Approved", 700);
-          tweenCursor("data", 240, 510, "Data: Normalized", 700);
-          tweenCursor("craft", 360, 510, "Craft: WCAG AA", 700);
-          tweenCursor("engineer", 480, 510, "Engineer: Delivered", 700);
-          tweenCursor("sentinel", 600, 510, "Sentinel: Hardened", 700);
-        });
-      }, 9600);
+      }, 6500 / pace));
     }
 
-    function clearAllTimers() {
-      for (const id of rebuildTimeouts) clearTimeout(id);
-      rebuildTimeouts = [];
+    function clearTimers() {
+      for (const t of swarmTimers) clearTimeout(t);
+      swarmTimers = [];
+      document.querySelectorAll('.topo-node').forEach(n => n.classList.remove('active-wave'));
     }
 
-    function wipeAndRebuild() {
-      sound.snap();
-      canvasLayer.innerHTML = "";
-      activityLog.innerHTML = "";
-      logTelemetry("architect", "💥 Canvas wiped to blank slate — launching multiplayer rebuild");
-      runSwarmRebuild();
+    function restartOrchestration() {
+      runOrchestrationPlayback();
     }
 
     function togglePlay() {
@@ -959,40 +777,33 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     }
 
     function toggleSound() {
-      sound.enabled = !sound.enabled;
-      document.getElementById('btn-sound').innerText = sound.enabled ? "🔊 Sound: ON" : "🔇 Sound: OFF";
+      audio.enabled = !audio.enabled;
+      document.getElementById('btn-sound').innerText = audio.enabled ? "🔊 Audio: ON" : "🔇 Audio: OFF";
     }
 
-    function setPace(val, btn) {
-      pace = val;
-      document.querySelectorAll('.stage-bar .btn-control').forEach(b => {
+    function setPace(p, btn) {
+      pace = p;
+      document.querySelectorAll('.stage-bar .btn-action').forEach(b => {
         if (b.innerText.includes('x')) b.classList.remove('active');
       });
       btn.classList.add('active');
     }
 
-    function onUserMouseMove(e) {
-      const rect = stageEl.getBoundingClientRect();
-      const mx = e.clientX - rect.left;
-      let guide = document.getElementById('user-guide');
-      if (!guide) {
-        guide = document.createElement('div');
-        guide.id = 'user-guide';
-        guide.className = 'snap-guide vert';
-        stageEl.appendChild(guide);
-      }
-      guide.style.left = mx + 'px';
+    function onStageMouseMove(e) {
+      // Responsive guide line
+      const rect = stage.getBoundingClientRect();
+      const my = e.clientY - rect.top;
+      // Soft tracking
     }
 
-    // Tab Navigation
-    function showTab(tabId) {
+    function showTab(id) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.getElementById('tab-swarm').style.display = 'none';
       document.getElementById('tab-benchmarks').style.display = 'none';
       document.getElementById('tab-skills').style.display = 'none';
       document.getElementById('tab-triage').style.display = 'none';
 
-      document.getElementById('tab-' + tabId).style.display = 'block';
+      document.getElementById('tab-' + id).style.display = 'block';
       event.target.classList.add('active');
     }
 
@@ -1000,11 +811,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       const tbody = document.getElementById('benchmarks-body');
       tbody.innerHTML = benchmarksData.map(b => `
         <tr>
-          <td><strong>${b.title}</strong><br><span style="font-size: 11px; color: var(--muted);">"${b.prompt}"</span></td>
-          <td class="tabular" style="color: var(--error);">${b.raw_score.toFixed(1)}</td>
-          <td class="tabular" style="color: var(--success); font-weight: 700;">${b.maxilun_score.toFixed(1)}</td>
+          <td><strong>${b.title}</strong><br><span style="font-size:11px; color:var(--ink-muted);">"${b.prompt}"</span></td>
+          <td class="tabular" style="color:var(--error);">${b.raw_score.toFixed(1)}</td>
+          <td class="tabular" style="color:var(--success); font-weight:700;">${b.maxilun_score.toFixed(1)}</td>
           <td><span class="badge">${b.raw_violations.length - b.max_violations.length} prevented</span></td>
-          <td><span style="color: var(--success); font-weight: 600;">PASS</span></td>
+          <td><span style="color:var(--success); font-weight:600;">PASS</span></td>
         </tr>
       `).join('');
     }
@@ -1012,13 +823,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     function renderSkills() {
       const grid = document.getElementById('skills-grid');
       grid.innerHTML = skillsData.map(s => `
-        <div class="skill-card">
-          <div class="skill-card-head">
-            <span class="skill-name">${s.name}</span>
+        <div class="skill-card" style="background:var(--surface-1); border:1px solid var(--hairline); border-radius:6px; padding:12px;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+            <span style="font-weight:700; font-family:var(--font-mono); color:var(--primary); font-size:13px;">${s.name}</span>
             <span class="badge">${s.line_count} lines</span>
           </div>
-          <div class="skill-info">${s.owns}</div>
-          <div class="triggers-box">Triggers: ${s.triggers.join(', ') || 'orchestration'}</div>
+          <div style="font-size:11px; color:var(--ink-muted); margin-bottom:6px;">${s.owns}</div>
+          <div style="font-family:var(--font-mono); font-size:10px; color:#64748b; background:#06080d; padding:4px 8px; border-radius:3px;">Triggers: ${s.triggers.join(', ') || 'orchestration'}</div>
         </div>
       `).join('');
     }
@@ -1026,30 +837,43 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     function simulateTriage() {
       const input = document.getElementById('triage-input').value.toLowerCase();
       let owner = 'maxilun-engineer';
+      let companions = [];
       let isType1 = input.includes('drop') || input.includes('destruktif') || input.includes('redesign total') || input.includes('pecah service');
       
-      if (input.includes('migrasi') || input.includes('database') || input.includes('tabel') || input.includes('skema')) owner = 'maxilun-data';
-      else if (input.includes('auth') || input.includes('login') || input.includes('webhook') || input.includes('secret')) owner = 'maxilun-sentinel';
-      else if (input.includes('ui') || input.includes('desain') || input.includes('tampilan')) owner = 'maxilun-craft';
-      else if (input.includes('next') || input.includes('rsc') || input.includes('app router')) owner = 'maxilun-frontend';
-      else if (input.includes('root cause') || input.includes('lambat')) owner = 'maxilun-insight';
+      if (input.includes('webhook') || input.includes('signature') || input.includes('auth')) {
+        owner = 'maxilun-sentinel';
+        if (input.includes('database') || input.includes('saldo') || input.includes('tabel')) companions.push('maxilun-data');
+      } else if (input.includes('migrasi') || input.includes('database') || input.includes('skema')) {
+        owner = 'maxilun-data';
+      } else if (input.includes('ui') || input.includes('desain')) {
+        owner = 'maxilun-craft';
+      }
 
-      const typeLabel = isType1 ? 'Type 1 (Irreversible / High-Cost — max 1 batched clarification turn)' : 'Type 2 (Reversible / Low-Cost — execute directly from repo evidence)';
+      const typeLabel = isType1 ? 'Type 1 (Irreversible — max 1 batched clarification turn)' : 'Type 2 (Reversible — execute directly from repo evidence)';
+      const isMulti = companions.length > 0 || input.includes('lengkap') || input.includes('test');
 
       document.getElementById('triage-output').innerHTML = `
-        <div style="color: #60a5fa; font-weight: 700; margin-bottom: 4px;">[TRIAGE CLASSIFICATION]</div>
+        <div style="color:var(--primary); font-weight:700; margin-bottom:4px;">[ORCHESTRATOR WAVE DECOMPOSITION]</div>
         <div>Primary Owner : <strong>${owner}</strong></div>
         <div>Reversibility : ${typeLabel}</div>
-        <div>Action Path   : ${isType1 ? 'Request 1-turn clarification with 2-3 options & firm recommendation.' : 'Proceed directly with repo evidence without unprompted questions.'}</div>
+        <div>Companions    : ${companions.join(', ') || 'None (Single Cohesive Owner)'}</div>
+        <div>Multi-Domain  : ${isMulti ? 'Yes (Multi-Wave Coordination Required)' : 'No (Direct Single Surface)'}</div>
+        <hr style="border-color:var(--hairline-strong); margin:8px 0;"/>
+        <div style="color:var(--architect); font-weight:700;">Wave 1 (Contracts):</div>
+        <div style="color:var(--ink-muted);">- ${[owner].concat(companions).filter(s => ['maxilun-architect','maxilun-data','maxilun-sentinel'].includes(s)).join(', ') || owner} -> Establish schema invariants & auth boundaries</div>
+        <div style="color:var(--engineer); font-weight:700; margin-top:4px;">Wave 2 (Implementation):</div>
+        <div style="color:var(--ink-muted);">- maxilun-engineer -> Consume contracts to write convergent code</div>
+        <div style="color:var(--verify); font-weight:700; margin-top:4px;">Wave 3 (Verification):</div>
+        <div style="color:var(--ink-muted);">- maxilun-verify -> Execute test suite, typecheck & runtime proof</div>
       `;
     }
 
-    // Boot
-    initSwarmNodes();
+    // Initialize
+    initCursors();
     renderBenchmarks();
     renderSkills();
     simulateTriage();
-    runSwarmRebuild();
+    runOrchestrationPlayback();
   </script>
 </body>
 </html>
