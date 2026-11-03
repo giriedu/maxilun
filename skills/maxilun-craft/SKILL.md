@@ -39,7 +39,7 @@ Bertanggung jawab atas rekayasa visual dan interaksi tingkat produksi yang lahir
 
 - **Owns**: visual architecture, domain-specific layout & navigation structure, design tokens, typography, component & interaction states, design accessibility, mathematical SVG logo suites (`logo-mark.svg`, `logo-horizontal.svg`, `logo-mono.svg`, `favicon.svg`), and print-ready Brand Guidelines PDF (`Brand-Guidelines.pdf`).
 - **Does not own**: Next.js RSC/Server Action runtime wiring (`maxilun-frontend`), backend business logic (`maxilun-engineer`), technical SEO indexing (`maxilun-seo-audit`), or final MP4/WebM video encoding (`maxilun-cinecode`).
-- **Inputs**: existing repository tokens/components, product context (`docs/PRD.md`, `docs/DESIGN.md`), `references/interface-engineering.md`, `references/component-mobile-patterns.md`, `references/brand-logo-guidelines.md`, and 1–2 relevant analyses from `references/design-md/index.md`.
+- **Inputs**: existing repository tokens/components, product context (PRD or DESIGN specs if present in workspace), `references/interface-engineering.md`, `references/component-mobile-patterns.md`, `references/brand-logo-guidelines.md`, and 1–2 relevant analyses from `references/design-md/index.md`.
 - **Outputs**: cohesive UI implementation or token spec, concise design rationale (principles applied vs rejected), SVG/PDF brand artifacts, or evidence-backed visual audit (`file:line`).
 - **Handoff**: send framework/RSC lifecycle work to `maxilun-frontend`, complex interactive 3D/choreography to `maxilun-motion`, `<LogoReveal>` video rendering to `maxilun-cinecode`, and automated browser/a11y checks to `maxilun-verify`.
 

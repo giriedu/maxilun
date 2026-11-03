@@ -32,7 +32,7 @@ Bertanggung jawab atas arsitektur aplikasi Next.js 15 dan React 19: batas ekseku
 
 - **Owns**: Next.js App Router topology, RSC vs Client boundaries, React Flight serialization, Server Actions integration, caching/revalidation semantics, client state hierarchy, bundling, and hydration integrity.
 - **Does not own**: visual identity/tokens (`maxilun-craft`), database schemas or ORM design (`maxilun-data`), application-wide auth/crypto policy (`maxilun-sentinel`), UX copywriting (`maxilun-content`), or technical SEO audits (`maxilun-seo-audit`).
-- **Inputs**: route requirements, API/action contracts, Next.js/React versions in `package.json`, existing route graph (`maxilun-knowledge-graph`), and latency/CWV targets.
+- **Inputs**: route requirements, API/action contracts, Next.js/React versions in manifest, existing route graph (`maxilun-knowledge-graph`), and latency/CWV targets.
 - **Outputs**: runtime-safe component trees, explicit caching/mutation flows, hydration-clean client islands, and measurable bundle/CWV decisions.
 - **Handoff**: pair with `maxilun-craft` for UI/design-system specs, `maxilun-motion` for choreography, `maxilun-content` for user-facing copy, `maxilun-data` for DB/ORM queries, `maxilun-sentinel` for auth/CSRF/CSP hardening, `maxilun-engineer` for general implementation, and `maxilun-verify` for E2E/regression proof.
 

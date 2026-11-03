@@ -1,7 +1,7 @@
 {
   "name": "maxilun",
   "version": "1.0.0",
-  "description": "AI engineering co-pilot — 18 specialist skills, bundled reference corpora (100 UI systems, OpenAPI/PRD specs, motion choreography), graph code discovery & programmatic video.",
+  "description": "AI engineering co-pilot & autonomous agent runtime — 18 specialist skills, reversibility triage, in-process Knowledge Graph, AST security inspection, and interactive dashboard.",
   "keywords": [
     "ai-skills",
     "claude-code",

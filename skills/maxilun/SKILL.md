@@ -38,13 +38,13 @@ Satu orchestrator untuk 17 spesialis. Fokus utamanya tiga: mengeksekusi keputusa
 
 - **Owns**: outcome classification, reversibility-gated decision triage, single-owner routing, wave sequencing when genuinely multi-domain, cross-wave synthesis, and evidence verification gates.
 - **Does not own**: domain implementation, visual design tokens, database schema authoring, or direct test execution.
-- **Inputs**: requested user outcome, repository evidence (`package.json`, codebase, schema, tests, docs), specialist availability, and execution proof.
+- **Inputs**: requested user outcome, repository evidence (manifests, codebase, schema, tests), specialist availability, and execution proof.
 - **Outputs**: decisive execution path, clean specialist handoffs, synthesized engineering result, and factual proof status.
 - **Handoff**: assign one primary specialist per coherent surface; attach companions only when crossing a hard capability boundary, then verify before yielding.
 - **Standalone mode**: when a specialist is unavailable, state the fallback in one sentence and execute inline under Core Rules without inventing missing tools.
 - **Public package rule**: use only paths relative to this installed skill or the target repository. Never depend on local machine paths.
 
-Use `docs/SKILL-CONTRACTS.md` and `docs/ROUTING-MATRIX.md` when present in the repository; the orchestrator remains self-contained without them.
+The orchestrator maintains full routing rules inline (§2) and remains completely self-contained; repository-level docs are consulted only when present in the workspace root.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)
