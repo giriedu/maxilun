@@ -28,18 +28,68 @@ class ProviderResponse:
 class UniversalProvider:
     """Dispatches chat completions and tool calls to any OpenAI-compatible API."""
 
+    PRESETS = {
+        "deepseek": {
+            "endpoint": "https://api.deepseek.com/v1",
+            "model": "deepseek-chat",
+            "env_key": "DEEPSEEK_API_KEY",
+        },
+        "openai": {
+            "endpoint": "https://api.openai.com/v1",
+            "model": "gpt-4o",
+            "env_key": "OPENAI_API_KEY",
+        },
+        "openrouter": {
+            "endpoint": "https://openrouter.ai/api/v1",
+            "model": "anthropic/claude-3.5-sonnet",
+            "env_key": "OPENROUTER_API_KEY",
+        },
+        "groq": {
+            "endpoint": "https://api.groq.com/openai/v1",
+            "model": "llama-3.3-70b-versatile",
+            "env_key": "GROQ_API_KEY",
+        },
+        "ollama": {
+            "endpoint": "http://localhost:11434/v1",
+            "model": "qwen2.5-coder:7b",
+            "env_key": "OLLAMA_API_KEY",
+        },
+        "gemini": {
+            "endpoint": "https://generativelanguage.googleapis.com/v1beta/openai",
+            "model": "gemini-1.5-pro",
+            "env_key": "GEMINI_API_KEY",
+        },
+    }
+
     def __init__(
         self,
+        provider: Optional[str] = None,
         endpoint: Optional[str] = None,
         api_key: Optional[str] = None,
         model: Optional[str] = None,
         mock_mode: bool = False
     ):
-        self.api_key = api_key or os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("OPENAI_API_KEY") or ""
-        self.endpoint = endpoint or os.environ.get("LLM_ENDPOINT") or "https://api.deepseek.com/v1"
-        self.model = model or os.environ.get("LLM_MODEL") or "deepseek-chat"
-        self.mock_mode = mock_mode or (not self.api_key and "localhost" not in self.endpoint and "127.0.0.1" not in self.endpoint)
+        provider_name = (provider or os.environ.get("LLM_PROVIDER") or "").lower()
+        preset = self.PRESETS.get(provider_name, {})
 
+        self.endpoint = endpoint or os.environ.get("LLM_ENDPOINT") or preset.get("endpoint") or "https://api.deepseek.com/v1"
+        self.model = model or os.environ.get("LLM_MODEL") or preset.get("model") or "deepseek-chat"
+
+        env_key_name = preset.get("env_key")
+        preset_key = os.environ.get(env_key_name, "") if env_key_name else ""
+        self.api_key = (
+            api_key
+            or preset_key
+            or os.environ.get("DEEPSEEK_API_KEY")
+            or os.environ.get("OPENAI_API_KEY")
+            or os.environ.get("OPENROUTER_API_KEY")
+            or os.environ.get("GROQ_API_KEY")
+            or os.environ.get("GEMINI_API_KEY")
+            or ""
+        )
+
+        is_local = "localhost" in self.endpoint or "127.0.0.1" in self.endpoint
+        self.mock_mode = mock_mode or (not self.api_key and not is_local)
     def complete(
         self,
         messages: List[Dict[str, Any]],

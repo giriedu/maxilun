@@ -110,10 +110,16 @@ You are governed by Maxilun Core Rules.
         }
     ]
 
-    def __init__(self, api_key: Optional[str] = None, endpoint: Optional[str] = None, model: str = "deepseek-chat"):
-        self.api_key = api_key or os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("OPENAI_API_KEY") or ""
-        self.endpoint = endpoint or os.environ.get("LLM_ENDPOINT") or "https://api.deepseek.com/v1"
-        self.model = model
+    def __init__(self, provider: Optional[str] = None, api_key: Optional[str] = None, endpoint: Optional[str] = None, model: Optional[str] = None):
+        from .engine.provider import UniversalProvider
+        preset = UniversalProvider.PRESETS.get((provider or "").lower(), {})
+
+        self.endpoint = endpoint or os.environ.get("LLM_ENDPOINT") or preset.get("endpoint") or "https://api.deepseek.com/v1"
+        self.model = model or os.environ.get("LLM_MODEL") or preset.get("model") or "deepseek-chat"
+
+        env_key = preset.get("env_key")
+        preset_key = os.environ.get(env_key, "") if env_key else ""
+        self.api_key = api_key or preset_key or os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("OPENAI_API_KEY") or os.environ.get("OPENROUTER_API_KEY") or os.environ.get("GROQ_API_KEY") or ""
         self.validator = PurityValidator()
         self.ast_inspector = ASTInspector()
 

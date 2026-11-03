@@ -41,6 +41,7 @@ from harness.engine.agent_loop import MaxilunAgentLoop
 
 def cmd_run(args):
     provider = UniversalProvider(
+        provider=args.provider,
         endpoint=args.endpoint,
         api_key=args.api_key,
         model=args.model
@@ -51,6 +52,7 @@ def cmd_run(args):
 
 def cmd_chat(args):
     provider = UniversalProvider(
+        provider=args.provider,
         endpoint=args.endpoint,
         api_key=args.api_key,
         model=args.model
@@ -229,8 +231,10 @@ def cmd_bench(args):
 
 
 def cmd_eval(args):
-    print(f"🌑 Starting Live Model Evaluation (Model: {args.model})...")
+    target_model = args.model or "deepseek-chat"
+    print(f"🌑 Starting Live Model Evaluation (Provider: {args.provider or 'auto'}, Model: {target_model})...")
     evaluator = LiveModelEvaluator(
+        provider=args.provider,
         api_key=args.api_key,
         endpoint=args.endpoint,
         model=args.model
@@ -321,7 +325,8 @@ def main():
 
     # chat
     chat_parser = subparsers.add_parser("chat", help="Start an interactive Maxilun agent session in terminal")
-    chat_parser.add_argument("--model", default=None, help="Model name (e.g. deepseek-chat)")
+    chat_parser.add_argument("--provider", choices=["deepseek", "openai", "openrouter", "ollama", "groq", "gemini"], default=None, help="Provider preset")
+    chat_parser.add_argument("--model", default=None, help="Model name (e.g. deepseek-chat, gpt-4o, qwen2.5-coder:7b)")
     chat_parser.add_argument("--endpoint", default=None, help="LLM endpoint URL")
     chat_parser.add_argument("--api-key", default=None, help="LLM API key")
     chat_parser.add_argument("--max-turns", type=int, default=10, help="Max interaction turns")
@@ -329,6 +334,7 @@ def main():
     # run
     run_parser = subparsers.add_parser("run", help="Execute an autonomous task through Maxilun agent harness")
     run_parser.add_argument("task", help="Task description or prompt to execute")
+    run_parser.add_argument("--provider", choices=["deepseek", "openai", "openrouter", "ollama", "groq", "gemini"], default=None, help="Provider preset")
     run_parser.add_argument("--model", default=None, help="Model name")
     run_parser.add_argument("--endpoint", default=None, help="LLM endpoint URL")
     run_parser.add_argument("--api-key", default=None, help="LLM API key")
@@ -357,7 +363,8 @@ def main():
 
     # eval
     eval_parser = subparsers.add_parser("eval", help="Run live model comparison evaluation against OpenAI/DeepSeek endpoint")
-    eval_parser.add_argument("--model", default="deepseek-chat", help="Target model name")
+    eval_parser.add_argument("--provider", choices=["deepseek", "openai", "openrouter", "ollama", "groq", "gemini"], default=None, help="Provider preset")
+    eval_parser.add_argument("--model", default=None, help="Target model name")
     eval_parser.add_argument("--endpoint", default=None, help="OpenAI-compatible base URL")
     eval_parser.add_argument("--api-key", default=None, help="Model provider API key")
     eval_parser.add_argument("--json", action="store_true", help="Output JSON instead of Markdown")
