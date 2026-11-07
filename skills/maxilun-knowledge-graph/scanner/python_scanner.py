@@ -21,6 +21,132 @@ PYTHON_BUILTINS = frozenset({
 class PythonScanner(BaseScanner):
     EXTENSIONS = {'.py'}
 
+    def scan_file(self, py_file: Path, root: Path, project_files: Optional[Dict[str, Path]] = None) -> Dict[str, Any]:
+        nodes = []
+        edges = []
+        if project_files is None:
+            project_files = {}
+
+        try:
+            rel_path = str(py_file.relative_to(root)).replace('\\', '/')
+        except ValueError:
+            rel_path = py_file.name
+
+        try:
+            source = py_file.read_text(encoding='utf-8', errors='replace')
+            tree = ast.parse(source, filename=str(py_file))
+        except (SyntaxError, Exception):
+            return {'nodes': [], 'edges': []}
+
+        file_node_id = f"file:{rel_path}"
+        nodes.append({
+            'id': file_node_id,
+            'label': py_file.name,
+            'type': 'module',
+            'source_file': rel_path,
+            'snippet': f'# {rel_path}\n# {len(source.splitlines())} lines'
+        })
+
+        parent_map = self._build_parent_map(tree)
+        func_ranges = []
+        file_symbols = set()
+        imported_symbols = {}  # name -> target file rel_path
+
+        # First pass: classes, methods, top-level functions, imports
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ClassDef):
+                class_id = f"class:{rel_path}:{node.name}"
+                file_symbols.add(node.name)
+                snippet_lines = source.splitlines()[node.lineno - 1:min(node.lineno + 5, len(source.splitlines()))]
+                nodes.append({
+                    'id': class_id,
+                    'label': node.name,
+                    'type': 'class',
+                    'source_file': f"{rel_path}:{node.lineno}",
+                    'snippet': '\n'.join(snippet_lines)
+                })
+                edges.append({'source': file_node_id, 'target': class_id, 'type': 'DEFINES'})
+
+                for base in node.bases:
+                    base_name = self._get_name(base)
+                    if base_name:
+                        edges.append({'source': class_id, 'target': f"class:*:{base_name}", 'type': 'EXTENDS'})
+
+                for item in node.body:
+                    if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                        method_id = f"func:{rel_path}:{node.name}.{item.name}"
+                        method_label = f"{node.name}.{item.name}"
+                        file_symbols.add(item.name)
+                        file_symbols.add(method_label)
+                        nodes.append({
+                            'id': method_id,
+                            'label': method_label,
+                            'type': 'method',
+                            'source_file': f"{rel_path}:{item.lineno}",
+                            'snippet': '\n'.join(source.splitlines()[item.lineno - 1:min(item.lineno + 3, len(source.splitlines()))])
+                        })
+                        edges.append({'source': class_id, 'target': method_id, 'type': 'DEFINES'})
+                        func_ranges.append((item.lineno, item.end_lineno or item.lineno, method_id))
+
+            elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                parent = parent_map.get(node)
+                # Skip if enclosed in ClassDef (already handled above as method)
+                if isinstance(parent, ast.ClassDef):
+                    continue
+
+                func_id = f"func:{rel_path}:{node.name}"
+                file_symbols.add(node.name)
+                snippet_lines = source.splitlines()[node.lineno - 1:min(node.lineno + 4, len(source.splitlines()))]
+                nodes.append({
+                    'id': func_id,
+                    'label': node.name,
+                    'type': 'async_function' if isinstance(node, ast.AsyncFunctionDef) else 'function',
+                    'source_file': f"{rel_path}:{node.lineno}",
+                    'snippet': '\n'.join(snippet_lines)
+                })
+                edges.append({'source': file_node_id, 'target': func_id, 'type': 'DEFINES'})
+                func_ranges.append((node.lineno, node.end_lineno or node.lineno, func_id))
+
+            elif isinstance(node, (ast.Import, ast.ImportFrom)):
+                resolved_files, ext_modules = self._resolve_py_import(py_file, node, root, project_files)
+                for target_rel in resolved_files:
+                    target_file_id = f"file:{target_rel}"
+                    edges.append({'source': file_node_id, 'target': target_file_id, 'type': 'IMPORTS', 'confidence': 'exact'})
+                    if isinstance(node, ast.ImportFrom):
+                        for alias in node.names:
+                            imported_symbols[alias.asname or alias.name] = target_rel
+
+                for ext_mod in ext_modules:
+                    edges.append({'source': file_node_id, 'target': f"ext:{ext_mod}", 'type': 'IMPORTS', 'confidence': 'exact'})
+
+            elif isinstance(node, ast.Call):
+                callee_name = self._get_call_name(node)
+                if not callee_name or callee_name in PYTHON_BUILTINS:
+                    continue
+
+                caller_id = self._find_enclosing_fast(parent_map, node, rel_path, func_ranges)
+
+                # Resolve callee target
+                if callee_name in file_symbols:
+                    target_id = f"func:{rel_path}:{callee_name}"
+                    conf = "exact"
+                elif callee_name in imported_symbols:
+                    target_rel = imported_symbols[callee_name]
+                    target_id = f"func:{target_rel}:{callee_name}"
+                    conf = "exact"
+                else:
+                    target_id = f"func:*:{callee_name}"
+                    conf = "name-only"
+
+                edges.append({
+                    'source': caller_id,
+                    'target': target_id,
+                    'type': 'CALLS',
+                    'confidence': conf
+                })
+
+        return {'nodes': nodes, 'edges': edges}
+
     def scan(self, root_path: str) -> Dict[str, Any]:
         nodes = []
         edges = []
@@ -34,119 +160,10 @@ class PythonScanner(BaseScanner):
             rel = str(py_file.relative_to(root)).replace('\\', '/')
             project_files[rel] = py_file
 
-        for rel_path, py_file in project_files.items():
-            try:
-                source = py_file.read_text(encoding='utf-8', errors='replace')
-                tree = ast.parse(source, filename=str(py_file))
-            except SyntaxError:
-                continue
-
-            file_node_id = f"file:{rel_path}"
-            nodes.append({
-                'id': file_node_id,
-                'label': py_file.name,
-                'type': 'module',
-                'source_file': rel_path,
-                'snippet': f'# {rel_path}\n# {len(source.splitlines())} lines'
-            })
-
-            parent_map = self._build_parent_map(tree)
-            func_ranges = []
-            file_symbols = set()
-            imported_symbols = {}  # name -> target file rel_path
-
-            # First pass: classes, methods, top-level functions, imports
-            for node in ast.walk(tree):
-                if isinstance(node, ast.ClassDef):
-                    class_id = f"class:{rel_path}:{node.name}"
-                    file_symbols.add(node.name)
-                    snippet_lines = source.splitlines()[node.lineno - 1:min(node.lineno + 5, len(source.splitlines()))]
-                    nodes.append({
-                        'id': class_id,
-                        'label': node.name,
-                        'type': 'class',
-                        'source_file': f"{rel_path}:{node.lineno}",
-                        'snippet': '\n'.join(snippet_lines)
-                    })
-                    edges.append({'source': file_node_id, 'target': class_id, 'type': 'DEFINES'})
-
-                    for base in node.bases:
-                        base_name = self._get_name(base)
-                        if base_name:
-                            edges.append({'source': class_id, 'target': f"class:*:{base_name}", 'type': 'EXTENDS'})
-
-                    for item in node.body:
-                        if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                            method_id = f"func:{rel_path}:{node.name}.{item.name}"
-                            method_label = f"{node.name}.{item.name}"
-                            file_symbols.add(item.name)
-                            file_symbols.add(method_label)
-                            nodes.append({
-                                'id': method_id,
-                                'label': method_label,
-                                'type': 'method',
-                                'source_file': f"{rel_path}:{item.lineno}",
-                                'snippet': '\n'.join(source.splitlines()[item.lineno - 1:min(item.lineno + 3, len(source.splitlines()))])
-                            })
-                            edges.append({'source': class_id, 'target': method_id, 'type': 'DEFINES'})
-                            func_ranges.append((item.lineno, item.end_lineno or item.lineno, method_id))
-
-                elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                    parent = parent_map.get(node)
-                    # Skip if enclosed in ClassDef (already handled above as method)
-                    if isinstance(parent, ast.ClassDef):
-                        continue
-
-                    func_id = f"func:{rel_path}:{node.name}"
-                    file_symbols.add(node.name)
-                    snippet_lines = source.splitlines()[node.lineno - 1:min(node.lineno + 4, len(source.splitlines()))]
-                    nodes.append({
-                        'id': func_id,
-                        'label': node.name,
-                        'type': 'async_function' if isinstance(node, ast.AsyncFunctionDef) else 'function',
-                        'source_file': f"{rel_path}:{node.lineno}",
-                        'snippet': '\n'.join(snippet_lines)
-                    })
-                    edges.append({'source': file_node_id, 'target': func_id, 'type': 'DEFINES'})
-                    func_ranges.append((node.lineno, node.end_lineno or node.lineno, func_id))
-
-                elif isinstance(node, (ast.Import, ast.ImportFrom)):
-                    resolved_files, ext_modules = self._resolve_py_import(py_file, node, root, project_files)
-                    for target_rel in resolved_files:
-                        target_file_id = f"file:{target_rel}"
-                        edges.append({'source': file_node_id, 'target': target_file_id, 'type': 'IMPORTS', 'confidence': 'exact'})
-                        if isinstance(node, ast.ImportFrom):
-                            for alias in node.names:
-                                imported_symbols[alias.asname or alias.name] = target_rel
-
-                    for ext_mod in ext_modules:
-                        edges.append({'source': file_node_id, 'target': f"ext:{ext_mod}", 'type': 'IMPORTS', 'confidence': 'exact'})
-
-                elif isinstance(node, ast.Call):
-                    callee_name = self._get_call_name(node)
-                    if not callee_name or callee_name in PYTHON_BUILTINS:
-                        continue
-
-                    caller_id = self._find_enclosing_fast(parent_map, node, rel_path, func_ranges)
-                    
-                    # Resolve callee target
-                    if callee_name in file_symbols:
-                        target_id = f"func:{rel_path}:{callee_name}"
-                        conf = "exact"
-                    elif callee_name in imported_symbols:
-                        target_rel = imported_symbols[callee_name]
-                        target_id = f"func:{target_rel}:{callee_name}"
-                        conf = "exact"
-                    else:
-                        target_id = f"func:*:{callee_name}"
-                        conf = "name-only"
-
-                    edges.append({
-                        'source': caller_id,
-                        'target': target_id,
-                        'type': 'CALLS',
-                        'confidence': conf
-                    })
+        for py_file in project_files.values():
+            res = self.scan_file(py_file, root, project_files)
+            nodes.extend(res.get('nodes', []))
+            edges.extend(res.get('edges', []))
 
         return {'nodes': nodes, 'edges': edges}
 
@@ -176,7 +193,7 @@ class PythonScanner(BaseScanner):
             for cand in cands:
                 try:
                     rel = str(cand.relative_to(root)).replace('\\', '/')
-                    if rel in project_files:
+                    if rel in project_files or cand.is_file():
                         resolved_files.add(rel)
                         matched = True
                         break
@@ -197,7 +214,7 @@ class PythonScanner(BaseScanner):
                 for cand in cands:
                     try:
                         rel = str(cand.relative_to(root)).replace('\\', '/')
-                        if rel in project_files:
+                        if rel in project_files or cand.is_file():
                             resolved_files.add(rel)
                             matched = True
                             break

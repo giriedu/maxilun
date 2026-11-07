@@ -47,8 +47,7 @@ Sebelum menulis baris kode pertama, rumuskan spesifikasi Momen Khas secara tertu
 
 ## 3. Daftar Detail Mikro Bernilai Tinggi (The High-Craft Micro-Details)
 
-Jurors mendaftarkan kualitas pengerjaan (*craftsmanship*) secara bawah sadar melalui detail-detail kecil:
-
+Jurors mendaftarkan kualitas pengerjaan (*craftsmanship*) secara bawah sadar melalui detail-detail kecil. Seluruh primitif ini tersedia langsung dalam berkas stylesheet siap-pakai: `assets/craft-primitives.css`.
 ### 3.1 Garis Bawah Tautan Berbalik Arah (ScaleX Flip Underline)
 Garis bawah animasi 6-baris CSS yang langsung menandakan kualitas studio:
 ```css

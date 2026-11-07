@@ -1,0 +1,156 @@
+/**
+ * Maxilun Craft Primitives — Agency & Studio-Grade Micro-Interactions
+ * Origin: skills/maxilun-craft/references/studio-craft-engine.md
+ * Standards: Awwwards SOTD / Developer Award / WCAG AA/AAA
+ */
+
+/* ==========================================================================
+   1. Global Text Selection & Measurement Invariants
+   ========================================================================== */
+::selection {
+  background: var(--color-accent-solid, oklch(0.28 0.04 250));
+  color: var(--color-accent-contrast, oklch(0.98 0.005 250));
+}
+
+.tabular,
+[data-tabular="true"] {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ==========================================================================
+   2. ScaleX Flip Underline (.craft-link)
+   Subconscious studio craftsmanship: underline exits right, enters left.
+   ========================================================================== */
+.craft-link {
+  position: relative;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.craft-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.15em;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (hover: hover) {
+  .craft-link:hover::after,
+  .craft-link:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+/* ==========================================================================
+   3. Tactile Button Press (.craft-btn)
+   Physical elasticity: exactly scale(0.96) in 150ms ease-out.
+   ========================================================================== */
+.craft-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: var(--radius-sm, 6px);
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.15s ease,
+              border-color 0.15s ease;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.craft-btn:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: scale(0.96);
+}
+
+.craft-btn:disabled,
+.craft-btn[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none !important;
+}
+
+/* ==========================================================================
+   4. Smooth Media Zoom within Mask (.craft-media-frame)
+   Replaces cheap color filters with clean container overflow zoom.
+   ========================================================================== */
+.craft-media-frame {
+  overflow: hidden;
+  border-radius: var(--radius-md, 8px);
+  position: relative;
+}
+
+.craft-media-frame img,
+.craft-media-frame video {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+@media (hover: hover) {
+  .craft-media-frame:hover img,
+  .craft-media-frame:hover video {
+    transform: scale(1.04);
+  }
+}
+
+/* ==========================================================================
+   5. Progressive Scroll Blur Reveal (.craft-reveal)
+   Sleek entry: element rises 24px and unblurs as it enters viewport.
+   ========================================================================== */
+.craft-reveal {
+  opacity: 0;
+  filter: blur(8px);
+  transform: translateY(24px);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, filter, transform;
+}
+
+.craft-reveal.is-revealed {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0);
+}
+
+/* Cleanup filter after transition finishes to conserve GPU memory */
+.craft-reveal.is-clean {
+  filter: none;
+  will-change: auto;
+}
+
+/* ==========================================================================
+   6. Touch Target & Accessibility Invariants
+   ========================================================================== */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.hairline-border {
+  border: 1px solid var(--border-hairline, oklch(1 0 0 / 0.08));
+}
+
+/* Strict prefers-reduced-motion safety: instant transitions, zero motion vertigo */
+@media (prefers-reduced-motion: reduce) {
+  .craft-link::after,
+  .craft-btn,
+  .craft-media-frame img,
+  .craft-media-frame video,
+  .craft-reveal {
+    transition: none !important;
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+  }
+}

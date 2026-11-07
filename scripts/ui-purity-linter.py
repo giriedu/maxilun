@@ -16,7 +16,7 @@ import json
 import argparse
 from pathlib import Path
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional, Tuple
+from typing import List, Dict, Optional, Tuple, Any
 
 if sys.platform == "win32":
     try:
@@ -428,6 +428,97 @@ class UIPurityLinter:
         result.calculate_score()
         return result
 
+    def fix_file(self, file_path: Path) -> Tuple[bool, List[str]]:
+        """
+        Automatically remediates common high-confidence AI purity violations:
+        - Replaces raw decorative emojis with clean SVG or text.
+        - Converts heading rainbow gradients to solid text.
+        - Fixes raw hex background #06090e to OKLCH tokens.
+        - Strips fake glowing dot bullets in capsule pills.
+        """
+        fixes_applied = []
+        try:
+            content = file_path.read_text(encoding="utf-8")
+        except Exception:
+            return False, fixes_applied
+
+        original = content
+
+        # 1. Fix gradients in headings/text
+        gradient_pat = re.compile(
+            r'\b(?:bg-clip-text\s+text-transparent|text-transparent\s+bg-clip-text)\s+bg-gradient-to-[a-z0-9-]+\s+from-[a-z0-9-]+\s+to-[a-z0-9-]+(?:\s+via-[a-z0-9-]+)?',
+            re.IGNORECASE
+        )
+        if gradient_pat.search(content):
+            content = gradient_pat.sub('text-foreground font-semibold', content)
+            fixes_applied.append("Replaced AI rainbow text-gradient with solid text")
+
+        # 2. Fix decorative emojis in spans or inline headings
+        emoji_span_pat = re.compile(
+            r'<span[^>]*>\s*[🚀✨🔥💡🎉⭐👉💎🌟🤖💬]\s*</span>|\s*[🚀✨🔥💡🎉⭐👉💎🌟🤖💬]\s*',
+            re.UNICODE
+        )
+        if emoji_span_pat.search(content):
+            content = emoji_span_pat.sub('', content)
+            fixes_applied.append("Removed decorative emojis")
+        # 3. Replace checkmark / cross emojis with clean SVG icons
+        if '✅' in content:
+            svg_check = '<svg class="w-4 h-4 text-emerald-500 inline-block align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>'
+            content = content.replace('✅', svg_check)
+            fixes_applied.append("Replaced emoji ✅ with monochrome SVG checkmark")
+
+        if '❌' in content:
+            svg_cross = '<svg class="w-4 h-4 text-red-500 inline-block align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>'
+            content = content.replace('❌', svg_cross)
+            fixes_applied.append("Replaced emoji ❌ with monochrome SVG cross")
+
+        # 4. Replace raw hex background #06090e with var(--canvas)
+        if '#06090e' in content.lower():
+            content = re.sub(r'#06090e', 'var(--canvas, oklch(0.12 0.008 250))', content, flags=re.IGNORECASE)
+            fixes_applied.append("Replaced raw hex #06090e with OKLCH token var(--canvas)")
+
+        # 5. Fix floating pill badge with glowing dot pattern
+        pill_pat = re.compile(
+            r'(<span[^>]*class=["\'][^"\']*\brounded-full\b[^"\']*["\'][^>]*>)\s*(?:•|\*|&bull;)\s*',
+            re.IGNORECASE
+        )
+        if pill_pat.search(content):
+            content = pill_pat.sub(r'\1', content)
+            fixes_applied.append("Removed fake glowing dot bullet in capsule pill")
+
+        if content != original:
+            file_path.write_text(content, encoding="utf-8")
+            return True, fixes_applied
+
+        return False, fixes_applied
+
+    def fix_path(self, target_path: Path) -> Dict[str, Any]:
+        files_to_fix: List[Path] = []
+        if target_path.is_file():
+            if "design-md" not in target_path.parts:
+                files_to_fix.append(target_path)
+        elif target_path.is_dir():
+            for root, dirs, files in os.walk(target_path):
+                dirs[:] = [d for d in dirs if d not in (".git", "node_modules", "venv", ".venv", "build", "dist", ".next", "__pycache__", "design-md")]
+                for f in files:
+                    p = Path(root) / f
+                    if p.suffix.lower() in self.SUPPORTED_EXTENSIONS:
+                        files_to_fix.append(p)
+
+        fixed_count = 0
+        details = {}
+        for f in files_to_fix:
+            modified, fixes = self.fix_file(f)
+            if modified:
+                fixed_count += 1
+                details[str(f)] = fixes
+
+        return {
+            "total_files": len(files_to_fix),
+            "fixed_files": fixed_count,
+            "details": details
+        }
+
 
 def format_report(result: ScanResult, verbose: bool = False) -> str:
     status_icon = "✅ PASS" if result.passed else "❌ FAIL"
@@ -509,8 +600,8 @@ def main():
     parser.add_argument("target", nargs="?", default=".", help="Target file or directory to scan")
     parser.add_argument("--json", action="store_true", help="Output results in JSON format")
     parser.add_argument("--strict", action="store_true", help="Fail if any warning or error is found")
+    parser.add_argument("--fix", action="store_true", help="Automatically remediate detected purity violations where safe")
     parser.add_argument("--self-test", action="store_true", help="Run deterministic self-test suite")
-
     args = parser.parse_args()
 
     if args.self_test:
@@ -523,6 +614,14 @@ def main():
         sys.exit(1)
 
     linter = UIPurityLinter()
+    if args.fix:
+        fix_res = linter.fix_path(target_path)
+        if not args.json:
+            print(f"🔧 Purity Auto-Fixer: Remediated {fix_res['fixed_files']} / {fix_res['total_files']} files.")
+            for fp, fixes in fix_res['details'].items():
+                print(f"   - {Path(fp).name}: {', '.join(fixes)}")
+            print()
+
     result = linter.scan_path(target_path)
 
     if args.json:

@@ -1,34 +1,39 @@
 #!/usr/bin/env python3
 """
-Maxilun Knowledge Graph CLI
+Maxilun Knowledge Graph — Code Intelligence Engine
+===================================================
+
+Command-line tool for scanning source code, extracting AST-based symbols
+and relationships, querying symbol graphs, comparing architectural diffs,
+and generating visual reports.
 
 Usage:
-    python cli.py scan [<path> ...] [--name NAME] [--view] [-o <output.json>]
-    python cli.py query <operator> <symbol> [--json] [--graph <graph.json>] [--path <path>]
-    python cli.py serve [--port PORT] [--open] [--graph <graph.json>]
-    python cli.py export <path> <output.json>
+  python cli.py scan [paths...] [--view] [--output <file>] [--no-cache] [--snapshot]
+  python cli.py snapshot [path]
+  python cli.py diff <target1> <target2> [--path <repo-path>]
+  python cli.py query <operator> <symbol> [--json] [--path <repo-path>]
+  python cli.py serve [--port <port>] [--host <host>] [--open]
+  python cli.py export <path> <output>
 
-Supported Query Operators:
-    defOf: <symbol>         - Find definition location (file:line) and signature
-    callsIn: <symbol>       - Find all callers of symbol (file:line)
-    callsOut: <symbol>      - Find all symbols called by symbol
-    importersOf: <target>   - Find files that import target module/file
-    implementsOf: <iface>   - Find classes that implement interface
-    extendsOf: <class>      - Find subclasses that extend class
-    routesOf: <handler>     - Find routes exposing handler
-
-Examples:
-    python cli.py scan . -o .maxilun/graph.json
-    python cli.py query defOf: validateToken
-    python cli.py query callsIn: processPayment --json
-    python cli.py query importersOf: src/config/keys.ts
+Operators:
+  defOf: <symbol>       Definition location & signature
+  callsIn: <symbol>     Functions/methods calling this symbol
+  callsOut: <symbol>    Symbols called by this function
+  importersOf: <path>   Files importing this module
+  implementsOf: <iface> Classes implementing interface
+  extendsOf: <class>    Subclasses extending base class
+  routesOf: <symbol>    Endpoints exposing handler
 """
 
 import argparse
-import sys
-import os
 import json
+import os
+import shutil
+import sys
 from pathlib import Path
+from datetime import datetime
+from typing import Dict, Any, Tuple, Optional, List
+from collections import defaultdict, Counter
 
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -39,96 +44,132 @@ from server import MaxilunServer
 def _generate_maxilun_report(graph, stats):
     nodes = graph.get('nodes', [])
     edges = graph.get('edges', [])
-    clusters = graph.get('clusters', {})
+    communities = graph.get('communities', {}) or graph.get('clusters', {})
+    community_labels = graph.get('community_labels', {})
+    community_cohesions = graph.get('community_cohesions', {})
+    meta = graph.get('metadata', {})
 
-    in_degree = {}
-    out_degree = {}
     node_by_id = {n.get('id'): n for n in nodes}
+    in_degree = Counter()
+    out_degree = Counter()
     for e in edges:
         src = e.get('source')
         tgt = e.get('target')
-        out_degree[src] = out_degree.get(src, 0) + 1
-        in_degree[tgt] = in_degree.get(tgt, 0) + 1
+        out_degree[src] += 1
+        in_degree[tgt] += 1
 
     top_inbound = sorted(in_degree.items(), key=lambda x: x[1], reverse=True)[:10]
     top_outbound = sorted(out_degree.items(), key=lambda x: x[1], reverse=True)[:10]
 
-    lang_counts = {}
+    lang_counts = Counter()
     for n in nodes:
-        lang = n.get('language') or 'other'
-        lang_counts[lang] = lang_counts.get(lang, 0) + 1
+        lang = n.get('language') or n.get('type') or 'other'
+        lang_counts[lang] += 1
+
+    ext_stats = meta.get('extraction_stats', {})
+    exact_pct = ext_stats.get('exact_pct', 100.0)
+    inferred_pct = ext_stats.get('inferred_pct', 0.0)
+    cache_hits = meta.get('cache_hits', 0)
+    cache_misses = meta.get('cache_misses', 0)
+    unclass_count = meta.get('unclassified_count', 0)
+    unclass_exts = meta.get('unclassified_top_extensions', {})
 
     lines = [
-        "# Maxilun Knowledge Graph — Architecture Report",
+        f"# Maxilun Knowledge Graph — Architecture Report ({datetime.now().strftime('%Y-%m-%d')})",
         "",
         "Laporan pemetaan struktural basis kode yang dihasilkan secara deterministik oleh **Maxilun Knowledge Graph Engine**.",
         "",
-        "## 1. Ringkasan Eksekutif",
+        "## 1. Corpus & Extraction Check",
         "",
         f"- **Total Simbol / Node**: {len(nodes)}",
         f"- **Total Relasi / Edge**: {len(edges)}",
-        f"- **Total Kluster Arsitektur**: {len(clusters)}",
+        f"- **Total Kluster Arsitektur**: {len(communities)}",
         f"- **Total Proyek Dipindai**: {stats.get('total_projects', 1)}",
-        f"- **Komposisi Bahasa**: " + ", ".join(f"`{k}`: {v}" for k, v in sorted(lang_counts.items(), key=lambda x: x[1], reverse=True)),
+        f"- **Tingkat Ekstraksi**: {exact_pct}% EXTRACTED · {inferred_pct}% INFERRED",
+        f"- **Performa Cache**: {cache_hits} cache hits · {cache_misses} parsed fresh",
+        f"- **Berkas Tidak Terklasifikasi**: {unclass_count} berkas non-kode (top: " +
+        (", ".join(f"`{k}`: {v}" for k, v in unclass_exts.items()) if unclass_exts else "none") + ")",
+        f"- **Komposisi Simbol**: " + ", ".join(f"`{k}`: {v}" for k, v in lang_counts.most_common(6)),
         "",
-        "## 2. Hub Inti (Simbol dengan Derajat Ketergantungan Tertinggi)",
+        "## 2. God Nodes (Simbol dengan Derajat Keterhubungan Tertinggi - High Blast Radius)",
         "",
-        "Simbol atau modul ini paling banyak dipanggil atau diimpor oleh berkas lain. Perubahan pada simbol ini memiliki radius dampak tinggi:",
+        "Simbol dengan derajat ketergantungan paling masif (core bottlenecks). Modifikasi pada simbol ini memerlukan mitigasi risiko Type 1:",
         "",
-        "| Peringkat | Simbol / Target | Inbound Edges (Pemanggil/Pengimpor) | File Sumber |",
-        "|:---:|---|:---:|---|",
+        "| Peringkat | Simbol / Node | Total Derajat | Inbound | Outbound | File Sumber |",
+        "|:---:|---|:---:|:---:|:---:|---|",
     ]
 
+    ranked_god = sorted(nodes, key=lambda n: n.get('degree', in_degree[n['id']] + out_degree[n['id']]), reverse=True)[:10]
+    for i, n in enumerate(ranked_god, 1):
+        nid = n.get('id', '')
+        label = n.get('label') or nid
+        path = n.get('source_file') or n.get('path') or '-'
+        in_d = in_degree[nid]
+        out_d = out_degree[nid]
+        tot_d = in_d + out_d
+        lines.append(f"| {i} | `{label}` | **{tot_d}** | {in_d} | {out_d} | `{path}` |")
+
+    lines.extend([
+        "",
+        "## 3. Hub Inti (Paling Banyak Dipanggil / Inbound)",
+        "",
+        "| Peringkat | Simbol / Target | Inbound Edges | File Sumber |",
+        "|:---:|---|:---:|---|",
+    ])
     for i, (nid, deg) in enumerate(top_inbound, 1):
         n = node_by_id.get(nid, {})
         label = n.get('label') or nid
-        path = n.get('path') or '-'
+        path = n.get('source_file') or n.get('path') or '-'
         lines.append(f"| {i} | `{label}` | **{deg}** | `{path}` |")
 
     lines.extend([
         "",
-        "## 3. Titik Koordinasi (Highest Fan-Out)",
-        "",
-        "Komponen yang memanggil banyak dependensi eksternal/internal (koordinator alur):",
+        "## 4. Titik Koordinasi (Highest Fan-Out)",
         "",
         "| Peringkat | Simbol Pengkoordinasi | Outbound Calls | File Sumber |",
         "|:---:|---|:---:|---|",
     ])
-
     for i, (nid, deg) in enumerate(top_outbound, 1):
         n = node_by_id.get(nid, {})
         label = n.get('label') or nid
-        path = n.get('path') or '-'
+        path = n.get('source_file') or n.get('path') or '-'
         lines.append(f"| {i} | `{label}` | **{deg}** | `{path}` |")
 
-    if clusters:
+    if communities:
         lines.extend([
             "",
-            "## 4. Kluster & Komunitas Arsitektur",
+            "## 5. Kluster & Komunitas Arsitektur (dengan Cohesion Score)",
             "",
-            "| Kluster | Anggota Node | Label Dominan |",
-            "|---|:---:|---|",
+            "| ID | Label Komunitas | Anggota Node | Cohesion Score | Karakteristik Arsitektur |",
+            "|:---:|---|:---:|:---:|---|",
         ])
-        for cname, cdata in sorted(clusters.items()):
-            c_nodes = cdata.get('nodes', [])
-            dom = cdata.get('dominant_type') or '-'
-            lines.append(f"| **{cname}** | {len(c_nodes)} | `{dom}` |")
+        for cid, members in sorted(communities.items(), key=lambda x: int(x[0]) if x[0].isdigit() else 999):
+            clabel = community_labels.get(cid, f"Cluster {cid}")
+            coh = community_cohesions.get(cid, 0.0)
+            if coh >= 0.6:
+                status = "Tinggi (Loose coupling, high cohesion)"
+            elif coh >= 0.2:
+                status = "Moderat (Interkoneksi sehat)"
+            else:
+                status = "Rendah (Penyebaran luas / cross-cutting)"
+            lines.append(f"| **{cid}** | `{clabel}` | {len(members)} | `{coh}` | {status} |")
 
     lines.extend([
         "",
-        "## 5. Cara Penggunaan Artefak Maxilun-Out",
+        "## 6. Cara Penggunaan Artefak Maxilun-Out",
         "",
-        "1. **Buka Visualizer Offline**: Klik ganda `lens.html` di browser apa pun untuk eksplorasi 3D Galaxy & 2D Force-Directed Matrix.",
-        "2. **Kueri Cepat CLI**: Jalankan `python path/to/cli.py query <operator> <simbol>`.",
-        "3. **Integrasi Agen**: Orchestrator Maxilun dan `maxilun-engineer` membaca `maxilun-out/graph.json` secara otomatis untuk penelusuran dampak sebelum modifikasi kode.",
+        "1. **Buka Visualizer Offline**: Buka `lens.html` di browser apa pun untuk visualisasi 3D Galaxy & 2D Matrix.",
+        "2. **Kueri Cepat Simbol**: Jalankan `python cli.py query <operator> <simbol>`.",
+        "3. **Bandingkan Evolusi Graf**: Jalankan `python cli.py diff <snapshot1> <snapshot2>`.",
+        "4. **Arsip Snapshot Baru**: Jalankan `python cli.py scan --snapshot`.",
         "",
         "---",
-        "*Dihasilkan oleh Maxilun Knowledge Graph Engine v1.0.0*",
+        "*Dihasilkan oleh Maxilun Knowledge Graph Engine v1.2.0*",
     ])
     return "\n".join(lines)
 
 
-def _export_maxilun_out(target_root, graph, stats):
+def _export_maxilun_out(target_root, graph, stats, snapshot=False):
     out_dir = Path(target_root) / 'maxilun-out'
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -151,6 +192,18 @@ def _export_maxilun_out(target_root, graph, stats):
     # 3. Save MAXILUN_REPORT.md
     report_content = _generate_maxilun_report(graph, stats)
     (out_dir / 'MAXILUN_REPORT.md').write_text(report_content, encoding='utf-8')
+
+    # 4. Optional / Date snapshotting
+    if snapshot:
+        today_str = datetime.now().strftime("%Y-%m-%d")
+        snap_dir = out_dir / 'snapshots' / today_str
+        snap_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(graph_json_path, snap_dir / 'graph.json')
+        (snap_dir / 'MAXILUN_REPORT.md').write_text(report_content, encoding='utf-8')
+
+        manifest_src = Path(target_root) / '.maxilun' / 'manifest.json'
+        if manifest_src.is_file():
+            shutil.copy2(manifest_src, snap_dir / 'manifest.json')
 
     return out_dir
 
@@ -202,21 +255,26 @@ def cmd_scan(args):
     if args.name:
         names = [args.name] + [None] * (len(args.paths) - 1)
 
-    print("\n  Maxilun Knowledge Graph Scanner")
-    print("  " + "=" * 40)
+    print("\n  Maxilun Knowledge Graph Scanner (v1.2.0)")
+    print("  " + "=" * 45)
+
+    use_cache = not getattr(args, 'no_cache', False)
+    do_snapshot = getattr(args, 'snapshot', False)
 
     for i, path in enumerate(args.paths):
         resolved = str(Path(path).resolve())
         name = names[i] if i < len(names) and names[i] else None
-        print(f"\n  Scanning: {resolved}")
-        graph = builder.scan_project(resolved, name)
+        print(f"\n  Scanning: {resolved} {'[using incremental cache]' if use_cache else '[cache disabled]'}")
+        graph = builder.scan_project(resolved, name, use_cache=use_cache)
         meta = graph.get('metadata', {})
-        print(f"    Found: {meta.get('node_count', 0)} nodes, {meta.get('edge_count', 0)} edges, {meta.get('cluster_count', 0)} clusters")
+        print(f"    Found : {meta.get('node_count', 0)} nodes, {meta.get('edge_count', 0)} edges, {meta.get('cluster_count', 0)} clusters")
+        if use_cache:
+            print(f"    Cache : {meta.get('cache_hits', 0)} hits, {meta.get('cache_misses', 0)} parsed fresh")
 
     merged = builder.merge_projects()
     stats = builder.get_stats()
 
-    print(f"\n  Total: {stats['total_projects']} project(s)")
+    print(f"\n  Total   : {stats['total_projects']} project(s)")
     total_nodes = sum(p['nodes'] for p in stats['projects'].values())
     total_edges = sum(p['edges'] for p in stats['projects'].values())
     print(f"  Combined: {total_nodes} nodes, {total_edges} edges")
@@ -225,15 +283,19 @@ def cmd_scan(args):
         builder.save_graph(args.output)
         print(f"\n  Graph saved to: {args.output}")
     else:
-        out_dir = _export_maxilun_out(args.paths[0], merged, stats)
+        out_dir = _export_maxilun_out(args.paths[0], merged, stats, snapshot=do_snapshot)
         print(f"\n  Maxilun artifacts generated in: {out_dir}")
         print(f"    - {out_dir / 'graph.json'} (AST Knowledge Graph)")
         print(f"    - {out_dir / 'lens.html'} (Standalone 3D/2D Lens Visualizer)")
         print(f"    - {out_dir / 'MAXILUN_REPORT.md'} (Architecture & Hub Analysis Report)")
+        if do_snapshot:
+            today_str = datetime.now().strftime("%Y-%m-%d")
+            print(f"    - {out_dir / 'snapshots' / today_str} (Archived Snapshot)")
 
         output_path = str(Path(args.paths[0]) / '.maxilun' / 'graph.json')
         builder.save_graph(output_path)
         print(f"  Internal cache saved to: {output_path}")
+
     if args.view:
         server = MaxilunServer(port=args.port or 8765)
         server.builder = builder
@@ -248,6 +310,107 @@ def cmd_scan(args):
             server.stop()
 
     return merged
+
+
+def cmd_snapshot(args):
+    target_path = args.path or "."
+    args.paths = [target_path]
+    args.name = None
+    args.view = False
+    args.output = None
+    args.no_cache = False
+    args.snapshot = True
+    return cmd_scan(args)
+
+
+def _resolve_graph_target(target: str, base_path: str = ".") -> Tuple[Dict[str, Any], str]:
+    p = Path(target)
+    if p.is_file():
+        with open(p, 'r', encoding='utf-8') as f:
+            return json.load(f), str(p)
+
+    cands = [
+        Path(base_path) / 'maxilun-out' / 'snapshots' / target / 'graph.json',
+        Path(base_path) / 'maxilun-out' / target / 'graph.json',
+        Path(base_path) / 'graphify-out' / target / 'graph.json',
+        Path(base_path) / target / 'graph.json',
+    ]
+    for cand in cands:
+        if cand.is_file():
+            with open(cand, 'r', encoding='utf-8') as f:
+                return json.load(f), str(cand)
+
+    raise FileNotFoundError(f"Cannot resolve graph for target '{target}'. Checked paths: {[str(c) for c in cands]}")
+
+
+def cmd_diff(args):
+    base_path = args.path or "."
+    try:
+        g1, name1 = _resolve_graph_target(args.target1, base_path)
+        g2, name2 = _resolve_graph_target(args.target2, base_path)
+    except FileNotFoundError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+    nodes1 = {n['id']: n for n in g1.get('nodes', [])}
+    nodes2 = {n['id']: n for n in g2.get('nodes', [])}
+
+    def _edge_key(e):
+        src = e.get('source') or e.get('from')
+        tgt = e.get('target') or e.get('to')
+        rel = e.get('type') or e.get('relation') or e.get('label') or 'REL'
+        return (src, tgt, rel)
+
+    edges1 = {_edge_key(e) for e in g1.get('edges', []) + g1.get('links', [])}
+    edges2 = {_edge_key(e) for e in g2.get('edges', []) + g2.get('links', [])}
+
+    added_nodes = sorted(list(nodes2.keys() - nodes1.keys()))
+    removed_nodes = sorted(list(nodes1.keys() - nodes2.keys()))
+    added_edges = sorted(list(edges2 - edges1))
+    removed_edges = sorted(list(edges1 - edges2))
+
+    n_delta = len(nodes2) - len(nodes1)
+    e_delta = len(edges2) - len(edges1)
+
+    print("\n  Maxilun Architectural Graph Diff")
+    print("  " + "=" * 45)
+    print(f"  Target 1 (Base)    : {name1} ({len(nodes1)} nodes, {len(edges1)} edges)")
+    print(f"  Target 2 (Compare) : {name2} ({len(nodes2)} nodes, {len(edges2)} edges)")
+    print("  " + "-" * 45)
+    print(f"  Node Delta         : {'+' if n_delta >= 0 else ''}{n_delta} (Added: {len(added_nodes)}, Removed: {len(removed_nodes)})")
+    print(f"  Edge Delta         : {'+' if e_delta >= 0 else ''}{e_delta} (Added: {len(added_edges)}, Removed: {len(removed_edges)})")
+
+    if added_nodes:
+        print(f"\n  [+] Added Nodes ({len(added_nodes)}):")
+        for nid in added_nodes[:8]:
+            label = nodes2[nid].get('label') or nid
+            print(f"      + {label} ({nid})")
+        if len(added_nodes) > 8:
+            print(f"      ... and {len(added_nodes) - 8} more")
+
+    if removed_nodes:
+        print(f"\n  [-] Removed Nodes ({len(removed_nodes)}):")
+        for nid in removed_nodes[:8]:
+            label = nodes1[nid].get('label') or nid
+            print(f"      - {label} ({nid})")
+        if len(removed_nodes) > 8:
+            print(f"      ... and {len(removed_nodes) - 8} more")
+
+    if added_edges:
+        print(f"\n  [+] Added Edges ({len(added_edges)}):")
+        for src, tgt, rel in added_edges[:8]:
+            print(f"      + {src} --[{rel}]--> {tgt}")
+        if len(added_edges) > 8:
+            print(f"      ... and {len(added_edges) - 8} more")
+
+    if removed_edges:
+        print(f"\n  [-] Removed Edges ({len(removed_edges)}):")
+        for src, tgt, rel in removed_edges[:8]:
+            print(f"      - {src} --[{rel}]--> {tgt}")
+        if len(removed_edges) > 8:
+            print(f"      ... and {len(removed_edges) - 8} more")
+
+    print()
 
 
 def cmd_query(args):
@@ -277,7 +440,7 @@ def cmd_query(args):
                     'id': n['id'],
                     'label': label,
                     'type': n.get('type', 'symbol'),
-                    'location': n.get('source_file', 'unknown'),
+                    'location': n.get('source_file') or n.get('path', 'unknown'),
                     'confidence': 'exact'
                 })
 
@@ -398,6 +561,62 @@ def cmd_query(args):
         print()
 
 
+def cmd_context(args):
+    symbol = args.symbol.strip()
+    graph = _load_or_build_graph(args.graph, args.path or ".")
+    nodes = graph.get('nodes', [])
+    edges = graph.get('edges', [])
+
+    target_node = None
+    for n in nodes:
+        nid = n.get('id', '')
+        lbl = n.get('label', '')
+        if lbl == symbol or nid.endswith(f":{symbol}") or nid == symbol:
+            target_node = n
+            break
+
+    loc = target_node.get('source_file') or target_node.get('path', 'unknown') if target_node else 'unknown'
+    node_id = target_node.get('id', '') if target_node else ''
+
+    callers = []
+    for e in edges:
+        if e.get('type') == 'CALLS':
+            tgt = e.get('target', '')
+            if tgt == node_id or tgt.endswith(f":{symbol}") or tgt == f"func:*:{symbol}":
+                src = e.get('source', '')
+                src_n = next((n for n in nodes if n['id'] == src), None)
+                src_loc = src_n.get('source_file', src) if src_n else src
+                callers.append(f"`{src_loc}` [{e.get('confidence', 'name-only')}]")
+
+    callees = []
+    if node_id:
+        for e in edges:
+            if e.get('type') == 'CALLS' and e.get('source') == node_id:
+                tgt = e.get('target', '')
+                tgt_n = next((n for n in nodes if n['id'] == tgt), None)
+                tgt_lbl = tgt_n.get('label', tgt.split(':')[-1]) if tgt_n else tgt.split(':')[-1]
+                callees.append(f"`{tgt_lbl}`")
+
+    doc_refs = []
+    for e in edges:
+        if e.get('type') == 'REFERENCES' and (e.get('target') == node_id or symbol in e.get('target', '')):
+            src = e.get('source', '')
+            doc_refs.append(f"`{src}`")
+
+    blast_level = "Type 1 (Irreversible / High-Blast)" if len(callers) > 10 else "Type 2 (Reversible / Moderate)" if len(callers) > 2 else "Type 2 (Low-Blast)"
+
+    lines = [
+        f"### Maxilun Impact Context: `{symbol}`",
+        f"- **Definisi**: `{loc}` [exact]" if target_node else f"- **Definisi**: `Simbol tidak terdefinisi di graf lokal`",
+        f"- **Inbound Callers** ({len(callers)}): " + (", ".join(callers[:8]) if callers else "None"),
+        f"- **Outbound Calls** ({len(callees)}): " + (", ".join(callees[:8]) if callees else "None"),
+        f"- **Related Specs / Docs**: " + (", ".join(doc_refs[:5]) if doc_refs else "None"),
+        f"- **Klasifikasi Blast Radius**: `{blast_level}`"
+    ]
+    output = "\n".join(lines)
+    print(output)
+    return output
+
 def cmd_serve(args):
     server = MaxilunServer(port=args.port, host=args.host)
 
@@ -442,6 +661,18 @@ def main():
     scan_parser.add_argument('--view', '-v', action='store_true', help='Open visualizer in browser')
     scan_parser.add_argument('--port', '-p', type=int, default=8765, help='Server port (default: 8765)')
     scan_parser.add_argument('--output', '-o', help='Save graph JSON to file (default: .maxilun/graph.json)')
+    scan_parser.add_argument('--no-cache', action='store_true', help='Bypass cache and force fresh scan')
+    scan_parser.add_argument('--snapshot', action='store_true', help='Archive a date-stamped snapshot in maxilun-out/snapshots/YYYY-MM-DD/')
+
+    # snapshot
+    snapshot_parser = subparsers.add_parser('snapshot', help='Scan and archive a dated snapshot of the graph')
+    snapshot_parser.add_argument('path', nargs='?', default='.', help='Project path to snapshot (default: current folder)')
+
+    # diff
+    diff_parser = subparsers.add_parser('diff', help='Compare two graph snapshots or files')
+    diff_parser.add_argument('target1', help='Base target (date string YYYY-MM-DD or graph.json path)')
+    diff_parser.add_argument('target2', help='Compare target (date string YYYY-MM-DD or graph.json path)')
+    diff_parser.add_argument('--path', help='Project root path for snapshot resolution (default: .)')
 
     # query
     query_parser = subparsers.add_parser('query', help='Query symbols from knowledge graph')
@@ -450,6 +681,12 @@ def main():
     query_parser.add_argument('--json', action='store_true', help='Output results as JSON')
     query_parser.add_argument('--graph', '-g', help='Path to graph JSON file')
     query_parser.add_argument('--path', help='Project path (default: .)')
+
+    # context
+    context_parser = subparsers.add_parser('context', help='Generate compressed blast-radius prompt context for LLMs')
+    context_parser.add_argument('symbol', help='Target symbol to inspect')
+    context_parser.add_argument('--graph', '-g', help='Path to graph JSON file')
+    context_parser.add_argument('--path', help='Project path (default: .)')
 
     # serve
     serve_parser = subparsers.add_parser('serve', help='Start visualizer server')
@@ -471,8 +708,14 @@ def main():
 
     if args.command == 'scan':
         cmd_scan(args)
+    elif args.command == 'snapshot':
+        cmd_snapshot(args)
+    elif args.command == 'diff':
+        cmd_diff(args)
     elif args.command == 'query':
         cmd_query(args)
+    elif args.command == 'context':
+        cmd_context(args)
     elif args.command == 'serve':
         cmd_serve(args)
     elif args.command == 'export':

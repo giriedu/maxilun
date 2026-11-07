@@ -46,7 +46,8 @@ Prinsip inti: **tolak klise mentah LLM sekaligus tolak monokultur cetakan tungga
 7. **Latar belakang terlalu jenuh (`CLR-005`)** — permukaan kerja utama menggunakan kroma tinggi (`chroma > 0.05` di OKLCH) yang mengganggu keterbacaan konten.
 8. **Status hanya mengandalkan warna (`CLR-004`)** — merah/hijau tanpa ikon atau label teks pendamping.
 9. **Dark mode tempelan (`CLR-007`)** — membalik warna secara naif tanpa sistem token permukaan dan tanpa `color-scheme: dark`.
-
+10. **Perangkap Kontras Tema Ganda / Black-on-Black Light Mode (`CLR-009`)** — komponen dengan background gelap hardcoded (`#030509` / radial-gradient gelap) tanpa aturan pembalik tema `[data-theme="light"]`. Saat tema beralih ke terang, teks mewarisi `var(--text)` gelap (`#090d16`), menghasilkan teks hitam di atas latar hitam (kontras $< 1.5:1$). Setiap komponen kustom wajib memiliki aturan simetris pada kedua tema.
+11. **Canvas Tidak Sinkron Tema / Invisible Canvas Text (`MOT-005`)** — elemen HTML5 `<canvas>` me-render teks atau garis dengan warna hardcoded (`#ffffff` / `#060910`) tanpa memeriksa tema aktif (`document.documentElement.dataset.theme`). Saat tema dibalik, teks canvas menjadi putih di atas putih atau hitam di atas hitam. Wajib membaca status tema aktif secara dinamis di setiap render frame.
 ### B3. Tata Letak & Bahaya Monokultur Baru
 10. **Tumpukan rata-tengah monoton (`LAY-011`)** — seluruh halaman mengulang pola *overline kapital tengah → H2 tengah → subteks 2 baris tengah → kartu simetris* dari atas ke bawah.
 11. **Tiga kartu simetris tanpa diferensiasi (`LAY-008`)** — `grid-cols-3` berisi 3 kotak identik dengan ikon bulat di atas dan 2 kalimat basa-basi. Ganti sesuai sifat konten: tabel perbandingan faktual, alur langkah bernomor, *split showcase* artefak kerja nyata, komposisi editorial, atau grid asimetris bila tiap panel punya peran berbeda.

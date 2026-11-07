@@ -60,8 +60,8 @@ Mesin pemindai di `<skill-dir>/scanner/` memetakan kode secara bertingkat sesuai
 | Tingkat Pemindai | Bahasa yang Didukung | Ekstraksi Struktural |
 |---|---|---|
 | **Deep AST / Structural** (`python_scanner.py`, `typescript_scanner.py`) | Python (`.py`), TypeScript/JavaScript (`.ts`, `.tsx`, `.js`, `.jsx`) | Definisi fungsi/method/class, impor relatif & paket, `EXTENDS`/`IMPLEMENTS`, rute `EXPOSES`, serta edge panggilan `CALLS` |
+| **Document & Spec** (`markdown_scanner.py`) | Markdown (`.md`, PRD, RFC, DDR, specs) | Struktur dokumen (`page`, `heading`), serta relasi `REFERENCES` [inferred] ke simbol kode yang dikutip |
 | **Polyglot Generic + Tier 2** (`generic_scanner.py` + LSP/`grep`) | Go, Rust, Java, Kotlin, C#, Ruby, PHP, Swift, C/C++ | Deklarasi fungsi/class/struct/enum dan `IMPORTS`; padukan dengan LSP atau `grep` simbol Tier 2 untuk verifikasi situs panggilan `CALLS` |
-
 ## 2. Kontrak Fondasi
 
 1. **Peta Sebelum Perubahan Struktural**: Sebelum mengubah tanda tangan fungsi, kontrak API, skema bersama, atau relasi lintas-modul, petakan definisi dan pemanggil simbol yang terdampak terlebih dahulu.
@@ -72,17 +72,17 @@ Mesin pemindai di `<skill-dir>/scanner/` memetakan kode secara bertingkat sesuai
 ## 3. Tangga Pencarian
 
 Jalankan urutan paling ringan yang menuntaskan pemetaan tanpa kerja ganda:
-1. **Tier 0 — Memori Sesi & Cache Aktif**: Gunakan peta simbol yang sudah terkonfirmasi di sesi ini, atau baca langsung cache `maxilun-out/graph.json` maupun `.maxilun/graph.json` bila sudah ada di repositori tanpa memindai ulang dari nol.
-2. **Tier 1 — CLI Knowledge Graph & Indeks Bahasa**:
+1. **Tier 0 — Memori Sesi & Incremental Cache**: Gunakan peta simbol aktif di memori sesi, atau manfaatkan cache inkremental `.maxilun/cache/ast/` dan `manifest.json`. Scanner hanya mem-parse berkas yang berubah (`mtime_ns` / SHA-256) tanpa re-parse seluruh repositori.
+2. **Tier 1 — CLI Knowledge Graph, Snapshot & Diff**:
    - Panggil `cli.py` relatif terhadap direktori tempat skill ini terpasang (`<skill-dir>`):
-     - Bangun artefak lengkap (`maxilun-out/graph.json`, `maxilun-out/lens.html`, `maxilun-out/MAXILUN_REPORT.md`): `python <skill-dir>/cli.py scan <repo-path>` (atau simpan khusus ke `.maxilun/graph.json` menggunakan `-o`).
+     - Scan inkremental & bangun artefak (`graph.json`, `lens.html`, `MAXILUN_REPORT.md`): `python <skill-dir>/cli.py scan <repo-path>` (gunakan `--no-cache` untuk memaksa scan bersih, atau `--snapshot` untuk mengarsipkan tanggal).
      - Kueri simbol terhadap cache atau path target: `python <skill-dir>/cli.py query <operator> <simbol> --path <repo-path>`.
+     - Bandingkan evolusi graf antar tanggal/snapshot: `python <skill-dir>/cli.py diff <target1> <target2>`.
    - Manfaatkan pula LSP lingkungan atau CodeGraph MCP bila tersedia.
 3. **Tier 2 — Pencarian Simbol Terstruktur**: Jalankan `glob` dan `grep` terfokus per nama simbol/impor secara paralel (bukan kata kunci kabur) untuk memastikan kandidat ambigu atau registrasi dinamis.
 4. **Tier 3 — Baca Rentang Baris**: Baca hanya rentang baris di sekitar `file:line` yang ditemukan guna memverifikasi argumen dan konteks lokal.
 
-**Invalidasi Cache**: Lakukan scan ulang hanya ketika berkas baru ditambah/dihapus/dipindahkan, simbol publik diganti namanya, refaktor lintas banyak berkas mengubah arah impor, atau pengguna secara eksplisit meminta pembaruan graf.
-
+**Invalidasi & Pemeliharaan Cache**: Inkremental cache mendeteksi perubahan berkas secara otomatis via `mtime_ns` dan SHA-256. Gunakan `--snapshot` saat rilis atau pergantian versi untuk mengunci riwayat arsitektur di `maxilun-out/snapshots/YYYY-MM-DD/`.
 ## 4. Tata Bahasa Query Simbol (Symbol Query Grammar)
 
 Ekspresikan kueri relasi menggunakan operator presisi berikut:

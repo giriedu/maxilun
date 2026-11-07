@@ -56,6 +56,16 @@ Beri outline `1px` inset `1px` pada media/gambar konten:
   - Untuk checklist: gunakan SVG path checkmark `<svg class="w-4 h-4 text-emerald-500" ...><path d="M5 13l4 4L19 7" .../></svg>`.
   - Seluruh ikon wajib lulus *1-Bit Monochrome Test*: tetap jelas dan terbaca saat diubah menjadi hitam-putih murni 1-bit tanpa warna atau bayangan.
 
+### 1.7 Invarian Simetri Tema Ganda & Sinkronisasi Canvas (`CLR-009` & `MOT-005`)
+- **Zero Dark-Trap Lock**: Setiap komponen dengan background kustom gelap (misal kartu CTA dengan radial gradient gelap `#030509` atau container terminal) **wajib mendefinisikan aturan pembalik simetris** pada `[data-theme="light"]`. Dilarang keras membiarkan teks mewarisi `var(--text)` gelap di atas latar belakang gelap.
+- **Protokol Sinkronisasi Canvas (Canvas Theme Sync)**: Elemen HTML5 `<canvas>` 2D/3D tidak mewarisi variabel CSS secara otomatis. Seluruh fungsi gambar canvas (`fillText`, `strokeText`, `strokeStyle`) **wajib mendeteksi tema aktif** secara dinamis:
+  ```javascript
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  ctx.fillStyle = isLight ? '#090d16' : '#f1f5f9';
+  ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.22)';
+  ```
+- **Simetri Mockup Pihak Ketiga**: Mockup antarmuka nyata (seperti WhatsApp chat atau mobile frame) wajib memiliki varian terang otentik (`#efeae2` wallpaper, `#d9fdd3` outgoing bubble, teks `#111b21`) saat aplikasi beralih ke tema terang.
+
 ---
 
 ## 2. Standar Tipografi Matematis (Mathematical Typography)

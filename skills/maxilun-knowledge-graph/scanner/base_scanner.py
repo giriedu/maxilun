@@ -9,7 +9,7 @@ class BaseScanner:
     COMMON_SKIP_DIRS = frozenset({
         '.git', '.svn', '.hg', 'node_modules', 'dist', 'build', '.next',
         '__pycache__', '.venv', 'venv', 'vendor', '.maxilun', 'coverage',
-        '.turbo', '.cache', 'target', '.idea', '.vscode'
+        '.turbo', '.cache', 'target', '.idea', '.vscode', 'maxilun-out', 'graphify-out'
     })
 
     def should_skip(self, file_path: Path, root: Path) -> bool:
