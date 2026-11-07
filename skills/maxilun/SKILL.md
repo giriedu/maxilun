@@ -77,14 +77,14 @@ Pilih berdasarkan **artefak akhir yang berubah**, bukan kata benda yang disebut 
 | Spesialis | Kepemilikan Artefak Utama | Pemicu Khas |
 |---|---|---|
 | `maxilun-engineer` | Perubahan kode produksi, perbaikan akar bug, refaktor terukur | `/maxilun-engineer`, "fix bug", "implementasi" |
-| `maxilun-architect` | Batas modul, kontrak lintas-layanan, migrasi sistem, ADR | `/maxilun-architect`, `/maxilun-think`, `/msal-think` |
+| `maxilun-architect` | Batas modul, kontrak API, migrasi sistem, ADR, WAF 6 pilar & Solution Discovery | `/maxilun-architect`, `/maxilun-think`, `/msal-think`, "waf" |
 | `maxilun-craft` | Sistem desain, UI/UX kontekstual domain, logo SVG, Brand PDF | `/maxilun-craft`, `/maxilun-ui`, "desain UI", "redesign" |
 | `maxilun-frontend` | Runtime Next.js App Router, batas RSC/Client, Server Actions | `/maxilun-frontend`, "RSC", "App Router", "Server Action" |
-| `maxilun-data` | Skema fisik, migrasi *expand-contract*, index, query plan, RLS | `/maxilun-data`, "skema database", "query lambat" |
-| `maxilun-sentinel` | Autentikasi, otorisasi, kriptografi, validasi batas kepercayaan | `/maxilun-sentinel`, `/msal-security`, "audit keamanan" |
+| `maxilun-data` | Skema fisik, migrasi *expand-contract*, alur 5-langkah optimasi kueri, index, RLS | `/maxilun-data`, "skema database", "query lambat", "optimasi query" |
+| `maxilun-sentinel` | Autentikasi, DPoP (RFC 9449), otorisasi least-privilege, kriptografi, batas kepercayaan | `/maxilun-sentinel`, `/msal-security`, "audit keamanan", "dpop" |
 | `maxilun-verify` | Bukti eksekusi tes, typecheck, build, E2E, aksesibilitas | `/maxilun-verify`, `/msal-test`, "jalankan tes" |
-| `maxilun-insight` | Diagnosis akar masalah, profiling CPU/memori/DB, audit codebase | `/maxilun-insight`, `/msal-audit`, "root cause" |
-| `maxilun-deploy` | CI/CD, container Docker, environment, rollout, backup/recovery | `/maxilun-deploy`, "CI/CD", "Docker", "deploy" |
+| `maxilun-insight` | Diagnosis akar masalah (Hang/Leak/Exhaustion), profiling CPU/memori/DB, audit codebase | `/maxilun-insight`, `/msal-audit`, "root cause", "triage" |
+| `maxilun-deploy` | CI/CD, container Docker, SRE SLO Multi-Burn-Rate alerting, rollout, backup/recovery | `/maxilun-deploy`, "CI/CD", "Docker", "deploy", "slo" |
 | `maxilun-docsmith` | PRD/RFC fitur, OpenAPI 3.1, README teknis, ADR, runbook, `llms.txt` | `/maxilun-docsmith`, `/msal-docs`, "tulis RFC" |
 | `maxilun-content` | Copy produk, microcopy UI, suara brand, naskah beat video | `/maxilun-content`, `/msal-copy`, "copywriting" |
 | `maxilun-motion` | Koreografi gerak web, pegas interaktif, scene 3D/WebGL penuh | `/maxilun-motion`, "animasi web", "Three.js", "WebGL" |
@@ -97,7 +97,7 @@ Pilih berdasarkan **artefak akhir yang berubah**, bukan kata benda yang disebut 
 | `maxilun-mobile` | Native Android (Kotlin/Compose), iOS (Swift/SwiftUI), Flutter, React Native | `/maxilun-mobile`, "aplikasi mobile", "android", "ios", "flutter" |
 | `maxilun-iot` | Mikrokontroler (ESP32, STM32, Arduino), FreeRTOS, embedded C/C++, MQTT | `/maxilun-iot`, "iot", "esp32", "arduino", "firmware", "mqtt" |
 | `maxilun-network` | MikroTik RouterOS (v6/v7), Linux networking, firewall, WireGuard, routing | `/maxilun-network`, "mikrotik", "routeros", "wireguard", "firewall" |
-| `maxilun-ai` | RAG hybrid retrieval (dense + BM25), semantic chunking, prompt evals, context caching | `/maxilun-ai`, "rag", "vector search", "prompt eval", "embedding" |
+| `maxilun-ai` | RAG hybrid retrieval, semantic chunking, Maxilun Eval Flywheel & loss clusters, prompt evals | `/maxilun-ai`, "rag", "vector search", "prompt eval", "eval flywheel" |
 ## 3. Arsitektur Pengambilan Keputusan & Routing Kohesif
 
 **Warisan Konteks Kode (Wajib sebelum menyentuh kode lintas-file):** Cek berurutan (1) hasil `maxilun-knowledge-graph` di sesi aktif, (2) cache `maxilun-out/graph.json` atau `.maxilun/graph.json`, (3) LSP/CodeGraph indeks simbol, baru (4) jalankan pemindaian `maxilun-knowledge-graph`. Dilarang memindai ulang konteks yang masih valid.

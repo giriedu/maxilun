@@ -55,3 +55,28 @@ CMD ["node", "dist/main.js"]
 2. **Fail Fast & Sharding Paralel**:
    - Jalankan pemeriksaan linter dan format kode di langkah paling awal sebelum menjalankan suite pengujian berat.
    - Pecah kasus uji pengujian integrasi menjadi beberapa shard paralel jika total waktu eksekusi melebihi 10 menit.
+
+---
+
+## 3. SRE SLO Alerting: Multi-Window Multi-Burn-Rate
+
+Alihkan pemantauan produksi dari alert threshold mentah (misal: CPU > 80% atau Memory > 85% yang kerap memicu *alert fatigue*) ke pemantauan **Symptom-Based Alerting** berbasis **Error Budget SLO**.
+
+### 3.1 Formula Burn Rate
+Jika SLO target ketersediaan adalah $99.9\%$ selama jendela 30 hari (Error Budget = $0.1\% = 0.001$):
+- **Burn Rate 1.0**: Menghabiskan 100% error budget tepat dalam 30 hari (kondisi konsumsi wajar).
+- **Burn Rate 14.4**: Menghabiskan 2% error budget hanya dalam 1 jam ($100\% / (30 \times 24 / 14.4)$) $\to$ Darurat kritis (*Critical Outage*).
+
+### 3.2 Matriks Alerting Multi-Window Multi-Burn-Rate
+
+Gunakan kombinasi long-window (untuk mendeteksi tren degradasi) dan short-window (untuk meredam peringatan palsu saat pemulihan):
+
+| Tingkat Keparahan | Konsumsi Budget | Long Window | Short Window | Burn Rate | Target Respon & Tindakan |
+|---|---|---|---|---|---|
+| **P1 - Critical (Pager)** | 2% budget habis dalam 1 jam | 1 Jam | 5 Menit | **14.4x** | Pager on-call seketika. Pemadaman aktif atau lonjakan 5xx masif. Hubungkan langsung ke runbook rollback / failover. |
+| **P2 - High (Urgent)** | 5% budget habis dalam 6 jam | 6 Jam | 30 Menit | **6.0x** | Notifikasi darurat ke tim. Investigasi dalam 30 menit. Cek degradasi database atau API pihak ketiga. |
+| **P3 - Medium (Ticket)** | 10% budget habis dalam 3 hari | 3 Hari | 6 Jam | **1.0x** | Tiket otomatis ke backlog sprint aktif. Degradasi lambat yang menggerus keandalan sistem. |
+
+### 3.3 Aturan Operasional Alert
+1. **Wajib Tautan Runbook**: Setiap alert yang dikirim ke pager atau Slack/Discord wajib menyertakan URL runbook tindakan operasional spesifik. Alert tanpa runbook dilarang aktif di produksi.
+2. **Kondisi Reset Otomatis**: Alert darurat hanya padam jika short window kembali di bawah batas burn rate, membuktikan bahwa perbaikan/rollback telah efektif menghentikan pendarahan budget.

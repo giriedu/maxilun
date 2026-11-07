@@ -8,6 +8,28 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- **Adopsi & Sintesis Pola Rekayasa Produksi (Berdasarkan Referensi google/skills)**:
+  - `maxilun-ai` (**Maxilun Eval Quality Flywheel & Loss Clustering**):
+    - Siklus evaluasi model & agen 5-tahap (Persiapan Data deterministik & simulasi skenario persona multi-turn, Inferensi terkontrol, Penilaian biner berbasis sitasi grounding, Loss Clustering taksonomi 5 kelas kegagalan, dan Loop Remediasi iteratif 5–10x).
+    - Matriks aturan anti-jalan pintas (*Shortcuts that waste time*: larangan menurunkan threshold metrik, larangan skip kasus flaky, larangan adaptasi dataset pada agen cacat).
+  - `maxilun-architect` (**Protokol Solution Discovery & 6 Pilar Maxilun Well-Architected Framework**):
+    - Penegakan pemisahan fase ketat (*Strict Phase Separation*): larangan memilih teknologi/produk sebelum persyaratan fungsional & non-fungsional (SLA, RTO/RPO, biaya) tuntas dipetakan.
+    - Protokol deteksi dan resolusi kontradiksi/ambiguitas arsitektural berbasis trade-off tegas.
+    - Kerangka kerja 6 Pilar WAF (*Reliability*, *Security*, *Performance*, *Cost Optimization*, *Operational Excellence*, *Evolutionary Simplicity*).
+    - Validasi dua lapis: Pre-deployment dry-run (analisis topologi/kebijakan statis) dan Runtime checks (canary & verification scripts).
+  - `maxilun-deploy` (**SRE SLO Multi-Window Multi-Burn-Rate Alerting**):
+    - Eliminasi alert threshold naif (CPU/RAM spike) dengan error budget burn-rate: P1 Critical (Pager, 14.4x burn rate / jendela 1 jam & short 5 menit), P2 High (Urgent, 6.0x burn rate / jendela 6 jam), dan P3 Medium (Ticket, 1.0x burn rate / jendela 3 hari).
+    - Penegakan tautan wajib ke runbook operasional di setiap alert aktif.
+  - `maxilun-insight` (**Matriks Triage Diagnostik Sistemik**):
+    - Kerangka isolasi 4 kelas kegagalan runtime kritis: Hang & Process Stall (deadlock, event-loop blocking), Memory Leak & OOM Killer (retained closures, unevicted maps), Connection & Resource Exhaustion (leaked DB connections, unclosed HTTP response sockets), dan Disruption & Unclean Shutdown (PID 1 signals, graceful shutdown race).
+    - Protokol 5-langkah triage cepat (exit code, sinyal I/O vs CPU, file descriptors, transaksi menggantung, rekomendasi minimal terukur).
+  - `maxilun-sentinel` (**DPoP RFC 9449 & Simulasi Otorisasi Least-Privilege**):
+    - Penegakan token terikat pengirim (*sender-constrained tokens*) via DPoP (Demonstrating Proof-of-Possession at Application Layer - RFC 9449) untuk memutus risiko serangan replay token yang dicuri.
+    - Evaluasi matriks otorisasi least-privilege `Evaluate(Principal, Action, Resource, Context)` berbasis *deny-by-default* dan simulasi pre-flight di unit test / CI.
+  - `maxilun-data` (**Alur 5-Langkah Optimasi Kueri Sistemik**):
+    - Pipeline diagnostik deterministik berbasis bukti: (1) Baseline EXPLAIN ANALYZE BUFFERS, (2) Scan & Predicate Selectivity Pruning, (3) Eliminasi Spill-to-Disk (external merge Disk / temp spill), (4) Query Pattern Rewrite & Covering/Keyset Indexing, dan (5) Pembuktian Regresi Komparatif.
+
 ## [1.1.0] — 2026-11-07
 
 ### Added

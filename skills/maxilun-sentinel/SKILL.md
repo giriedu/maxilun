@@ -96,6 +96,8 @@ Kode Perbaikan Minimal: Batasi query dengan kepemilikan sesi aktif (WHERE id = $
 - **Magic Link & Passwordless**: Bangkitkan token satu-kali-pakai (`>=32` byte CSPRNG, `base64url`), simpan hanya digest SHA-256 di database dengan TTL 5–15 menit, dan hanguskan segera saat dipakai.
 - **MFA / TOTP & Backup Codes**: Bangkitkan secret `>=20` byte CSPRNG (Base32) tanpa pernah mencatatnya ke log. URI `otpauth://totp/...` menggunakan `HMAC-SHA1` sesuai standar interoperabilitas RFC 6238 pada aplikasi autentikator. Sediakan 8–10 kode cadangan sekali pakai yang disimpan dalam bentuk hash.
 - **Proteksi CSRF pada Cookie Auth**: Padukan `SameSite=Strict` (atau `Lax` bila perlu navigasi tautan eksternal) dengan validasi header `Origin` pada mutasi state serta *synchronizer token* atau *HMAC session-bound CSRF token* (jangan mengandalkan *naive double-submit cookie* tanpa ikatan sesi).
+- **DPoP (RFC 9449) & Sender-Constrained Tokens**: Pada rute API bernilai tinggi (transaksi finansial, mutasi kredensial), tolak bearer token tanpa ikatan pengirim. Wajibkan header `DPoP` berisi JWT proof yang ditandatangani private key klien (`htm`, `htu`, `iat`, `jti`) dan validasi thumbprint kunci `cnf.jkt` di server resource (`references/security-playbook.md` §8).
+- **Simulasi Otorisasi Least-Privilege (Deny-by-Default)**: Uji pre-flight seluruh role dan scope `Evaluate(Principal, Action, Resource, Context)` di suite tes unit/CI sebelum deployment (`references/security-playbook.md` §9) untuk mencegah eskalasi izin dan wildcard permission.
 
 ## 4. Integritas Kriptografi
 

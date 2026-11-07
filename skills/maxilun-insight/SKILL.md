@@ -65,9 +65,7 @@ Detail lengkap: `../maxilun/references/engines.md`.
 3. **Konteks Beban Kerja Eksplisit**: Nyatakan sejak awal apakah jalur kode dianalisis untuk eksekusi skrip CLI sekali jalan, worker batch terjadwal, atau layanan multi-tenant berkonkurensi tinggi.
 
 ## 3. Klasifikasi Bottleneck & Instrumen Profiling
-
-Identifikasi kelas bottleneck terlebih dahulu agar pengumpulan bukti tepat sasaran:
-
+Gunakan **Matriks Triage Diagnostik Sistemik** di `references/profiling-diagnostics-playbook.md` (§4) untuk mengisolasi kegagalan runtime (Hang/Stall, Memory Leak/OOM, Connection Exhaustion, Disruption/Eviction). Identifikasi kelas bottleneck terlebih dahulu agar pengumpulan bukti tepat sasaran:
 | Kelas Bottleneck | Gejala Teramati | Instrumen & Sinyal Bukti Utama |
 |---|---|---|
 | **CPU / Event-Loop Blocking** | Latensi semua rute naik merata, event-loop lag tinggi | Node `--cpu-prof` / `perf_hooks.monitorEventLoopDelay`, Python `cProfile`, audit regex backtracking & parsing JSON sinkron besar |

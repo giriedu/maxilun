@@ -315,3 +315,67 @@ Format standar untuk output STRIDE analysis. Gunakan ini agar hasil konsisten da
 ```
 
 Status values: `✅ Implemented`, `⚠️ Planned`, `❌ Not addressed`, `🔄 In progress`.
+
+---
+
+## 8. DPoP (RFC 9449) & Sender-Constrained Tokens
+
+Gunakan **Demonstrating Proof-of-Possession at the Application Layer (DPoP)** untuk mengikat token akses ke pasangan kunci kriptografis milik klien, sehingga token yang dicuri dari log server, cache proxy, atau kebocoran jaringan tidak dapat disalahgunakan oleh penyerang (*Anti-Token-Replay*).
+
+### 8.1 Mekanisme Verifikasi DPoP
+
+1. **Pembuatan Proof JWT oleh Klien**:
+   Pada setiap request ke API yang dilindungi DPoP, klien menandatangani JWT efemeral dengan private key lokalnya:
+   ```http
+   POST /api/v1/transfers HTTP/1.1
+   Host: api.example.com
+   Authorization: DPoP eyJhbGciOiJFUzI1Ni... (access_token)
+   DPoP: eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7...}}... (proof_jwt)
+   ```
+
+2. **Header & Klaim Proof JWT**:
+   - Header: `typ: "dpop+jwt"`, `alg: "ES256"`, `jwk: { kty: "EC", crv: "P-256", x: "...", y: "..." }`
+   - Payload:
+     - `htm`: HTTP Method verbatim (`POST`, `GET`, dll.)
+     - `htu`: HTTP Target URI tanpa query string (`https://api.example.com/api/v1/transfers`)
+     - `iat`: Timestamp penerbitan (wajib dalam toleransi clock drift $\le 300\text{s}$)
+     - `jti`: Nonce/ID unik untuk mencegah replay proof yang sama
+
+3. **Pemeriksaan di Sisi Resource Server**:
+   - Verifikasi bahwa `typ` bernilai `dpop+jwt` dan tanda tangan valid menggunakan JWK yang disertakan di header proof.
+   - Hitung SHA-256 thumbprint dari JWK klien (`jkt`).
+   - Cocokkan `jkt` tersebut dengan klaim konfirmasi `cnf.jkt` yang tertanam di dalam payload `access_token`. Jika tidak cocok, tolak dengan HTTP `401 Unauthorized`.
+   - Validasi kecocokan `htm` dan `htu` terhadap request aktif untuk mencegah penyalahgunaan proof lintas-endpoint.
+
+---
+
+## 9. Simulasi Kebijakan Otorisasi Least-Privilege
+
+Cegah eskalasi hak akses (*privilege escalation*) dan izin berlebih (*over-privileged roles*) dengan validasi kebijakan pre-flight sebelum mutasi data dijalankan:
+
+### 9.1 Matriks Evaluasi Kebijakan Otorisasi
+Setiap request dievaluasi menggunakan kuartet eksplisit:
+`Evaluate(Principal, Action, Resource, Context) -> ALLOW | DENY (Deny by default)`
+
+| Komponen | Nilai Evaluasi | Validasi Keamanan |
+|---|---|---|
+| **Principal** | `userId`, `tenantId`, `roles`, `scopes` | Diambil semata-mata dari token/sesi terverifikasi server, bukan input klien |
+| **Action** | Operasi domain (`invoice:create`, `user:delete`) | Allowlist tindakan eksplisit; tolak wildcard `*` di lingkungan produksi |
+| **Resource** | Target entitas (`invoice:1042`) | Verifikasi kepemilikan tenant via PostgreSQL RLS atau guard server |
+| **Context** | Waktu, IP allowlist, MFA level, auth freshness | Evaluasi apakah operasi sensitif memerlukan step-up re-authentication |
+
+### 9.2 Pre-Flight Policy Simulator di CI & Unit Test
+Tulis tes kebijakan deterministik untuk setiap role sebelum rilis:
+```typescript
+// Contoh simulasi kebijakan otorisasi (Deny by default)
+describe("Authorization Policy Simulator", () => {
+  it("menolak akses member biasa ke endpoint administrasi tenant", () => {
+    const decision = evaluateAccess({
+      principal: { userId: "u-1", tenantId: "t-1", role: "member" },
+      action: "tenant:billing:update",
+      resource: { tenantId: "t-1" }
+    });
+    expect(decision).toBe("DENY");
+  });
+});
+```

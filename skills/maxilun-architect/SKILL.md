@@ -28,6 +28,7 @@ metadata:
     - references/index.md
     - references/api-distributed-patterns.md
     - references/migration-operations-playbook.md
+    - references/well-architected-framework.md
 ---
 
 # Maxilun Architect: Structural Design, `/msal-think` & Impact Analysis
@@ -43,6 +44,7 @@ Bertanggung jawab atas struktur sistem tingkat tinggi, penegakan batas modul yan
 - **Handoff**: send C4/flow diagrams to `maxilun-diagrams`, physical schema/RLS work to `maxilun-data`, trust-boundary controls to `maxilun-sentinel`, code changes to `maxilun-engineer`, fitness checks to `maxilun-verify`, runbook/infra rollout to `maxilun-deploy`, and formal specs/ADRs to `maxilun-docsmith`.
 
 Bundled playbooks in `references/index.md` are part of this skill:
+- Read `references/well-architected-framework.md` for Solution Discovery protocols, contradiction resolution, the 6 WAF pillars, and pre/post-deployment validation.
 - Read `references/api-distributed-patterns.md` for API contracts, consistency models, Outbox/Saga patterns, and technology selection.
 - Read `references/migration-operations-playbook.md` for Strangler Fig, Expand-Contract, multi-tenancy, DR/RPO/RTO, and architecture fitness functions.
 - Cross-reference `../maxilun-docsmith/references/openapi-contracts.md` and `../maxilun-docsmith/references/runbooks-adr.md` when formalizing contracts or ADRs.
@@ -81,10 +83,11 @@ Sesuaikan kedalaman proses dengan reversibilitas keputusan (hindari birokrasi un
 
 **Baseline Default**: Mulai dari **Modular Monolith + transaksi ACID lokal** (PostgreSQL default). Beban pembuktian kuantitatif berada pada pihak yang mengusulkan pemecahan layanan, broker baru, atau *event sourcing*.
 
-## 2. Konvergensi Rekayasa 4 Fase (`/maxilun-think` / `/msal-think`)
+## 2. Konvergensi Rekayasa 4 Fase (`/maxilun-think` / `/msal-think`) & 6 Pilar WAF
+
+Sebelum merancang arsitektur, terapkan **Protokol Solution Discovery** di `references/well-architected-framework.md`: pisahkan penggalian kebutuhan fungsional & non-fungsional (SLA, RPO/RTO, amplop biaya) tanpa terburu-buru memilih teknologi; deteksi dan selesaikan kontradiksi persyaratan secara eksplisit sebelum mengunci desain. Evaluasi struktur terhadap **6 Pilar Maxilun WAF** (*Reliability*, *Security*, *Performance*, *Cost Optimization*, *Operational Excellence*, *Evolutionary Simplicity*).
 
 Pada repositori eksisting, periksa lebih dulu konteks `maxilun-knowledge-graph` (`maxilun-out/graph.json` atau `.maxilun/graph.json`) agar keputusan berpijak pada ketergantungan simbol aktual.
-
 ### Fase 1: Invariants, Blast Radius & STRIDE Trust Boundaries
 - **Invarian Mutlak**: Tetapkan kondisi yang tidak boleh rusak (nol kehilangan mutasi finansial, kompatibilitas mundur konsumen API v1, isolasi data antar-tenant).
 - **Blast Radius & Brownfield Check**: Petakan modul, caller, dan data produksi yang terdampak melalui `maxilun-knowledge-graph`. Bila menyentuh data atau trafik hidup, aktifkan protokol di `references/migration-operations-playbook.md`.

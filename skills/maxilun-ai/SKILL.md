@@ -68,13 +68,13 @@ Optimalkan latensi dan biaya token:
 1. **Penataan Posisi Konteks**: Hindari jebakan *lost-in-the-middle*. Letakkan referensi terpenting di awal konteks atau tepat sebelum blok pertanyaan pengguna.
 2. **Struktur Prompt Caching-Friendly**: Pisahkan bagian prompt statis (instruksi peran, dokumen kebijakan) dari bagian dinamis (query pengguna, riwayat pesan sesi). Pastikan bagian statis berada di awal pesan agar sistem prompt caching memotong waktu komputasi TTFT (Time-To-First-Token).
 
-## 3. Evaluasi Regresi Prompt & Framework Evals
+## 3. Siklus Mutu Evaluasi (Maxilun Eval Flywheel)
 
-Terapkan metodologi pengujian di `references/evals-prompt-engineering.md`:
-1. **Test Dataset Deterministik**: Bangun minimal 20-30 sampel uji pasangan (Input, Expected Output, Invariant Rules).
-2. **LLM-as-a-Judge**: Gunakan model frontier dengan rubrik biner ketat (1 = memenuhi kriteria, 0 = gagal) dan sertakan kutipan bukti teks sebelum putusan akhir.
-3. **Structured Outputs**: Pastikan response schema tervalidasi skema JSON ketat (`strict: true`). Bila terjadi error parsing, jalankan satu loop koreksi dengan membawa pesan parser error verbatim.
-
+Terapkan metodologi pengujian 5-tahap di `references/evals-prompt-engineering.md`:
+1. **Persiapan Data & Skenario Sintetis**: Bangun test suite deterministik minimal 30–50 sampel uji pasangan (Input, Expected Output, Invariant Rules). Untuk agen multi-turn, gunakan skenario sintetis berbatas putaran (`max_turns: 3–10`).
+2. **Eksekusi Inferensi & Penilaian Deterministik**: Jalankan inferensi pada `temperature: 0`. Gunakan rubrik biner ketat ($0$ atau $1$) dengan model penilai frontier dan wajibkan sitasi bukti verbatim dari konteks sebelum putusan dijatuhkan.
+3. **Loss Clustering & Remediasi Iteratif**: Kelompokkan setiap kegagalan ke 5 taksonomi akar masalah (*Instruction Drift*, *Lost-in-the-Middle Context Miss*, *Tool/Schema Mismatch*, *Ungrounded Hallucination*, *Boundary Edge Case*). Jalankan 5–10 iterasi perbaikan prompt; dilarang keras menurunkan threshold metrik atau menghapus kasus flaky demi mengejar skor semu.
+4. **Structured Outputs**: Pastikan response schema tervalidasi skema JSON ketat (`strict: true`). Bila terjadi error parsing, jalankan satu loop koreksi dengan membawa pesan parser error verbatim.
 ## Related Skills
 
 - Koordinasi skema tabel vector & index: delegasikan ke `maxilun-data`.

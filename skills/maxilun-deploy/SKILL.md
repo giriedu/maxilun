@@ -133,7 +133,11 @@ CMD ["node", "server.js"]
 
 - **Structured Logging**: Tulis log JSON ke `stdout` dengan atribut konsisten (`timestamp`, `level`, `message`, `requestId`/`traceId`, `service`, `durationMs`, `statusCode`). Teruskan *correlation ID* dari ingress ke panggilan hilir dan redaksi otomatis token, password, serta PII.
 - **Pelacakan Error & Trace**: Unggah *source maps* saat tahap build dan sematkan tag versi rilis (`release: git-sha`) agar regresi error langsung terpetakan ke commit penyebab.
-- **Alert Berbasis Gejala & SLO**: Bangunkan on-call berdasarkan pelanggaran gejala pengguna (kenaikan rasio 5xx terhadap *error budget* SLO, latensi `p95`/`p99`, antrean macet, kegagalan probe `/health`), bukan lonjakan CPU sesaat. Setiap alert aktif wajib menautkan runbook tindakan.
+- **SRE SLO Multi-Window Multi-Burn-Rate Alerting**: Tolak alert CPU/RAM naif yang memicu *alert fatigue*. Terapkan standar di `references/container-pipeline-hardening.md` (§3):
+  - **P1 Critical (Pager)**: Burn rate $\ge 14.4x$ (konsumsi 2% budget dalam 1 jam / jendela short 5 menit) $\to$ darurat aktif, bangunkan on-call seketika.
+  - **P2 High (Urgent)**: Burn rate $\ge 6.0x$ (konsumsi 5% budget dalam 6 jam / jendela short 30 menit) $\to$ investigasi dalam 30 menit.
+  - **P3 Medium (Ticket)**: Burn rate $\ge 1.0x$ (konsumsi 10% budget dalam 3 hari) $\to$ tiket backlog otomatis.
+  - Setiap alert aktif wajib menyertakan tautan langsung ke runbook penanganan operasional spesifik.
 
 ## 6. Strategi Rilis, Rollback & Perimeter Domain/TLS
 

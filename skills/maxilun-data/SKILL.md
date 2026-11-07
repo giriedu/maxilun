@@ -103,7 +103,7 @@ ALTER TABLE orders VALIDATE CONSTRAINT orders_customer_fk;
 
 ## 4. Strategi Indexing & Bukti EXPLAIN
 
-Ukur rencana kueri sebelum menambah indeks menggunakan `EXPLAIN` (dan `EXPLAIN (ANALYZE, BUFFERS)` hanya pada kueri baca atau di dalam staging/transaksi uji yang aman—jangan menjalankan mutasi produksi langsung dengan `EXPLAIN ANALYZE`):
+Jalankan **Alur 5-Langkah Optimasi Kueri Sistemik** di `references/query-optimization-explain.md` (§4: Baseline EXPLAIN $\to$ Scan Pruning $\to$ Spill-to-Disk Elimination $\to$ Query Rewrite & Covering Index $\to$ Comparative Proof). Ukur rencana kueri sebelum menambah indeks menggunakan `EXPLAIN` (dan `EXPLAIN (ANALYZE, BUFFERS)` hanya pada kueri baca atau di dalam staging/transaksi uji yang aman—jangan menjalankan mutasi produksi langsung dengan `EXPLAIN ANALYZE`):
 
 | Sinyal pada `EXPLAIN (ANALYZE, BUFFERS)` | Diagnosis & Tindakan Rekayasa |
 |---|---|
