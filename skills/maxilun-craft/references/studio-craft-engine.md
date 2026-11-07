@@ -1,18 +1,18 @@
-# Maxilun Awwwards-Standard Craft Engine
+# Maxilun Studio-Grade Craft Engine
 
 <!-- metadata:
   version: "1.1.0"
   sync_target: "skills/maxilun-craft/SKILL.md"
-  origin: "Maxilun Craft Engine & Awwwards Jury Rubric Synthesis"
+  origin: "Maxilun Craft Engine & Studio Jury Rubric Synthesis"
 -->
 
-Panduan rekayasa visual dan interaksi tingkat agensi (*agency-grade*) yang mengodifikasi sistem penilaian juri Awwwards (Site of the Day / Developer Award / Mobile Excellence) menjadi metode perancangan deterministik. Target: skor juri $\ge 7.0/10$.
+Panduan rekayasa visual dan interaksi tingkat agensi (*agency-grade*) yang mengodifikasi sistem penilaian juri desain kelas dunia (Site of the Day / Developer Award / Mobile Excellence) menjadi metode perancangan deterministik Maxilun. Target: skor juri $\ge 7.0/10$.
 
 ---
 
-## 1. Realitas Pembobotan Juri Awwwards (Memorize This)
+## 1. Realitas Pembobotan Juri Desain Studio (Memorize This)
 
-Awwwards bukan gaya grafis—Awwwards adalah sistem penilaian kuantitatif terbobot:
+Standar studio kelas dunia bukan gaya grafis—melainkan sistem penilaian kuantitatif terbobot:
 
 | Kriteria | Bobot | Apa yang Sebenarnya Diukur Juri |
 |---|---|---|
@@ -102,11 +102,11 @@ Hindari filter warna murahan; gunakan pembesaran halus di dalam kontainer `overf
 ```
 
 ### 3.4 Batas Konsistensi Halaman Dalam (Zero Homepage-Only Design)
-Juri Awwwards selalu mengeklik tautan navigasi ke halaman dalam. Halaman dokumentasi, detail produk, atau 404 wajib dibangun dengan sistem token, tipografi, dan margin yang identik dengan beranda.
+Juri dan pengguna profesional selalu mengeklik tautan navigasi ke halaman dalam. Halaman dokumentasi, detail produk, atau 404 wajib dibangun dengan sistem token, tipografi, dan margin yang identik dengan beranda.
 
 ---
 
-## 4. Evaluasi Mandiri Pra-Rilis Juri Awwwards (Self-Scoring Audit)
+## 4. Evaluasi Mandiri Pra-Rilis Juri Studio (Self-Scoring Audit)
 
 Sebelum menyerahkan situs, hitung estimasi skor juri secara mandiri:
 

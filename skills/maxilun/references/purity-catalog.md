@@ -81,12 +81,12 @@ Prinsip inti: **tolak klise mentah LLM sekaligus tolak monokultur cetakan tungga
 29. **Jebakan Redesign Tambal Sulam (`SYS-004`)** — hanya mengedit leaf JSX atau menambahkan inline overrides (`!important` / `style={{...}}`) di atas fondasi sistem desain yang rusak, menghasilkan UI yang "begitu-begitu saja".
 30. **Tabrakan Styling Dua Sistem (`SYS-005`)** — menumpuk class styling baru tanpa menghapus CSS lama yang bertentangan, menyisakan kelas zombie dan layout glitch. Wajib lakukan *Clean Cutover* (hapus tuntas kode styling lama).
 
-### B7. Pembunuh Skor Juri Awwwards (Awwwards Score Killers)
-31. **Dua Puluh Efek Tanpa Satu Momen Khas (`AWD-001`)** — menumpuk lusinan animasi mikro acak tanpa satu interaksi utama (*One Signature Moment*). Keriuhan efek terbaca oleh juri sebagai rasa tidak percaya diri visual.
-32. **Pembajakan Scroll / Scroll-Jacking Membeku (`AWD-002`)** — melawan inersia roda mouse, menonaktifkan tombol keyboard (`Space`/`PageDown`), atau mematikan inersia scroll alami di perangkat layar sentuh mobile.
-33. **Kebocoran Memori GPU Akibat will-change Permanen (`AWD-003`)** — membiarkan `will-change: transform, opacity` aktif terus-menerus di CSS/JS alih-alih me-resetnya ke `auto` setelah animasi selesai, menghabiskan VRAM GPU mobile.
-34. **Preloader Menutupi Konten yang Sudah Siap (`AWD-004`)** — memasang layar pembuka yang menahan pengguna selama 3–5 detik padahal konten HTML sudah siap di belakang layar, merusak metrik LCP.
-35. **Desain Halaman Beranda Tunggal (`AWD-005`)** — halaman beranda dipoles mewah tetapi halaman dalam (tentang, detail, 404, dokumentasi) dibiarkan berantakan seperti proyek lain. Juri selalu menguji halaman dalam.
+### B7. Pembunuh Kualitas Studio Kelas Dunia (Studio Score Killers)
+31. **Dua Puluh Efek Tanpa Satu Momen Khas (`JURY-001`)** — menumpuk lusinan animasi mikro acak tanpa satu interaksi utama (*One Signature Moment*). Keriuhan efek terbaca oleh penilai sebagai rasa tidak percaya diri visual.
+32. **Pembajakan Scroll / Scroll-Jacking Membeku (`JURY-002`)** — melawan inersia roda mouse, menonaktifkan tombol keyboard (`Space`/`PageDown`), atau mematikan inersia scroll alami di perangkat layar sentuh mobile.
+33. **Kebocoran Memori GPU Akibat will-change Permanen (`JURY-003`)** — membiarkan `will-change: transform, opacity` aktif terus-menerus di CSS/JS alih-alih me-resetnya ke `auto` setelah animasi selesai, menghabiskan VRAM GPU mobile.
+34. **Preloader Menutupi Konten yang Sudah Siap (`JURY-004`)** — memasang layar pembuka yang menahan pengguna selama 3–5 detik padahal konten HTML sudah siap di belakang layar, merusak metrik LCP.
+35. **Desain Halaman Beranda Tunggal (`JURY-005`)** — halaman beranda dipoles mewah tetapi halaman dalam (tentang, detail, 404, dokumentasi) dibiarkan berantakan seperti proyek lain. Pengguna profesional selalu menguji halaman dalam.
 ---
 
 ## C. Ringkasan Kode Pemeriksaan Kontekstual
@@ -102,7 +102,7 @@ Gunakan kode referensi ini saat melaporkan hasil audit desain/kode secara presis
 | Gerak | `ANI-001` .. `ANI-007` | Hanya `transform`/`opacity`, durasi mikro `≤250ms`, hormati `prefers-reduced-motion` |
 | Aksesibilitas | `A11Y-001` .. `A11Y-007` | Nama aksesibel, asosiasi `<label>`, indikator `:focus-visible`, urutan heading semantik |
 | Kunci Desain & Redesign | `SYS-001` .. `SYS-005` | Deteksi pengunci sistem desain, hapus token kusam root, buka shell layout, clean cutover |
-| Pembunuh Skor Juri | `AWD-001` .. `AWD-005` | Satu signature moment, bebas scroll-jacking, will-change cleanup, konsistensi halaman dalam |
+| Kualitas Studio & Juri | `JURY-001` .. `JURY-005` | Satu signature moment, bebas scroll-jacking, will-change cleanup, konsistensi halaman dalam |
 
 ---
 

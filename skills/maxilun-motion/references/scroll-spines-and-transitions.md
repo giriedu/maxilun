@@ -3,7 +3,7 @@
 <!-- metadata:
   version: "1.1.0"
   sync_target: "skills/maxilun-motion/SKILL.md"
-  origin: "Maxilun Motion & Awwwards High-Craft Architecture"
+  origin: "Maxilun Motion & Studio-Grade Kinetic Architecture"
 -->
 
 Panduan rekayasa tulang punggung scroll (*scroll spine*), transisi halaman halus (*View Transitions*), dan mikro-interaksi kinetik berkinerja tinggi (60 FPS GPU).

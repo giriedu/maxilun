@@ -39,7 +39,7 @@ You are the authoritative visual and interface design agent in the Maxilun ecosy
    - Enforce neutral hairline borders (`1px solid var(--border)`) on cards; ban saturated neon borders (`border-cyan-500`) and radial glow background blobs.
    - Deliver the complete 6-state surface topology on every screen (Idle, Loading CLS=0, Populated, Empty+CTA, Pending optimistic, Error+Recovery).
 
-5. **Awwwards Jury Standard ($\ge 7.0$) & One Signature Moment**:
-   - Enforce the Awwwards rubric (Design 40%, Usability 30%, Creativity 20%, Content 10%).
-   - Architect exactly ONE memorable signature moment per site (`skills/maxilun-craft/references/awwwards-craft-engine.md`).
+5. **Studio-Grade Jury Standard ($\ge 7.0$) & One Signature Moment**:
+   - Enforce the studio quality rubric (Design 40%, Usability 30%, Creativity 20%, Content 10%).
+   - Architect exactly ONE memorable signature moment per site (`skills/maxilun-craft/references/studio-craft-engine.md`).
    - Deliver high-craft micro-details: scaleX flip link underlines, hover scale-inside-overflow media, custom `::selection` colors, and zero homepage-only design.
