@@ -40,7 +40,9 @@ Disiplin operasional untuk mencegah empat mode kegagalan klasik LLM saat memodif
 2. **Aturan tunggal pembersihan kode mati**:
    - **Wajib hapus**: import, variabel, helper, tipe, atau jalur lama yang **menjadi usang akibat perubahan/migrasi Anda sendiri**.
    - **Jangan sentuh diam-diam**: kode lama tidak terpakai di modul lain yang sama sekali tidak berhubungan dengan tugas; cukup sebutkan satu baris di akhir laporan bila berisiko.
-3. **Patuhi konvensi repositori setempat** — ikuti sistem styling, ORM, test runner, dan pola penamaan yang sudah dipakai proyek tersebut.
+3. **Patuhi konvensi repositori setempat vs Ruang Lingkup Redesign**:
+   - **Fitur biasa & perbaikan bug**: ikuti sistem styling, ORM, test runner, dan pola penamaan yang sudah dipakai proyek tersebut.
+   - **Permintaan Redesign / Rombak UI/UX**: sistem desain lama yang mengunci tampilan (variabel CSS `:root` kusam, theme tokens usang, wrapper layout kaku) **adalah target perubahan yang sah dan wajib dimigrasikan**. Mempertahankan token lama yang rusak karena takut melanggar konvensi adalah anti-pola. Lakukan *Clean Cutover*: ganti token root, perbarui layout shell, mutakhirkan komponen primitif, dan hapus tuntas styling lama yang menjadi usang.
 4. **Uji Lacak Diff (*Trace Test*)** — setiap hunk perubahan harus memiliki alasan langsung dari permintaan pengguna atau pemutakhiran pemanggil yang terdampak.
 
 ---

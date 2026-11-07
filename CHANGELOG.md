@@ -8,7 +8,14 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.0] — 2026-11-07
+
 ### Added
+- **Ecosystem Expansion to 22 Skills (4 New Specialist Engineering Domains)**:
+  - `maxilun-desktop`: Native desktop application engineering for Windows (Win32 API, WPF, WinUI 3, C++), macOS (Swift, AppKit, Cocoa), cross-platform GUI (C++ Qt, Tauri), and legacy enterprise systems with **PowerBuilder** (PowerScript, DataWindow buffers & events, SQLCA transaction objects, PFC, and `.srd` syntax).
+  - `maxilun-mobile`: Native Android (Kotlin, Jetpack Compose, Coroutines, Room), native iOS (Swift, SwiftUI, Swift Concurrency, Keychain), and cross-platform mobile (Flutter, React Native New Architecture, Kotlin Multiplatform).
+  - `maxilun-iot`: Embedded systems and Internet of Things engineering for microcontrollers (ESP32 ESP-IDF, STM32 HAL, Arduino/PlatformIO, Raspberry Pi Pico), zero-heap ISR memory rules, hardware buses (I2C, SPI, UART, GPIO), FreeRTOS task budgeting, telemetry protocols (MQTT, BLE GATT, Modbus RTU/RS-485), and dual-partition A/B OTA firmware updates.
+  - `maxilun-network`: Enterprise network infrastructure and **MikroTik RouterOS** (v6 & v7, WinBox/CLI, scripting), default-drop stateful firewall rulesets, QoS/PCQ bandwidth management, bridge VLAN filtering, WireGuard/IPsec secure tunnels, and Linux policy routing (`iproute2`, `nftables`).
 - **Maxilun Autonomous Agent Engine & Engineering Harness (`harness/`)**:
   - Shipped the official self-contained Maxilun Agent Runtime Engine (`harness/engine/agent_loop.py`) and unified CLI (`harness/cli.py`) offering autonomous task execution (`run`), interactive terminal agent sessions (`chat`), specialist skill discovery (`skills`), and interactive visual dashboard generation (`dashboard`).
   - **Native Tool Registry (`harness/tools/`)**: Built-in zero-dependency toolset supporting safe file reading/writing/editing (`FSTools`), shell execution (`BashTool`), and in-process Knowledge Graph AST querying (`KnowledgeGraphTool`) with OpenAI/DeepSeek function calling schemas.
@@ -22,7 +29,23 @@ Versioning follows [Semantic Versioning](https://semver.org/).
   - **Git Hook & CI Automation (`harness/hook_installer.py`)**: Added `python harness/cli.py install-hook` for `.git/hooks/pre-commit` slop prevention and `generate-ci` for automated GitHub Actions workflows.
   - Added `docs/HARNESS.md`, npm scripts `"harness"` and `"bench"`, and end-to-end test suite coverage in `scripts/test-suite.py`.
 
+- **Autonomous Agent Fleet Expansion to 13 Specialized Agents (Dedicated Coding & UI/UX Squads)**:
+  - Formed the **Coding Specialist Squad**:
+    - `maxilun-coder-frontend`: Next.js 15 App Router, React 19 RSC boundaries, Server Actions, Flight serialization, hydration integrity, and zero-leak layout.
+    - `maxilun-coder-backend`: REST & OpenAPI 3.1 APIs, relational 3NF database migrations, ACID transactions, constant-time HMAC security, and RFC 9457 errors.
+    - `maxilun-coder-mobile`: Native Android (Kotlin Compose) & iOS (Swift SwiftUI), Flutter, React Native, offline-first sync, and $\ge 44\text{pt}$ touch ergonomics.
+    - `maxilun-coder-systems`: Native Desktop (Win32/WPF/PowerBuilder), embedded IoT (ESP32 FreeRTOS zero-heap ISR), and MikroTik RouterOS firewall/QoS scripts.
+  - Formed the **UI/UX Specialist Squad**:
+    - `maxilun-ui-designer`: Domain-authentic visual architecture from 100 brand design systems, design lock dismantling (*Clean Cutover*), asymmetric split hero layouts, and solid display typography.
+    - `maxilun-ui-motion`: 60 FPS GPU-accelerated motion dynamics, `ScrollBlurReveal` progressive focus & rise choreography, and analytical spring physics.
+    - `maxilun-ui-reviewer`: Strict read-only visual quality gatekeeper auditing 45 AI design tells (`ui-purity-linter`), concentric radius tolerances, WCAG contrast ratios, mobile 375px zero canvas leaks, and navbar heights.
 ### Enhanced
+- **Design Lock Dismantling & High-Craft Redesign Protocol (`maxilun-craft`, `maxilun`, `maxilun-frontend`)**:
+  - Eliminated "The Legacy Design Lock Trap" where redesign requests stall or yield monotonous UI/UX ("begitu-begitu saja") because models fear deleting legacy `:root` variables, Tailwind configs, rigid layout shells, or zombie component styles under a misplaced interpretation of "follow existing repository conventions".
+  - Codified the **5 Design System Locks** in `skills/maxilun/references/purity-catalog.md` (`SYS-001: Legacy Token Lock`, `SYS-002: Shell & Layout Wrapper Lock`, `SYS-003: Component Primitive Lock`, `SYS-004: Band-Aid Redesign Trap`, `SYS-005: Dual-System Style Collision`).
+  - Added Section 8 in `skills/maxilun-craft/references/interface-engineering.md` establishing the 4-Phase Clean Cutover: Scan & Isolate Locks → Root Token Replacement (`globals.css` / theme OKLCH ramps) → Shell Emancipation (`app/layout.tsx` / `App.tsx`) → Primitive Upgrade & Purge.
+  - Updated `skills/maxilun/references/surgical-discipline.md` and `skills/maxilun/references/discovery.md` to explicitly exempt redesign requests from the "preserve existing styling system" mandate, establishing that legacy design locks are in-scope targets for replacement and clean cutover.
+  - Added DDR-DL (*Design Decision Record: Design Lock Cutover*) specification to `skills/maxilun-craft/references/design-decision-records.md`.
 - **Decision Architecture, Anti-Monoculture & Zero-Ceremony Overhaul**:
   - Replaced passive multi-turn interview loops and ceremonial emoji HUD/gate templates (`FOKUS`/`TINDAKAN`/`DELIVERY GATE`/`Parking Lot` and self-checked `- [ ]` blocks) across all 18 skills with **Repo-First Agency** and **Reversibility-Gated Decision Triage** (execute Type 2 reversible work directly from repo evidence; limit Type 1 irreversible clarification to at most 1 batched turn).
   - Eliminated pseudo-quantitative decision theater in `maxilun-architect` (removed LLM-invented `1–5` weighted score matrices and forced strawman options) in favor of invariant verification, failure-mode stress testing, Deep Modules seam checks, and falsifiable revisit triggers.
@@ -41,7 +64,11 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - **Code Hygiene**: Synchronized form, scroll containment, and micro-typography standards across the ecosystem.
 
 ### Fixed
-- **Packaging, Installer & Knowledge Graph Cache Hygiene**: Explicitly whitelisted public scripts and excluded `__pycache__`, `.pyc`, `.maxilun`, `maxilun-out`, and `graphify-out` caches in `package.json`, hardened `scripts/install.ps1` and `scripts/install.sh` to strip local scan caches and support `~/.opencode/skills` without creating empty backup folders, and isolated `cli.py scan -o` so custom output paths no longer write `maxilun-out/` into the scanned directory.
+- **Harness & Tooling Hardening**:
+  - Fixed Windsurf global target omission in `scripts/install.ps1`, ensuring parity across PowerShell and Bash installers.
+  - Upgraded `FSTools.glob_files` in `harness/tools/fs_tools.py` with fast native `Path.glob()` supporting nested directory path patterns (`skills/*/SKILL.md`).
+  - Fixed OS path separator handling in `harness/engine/middleware.py` using `Path(target_path).name` for seamless Windows and POSIX cross-platform compatibility.
+  - Hardened directory scanner in `harness/cli.py` to skip backup folders (`_maxilun_backup_*`), `.git`, and editor caches, and added normative specification exceptions in `harness/purity_validator.py`.
 - **Generic Scanner AST Patterns**: Added Go method receiver extraction (`func (r *Repo) ...`), Go interface/struct type extraction, and C++ scoped method resolution (`void Class::method(...)`) in `GenericScanner`, verified via functional test suite.
 - **Installer & Uninstaller Parity**: Synchronized `scripts/install.sh` to support `--project`/`-p` mode, fixed macOS BSD `date` non-portable `%N` format with portable timestamps, restricted backup creation strictly to existing Maxilun skills, and added `--project`/`-Project` support and full multi-IDE target coverage (Trae, Windsurf, CodeBuddy) across both `scripts/uninstall.sh` and `scripts/uninstall.ps1`.
 

@@ -36,7 +36,11 @@ The primary skill owns the deliverable. Companion skills advise or validate; the
 | `maxilun-diagrams` | diagrams derived from known decisions | architecture decisions |
 | `maxilun-content` | user-facing copy and microcopy | engineering documentation |
 | `maxilun-seo-audit` | technical SEO findings and remediation priorities | general product copywriting |
-
+| `maxilun-desktop` | native desktop application (Win32, WPF, AppKit, Qt) and PowerBuilder enterprise systems | web browser runtime or mobile native development |
+| `maxilun-mobile` | native Android/iOS and cross-platform mobile apps, mobile lifecycle, and offline storage | server-side backend services or desktop windowing |
+| `maxilun-iot` | embedded microcontroller firmware (ESP32, STM32, Arduino), FreeRTOS, hardware buses, and telemetry | physical PCB hardware fabrication or client UI |
+| `maxilun-network` | MikroTik RouterOS automation, Linux networking, firewall policies, VLANs, and VPN tunnels | microcontroller firmware or cloud container scheduling |
+| `maxilun-ai` | RAG architecture, semantic chunking, hybrid retrieval, prompt regression evals, context caching, and structured tool schemas | general database schema design or non-AI code implementation |
 ## Standalone rule
 
 Never require the orchestrator, a local path, a private tool, or another skill to produce the skill's primary output. If an optional companion is unavailable, use a clearly labeled fallback and preserve evidence quality.

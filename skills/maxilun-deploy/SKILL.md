@@ -7,7 +7,7 @@ description: >
   Triggers: "/maxilun-deploy", "CI/CD", "Docker", "pipeline", "monitoring", "deployment",
   "SSL", "backup database", "environment variables", or any DevOps/infra task.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -20,6 +20,9 @@ metadata:
     - codex
     - zed
     - gemini-cli
+  references:
+    - references/index.md
+    - references/container-pipeline-hardening.md
 ---
 
 # Maxilun Deploy: Deployment & Operations Engineering

@@ -24,29 +24,29 @@ removed=()
 if [ "$PROJECT_MODE" = true ]; then
     CURRENT_DIR="$(pwd)"
     targets=(
-        "Universal / Antigravity / Zed (Project):${CURRENT_DIR}/.agents/skills:${CURRENT_DIR}/.agents/rules"
-        "Claude Code (Project):${CURRENT_DIR}/.claude/skills:${CURRENT_DIR}/.claude/rules"
-        "Trae (Project):${CURRENT_DIR}/.trae/skills:"
-        "Windsurf (Project):${CURRENT_DIR}/.windsurf/skills:"
-        "CodeBuddy (Project):${CURRENT_DIR}/.codebuddy/skills:"
+        "Universal / Antigravity / Zed (Project):${CURRENT_DIR}/.agents/skills:${CURRENT_DIR}/.agents/rules:${CURRENT_DIR}/.agents/agents"
+        "Claude Code (Project):${CURRENT_DIR}/.claude/skills:${CURRENT_DIR}/.claude/rules:${CURRENT_DIR}/.claude/agents"
+        "Trae (Project):${CURRENT_DIR}/.trae/skills::"
+        "Windsurf (Project):${CURRENT_DIR}/.windsurf/skills::"
+        "CodeBuddy (Project):${CURRENT_DIR}/.codebuddy/skills::"
     )
 else
     targets=(
-        "Antigravity CLI/IDE:${HOME}/.agents/skills:${HOME}/.agents/rules"
-        "Claude Code:${HOME}/.claude/skills:${HOME}/.claude/rules"
-        "Codex:${HOME}/.codex/skills:${HOME}/.codex/rules"
-        "OpenCode (.config):${HOME}/.config/opencode/skills:${HOME}/.config/opencode/rules"
-        "OpenCode:${HOME}/.opencode/skills:${HOME}/.opencode/rules"
-        "Gemini CLI:${HOME}/.gemini/config/skills:"
-        "Cursor:${HOME}/.cursor/skills:"
-        "Trae:${HOME}/.trae/skills:"
-        "Windsurf:${HOME}/.windsurf/skills:"
-        "CodeBuddy:${HOME}/.codebuddy/skills:"
+        "Antigravity CLI/IDE:${HOME}/.agents/skills:${HOME}/.agents/rules:${HOME}/.agents/agents"
+        "Claude Code:${HOME}/.claude/skills:${HOME}/.claude/rules:${HOME}/.claude/agents"
+        "Codex:${HOME}/.codex/skills:${HOME}/.codex/rules:"
+        "OpenCode (.config):${HOME}/.config/opencode/skills:${HOME}/.config/opencode/rules:${HOME}/.config/opencode/agents"
+        "OpenCode:${HOME}/.opencode/skills:${HOME}/.opencode/rules:${HOME}/.opencode/agents"
+        "Gemini CLI:${HOME}/.gemini/config/skills::"
+        "Cursor:${HOME}/.cursor/skills::"
+        "Trae:${HOME}/.trae/skills::"
+        "Windsurf:${HOME}/.windsurf/skills::"
+        "CodeBuddy:${HOME}/.codebuddy/skills::"
     )
 fi
 
 for entry in "${targets[@]}"; do
-    IFS=':' read -r name skills_dir rules_dir <<< "$entry"
+    IFS=':' read -r name skills_dir rules_dir agents_dir <<< "$entry"
     
     if [ -d "$skills_dir" ]; then
         removed_skills=0
@@ -59,6 +59,18 @@ for entry in "${targets[@]}"; do
         if [ "$removed_skills" -gt 0 ]; then
             removed+=("$name (skills): $skills_dir")
             echo "  Removed $removed_skills owned Maxilun skill(s) from: $skills_dir"
+        fi
+    fi
+
+    if [ -n "${agents_dir:-}" ] && [ -d "$agents_dir" ]; then
+        removed_agents=0
+        while IFS= read -r -d '' agent_path; do
+            rm -f -- "$agent_path"
+            removed_agents=$((removed_agents + 1))
+        done < <(find "$agents_dir" -mindepth 1 -maxdepth 1 -type f -name "maxilun-*.md" -print0 2>/dev/null)
+        if [ "$removed_agents" -gt 0 ]; then
+            removed+=("$name (agents): $agents_dir")
+            echo "  Removed $removed_agents Maxilun agent definitions from: $agents_dir"
         fi
     fi
     

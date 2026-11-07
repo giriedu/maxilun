@@ -1,6 +1,5 @@
 """Maxilun Native Skills Loader & Indexer.
-
-Discovers, parses, and indexes the 18 Maxilun specialist skills from disk.
+Discovers, parses, and indexes the 21 Maxilun specialist skills from disk.
 Zero external dependencies.
 """
 
@@ -30,8 +29,7 @@ class SkillDefinition:
 
 
 class SkillsLoader:
-    """Discovers, parses, and provides runtime system prompts for the 18 Maxilun skills."""
-
+    """Discovers, parses, and provides runtime system prompts for the 21 Maxilun skills (22 skills total)."""
     def __init__(self, root_dir: Optional[Path] = None):
         self.root = root_dir or Path.cwd()
         self.skills_dir = self._find_skills_dir()
@@ -80,7 +78,7 @@ class SkillsLoader:
                         frontmatter[k] = v
 
         name = frontmatter.get("name", skill_md.parent.name)
-        version = frontmatter.get("version", "1.0.0")
+        version = frontmatter.get("version", "1.1.0")
         ecosystem = frontmatter.get("ecosystem", "maxilun")
 
         # Triggers

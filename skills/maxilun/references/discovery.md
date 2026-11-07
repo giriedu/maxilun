@@ -40,11 +40,11 @@ Jika keempat dimensi ini sudah terjawab dari prompt + pembacaan repo, **jangan j
 2. **Sajikan Opsi Berbeda Secara Substantif + Rekomendasi**:
    - Hindari pertanyaan kosong seperti *"Bisa jelaskan lebih detail?"* atau *"UI-nya mau seperti apa?"* tanpa jangkar.
    - Berikan 2–3 pilihan nyata beserta konsekuensi singkatnya, dan tandai mana yang direkomendasikan.
-3. **Khusus Desain Antarmuka Baru Tanpa Sistem Desain Eksisting**:
-   - Jika repositori sudah punya token warna/tipografi/komponen, **ikuti dan perkuat sistem yang ada** tanpa bertanya.
-   - Jika proyek benar-benar baru (*greenfield*) atau pengguna meminta *redesign total* namun belum menyebutkan arah gaya, tawarkan **3 arketipe visual yang sungguh kontras** sesuai domain produk (lihat `../maxilun-craft/SKILL.md` dan `../maxilun-craft/references/design-md/index.md`) — misal *Editorial Hangat* vs *Operasional Terang Presisi* vs *Minimalis Kontras Tinggi* — bukan tiga variasi dashboard gelap yang mirip.
+3. **Khusus Desain Antarmuka: Penambahan Fitur vs Redesign**:
+   - **Penambahan Fitur pada Sistem Sehat**: Jika repositori sudah memiliki sistem token/komponen yang sehat dan sesuai domain, **ikuti dan perkuat sistem yang ada** tanpa bertanya.
+   - **Permintaan Redesign / Ganti UI UX**: Jika pengguna meminta redesign, **JANGAN pertahankan token, variabel CSS (:root), atau wrapper layout lama yang mengunci tampilan menjadi kusam/generik**! Lakukan *Clean Cutover*: deteksi 5 Kunci Desain Sistem (`SYS-001` .. `SYS-005` di `purity-catalog.md`), hapus/ganti variabel root lama, buka kontainer layout pembatas, dan pasang fondasi visual baru yang kontekstual domain.
+   - **Arah Gaya Belum Disebutkan**: Jika proyek benar-benar baru (*greenfield*) atau pengguna meminta *redesign total* namun belum menyebutkan arah gaya, tawarkan **3 arketipe visual yang sungguh kontras** sesuai domain produk (lihat `../maxilun-craft/SKILL.md` dan `../maxilun-craft/references/design-md/index.md`) — misal *Editorial Hangat* vs *Operasional Terang Presisi* vs *Minimalis Kontras Tinggi* — bukan tiga variasi dashboard gelap yang mirip.
    - Jika pengguna menjawab *"terserah / rombak maksimal"*, pilih satu arah paling autentik bagi audiens produk tersebut, nyatakan pilihan + alasannya dalam 2–3 kalimat, dan langsung bangun secara menyeluruh.
-
 ---
 
 ## 4. Perbandingan Pola Buruk vs Pola Maxilun
@@ -58,8 +58,9 @@ Jika keempat dimensi ini sudah terjawab dari prompt + pembacaan repo, **jangan j
   2. Hanya ada 1 keputusan Type 1 yang tidak tertulis di skema: aturan pembatalan/slot *double-booking* & sinkronisasi kalender eksternal.
   3. Jika tidak ada integrasi eksternal di `.env.example`, bangun langsung alur reservasi berbasis constraint unik database (`doctor_id, slot_start`) dengan asumsi eksplisit tanpa payment gateway eksternal, atau ajukan 1 klarifikasi fokus bila ditemukan stub Google Calendar separuh jalan.
 
-### Kasus B: Keluhan "Tampilan Masih Generik AI, Ganti UI/UX"
-- **Pola Tambal Sulam (Ditolak)**: Hanya mengubah `border-radius`, mengganti hex ungu ke biru, atau memaksa layout klinik menjadi dashboard gelap bergaya developer tool.
-- **Pola Rombak Struktural (Wajib)**:
-  1. Identifikasi cacat struktur saat ini (misal: seluruh seksi rata tengah seragam, 3 kartu fitur generik tanpa alur tugas utama, label tombol kabur).
-  2. Jika pengguna meminta langsung dieksekusi, tetapkan arah visual yang sesuai domain klinik (misal: *Calm Clinical Operational* — permukaan terang bersih, kontras keterbacaan tinggi, fokus utama pada antrean hari ini & pemilihan jadwal <3 langkah), nyatakan referensi prinsip yang dipakai dan yang ditolak, lalu rombak total struktur komponennya.
+### Kasus B: Keluhan "Tampilan Masih Generik AI, Ganti UI/UX, atau Redesign"
+- **Pola Tambal Sulam & Terkunci (Ditolak)**: Hanya mengubah `border-radius` atau margin di leaf JSX sambil membiarkan variabel `:root` abu-abu generik, layout container sempit, dan wrapper lama tetap mengunci tampilan. Hasilnya UI/UX tetap "begitu-begitu saja".
+- **Pola Rombak Struktural & Buka Kunci Bersih (Wajib)**:
+  1. Identifikasi cacat struktur dan **Kunci Desain Sistem** yang mengunci UI (misal: token slate pucat di `globals.css`, wrapper `max-w-5xl` kaku di `layout.tsx`, tombol/kartu lama bersudut seragam, seluruh seksi rata tengah).
+  2. Buka kunci fondasi: gantikan token `:root` dengan tangga warna OKLCH fisik domain produk, buka container layout agar ritme spasial bernapas, dan mutakhirkan komponen primitif ke formula konsentris.
+  3. Tetapkan arah visual sesuai domain (misal: *Calm Clinical Operational* untuk klinik — permukaan terang bersih, kontras tinggi, fokus antrean & jadwal <3 langkah; atau rujukan konkret dari `../maxilun-craft/references/design-md/`), nyatakan prinsip yang dipakai dan ditolak (DDR), lalu bangun ulang komponen secara menyeluruh dan hapus kode styling lama yang usang (*clean cutover*).

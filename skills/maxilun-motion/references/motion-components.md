@@ -81,6 +81,116 @@ export function cascade(elements: HTMLElement[], staggerMs: number = 50, duratio
 }
 ```
 
+### Scroll-Driven Blur-Reveal & Progressive Focus Primitive
+Pola animasi scroll modern di mana setiap seksi/kartu disembunyikan dalam kondisi blur saat di luar layar, lalu perlahan fokus tajam, memudar terang, dan terangkat halus saat masuk ke viewport.
+
+#### 1. Implementasi CSS Native (Zero-JS Scroll-Timeline)
+```css
+/* Menggunakan CSS Scroll-Driven Animations pada browser modern */
+@keyframes scrollBlurReveal {
+  from {
+    opacity: 0;
+    filter: blur(12px);
+    transform: translateY(32px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0) scale(1);
+  }
+}
+
+.scroll-blur-section {
+  animation: scrollBlurReveal 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-timeline: view();
+  animation-range: entry 10% cover 30%;
+  will-change: transform, opacity, filter;
+}
+
+/* Fallback & Sanitasi Aksesibilitas Mutlak */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-blur-section {
+    animation: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+  }
+}
+```
+
+#### 2. Implementasi Universal via IntersectionObserver (Ringan, Tanpa Lib Luar)
+```typescript
+/**
+ * Inisialisasi scroll reveal dengan efek blur fade-in & gentle rise
+ * Otomatis membersihkan filter: blur setelah selesai agar teks tetap tajam (pixel-crisp).
+ */
+export function initScrollBlurReveal(selector: string = '[data-scroll-reveal]') {
+  if (typeof window === 'undefined') return;
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll(selector).forEach(el => {
+      el.classList.add('is-revealed');
+    });
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const target = entry.target as HTMLElement;
+        target.classList.add('is-revealed');
+        // Bersihkan filter setelah transisi selesai untuk ketajaman teks subpixel
+        setTimeout(() => {
+          target.style.filter = 'none';
+          target.style.willChange = 'auto';
+        }, 800);
+        observer.unobserve(target); // Reveal sekali (one-shot)
+      }
+    });
+  }, {
+    rootMargin: '0px 0px -60px 0px',
+    threshold: 0.15
+  });
+
+  document.querySelectorAll(selector).forEach(el => observer.observe(el));
+}
+```
+
+```css
+/* CSS Class untuk Universal Observer */
+[data-scroll-reveal] {
+  opacity: 0;
+  filter: blur(10px);
+  transform: translateY(28px) scale(0.985);
+  transition:
+    opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity, filter;
+}
+
+[data-scroll-reveal].is-revealed {
+  opacity: 1;
+  filter: blur(0px);
+  transform: translateY(0px) scale(1);
+}
+
+/* Stagger anak komponen otomatis */
+[data-scroll-reveal] > *:nth-child(1) { transition-delay: 50ms; }
+[data-scroll-reveal] > *:nth-child(2) { transition-delay: 120ms; }
+[data-scroll-reveal] > *:nth-child(3) { transition-delay: 190ms; }
+[data-scroll-reveal] > *:nth-child(4) { transition-delay: 260ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-scroll-reveal] {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+```
+
 ## 2. Advanced Multi-Scene Motion (GSAP / Canvas)
 
 Untuk kinetic typography, video sequencing, dan audio-reactive scene:
@@ -169,3 +279,57 @@ export function evaluateSpring(tSeconds: number, params: SpringParams = { stiffn
 ### 5.3 Template Starter Interaktif Bawaan (`assets/`)
 - `assets/starter-opener.html`: Kanvas panggung `1920x1080` responsif dengan 5 layer (`bg`, `mid`, `fg`, `text`, `overlay`), rig kamera virtual, dan injeksi variabel CSS Brand DNA.
 - `assets/starter-explainer.html`: Template multi-scene narasi penjelas lengkap dengan transisi kamera dan kontrol timeline.
+
+## 6. Native CSS Scroll-Driven Animations (Zero JS Runtime)
+
+Gunakan standar modern `animation-timeline: scroll()` dan `view-timeline` untuk animasi pengguliran halaman yang berjalan 100% pada *compositor thread* tanpa beban event listener JavaScript:
+
+### 6.1 Progress Bar Pengguliran Halaman
+```css
+.scroll-progress-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--primary, #5e6ad2);
+  transform-origin: 0% 50%;
+  animation: grow-progress auto linear;
+  animation-timeline: scroll(root block);
+  z-index: 1000;
+}
+
+@keyframes grow-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+```
+
+### 6.2 View-Timeline Reveal & Staggered Viewport Entrance
+```css
+.reveal-on-scroll {
+  animation: reveal-fade-up auto ease-out both;
+  animation-timeline: view();
+  animation-range: entry 15% cover 40%;
+}
+
+@keyframes reveal-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Fallback untuk Browser Lama & Aksesibilitas */
+@supports not (animation-timeline: scroll()) {
+  .reveal-on-scroll { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress-bar, .reveal-on-scroll {
+    animation: none !important;
+  }
+}
+```

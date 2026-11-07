@@ -10,7 +10,7 @@ description: >
   "3D scene", "immersive website", "Three.js", "React Three Fiber", "WebGL experience",
   "motion-led website", "web visual reference", "scroll storytelling".
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -61,7 +61,7 @@ Detail lengkap: `../maxilun/references/engines.md`.
 ## 1. Domain Overrides & Runtime Selection
 
 - **Purpose Gate Wajib**: Setiap animasi wajib memenuhi minimal satu fungsi di **§5.1** dan tunduk pada `../maxilun/references/purity-catalog.md`. Tolak efek dekoratif tanpa tujuan komunikasi atau umpan balik.
-- **Pemilihan Runtime Proporsional**: Untuk transisi antarmuka biasa, utamakan CSS native dan Web Animations API (WAAPI). Untuk permintaan lingkungan 3D interaktif penuh, baca `references/3d-scenes.md` dan gunakan runtime 3D proyek (Three.js / React Three Fiber)—jangan mengganti permintaan dunia 3D dengan efek *parallax* DOM/CSS.
+- **Pemilihan Runtime Proporsional**: Untuk transisi antarmuka biasa, utamakan CSS native dan Web Animations API (WAAPI). Untuk permintaan lingkungan 3D interaktif penuh, baca `references/3d-scenes.md` dan gunakan runtime 3D proyek (Three.js / React Three Fiber)—jangan mengganti permintaan dunia 3D dengan efek *parallax* DOM/CSS. **Larangan Gimmick 3D Partikel Palsu**: Dilarang memasang canvas 3D partikel mengambang, kubus wireframe, atau "3D Mesh Topology" pada produk backend, API gateway, atau infrastruktur messaging yang tidak memiliki wujud fisik 3D di dunia nyata (`../maxilun/references/purity-catalog.md` `CMP-016`). Pada produk pengembang, gantikan dengan artefak operasional hidup (live socket stream, terminal pairing, inspektor JSON).
 - **Aksesibilitas Sejak Baris Pertama**: Setiap definisi gerak wajib menyertakan perilaku `@media (prefers-reduced-motion: reduce)` yang mempertahankan keterbacaan informasi penuh.
 
 ```mermaid
@@ -84,13 +84,16 @@ Baca `references/index.md` dan `references/choreography-styles.md` sebelum meran
 3. **Batas Motif Visual**:
    - Tetapkan satu tata bahasa gerak utama per layar/shot. Maksimal **3 primitif per elemen**, maksimal **2 area gerak aktif bersamaan**, dan maksimal **1 jenis gerakan kamera** pada satu waktu (`dolly` atau `pan`; hindari menumpuk *scramble*, *glow*, *particle*, dan *glitch* sekaligus).
 
+4. **Koreografi Scroll-Driven Section (Blur Reveal & Progressive Focus)**:
+   - Terapkan pola `ScrollBlurReveal` (`references/motion-components.md`) pada seksi naratif dan kartu fitur: sembunyikan dengan `opacity: 0; filter: blur(10px); transform: translateY(28px)`, lalu transisi ke fokus tajam `blur(0)` saat masuk viewport dengan stagger anak bertahap.
+   - Bersihkan `filter: none` pasca-transisi untuk menjaga ketajaman font subpixel, dan matikan seketika untuk `prefers-reduced-motion`.
 ## 3. Katalog Primitif Motion, Text Kinetics & Komponen
 
 Detail implementasi tersedia di `references/motion-components.md`. Kerangka di `assets/starter-opener.html` dan `assets/starter-explainer.html` hanyalah fondasi teknis—selalu ganti palet, tipografi, copy, dan koreografi sesuai brief proyek:
 
 | Kategori | Kapabilitas & Primitif | Target Runtime & Aturan Aksesibilitas |
 |---|---|---|
-| **Motion Primitives** | `Reveal` (mask/directional), `Cascade` (stagger), `Spring`, `Trace` (SVG `stroke-dashoffset`), `Morph` (SVG `d`), `Orbit`, `Pulse`, `Breathe`, `Wave`, `Drag`, `Scatter` | CSS / WAAPI / SVG / Canvas; animasikan hanya `transform`, `opacity`, SVG path, atau properti shader |
+| **Motion Primitives** | `Reveal` (mask/directional), `ScrollBlurReveal` (hide -> blur -> sharp focus), `Cascade` (stagger), `Spring`, `Trace`, `Morph`, `Pulse`, `Breathe`, `Drag`, `Scatter` | CSS (`animation-timeline: view()`) / WAAPI / Observer / Canvas; animasikan hanya `transform`, `opacity`, `filter`, SVG path |
 | **Text Kinetics** | `MaskReveal`, `Elastic`, `Scramble`, `Typewriter`, `HighlightSweep`, `SplitReunite`, `CounterOdometer` (`tabular-nums`) | DOM dengan `aria-label` utuh pada elemen induk dan `aria-hidden="true"` pada pecahan `<span>` |
 | **Kamera 2D & 3D Scene** | `Portal Iris Wipe`, `Rack Focus`, `Parallax Planes`, `Light Sweep`, serta lingkungan 3D multi-zona, pencahayaan, dan kamera interaktif | CSS / SVG Filter / Three.js / React Three Fiber (`references/3d-scenes.md`) |
 | **Audio-Reactive** | `Waveform Ribbon`, `Circular Spectrum`, `Particle Field`, `Typography Pulse`, `OKLCH Color Shift`, `Geometry Morph` | Web Audio API / Canvas 2D; untuk video gunakan analisis frekuensi deterministik |

@@ -2,14 +2,14 @@
 
 Simulates the Master Orchestrator decision logic:
 - Type 1 (Irreversible / High-Cost) vs Type 2 (Reversible / Low-Cost) classification
-- Single-owner routing across the 17 specialists
+- Single-owner routing across the 21 specialists
 - Conditional companion attachment at hard capability boundaries
 - Pre-flight Knowledge Graph inspection recommendation
 """
 
+import re
 from dataclasses import dataclass, field
 from typing import List
-
 
 @dataclass
 class RoutingDecision:
@@ -71,6 +71,14 @@ class MaxilunRouter:
         companions = []
         pre_flight = "Inspect callers via callsIn: or read affected file range before modifying."
         rationale = "General production code modification or feature implementation."
+        def match_tokens(tokens: List[str]) -> bool:
+            for tok in tokens:
+                if len(tok) <= 4 and tok.isalpha():
+                    if re.search(rf"\b{re.escape(tok)}\b", p):
+                        return True
+                elif tok in p:
+                    return True
+            return False
 
         if any(k in p for k in ["login", "auth", "token", "password", "oauth", "jwt", "csrf", "xss", "keamanan", "enkripsi", "secret", "totp"]):
             owner = "maxilun-sentinel"
@@ -85,15 +93,51 @@ class MaxilunRouter:
             rationale = "Cryptographic webhook signature verification and idempotent payload mutation."
             pre_flight = "Check webhook replay window, raw body HMAC, and database idempotency table."
 
-        elif any(k in p for k in ["app router", "rsc", "server component", "server action", "next.js", "nextjs", "hydration", "flight"]):
-            owner = "maxilun-frontend"
-            rationale = "Next.js 15 App Router topology, RSC vs Client boundaries, or Server Actions."
-            pre_flight = "Check existing app/ directory layout and 'use client' leaf boundary placement."
-
-        elif any(k in p for k in ["desain ui", "redesign", "landing page", "komponen ui", "sistem desain", "ui/ux", "tampilan", "logo svg", "brand identity"]):
+        elif any(k in p for k in ["landing page", "desain ui", "redesign", "komponen ui", "sistem desain", "ui/ux", "tampilan", "dashboard", "halaman web", "website", "logo svg", "brand identity"]):
             owner = "maxilun-craft"
             rationale = "Domain-authentic visual design, OKLCH tokens, 4 UI states, or brand assets."
             pre_flight = "Select 1-2 matching design systems from references/design-md/ and verify tokens."
+            if any(k in p for k in ["next.js", "nextjs", "react", "app router", "rsc", "server action"]):
+                companions.append("maxilun-frontend")
+
+        elif any(k in p for k in ["app router", "rsc", "server component", "server action", "next.js", "nextjs", "hydration", "flight"]):
+            if any(k in p for k in ["halaman", "landing", "tampilan", "ui", "dashboard", "web", "desain"]):
+                owner = "maxilun-craft"
+                companions.append("maxilun-frontend")
+                rationale = "Domain-authentic visual design grounded in design-md/ with Next.js App Router wiring."
+                pre_flight = "Select 1-2 matching design systems from references/design-md/ and verify App Router topology."
+            else:
+                owner = "maxilun-frontend"
+                rationale = "Next.js 15 App Router topology, RSC vs Client boundaries, or Server Actions."
+                pre_flight = "Check existing app/ directory layout and 'use client' leaf boundary placement."
+        elif match_tokens(["powerbuilder", "datawindow", "powerscript", "sqlca", "aplikasi desktop", "windows desktop", "win32", "wpf", "winui", "macos desktop", "appkit", "qt", "tauri", "desktop app"]):
+            owner = "maxilun-desktop"
+            rationale = "Desktop application engineering (Win32, WPF, AppKit, Qt) or PowerBuilder enterprise systems."
+            pre_flight = "Check UI thread message loop separation and verify database transaction or native window handle balance."
+            if any(k in p for k in ["tabel", "skema", "database", "query"]):
+                companions.append("maxilun-data")
+
+        elif match_tokens(["android", "ios", "flutter", "react native", "swiftui", "jetpack compose", "kotlin mobile", "swift mobile", "kmp", "mobile app", "aplikasi mobile", "apk", "ipa", "xcode", "gradle android"]):
+            owner = "maxilun-mobile"
+            rationale = "Native Android/iOS or cross-platform mobile application development."
+            pre_flight = "Check thread isolation (MainActor / Dispatchers.IO) and verify touch ergonomics & lifecycle memory bounds."
+
+        elif match_tokens(["iot", "embedded", "esp32", "esp8266", "arduino", "stm32", "raspberry pi", "pico", "micropython", "firmware", "freertos", "modbus", "ble", "sensor", "gpio", "i2c", "spi", "uart"]):
+            owner = "maxilun-iot"
+            rationale = "Embedded systems, microcontroller firmware, hardware buses, and IoT telemetry."
+            pre_flight = "Audit ISR memory allocations (zero-heap rule), task stack sizes, and watchdog feeding invariants."
+
+        elif match_tokens(["mikrotik", "routeros", "jaringan", "firewall", "wireguard", "vlan", "routing", "bandwidth", "queue tree", "winbox", "nftables", "bgp", "ospf", "switch", "iproute2"]):
+            owner = "maxilun-network"
+            rationale = "Network engineering, MikroTik RouterOS automation, Linux networking, and firewall routing policies."
+            pre_flight = "Inspect default-drop firewall policy, interface lists, and verify routing table convergence."
+
+        elif match_tokens(["rag", "retrieval augmented", "vector search", "embedding", "embeddings", "prompt eval", "context caching", "llm app", "rerank", "chunking", "vector database", "pgvector", "qdrant"]):
+            owner = "maxilun-ai"
+            rationale = "AI & LLM engineering, deterministic RAG retrieval, prompt evals, or context caching."
+            pre_flight = "Inspect document chunking boundaries, hybrid search weights, and prompt regression rubrics."
+            if any(k in p for k in ["tabel", "skema", "db", "pgvector"]):
+                companions.append("maxilun-data")
 
         elif any(k in p for k in ["skema", "tabel", "database", "migrasi", "index", "query plan", "rls", "postgres", "sql", "explain"]):
             owner = "maxilun-data"
@@ -161,20 +205,21 @@ class MaxilunRouter:
             rationale = "Codebase symbol lookup, call hierarchy mapping, or dependency graph generation."
             pre_flight = "Query maxilun-out/graph.json cache or run python cli.py scan."
 
+
         # 3. Wave Coordination Decomposition (Maxilun Section 4)
         is_multi = len(companions) > 0 or any(k in p for k in ["lengkap", "fullstack", "end-to-end", "dan test", "beserta ui", "arsitektur"])
         waves = []
         if is_multi:
-            w1_specs = [owner] if owner in ("maxilun-architect", "maxilun-data", "maxilun-sentinel", "maxilun-scaffold") else []
+            w1_specs = [owner] if owner in ("maxilun-architect", "maxilun-data", "maxilun-sentinel", "maxilun-scaffold", "maxilun-network") else []
             for c in companions:
-                if c in ("maxilun-architect", "maxilun-data", "maxilun-sentinel", "maxilun-scaffold") and c not in w1_specs:
+                if c in ("maxilun-architect", "maxilun-data", "maxilun-sentinel", "maxilun-scaffold", "maxilun-network") and c not in w1_specs:
                     w1_specs.append(c)
             if not w1_specs:
                 w1_specs = [owner]
 
             w2_specs = []
             for s in [owner] + companions:
-                if s in ("maxilun-engineer", "maxilun-frontend", "maxilun-craft", "maxilun-motion", "maxilun-cinecode", "maxilun-content"):
+                if s in ("maxilun-engineer", "maxilun-frontend", "maxilun-craft", "maxilun-motion", "maxilun-cinecode", "maxilun-content", "maxilun-desktop", "maxilun-mobile", "maxilun-iot", "maxilun-ai"):
                     if s not in w2_specs:
                         w2_specs.append(s)
             if not w2_specs:

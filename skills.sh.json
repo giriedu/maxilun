@@ -21,11 +21,12 @@
     },
     {
       "title": "Core Implementation & Data",
-      "description": "Clean code implementation, TDD, database schema/migration, and Next.js React Server Components.",
+      "description": "Clean code implementation, TDD, database schema/migration, Next.js RSC, and AI/RAG engineering.",
       "skills": [
         "maxilun-engineer",
         "maxilun-data",
-        "maxilun-frontend"
+        "maxilun-frontend",
+        "maxilun-ai"
       ]
     },
     {
@@ -48,6 +49,16 @@
         "maxilun-diagrams",
         "maxilun-content",
         "maxilun-seo-audit"
+      ]
+    },
+    {
+      "title": "Systems, Devices & Network",
+      "description": "Native desktop & PowerBuilder systems, mobile Android/iOS, IoT microcontroller firmware, and MikroTik network engineering.",
+      "skills": [
+        "maxilun-desktop",
+        "maxilun-mobile",
+        "maxilun-iot",
+        "maxilun-network"
       ]
     }
   ]

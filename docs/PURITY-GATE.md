@@ -22,7 +22,7 @@ The **Maxilun Purity Gate** is an engineering and design constraint applied to s
 
 - Reject raw AI visual clichés (purple-blue gradients, monotonous center-everything cascades, floating hero badge capsules, fake KPI strips) **and** reject misplaced SaaS monoculture (forcing dark developer-tool Bento grids, slate-indigo palettes, or `Cmd+K` badges onto clinical, editorial, retail, or consumer products).
 - Derive color hue, typography, navigation, and layout structure from the product's real subject matter and user workflow, informed by 1–2 matched analyses from `skills/maxilun-craft/references/design-md/`.
-- Never apply minor border-radius or color band-aids to a cliché layout when asked to redesign. Rebuild the visual hierarchy around real domain tasks; ask once with 3 genuinely contrasting visual archetypes only if aesthetic direction is completely open.
+- Never preserve legacy design system locks (stale `:root` slate/gray tokens, rigid layout wrappers, zombie component styling) when asked to redesign. Immediately dismantle the locking system at root, execute a clean cutover with domain-authentic OKLCH ramps, and rebuild the visual hierarchy around real domain tasks. Never apply minor border-radius or color band-aids to a locked layout.
 
 ## Motion & Video rules (`maxilun-motion` · `maxilun-cinecode`)
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="1.0.0"
+VERSION="1.1.0"
 PROJECT_MODE=false
 for arg in "$@"; do
     case "$arg" in
@@ -11,7 +11,7 @@ for arg in "$@"; do
     esac
 done
 
-echo "🌑 Installing Maxilun ${VERSION} (18 skills: 1 orchestrator + 17 specialists)"
+echo "🌑 Installing Maxilun ${VERSION} (23 skills + 13 autonomous agents)"
 echo ""
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -19,6 +19,7 @@ SKILLS_SRC="${SCRIPT_DIR}/skills"
 if [ ! -d "$SKILLS_SRC" ]; then
     SKILLS_SRC="${SCRIPT_DIR}/.agents/skills"
 fi
+AGENTS_SRC="${SCRIPT_DIR}/agents"
 
 installed_to=()
 installed_backups=()
@@ -84,7 +85,7 @@ install_target() {
     local platform_name="$1"
     local target_dir="$2"
     local legacy_rules_dir="${3:-}"
-
+    local agents_dir="${4:-}"
     local existing_maxilun=()
     if [ -d "$target_dir" ]; then
         while IFS= read -r -d '' d; do
@@ -112,31 +113,36 @@ install_target() {
     cp -R "${SKILLS_SRC}/"* "$target_dir/" 2>/dev/null || true
 
     # Never ship bytecode or local scan caches
-    find "$target_dir" -type d \( -name __pycache__ -o -name .maxilun -o -name maxilun-out -o -name graphify-out \) -prune -exec rm -rf {} + 2>/dev/null || true
+    find "$target_dir" -type d \( -name __pycache__ -o -name .maxilun -o -name maxilun-out \) -prune -exec rm -rf {} + 2>/dev/null || true
     find "$target_dir" -type f -name '*.pyc' -delete 2>/dev/null || true
     [ -n "$legacy_rules_dir" ] && clean_legacy_rules "$legacy_rules_dir"
+
+    if [ -n "$agents_dir" ] && [ -d "$AGENTS_SRC" ]; then
+        mkdir -p "$agents_dir" 2>/dev/null || true
+        cp -R "${AGENTS_SRC}/"* "$agents_dir/" 2>/dev/null || true
+    fi
 
     installed_to+=("$platform_name: $target_dir")
 }
 
 if [ "$PROJECT_MODE" = true ]; then
     CURRENT_DIR="$(pwd)"
-    install_target "Universal / Antigravity / Zed (Project)" "${CURRENT_DIR}/.agents/skills" "${CURRENT_DIR}/.agents/rules"
-    install_target "[CC] / Termul (Project)" "${CURRENT_DIR}/.claude/skills" "${CURRENT_DIR}/.claude/rules"
+    install_target "Universal / Antigravity / Zed (Project)" "${CURRENT_DIR}/.agents/skills" "${CURRENT_DIR}/.agents/rules" "${CURRENT_DIR}/.agents/agents"
+    install_target "[CC] / Termul (Project)" "${CURRENT_DIR}/.claude/skills" "${CURRENT_DIR}/.claude/rules" "${CURRENT_DIR}/.claude/agents"
     install_target "Trae (Project)" "${CURRENT_DIR}/.trae/skills"
     install_target "Windsurf (Project)" "${CURRENT_DIR}/.windsurf/skills"
     install_target "CodeBuddy (Project)" "${CURRENT_DIR}/.codebuddy/skills"
 else
-    install_target "Antigravity CLI/IDE & Zed" "${HOME}/.agents/skills" "${HOME}/.agents/rules"
-    install_target "[CC] & Termul" "${HOME}/.claude/skills" "${HOME}/.claude/rules"
+    install_target "Antigravity CLI/IDE & Zed" "${HOME}/.agents/skills" "${HOME}/.agents/rules" "${HOME}/.agents/agents"
+    install_target "[CC] & Termul" "${HOME}/.claude/skills" "${HOME}/.claude/rules" "${HOME}/.claude/agents"
 
     if [ -d "${HOME}/.codex" ]; then
         install_target "Codex" "${HOME}/.codex/skills" "${HOME}/.codex/rules"
     fi
     if [ -d "${HOME}/.config/opencode" ]; then
-        install_target "OpenCode" "${HOME}/.config/opencode/skills" "${HOME}/.config/opencode/rules"
+        install_target "OpenCode" "${HOME}/.config/opencode/skills" "${HOME}/.config/opencode/rules" "${HOME}/.config/opencode/agents"
     elif [ -d "${HOME}/.opencode" ]; then
-        install_target "OpenCode" "${HOME}/.opencode/skills" "${HOME}/.opencode/rules"
+        install_target "OpenCode" "${HOME}/.opencode/skills" "${HOME}/.opencode/rules" "${HOME}/.opencode/agents"
     fi
     if [ -d "${HOME}/.gemini" ]; then
         install_target "Gemini CLI" "${HOME}/.gemini/config/skills"

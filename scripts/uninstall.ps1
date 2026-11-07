@@ -20,24 +20,24 @@ $Removed = @()
 if ($Project) {
     $CurrentDir = Get-Location
     $Targets = @(
-        @{ Name = "Universal / Antigravity / Zed (Project)"; SkillsPath = "$CurrentDir\.agents\skills"; RulesPath = "$CurrentDir\.agents\rules" },
-        @{ Name = "Claude Code (Project)";                 SkillsPath = "$CurrentDir\.claude\skills"; RulesPath = "$CurrentDir\.claude\rules" },
-        @{ Name = "Trae (Project)";                          SkillsPath = "$CurrentDir\.trae\skills"; RulesPath = $null },
-        @{ Name = "Windsurf (Project)";                      SkillsPath = "$CurrentDir\.windsurf\skills"; RulesPath = $null },
-        @{ Name = "CodeBuddy (Project)";                     SkillsPath = "$CurrentDir\.codebuddy\skills"; RulesPath = $null }
+        @{ Name = "Universal / Antigravity / Zed (Project)"; SkillsPath = "$CurrentDir\.agents\skills"; AgentsPath = "$CurrentDir\.agents\agents"; RulesPath = "$CurrentDir\.agents\rules" },
+        @{ Name = "Claude Code (Project)";                 SkillsPath = "$CurrentDir\.claude\skills"; AgentsPath = "$CurrentDir\.claude\agents"; RulesPath = "$CurrentDir\.claude\rules" },
+        @{ Name = "Trae (Project)";                          SkillsPath = "$CurrentDir\.trae\skills";   AgentsPath = $null; RulesPath = $null },
+        @{ Name = "Windsurf (Project)";                      SkillsPath = "$CurrentDir\.windsurf\skills"; AgentsPath = $null; RulesPath = $null },
+        @{ Name = "CodeBuddy (Project)";                     SkillsPath = "$CurrentDir\.codebuddy\skills"; AgentsPath = $null; RulesPath = $null }
     )
 } else {
     $Targets = @(
-        @{ Name = "Antigravity CLI/IDE"; SkillsPath = "$env:USERPROFILE\.agents\skills"; RulesPath = "$env:USERPROFILE\.agents\rules" },
-        @{ Name = "Claude Code";         SkillsPath = "$env:USERPROFILE\.claude\skills"; RulesPath = "$env:USERPROFILE\.claude\rules" },
-        @{ Name = "Codex";               SkillsPath = "$env:USERPROFILE\.codex\skills"; RulesPath = "$env:USERPROFILE\.codex\rules" },
-        @{ Name = "OpenCode (.config)"; SkillsPath = "$env:USERPROFILE\.config\opencode\skills"; RulesPath = "$env:USERPROFILE\.config\opencode\rules" },
-        @{ Name = "OpenCode";            SkillsPath = "$env:USERPROFILE\.opencode\skills";        RulesPath = "$env:USERPROFILE\.opencode\rules" },
-        @{ Name = "Gemini CLI";          SkillsPath = "$env:USERPROFILE\.gemini\config\skills"; RulesPath = $null },
-        @{ Name = "Cursor";              SkillsPath = "$env:USERPROFILE\.cursor\skills"; RulesPath = $null },
-        @{ Name = "Trae";                SkillsPath = "$env:USERPROFILE\.trae\skills"; RulesPath = $null },
-        @{ Name = "Windsurf";            SkillsPath = "$env:USERPROFILE\.windsurf\skills"; RulesPath = $null },
-        @{ Name = "CodeBuddy";           SkillsPath = "$env:USERPROFILE\.codebuddy\skills"; RulesPath = $null }
+        @{ Name = "Antigravity CLI/IDE"; SkillsPath = "$env:USERPROFILE\.agents\skills";          AgentsPath = "$env:USERPROFILE\.agents\agents";          RulesPath = "$env:USERPROFILE\.agents\rules" },
+        @{ Name = "Claude Code";         SkillsPath = "$env:USERPROFILE\.claude\skills";          AgentsPath = "$env:USERPROFILE\.claude\agents";          RulesPath = "$env:USERPROFILE\.claude\rules" },
+        @{ Name = "Codex";               SkillsPath = "$env:USERPROFILE\.codex\skills";           AgentsPath = $null;                                      RulesPath = "$env:USERPROFILE\.codex\rules" },
+        @{ Name = "OpenCode (.config)"; SkillsPath = "$env:USERPROFILE\.config\opencode\skills"; AgentsPath = "$env:USERPROFILE\.config\opencode\agents"; RulesPath = "$env:USERPROFILE\.config\opencode\rules" },
+        @{ Name = "OpenCode";            SkillsPath = "$env:USERPROFILE\.opencode\skills";        AgentsPath = "$env:USERPROFILE\.opencode\agents";        RulesPath = "$env:USERPROFILE\.opencode\rules" },
+        @{ Name = "Gemini CLI";          SkillsPath = "$env:USERPROFILE\.gemini\config\skills";   AgentsPath = $null;                                      RulesPath = $null },
+        @{ Name = "Cursor";              SkillsPath = "$env:USERPROFILE\.cursor\skills";          AgentsPath = $null;                                      RulesPath = $null },
+        @{ Name = "Trae";                SkillsPath = "$env:USERPROFILE\.trae\skills";            AgentsPath = $null;                                      RulesPath = $null },
+        @{ Name = "Windsurf";            SkillsPath = "$env:USERPROFILE\.windsurf\skills";        AgentsPath = $null;                                      RulesPath = $null },
+        @{ Name = "CodeBuddy";           SkillsPath = "$env:USERPROFILE\.codebuddy\skills";       AgentsPath = $null;                                      RulesPath = $null }
     )
 }
 
@@ -54,6 +54,17 @@ foreach ($target in $Targets) {
             }
             $Removed += "$($target.Name) (skills): $($target.SkillsPath)"
             Write-Host "  Removed Maxilun/MSAL skills from: $($target.SkillsPath)" -ForegroundColor Green
+        }
+    }
+
+    if ($target.AgentsPath -and (Test-Path $target.AgentsPath)) {
+        $agentFiles = Get-ChildItem -Path $target.AgentsPath -File -Filter "maxilun-*.md" -ErrorAction SilentlyContinue
+        if ($agentFiles) {
+            foreach ($af in $agentFiles) {
+                Remove-Item -Path $af.FullName -Force
+            }
+            $Removed += "$($target.Name) (agents): $($target.AgentsPath)"
+            Write-Host "  Removed Maxilun agent definitions from: $($target.AgentsPath)" -ForegroundColor Green
         }
     }
 

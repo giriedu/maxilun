@@ -20,6 +20,7 @@ class ToolRegistry:
         self.fs = FSTools()
         self.bash = BashTool()
         self.kg = KnowledgeGraphTool(repo_root)
+        self._custom_schemas: Dict[str, Dict[str, Any]] = {}
 
         self._tools: Dict[str, Callable] = {
             "read_file": self.fs.read_file,
@@ -156,7 +157,7 @@ class ToolRegistry:
                     }
                 }
             }
-        ]
+        ] + list(self._custom_schemas.values())
 
     def execute(self, tool_name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
         """Dispatches tool execution safely with error handling."""
@@ -170,3 +171,13 @@ class ToolRegistry:
             return {"error": f"Invalid arguments for tool '{tool_name}': {str(e)}"}
         except Exception as e:
             return {"error": f"Execution error in tool '{tool_name}': {str(e)}"}
+
+    def register_tool(self, name: str, fn: Callable, schema: Dict[str, Any]) -> None:
+        """Registers an active runtime tool with its schema."""
+        self._tools[name] = fn
+        self._custom_schemas[name] = schema
+
+    def unregister_tool(self, name: str) -> None:
+        """Removes a runtime tool."""
+        self._tools.pop(name, None)
+        self._custom_schemas.pop(name, None)

@@ -11,7 +11,7 @@ description: >
   "spesifikasi teknis", "dokumentasi API", "buat changelog", "panduan migrasi", "buat runbook",
   "llms.txt", "laporan bisnis", "business report", "laporan KPI", or documentation and specification tasks.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use

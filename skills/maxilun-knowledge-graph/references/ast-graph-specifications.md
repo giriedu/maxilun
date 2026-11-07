@@ -1,0 +1,70 @@
+# Knowledge Graph AST Schema & Blast-Radius Specifications
+
+<!-- metadata:
+  version: "1.0.0"
+  sync_target: "skills/maxilun-knowledge-graph/SKILL.md"
+  origin: "Maxilun Knowledge Graph Engine"
+-->
+
+Panduan struktur data representasi graf pengetahuan (*Knowledge Graph*), skema simpul-sisi (*node-edge schema*), dan protokol kueri simbolik berbasis AST.
+
+---
+
+## 1. Skema Node & Edge Graph
+
+Graf diekspor ke dalam berkas `maxilun-out/graph.json` menggunakan format JSON terstandarisasi:
+
+```json
+{
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "file:src/auth/session.ts",
+      "type": "FILE",
+      "path": "src/auth/session.ts",
+      "language": "typescript"
+    },
+    {
+      "id": "func:src/auth/session.ts:verifySession",
+      "type": "FUNCTION",
+      "name": "verifySession",
+      "line": 42,
+      "exported": true
+    }
+  ],
+  "edges": [
+    {
+      "source": "func:src/routes/api.ts:handleLogin",
+      "target": "func:src/auth/session.ts:verifySession",
+      "type": "CALLS"
+    },
+    {
+      "source": "file:src/routes/api.ts",
+      "target": "file:src/auth/session.ts",
+      "type": "IMPORTS"
+    }
+  ]
+}
+```
+
+---
+
+## 2. Tata Bahasa Kueri Simbol (Symbol Query Grammar)
+
+Gunakan perintah CLI `python cli.py query "<grammar>"` untuk menelusuri graf tanpa membaca berkas teks penuh:
+
+1. **`defOf:<simbol>`**:
+   - Mencari titik definisi fungsi, kelas, atau tipe (mengembalikan `file:line`).
+2. **`callsIn:<fungsi>`**:
+   - Menemukan seluruh pemanggil downstream atau fungsi apa saja yang dipanggil oleh target.
+3. **`importersOf:<file>`**:
+   - Mengembalikan daftar seluruh berkas yang mengimpor modul target untuk menghitung radius dampak (*blast radius*).
+
+---
+
+## 3. Kalkulasi Radius Dampak (Blast Radius)
+
+Sebelum fungsi publik diubah:
+1. **Derajat Ketergantungan Langsung (Degree 1)**: Modul yang langsung mengimpor simbol yang akan diedit.
+2. **Derajat Ketergantungan Transitif (Degree 2+)**: Modul hilir yang mengonsumsi hasil keluaran dari modul Degree 1.
+3. Jika Degree 1 $> 10$ berkas, eskalasi sebagai keputusan *Type 1 (Irreversible / High-Blast)* sebelum mengubah tanda tangan fungsi.

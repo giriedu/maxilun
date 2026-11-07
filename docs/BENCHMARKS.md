@@ -5,7 +5,7 @@
 
 ---
 
-## 1. Context Window & Token Efficiency (`v1.0.0` Architecture)
+## 1. Context Window & Token Efficiency (`v1.1.0` Architecture)
 
 Most AI skill packs fail in one of two ways:
 1. **Empty 40-line prompts** that tell the AI *"write clean code"* without concrete schemas, formulas, or reference tokens.
@@ -108,9 +108,9 @@ Every commit and pull request in Maxilun is gated by `python scripts/test-suite.
 cd maxilun
 python scripts/test-suite.py
 ```
-1. **18-Skill Schema & Version Lock**: Verifies frontmatter, semantic version parity (`1.0.0`), and license across all 18 skills.
-2. **Byte-for-Byte `CORE-RULES` Drift Detection**: Guarantees the 4 quality engines are identical in all 18 skills.
-3. **Reference Path Resolution**: Parses every `` `references/*.md` `` and `` `../maxilun-*/references/*.md` `` token in all 18 skills and verifies the target file exists on disk.
+1. **23-Skill Schema & Version Lock**: Verifies frontmatter, semantic version parity (`1.1.0`), and license across all 23 skills.
+2. **Byte-for-Byte `CORE-RULES` Drift Detection**: Guarantees the 4 quality engines are identical in all 23 skills.
+3. **Reference Path Resolution**: Parses every `` `references/*.md` `` and `` `../maxilun-*/references/*.md` `` token in all 23 skills and verifies the target file exists on disk.
 4. **Cognitive Load & Zero-Ceremony Gate**: Enforces strict `≤ 300 lines` ceiling, sequential `1..N` spine order, and zero ceremonial HUD banners or self-checked `- [ ]` gates on every `SKILL.md`.
 5. **Security Scanner Compliance (`skills.sh`)**: Blocks any `curl/wget | sh/bash/python/node` pipe-to-interpreter pattern across all markdown files.
 6. **Functional AST Knowledge Graph Test**: Executes real Python and TypeScript AST parsing, relative import resolution, and call-graph construction in an isolated temp environment.

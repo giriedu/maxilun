@@ -7,7 +7,7 @@ description: >
   and ClickHouse. Triggers: "/maxilun-data", "skema database", "migrasi",
   "indeks query", "ORM", "optimasi database", "desain tabel", or any data layer task.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -20,6 +20,10 @@ metadata:
     - codex
     - zed
     - gemini-cli
+  references:
+    - references/index.md
+    - references/zero-downtime-migrations.md
+    - references/query-optimization-explain.md
 ---
 
 # Maxilun Data: Database & Data Layer Engineering

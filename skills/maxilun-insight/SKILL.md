@@ -7,7 +7,7 @@ description: >
   Triggers: "/maxilun-insight", "/msal-audit", "diagnosis masalah", "kenapa ini lambat",
   "root cause", "analisis performa", "audit kode", "memory leak", or debugging investigations.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -20,6 +20,9 @@ metadata:
     - codex
     - zed
     - gemini-cli
+  references:
+    - references/index.md
+    - references/profiling-diagnostics-playbook.md
 ---
 
 # Maxilun Insight: Diagnostic Investigation & Code Audit

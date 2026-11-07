@@ -28,6 +28,26 @@ export const MusicBed: React.FC = () => {
 };
 ```
 
+### Automatic Audio Ducking Pattern
+Gunakan fungsi deterministik `computeAudioDuckingGain()` dari `components/Effects` untuk menurunkan volume musik latar secara otomatis saat interval narasi/speech aktif:
+
+```tsx
+import { Audio } from '@remotion/media';
+import { useCurrentFrame, staticFile } from 'remotion';
+import { computeAudioDuckingGain } from './components/Effects';
+
+export const DuckedSoundtrack: React.FC = () => {
+  const frame = useCurrentFrame();
+  const speechIntervals = [
+    { startFrame: 30, endFrame: 120 },
+    { startFrame: 150, endFrame: 240 },
+  ];
+  const volume = computeAudioDuckingGain(frame, speechIntervals, { duckedGainDb: -14, attackFrames: 12, releaseFrames: 18 });
+
+  return <Audio src={staticFile('soundtrack.mp3')} volume={volume} />;
+};
+```
+
 For edits that need explicit timeline placement, use `<Sequence>` or the audio component's documented timing props. Calculate every sync point from the actual clip, frame rate, and edit; do not assume a default tempo.
 
 ## 3. Beat and narration sync

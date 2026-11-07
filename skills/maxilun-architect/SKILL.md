@@ -10,7 +10,7 @@ description: >
   "analisis dependensi", "kontrak API", "batas modul", "dampak perubahan", "/migration",
   "/tech-select", "capacity planning", "multi-tenant", or major structural decisions.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   maintainer: Maxilun Core Team

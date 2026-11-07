@@ -8,7 +8,7 @@ Mendukung instalasi langsung dari GitHub untuk Claude Code, Antigravity, Cursor,
 # 1. Perintah Standar (Interaktif - pilih skill & agen target):
 npx skills add giriedu/maxilun
 
-# 2. Pasang seluruh 18 skill secara global (-g) tanpa prompt (-y):
+# 2. Pasang seluruh 23 skill secara global (-g) tanpa prompt (-y):
 npx skills add giriedu/maxilun -g -y
 
 # 3. Khusus Claude Code (Level Project Workspace):
@@ -79,7 +79,7 @@ v1 menaruh aturan di `rules/` pada root repo. `npx skills add` hanya menyalin fo
 2. Installer v2 menghapus sisa file aturan v1 di luar folder skill secara otomatis, hanya jika file tersebut membawa penanda Maxilun.
 3. Verifikasi: setiap `SKILL.md` harus memuat blok `<!-- CORE-RULES:START -->`, dan `skills/maxilun/references/engines.md` harus ada.
 
-Jika Anda memakai skill di luar ekosistem ini, hapus rujukan ke paket eksternal di luar 18 skill Maxilun: v2 berdiri mandiri sepenuhnya tanpa dependensi skill pihak ketiga.
+Jika Anda memakai skill di luar ekosistem ini, hapus rujukan ke paket eksternal di luar 23 skill Maxilun: v2 berdiri mandiri sepenuhnya tanpa dependensi skill pihak ketiga.
 
 
 ## Kompatibilitas Multi-Platform

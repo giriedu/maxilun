@@ -3,10 +3,10 @@ param(
 )
 
 #Requires -Version 5.1
-$Version = "1.0.0"
+$Version = "1.1.0"
 Write-Host ""
 Write-Host "  MAXILUN $Version Installer" -ForegroundColor Cyan
-Write-Host "  18 skills: 1 orchestrator + 17 specialists" -ForegroundColor DarkCyan
+Write-Host "  23 skills + 13 autonomous agents" -ForegroundColor DarkCyan
 Write-Host ""
 
 $ScriptDir = Split-Path -Parent $PSScriptRoot
@@ -14,6 +14,7 @@ $SkillsSrc = Join-Path $ScriptDir "skills"
 if (-not (Test-Path $SkillsSrc)) {
     $SkillsSrc = Join-Path $ScriptDir ".agents\skills"
 }
+$AgentsSrc = Join-Path $ScriptDir "agents"
 
 $InstalledTo = @()
 $BackedUp = @()
@@ -46,23 +47,24 @@ if (-not $PythonAvailable) {
 if ($Project) {
     $CurrentDir = Get-Location
     $Targets = @(
-        @{ Name = "Universal / Antigravity / Zed (Project)"; Path = "$CurrentDir\.agents\skills"; LegacyRules = "$CurrentDir\.agents\rules" },
-        @{ Name = "[CC] / Termul (Project)";                 Path = "$CurrentDir\.claude\skills"; LegacyRules = "$CurrentDir\.claude\rules" },
-        @{ Name = "Trae (Project)";                          Path = "$CurrentDir\.trae\skills"; LegacyRules = $null },
-        @{ Name = "Windsurf (Project)";                      Path = "$CurrentDir\.windsurf\skills"; LegacyRules = $null },
-        @{ Name = "CodeBuddy (Project)";                     Path = "$CurrentDir\.codebuddy\skills"; LegacyRules = $null }
+        @{ Name = "Universal / Antigravity / Zed (Project)"; Path = "$CurrentDir\.agents\skills"; AgentsPath = "$CurrentDir\.agents\agents"; LegacyRules = "$CurrentDir\.agents\rules" },
+        @{ Name = "[CC] / Termul (Project)";                 Path = "$CurrentDir\.claude\skills"; AgentsPath = "$CurrentDir\.claude\agents"; LegacyRules = "$CurrentDir\.claude\rules" },
+        @{ Name = "Trae (Project)";                          Path = "$CurrentDir\.trae\skills";   AgentsPath = $null; LegacyRules = $null },
+        @{ Name = "Windsurf (Project)";                      Path = "$CurrentDir\.windsurf\skills"; AgentsPath = $null; LegacyRules = $null },
+        @{ Name = "CodeBuddy (Project)";                     Path = "$CurrentDir\.codebuddy\skills"; AgentsPath = $null; LegacyRules = $null }
     )
 } else {
     $Targets = @(
-        @{ Name = "Antigravity CLI/IDE & Zed"; Path = "$env:USERPROFILE\.agents\skills";          LegacyRules = "$env:USERPROFILE\.agents\rules" },
-        @{ Name = "[CC] & Termul";             Path = "$env:USERPROFILE\.claude\skills";          LegacyRules = "$env:USERPROFILE\.claude\rules" },
-        @{ Name = "Codex";                     Path = "$env:USERPROFILE\.codex\skills";           LegacyRules = "$env:USERPROFILE\.codex\rules" },
-        @{ Name = "OpenCode (.config)";        Path = "$env:USERPROFILE\.config\opencode\skills"; LegacyRules = "$env:USERPROFILE\.config\opencode\rules" },
-        @{ Name = "OpenCode";                  Path = "$env:USERPROFILE\.opencode\skills";        LegacyRules = "$env:USERPROFILE\.opencode\rules" },
-        @{ Name = "Gemini CLI";                Path = "$env:USERPROFILE\.gemini\config\skills";   LegacyRules = $null },
-        @{ Name = "Cursor";                    Path = "$env:USERPROFILE\.cursor\skills";          LegacyRules = $null },
-        @{ Name = "Trae";                      Path = "$env:USERPROFILE\.trae\skills";            LegacyRules = $null },
-        @{ Name = "CodeBuddy";                 Path = "$env:USERPROFILE\.codebuddy\skills";       LegacyRules = $null }
+        @{ Name = "Antigravity CLI/IDE & Zed"; Path = "$env:USERPROFILE\.agents\skills";          AgentsPath = "$env:USERPROFILE\.agents\agents";          LegacyRules = "$env:USERPROFILE\.agents\rules" },
+        @{ Name = "[CC] & Termul";             Path = "$env:USERPROFILE\.claude\skills";          AgentsPath = "$env:USERPROFILE\.claude\agents";          LegacyRules = "$env:USERPROFILE\.claude\rules" },
+        @{ Name = "Codex";                     Path = "$env:USERPROFILE\.codex\skills";           AgentsPath = $null;                                      LegacyRules = "$env:USERPROFILE\.codex\rules" },
+        @{ Name = "OpenCode (.config)";        Path = "$env:USERPROFILE\.config\opencode\skills"; AgentsPath = "$env:USERPROFILE\.config\opencode\agents"; LegacyRules = "$env:USERPROFILE\.config\opencode\rules" },
+        @{ Name = "OpenCode";                  Path = "$env:USERPROFILE\.opencode\skills";        AgentsPath = "$env:USERPROFILE\.opencode\agents";        LegacyRules = "$env:USERPROFILE\.opencode\rules" },
+        @{ Name = "Gemini CLI";                Path = "$env:USERPROFILE\.gemini\config\skills";   AgentsPath = $null;                                      LegacyRules = $null },
+        @{ Name = "Cursor";                    Path = "$env:USERPROFILE\.cursor\skills";          AgentsPath = $null;                                      LegacyRules = $null },
+        @{ Name = "Trae";                      Path = "$env:USERPROFILE\.trae\skills";            AgentsPath = $null;                                      LegacyRules = $null },
+        @{ Name = "Windsurf";                  Path = "$env:USERPROFILE\.windsurf\skills";        AgentsPath = $null;                                      LegacyRules = $null },
+        @{ Name = "CodeBuddy";                 Path = "$env:USERPROFILE\.codebuddy\skills";       AgentsPath = $null;                                      LegacyRules = $null }
     )
 }
 
@@ -97,7 +99,14 @@ foreach ($target in $Targets) {
 
     Copy-Item -Path "$SkillsSrc\*" -Destination $target.Path -Recurse -Force
 
-    foreach ($cacheDir in @("__pycache__", ".maxilun", "maxilun-out", "graphify-out")) {
+
+    if ($target.AgentsPath -and (Test-Path $AgentsSrc)) {
+        if (-not (Test-Path $target.AgentsPath)) {
+            New-Item -ItemType Directory -Path $target.AgentsPath -Force | Out-Null
+        }
+        Copy-Item -Path "$AgentsSrc\*.md" -Destination $target.AgentsPath -Force
+    }
+    foreach ($cacheDir in @("__pycache__", ".maxilun", "maxilun-out")) {
         Get-ChildItem -Path $target.Path -Directory -Recurse -Force -Filter $cacheDir -ErrorAction SilentlyContinue |
             Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
     }

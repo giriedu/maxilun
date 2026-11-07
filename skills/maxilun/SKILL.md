@@ -2,14 +2,14 @@
 name: maxilun
 description: >
   Master orchestrator for the Maxilun ecosystem. Classifies requested outcomes,
-  assigns one cohesive primary owner out of 17 specialists, gates clarification
+  assigns one cohesive primary owner out of 22 specialists,
   strictly by decision reversibility, coordinates true multi-domain waves only
   when required, and enforces verifiable proof before delivery.
   Triggers: "maxilun", "/maxilun", "mode maxilun", "aktifkan maxilun",
   "maxilun lite", "maxilun full", "maxilun ultra", or an explicit request
   to run or coordinate the Maxilun ecosystem.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -32,8 +32,7 @@ metadata:
 
 # Maxilun: Master Orchestrator
 
-Satu orchestrator untuk 17 spesialis. Fokus utamanya tiga: mengeksekusi keputusan rekayasa secara proporsional dari bukti repositori, memilih satu pemilik utama tanpa memecah konteks secara artifisial, dan menolak pengiriman tanpa bukti verifikasi nyata. Detail mendalam berada di `references/` dan dimuat hanya saat relevan.
-
+Satu orchestrator untuk 22 spesialis. Fokus utamanya tiga: mengeksekusi keputusan rekayasa secara proporsional dari bukti repositori, memilih satu pemilik utama tanpa memecah konteks secara artifisial, dan menolak pengiriman tanpa bukti verifikasi nyata. Detail mendalam berada di `references/` dan dimuat hanya saat relevan.
 ## Distribution Contract
 
 - **Owns**: outcome classification, reversibility-gated decision triage, single-owner routing, wave sequencing when genuinely multi-domain, cross-wave synthesis, and evidence verification gates.
@@ -72,8 +71,7 @@ Detail lengkap: `../maxilun/references/engines.md`.
 Aktivasi: `/maxilun lite`, `/maxilun full`, `/maxilun ultra`. Nonaktif: `"stop maxilun"` atau `"mode normal"`.
 Seluruh tugas coding mematuhi `references/surgical-discipline.md` (pre-flight reasoning dari fakta repo, *radical simplicity*, *surgical precision*, dan *verifiable goal loop*).
 
-## 2. Peta Domain (17 Spesialis)
-
+## 2. Peta Domain (22 Spesialis)
 Pilih berdasarkan **artefak akhir yang berubah**, bukan kata benda yang disebut sepintas. Semua alias kompatibilitas `/msal-*` tetap dipetakan langsung ke `/maxilun-*` yang setara.
 
 | Spesialis | Kepemilikan Artefak Utama | Pemicu Khas |
@@ -95,7 +93,11 @@ Pilih berdasarkan **artefak akhir yang berubah**, bukan kata benda yang disebut 
 | `maxilun-seo-audit` | Crawlability, canonical, JSON-LD, Core Web Vitals, indeksasi | `/maxilun-seo-audit`, `/msal-seo`, "audit SEO" |
 | `maxilun-knowledge-graph` | Pemetaan AST simbol (`defOf:`, `callsIn:`), radius dampak edit | `/maxilun-knowledge-graph`, `/maxilun-graph`, `/msal-trace` |
 | `maxilun-scaffold` | Bootstrap konteks proyek baru di `docs/` berbasis bukti repo | `/maxilun-scaffold`, `/maxilun-init`, `/msal-init` |
-
+| `maxilun-desktop` | Native Windows (Win32/WPF), macOS (AppKit), C++ Qt, PowerBuilder DataWindow | `/maxilun-desktop`, "aplikasi desktop", "powerbuilder", "win32" |
+| `maxilun-mobile` | Native Android (Kotlin/Compose), iOS (Swift/SwiftUI), Flutter, React Native | `/maxilun-mobile`, "aplikasi mobile", "android", "ios", "flutter" |
+| `maxilun-iot` | Mikrokontroler (ESP32, STM32, Arduino), FreeRTOS, embedded C/C++, MQTT | `/maxilun-iot`, "iot", "esp32", "arduino", "firmware", "mqtt" |
+| `maxilun-network` | MikroTik RouterOS (v6/v7), Linux networking, firewall, WireGuard, routing | `/maxilun-network`, "mikrotik", "routeros", "wireguard", "firewall" |
+| `maxilun-ai` | RAG hybrid retrieval (dense + BM25), semantic chunking, prompt evals, context caching | `/maxilun-ai`, "rag", "vector search", "prompt eval", "embedding" |
 ## 3. Arsitektur Pengambilan Keputusan & Routing Kohesif
 
 **Warisan Konteks Kode (Wajib sebelum menyentuh kode lintas-file):** Cek berurutan (1) hasil `maxilun-knowledge-graph` di sesi aktif, (2) cache `maxilun-out/graph.json` atau `.maxilun/graph.json`, (3) LSP/CodeGraph indeks simbol, baru (4) jalankan pemindaian `maxilun-knowledge-graph`. Dilarang memindai ulang konteks yang masih valid.
@@ -109,7 +111,7 @@ Jangan melempar beban keputusan teknis rutin kembali ke pengguna:
 ### 3.2 Aturan Kohesi Satu Pemilik (Anti Over-Routing)
 Memecah satu halaman atau satu fitur ke 4–5 spesialis memicu dilusi konteks dan hasil kaku. Terapkan aturan ini:
 1. **Perintah eksplisit pengguna diutamakan** selama spesialis tersedia.
-2. **Satu pemilik penuh per permukaan kerja**: Halaman pemasaran/antarmuka dikerjakan utuh oleh `maxilun-craft` (termasuk struktur copy dasar); halaman runtime Next.js dikerjakan utuh oleh `maxilun-frontend` (mengacu token yang ada).
+2. **Aturan Permukaan Antarmuka Visual (Wajib Melibatkan `maxilun-craft`)**: Setiap pembuatan atau perombakan halaman web, landing page, dashboard, atau antarmuka visual apa pun (meskipun pengguna menyebut Next.js, React, atau framework lain), **`maxilun-craft` WAJIB memimpin arsitektur visual** (rujukan domain dari `design-md/`, Asymmetric Split Hero, token OKLCH, anti-pill `CMP-015`, dan anti-gradien teks `TYPO-008`). Pasangkan `maxilun-frontend` sebagai *companion* untuk pipa runtime (RSC, Server Actions). **Dilarang keras membiarkan `frontend` atau `engineer` membuat UI visual sendirian tanpa `craft`**.
 3. **Tambah companion hanya di batas kapabilitas keras**:
    - Menyentuh autentikasi, kriptografi, webhook signature, atau izin tenant → libatkan `maxilun-sentinel`.
    - Mengubah skema tabel atau migrasi produksi → libatkan `maxilun-data`.
@@ -118,10 +120,12 @@ Memecah satu halaman atau satu fitur ke 4–5 spesialis memicu dilusi konteks da
    - Perubahan kode/UI non-trivial selesai → buktikan lewat `maxilun-verify` (atau eksekusi tes/build langsung).
 
 ### 3.3 Disambiguasi Cepat
-- `craft` vs `frontend`: `craft` memiliki sistem visual, tipografi, tata letak, dan state desain; `frontend` memiliki arsitektur RSC, App Router, caching, dan Server Actions.
+- `craft` vs `frontend`: Setiap tugas yang menghasilkan atau mengubah tampilan visual wajib melibatkan `maxilun-craft` untuk arsitektur visual, tipografi, dan state. `frontend` hanya mengurusi batas RSC, caching, dan Server Actions — dilarang mengarang layout atau styling sendiri.
 - `motion` vs `craft` vs `cinecode`: pengalaman web interaktif/3D WebGL dipimpin `motion`; desain antarmuka statis/sistem komponen dipimpin `craft`; file video MP4/WebM ter-render dipimpin `cinecode`.
 - `scaffold` vs `docsmith`: `scaffold` menginisialisasi fondasi `docs/` proyek baru; `docsmith` menulis spesifikasi mendalam per fitur (PRD/RFC, OpenAPI 3.1, ADR, runbook, `llms.txt`).
-
+- `frontend` vs `desktop` vs `mobile`: `frontend` memiliki web browser (RSC, App Router); `desktop` memiliki native OS windowing, C++ Qt, dan PowerBuilder; `mobile` memiliki native Android/iOS, lifecycle layar sentuh, dan offline store sync.
+- `iot` vs `network`: `iot` memiliki firmware mikrokontroler, pin periferal, dan sensor; `network` memiliki router MikroTik, firewall, routing BGP/OSPF, dan switching VLAN.
+- `ai` vs `data`: `ai` memiliki pipeline retrieval RAG, semantic chunking, prompt evals, dan context caching; `data` memiliki skema fisik relasional, migrasi expand-contract, indexing, dan RLS.
 ## 4. Koordinasi Wave & Binding Platform
 
 Gunakan Wave hanya ketika pekerjaan sungguh melintasi beberapa domain yang saling bergantung (maksimal 3 spesialis per wave):
@@ -146,12 +150,12 @@ Jika lingkungan memblokir eksekusi tes/build, nyatakan eksplisit `[UNVERIFIED]` 
 
 ## 6. Protokol Koreksi Saat Hasil Dinilai "Generik AI" atau Keliru
 
-1. **Jangan membela output dan jangan menambal kosmetik.** Jika antarmuka atau teks disebut *"generik AI"* atau *"begitu-gitu saja"*, menggeser border-radius, mengganti satu gradien, atau memaksa semua produk menjadi klon gelap ala SaaS developer tools adalah kegagalan desain.
-2. **Bedah akar masalah spesifik terlebih dahulu**: sebut pola cacat yang terjadi (misal: simetri rata-tengah monoton `references/purity-catalog.md`, salah meminjam gaya Bento/Cmd+K untuk domain non-teknis, copy penuh jargon kosong `references/code-hygiene.md`, atau struktur komponen tanpa hierarki konten).
-3. **Rombak dari konteks domain nyata**:
-   - Gunakan `maxilun-craft` untuk memetakan ulang struktur informasi dari alur kerja asli pengguna dan memilih referensi kontras yang tepat dari `../maxilun-craft/references/design-md/index.md`.
+1. **Jangan membela output dan jangan menambal kosmetik.** Jika antarmuka atau teks disebut *"generik AI"* atau *"begitu-gitu saja"*, menggeser border-radius, mengganti satu gradien, atau membiarkan token/wrapper lama mengunci desain adalah kegagalan desain.
+2. **Bedah akar masalah spesifik terlebih dahulu**: sebut pola cacat dan **Kunci Sistem Desain** yang terjadi (`references/purity-catalog.md` `SYS-001` .. `SYS-005`: token `:root` slate kusam, kontainer wrapper sempit, komponen primitif bersudut seragam, simetri rata-tengah monoton, atau copy penuh jargon).
+3. **Bongkar Kunci & Rombak dari Konteks Domain Nyata**:
+   - Terapkan *Clean Cutover* (`maxilun-craft`): jangan menambal utility lokal di atas fondasi lama yang rusak. Hapus dan gantikan variabel `:root`, buka kontainer layout shell, mutakhirkan komponen primitif, dan hapus stylesheet zombie usang.
+   - Pilih 1–2 referensi kontras dari `../maxilun-craft/references/design-md/index.md` yang selaras dengan subjek produk.
    - Jika arah estetika memang belum memiliki jangkar sama sekali, tanyakan **1 kali** dengan 3 arketipe visual yang sungguh kontras (misal: *Warm Editorial*, *Clean Light Operational*, *High-Contrast Minimal*) — bukan 3 variasi template serupa. Jika pengguna meminta langsung dirombak, pilih arah paling autentik bagi domain produk tersebut, nyatakan alasannya, dan bangun ulang arsitekturnya secara menyeluruh.
-
 ## Related Skills
 
-Lihat tabel §2 untuk seluruh 17 spesialis: mulai dari `maxilun-knowledge-graph` untuk pemetaan perubahan struktural kode, `maxilun-scaffold` untuk inisialisasi konteks proyek baru, `maxilun-architect` untuk keputusan struktur berdampak tinggi, `maxilun-craft` untuk sistem visual kontekstual, dan `maxilun-verify` untuk pembuktian akhir.
+Lihat tabel §2 untuk seluruh 22 spesialis: mulai dari `maxilun-knowledge-graph` untuk pemetaan perubahan struktural kode, `maxilun-scaffold` untuk inisialisasi konteks proyek baru, `maxilun-architect` untuk keputusan struktur berdampak tinggi, `maxilun-craft` untuk sistem visual kontekstual, dan `maxilun-verify` untuk pembuktian akhir.

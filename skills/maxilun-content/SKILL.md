@@ -9,7 +9,7 @@ description: >
   "tulis narasi video", "script video", "voice over", "TTS", "SSML", "konten pemasaran", "microcopy",
   "teks tombol CTA", "pesan error UI", "brand voice", or product messaging tasks.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use

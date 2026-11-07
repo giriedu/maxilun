@@ -28,7 +28,8 @@ class MaxilunAgentLoop:
         repo_root: Optional[Path] = None,
         provider: Optional[UniversalProvider] = None,
         max_turns: int = 10,
-        verbose: bool = True
+        verbose: bool = True,
+        is_subagent: bool = False
     ):
         self.root = repo_root or Path.cwd()
         self.loader = SkillsLoader(self.root)
@@ -37,8 +38,20 @@ class MaxilunAgentLoop:
         self.middleware = MiddlewarePipeline(self.root)
         self.max_turns = max_turns
         self.verbose = verbose
+        self.is_subagent = is_subagent
+        self.loader = SkillsLoader(self.root)
+        self.registry = ToolRegistry(self.root)
+        self.provider = provider or UniversalProvider()
+        self.middleware = MiddlewarePipeline(self.root)
+        self.max_turns = max_turns
+        self.verbose = verbose
 
-    def run_task(self, prompt: str, on_chunk: Optional[Callable[[str], None]] = None) -> SessionContext:
+    def run_task(
+        self,
+        prompt: str,
+        on_chunk: Optional[Callable[[str], None]] = None,
+        forced_skill: Optional[str] = None
+    ) -> SessionContext:
         """Executes a complete task end-to-end through the Maxilun ecosystem."""
         context = SessionContext()
 
@@ -46,10 +59,104 @@ class MaxilunAgentLoop:
         decision_type = self.middleware.check_reversibility(prompt)
         context.decision_type = decision_type
 
-        active_skill = self.loader.match_skill(prompt)
+        if forced_skill:
+            active_skill = self.loader.get_skill(forced_skill) or self.loader.match_skill(forced_skill)
+        else:
+            active_skill = self.loader.match_skill(prompt)
+
         context.active_skill = active_skill.name
         context.record_swarm_event(active_skill.name, "Routed task", prompt[:80])
 
+        if not self.is_subagent:
+            def handle_delegate(specialist: str, task: str) -> Dict[str, Any]:
+                clean = specialist.strip().lower()
+                macro_map = {
+                    "maxilun-scout": "maxilun-knowledge-graph",
+                    "scout": "maxilun-knowledge-graph",
+                    "maxilun-architect": "maxilun-architect",
+                    "architect": "maxilun-architect",
+                    "maxilun-maker": "maxilun-engineer",
+                    "maker": "maxilun-engineer",
+                    "maxilun-studio": "maxilun-craft",
+                    "studio": "maxilun-craft",
+                    "maxilun-verifier": "maxilun-verify",
+                    "verifier": "maxilun-verify",
+                }
+                target_skill = macro_map.get(clean, clean)
+                if not target_skill.startswith("maxilun"):
+                    target_skill = f"maxilun-{target_skill}"
+
+                if self.verbose:
+                    print(f"\n🚀 [Delegation] Spawning subagent: {target_skill}...")
+                    print(f"   Subtask: {task[:80]}...")
+
+                subagent = MaxilunAgentLoop(
+                    repo_root=self.root,
+                    provider=self.provider,
+                    max_turns=min(self.max_turns, 6),
+                    verbose=self.verbose,
+                    is_subagent=True
+                )
+                sub_ctx = subagent.run_task(task, forced_skill=target_skill)
+
+                handoff = "Subagent completed."
+                for m in reversed(sub_ctx.messages):
+                    if m.get("role") == "assistant" and m.get("content"):
+                        handoff = m["content"]
+                        break
+
+                context.record_swarm_event(target_skill, "Subagent finished", f"{len(sub_ctx.files_modified)} file(s) modified")
+                return {
+                    "status": "success",
+                    "specialist": target_skill,
+                    "handoff_result": handoff,
+                    "files_modified": sub_ctx.files_modified,
+                    "commands_executed": sub_ctx.commands_executed
+                }
+
+                schema = {
+                    "type": "function",
+                    "function": {
+                        "name": "delegate_task",
+                        "description": "Spawn a specialized subagent to execute a bounded subtask (Wave 1: maxilun-scout/architect, Wave 2: maxilun-maker/studio, Wave 3: maxilun-verifier).",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {
+                                "specialist": {
+                                    "type": "string",
+                                    "description": "Target specialist or macro agent (e.g. maxilun-scout, maxilun-architect, maxilun-maker, maxilun-studio, maxilun-verifier)"
+                                },
+                                "task": {
+                                    "type": "string",
+                                    "description": "Concrete instructions and expected deliverable for the subagent"
+                                }
+                            },
+                            "required": ["specialist", "task"]
+                        }
+                    }
+                }
+            schema = {
+                "type": "function",
+                "function": {
+                    "name": "delegate_task",
+                    "description": "Spawn a specialized subagent to execute a bounded subtask (Wave 1: maxilun-scout/architect, Wave 2: maxilun-maker/studio, Wave 3: maxilun-verifier).",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "specialist": {
+                                "type": "string",
+                                "description": "Target specialist or macro agent (e.g. maxilun-scout, maxilun-architect, maxilun-maker, maxilun-studio, maxilun-verifier)"
+                            },
+                            "task": {
+                                "type": "string",
+                                "description": "Concrete instructions and expected deliverable for the subagent"
+                            }
+                        },
+                        "required": ["specialist", "task"]
+                    }
+                }
+            }
+            self.registry.register_tool("delegate_task", handle_delegate, schema)
         if self.verbose:
             print(f"\n🌑 Maxilun Harness Engine: [Active Specialist: {active_skill.name}] (Type {decision_type})")
             print(f"   Contract: Owns {active_skill.contract.get('Owns', 'implementation')[:60]}...")

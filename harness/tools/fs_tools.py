@@ -86,12 +86,17 @@ class FSTools:
         root = Path(root_dir)
         matches = []
         skip_dirs = {".git", "node_modules", "__pycache__", ".next", "dist", "build"}
+        normalized_pat = pattern.replace("\\", "/")
 
-        for p in root.rglob("*"):
-            if any(part in skip_dirs for part in p.parts):
+        if "/" not in normalized_pat and not normalized_pat.startswith("**"):
+            glob_pat = f"**/{normalized_pat}"
+        else:
+            glob_pat = normalized_pat
+
+        for p in root.glob(glob_pat):
+            if any(part in skip_dirs or part.startswith("_maxilun_backup") for part in p.parts):
                 continue
-            if fnmatch.fnmatch(p.name, pattern):
-                matches.append(str(p.relative_to(root)).replace("\\", "/"))
+            matches.append(str(p.relative_to(root)).replace("\\", "/"))
             if len(matches) >= 100:
                 break
 

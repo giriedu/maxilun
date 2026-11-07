@@ -226,3 +226,46 @@ export const KineticScrambleText: React.FC<KineticScrambleTextProps> = ({
     </span>
   );
 };
+
+export interface VoiceInterval {
+  startFrame: number;
+  endFrame: number;
+}
+
+/**
+ * Deterministic audio ducking curve helper.
+ * Calculates volume gain (0.0 to 1.0) with logarithmic attack/release ramps
+ * to automatically duck background soundtracks underneath voice-over / speech intervals.
+ */
+export function computeAudioDuckingGain(
+  frame: number,
+  speechIntervals: VoiceInterval[],
+  options: {
+    duckedGainDb?: number; // default -14 dB (~0.20 linear gain)
+    attackFrames?: number; // fade down duration (default 12 frames)
+    releaseFrames?: number; // fade up duration (default 18 frames)
+  } = {}
+): number {
+  const { duckedGainDb = -14, attackFrames = 12, releaseFrames = 18 } = options;
+  const duckedGain = Math.pow(10, duckedGainDb / 20);
+
+  let minGain = 1.0;
+  for (const interval of speechIntervals) {
+    if (frame >= interval.startFrame && frame <= interval.endFrame) {
+      return duckedGain;
+    }
+    // Attack ramp (fade down before speech begins)
+    if (frame >= interval.startFrame - attackFrames && frame < interval.startFrame) {
+      const p = (frame - (interval.startFrame - attackFrames)) / attackFrames;
+      const gain = 1.0 - p * (1.0 - duckedGain);
+      if (gain < minGain) minGain = gain;
+    }
+    // Release ramp (fade up after speech ends)
+    if (frame > interval.endFrame && frame <= interval.endFrame + releaseFrames) {
+      const p = (frame - interval.endFrame) / releaseFrames;
+      const gain = duckedGain + p * (1.0 - duckedGain);
+      if (gain < minGain) minGain = gain;
+    }
+  }
+  return minGain;
+}

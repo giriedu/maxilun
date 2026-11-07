@@ -2,13 +2,13 @@
 
 <div align="center">
 
-<img src="assets/banner.jpg" alt="Maxilun — 18 Skills: 1 Orchestrator + 17 Specialists · Purity Engine · Four Always-On Engines" width="100%">
+<img src="assets/banner.jpg" alt="Maxilun — 23 Skills: 1 Orchestrator + 22 Specialists · Purity Engine · Four Always-On Engines" width="100%">
 
 <br/>
 
 [![CI](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml/badge.svg)](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml)
-[![Version](https://img.shields.io/badge/version-1.0.0-7c3aed?style=flat-square)](CHANGELOG.md)
-[![Skills](https://img.shields.io/badge/skills-18_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
+[![Version](https://img.shields.io/badge/version-1.1.0-7c3aed?style=flat-square)](CHANGELOG.md)
+[![Skills](https://img.shields.io/badge/skills-23_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
 [![License](https://img.shields.io/badge/license-Free_to_Use-22c55e?style=flat-square)](LICENSE)
 [![Platform](https://img.shields.io/badge/runs_on-Claude_·_Cursor_·_Codex_·_Antigravity_·_Zed_·_Termul-white?style=flat-square)](#platform-support)
 [![skills.sh](https://skills.sh/b/giriedu/maxilun?style=flat-square)](https://skills.sh/giriedu/maxilun)
@@ -21,7 +21,7 @@
 
 ---
 
-**Maxilun** is an ecosystem of 18 AI skills for software engineering teams: one orchestrator and 17 specialists. Every skill carries the same **Core Rules** block, so the four quality engines travel with the skill instead of living in a separate folder. The orchestrator enforces reversibility-gated decision triage (act from repository evidence first; clarify only irreversible decisions), single-owner routing cohesion, wave coordination when genuinely multi-domain, and real execution proof without ceremonial HUD banners. Deeper material (engine detail, purity catalog, code hygiene, surgical engineering discipline, discovery, and reference corpora) lives in `references/` inside each skill and is loaded only when needed.
+**Maxilun** is an ecosystem of 23 AI skills for software engineering teams: one orchestrator and 22 specialists. Every skill carries the same **Core Rules** block, so the four quality engines travel with the skill instead of living in a separate folder. The orchestrator enforces reversibility-gated decision triage (act from repository evidence first; clarify only irreversible decisions), single-owner routing cohesion, wave coordination when genuinely multi-domain, and real execution proof without ceremonial HUD banners. Deeper material (engine detail, purity catalog, code hygiene, surgical engineering discipline, discovery, and reference corpora) lives in `references/` inside each skill and is loaded only when needed.
 
 ## Two Ways to Use Maxilun
 
@@ -45,11 +45,11 @@ python harness/cli.py chat --provider openrouter  # Claude 3.5 Sonnet
 ```
 
 ### Option B: Install as Skill Pack into your AI Editor
-Install all 18 skills into Claude Code, Cursor, Codex, OpenCode, Zed, or Antigravity:
+Install all 23 skills into Claude Code, Cursor, Codex, OpenCode, Zed, or Antigravity:
 ```bash
 npx skills add giriedu/maxilun
 ```
-> Track and explore all 18 skills on [skills.sh/giriedu/maxilun](https://skills.sh/giriedu/maxilun).  
+> Track and explore all 23 skills on [skills.sh/giriedu/maxilun](https://skills.sh/giriedu/maxilun).  
 > **Non-interactive**: `npx skills add giriedu/maxilun -y` (add `-g` for global availability across projects).  
 > **Native Installers**: Use `./scripts/install.sh` (Linux/macOS) or `.\scripts\install.ps1` (Windows) — see [docs/INSTALL.md](docs/INSTALL.md).
 
@@ -69,7 +69,7 @@ Most AI skill repositories are thin text wrappers that repeat generic advice (*"
 | **Blind Multi-File Edits** (reading 20 whole files into context and breaking callers) | **Executable AST Knowledge Graph & 3D WebGL Lens** in [`skills/maxilun-knowledge-graph/`](skills/maxilun-knowledge-graph/SKILL.md) (`cli.py` + Python/TS/Polyglot AST scanners returning exact `file:line` `defOf:` / `callsIn:` in `< 1s`) |
 | **Vulnerable Auth & Webhooks** (`!==` timing leaks, float currency drift, ad-hoc error JSON) | **Cryptographic & API Contract Playbooks** in [`maxilun-sentinel`](skills/maxilun-sentinel/references/security-playbook.md) & [`maxilun-docsmith`](skills/maxilun-docsmith/references/openapi-contracts.md) (`timingSafeEqual`, Argon2id, `BIGINT` minor units, OpenAPI 3.1 + RFC 9457 `application/problem+json`) |
 | **Stiff, Unreadable AI Videos** (CSS transition drift, tiny 14px fonts, 30-word paragraphs) | **5-Skill Programmatic Video Studio** in [`maxilun-cinecode`](skills/maxilun-cinecode/references/video-production-pipeline.md) + [`maxilun-motion`](skills/maxilun-motion/references/choreography-styles.md) (React frame compiler, analytical damped springs, 14 style signatures, 22 hooks, FFmpeg `yuv420p`) |
-| **Context Window Bloat & Prompt Ceremony** (2,000-line prompt files, emoji status banners, and single-template SaaS clones) | **Strict `≤ 300 Line` Cognitive Ceiling** on all 18 `SKILL.md` files with on-demand `references/`, domain-authentic UI grounding, and zero self-checked HUD theater — verified on every commit by [`scripts/test-suite.py`](scripts/test-suite.py) |
+| **Context Window Bloat & Prompt Ceremony** (2,000-line prompt files, emoji status banners, and single-template SaaS clones) | **Strict `≤ 300 Line` Cognitive Ceiling** on all 23 `SKILL.md` files with on-demand `references/`, domain-authentic UI grounding, and zero self-checked HUD theater — verified on every commit by [`scripts/test-suite.py`](scripts/test-suite.py) |
 
 ---
 
@@ -109,7 +109,7 @@ flowchart LR
 
 ---
 
-## 18 Skills: 1 Orchestrator + 17 Specialists
+## 23 Skills: 1 Orchestrator + 22 Specialists
 
 Structured by real-world software engineering lifecycle — from foundational architecture to production delivery:
 
@@ -133,13 +133,17 @@ Structured by real-world software engineering lifecycle — from foundational ar
 | 16 | `maxilun-diagrams` | System Visualization — C4, sequence, Event Storming, data-flow diagrams via Mermaid | `/maxilun-diagram`, `/maxilun-diagrams` |
 | 17 | `maxilun-content` | User-Facing Copywriting — landing pages, UI microcopy, video script beats, error states, brand voice | `/maxilun-content`, `/msal-copy` |
 | 18 | `maxilun-seo-audit` | Technical SEO — Core Web Vitals, JSON-LD structured data, crawler readiness | `/maxilun-seo`, `/maxilun-seo-audit` |
+| 19 | `maxilun-desktop` | Native Desktop & Enterprise — Windows (Win32, WPF), macOS (AppKit), C++ Qt, and PowerBuilder (DataWindow, PowerScript, SQLCA) | `/maxilun-desktop` |
+| 20 | `maxilun-mobile` | Native & Cross-Platform Mobile — Android (Kotlin/Compose), iOS (Swift/SwiftUI), Flutter, React Native, KMP | `/maxilun-mobile` |
+| 21 | `maxilun-iot` | IoT & Embedded Systems — microcontrollers (ESP32, STM32, Arduino, Pico), FreeRTOS, hardware buses (I2C/SPI), MQTT, Modbus, OTA | `/maxilun-iot` |
+| 22 | `maxilun-network` | Network Infrastructure — MikroTik RouterOS (v6/v7), Linux networking, stateful firewalls, QoS/PCQ, WireGuard, routing | `/maxilun-network` |
+| 23 | `maxilun-ai` | AI & LLM Application Engineering — hybrid RAG retrieval (dense vector + BM25), semantic chunking, prompt regression evals, context caching | `/maxilun-ai`, `/msal-ai` |
 
 ---
 
 ## Four Always-On Quality Engines
 
-Embedded in all 18 skills as an identical `CORE-RULES` block, verified by CI:
-
+Embedded in all 23 skills as an identical `CORE-RULES` block, verified by CI:
 | Engine | Core Responsibility |
 |---|---|
 | **Focus & Agency Engine** | Repo-first execution, reversibility-gated clarification (max 1 batched turn for irreversible choices), max 3 active workstreams, zero HUD/checkbox theater |
@@ -178,9 +182,8 @@ Use `maxilun-knowledge-graph` for structural or multi-file code changes when its
 Maxilun ships with a complete built-in autonomous agent runtime, AST security inspector, and empirical benchmark suite in `harness/` (100% zero-dependency Python stdlib):
 
 ```bash
-# Inspect all 18 specialist skills, line budgets (<=300), and triggers:
+# Inspect all 23 ecosystem skills (1 orchestrator + 22 specialists), line budgets (<=300), and triggers:
 python harness/cli.py skills
-
 # Run empirical benchmark suite (+55% quality improvement over Raw AI):
 python harness/cli.py bench --view
 
@@ -212,7 +215,8 @@ Full runtime architecture, provider configurations, and tool schemas are documen
 | Guide | Description |
 |---|---|
 | [docs/INSTALL.md](docs/INSTALL.md) | Comprehensive installation guides, one-line scripts & verification |
-| [docs/SKILLS.md](docs/SKILLS.md) | Triggers, capabilities, and parameters for all 18 skills |
+| [docs/SKILLS.md](docs/SKILLS.md) | Triggers, capabilities, and parameters for all 23 skills |
+| [docs/AGENTS.md](docs/AGENTS.md) | 6 Macro-Role Autonomous Agents architecture, tool permissions & subagent protocols |
 | [docs/ENGINES.md](docs/ENGINES.md) | Four Always-On Engines and three Operating Protocols |
 | [docs/EXAMPLES.md](docs/EXAMPLES.md) | Real-world engineering scenarios & multi-specialist Wave Patterns |
 | [docs/SKILL-CONTRACTS.md](docs/SKILL-CONTRACTS.md) | Ownership, standalone behavior, inputs, outputs, and handoffs for every skill |

@@ -15,7 +15,7 @@ Jika skill Maxilun bertindak sebagai **governance & instruction layer** bagi mod
                            │
 ┌──────────────────────────▼─────────────────────────────┐
 │  Maxilun Autonomous Agent Engine (harness/engine/)     │
-│  - Skills Loader: parses 18 specialists on disk        │
+│  - Skills Loader: parses 22 specialists on disk        │
 │  - Reversibility Gate: Type 1 vs Type 2 triage         │
 │  - ReAct Execution Loop: tool calls & state tracking   │
 └───────────┬────────────────────────────────┬───────────┘
@@ -51,7 +51,7 @@ python harness/cli.py chat
 python harness/cli.py run "Baca package.json dan verifikasi skrip build"
 ```
 
-### B. Inspeksi 18 Spesialis Ekosistem
+### B. Inspeksi 22 Spesialis Ekosistem
 Memeriksa status, kepatuhan batas baris (`≤ 300`), dan pemicu seluruh spesialis:
 ```bash
 python harness/cli.py skills

@@ -98,6 +98,9 @@ class BenchmarkRunner:
             self._benchmark_schema_migration(),
             self._benchmark_surgical_refactor(),
             self._benchmark_purity_prose(),
+            self._benchmark_native_mobile(),
+            self._benchmark_rsc_frontend(),
+            self._benchmark_ai_rag_retrieval(),
         ]
 
         raw_scores = [b.raw_score for b in benchmarks]
@@ -377,6 +380,180 @@ Query profil pengguna di-cache pada tingkat aplikasi; invarian invalidasi dijala
         return BenchmarkResult(
             benchmark_id="purity_prose",
             title="Communication Purity: Anti-Slop Buzzword Elimination",
+            prompt=prompt,
+            raw_score=raw_res.score,
+            raw_passed=raw_res.passed,
+            raw_violations_count=len(raw_res.violations),
+            raw_violations_sample=[v.message for v in raw_res.violations],
+            maxilun_score=max_res.score,
+            maxilun_passed=max_res.passed,
+            maxilun_violations_count=len(max_res.violations),
+            maxilun_violations_sample=[v.message for v in max_res.violations],
+            score_delta=max_res.score - raw_res.score,
+            governance_verdict="MAXILUN_SUPERIOR"
+        )
+
+    def _benchmark_native_mobile(self) -> BenchmarkResult:
+        prompt = "Build a stay reservation screen for native iOS in SwiftUI."
+
+        raw_code = """
+import SwiftUI
+
+struct StayView: View {
+    var body: some View {
+        VStack {
+            Text("Stay Booking Details")
+            Button(action: {}) {
+                Text("Submit")
+            }
+            .frame(width: 30, height: 30)
+        }
+        .ignoresSafeArea()
+    }
+}
+"""
+
+        maxilun_code = """
+import SwiftUI
+
+struct StayView: View {
+    var body: some View {
+        VStack(spacing: 24) {
+            Text("Stay booking details")
+                .font(.headline)
+            Button(action: handleReservation) {
+                Text("Check dates")
+                    .font(.body)
+                    .frame(minWidth: 44, minHeight: 44)
+            }
+            .accessibilityLabel("Check dates for stay reservation")
+        }
+        .safeAreaPadding()
+    }
+}
+"""
+        raw_res = self.validator.validate_text(raw_code, file_path="StayView.swift")
+        max_res = self.validator.validate_text(maxilun_code, file_path="StayView.swift")
+
+        return BenchmarkResult(
+            benchmark_id="native_mobile",
+            title="Native Mobile: Safe Areas & Touch Target Ergonomics",
+            prompt=prompt,
+            raw_score=raw_res.score,
+            raw_passed=raw_res.passed,
+            raw_violations_count=len(raw_res.violations),
+            raw_violations_sample=[v.message for v in raw_res.violations],
+            maxilun_score=max_res.score,
+            maxilun_passed=max_res.passed,
+            maxilun_violations_count=len(max_res.violations),
+            maxilun_violations_sample=[v.message for v in max_res.violations],
+            score_delta=max_res.score - raw_res.score,
+            governance_verdict="MAXILUN_SUPERIOR"
+        )
+
+    def _benchmark_rsc_frontend(self) -> BenchmarkResult:
+        prompt = "Build a Server Action to update order status in Next.js 15."
+
+        raw_code = """
+'use server';
+
+export async function updateOrder(id: string, status: string) {
+    // Directly interpolate raw input into database query without session verification
+    await db.query(`UPDATE orders SET status = '${status}' WHERE id = '${id}'`);
+}
+"""
+
+        maxilun_code = """
+'use server';
+import { z } from 'zod';
+
+const UpdateOrderSchema = z.object({
+    id: z.string().uuid(),
+    status: z.enum(['PENDING', 'CONFIRMED', 'CANCELLED']),
+});
+
+export async function updateOrder(formData: FormData) {
+    const session = await requireUserSession();
+    const parsed = UpdateOrderSchema.safeParse(Object.fromEntries(formData));
+    if (!parsed.success) {
+        return { ok: false, errors: parsed.error.flatten().fieldErrors };
+    }
+    await db.execute(
+        'UPDATE orders SET status = $1 WHERE id = $2 AND tenant_id = $3',
+        [parsed.data.status, parsed.data.id, session.tenantId]
+    );
+    return { ok: true };
+}
+"""
+        raw_res = self.validator.validate_text(raw_code, file_path="action.ts")
+        max_res = self.validator.validate_text(maxilun_code, file_path="action.ts")
+
+        return BenchmarkResult(
+            benchmark_id="rsc_frontend",
+            title="Frontend RSC: Server Action Auth & Parameterized Execution",
+            prompt=prompt,
+            raw_score=raw_res.score,
+            raw_passed=raw_res.passed,
+            raw_violations_count=len(raw_res.violations),
+            raw_violations_sample=[v.message for v in raw_res.violations],
+            maxilun_score=max_res.score,
+            maxilun_passed=max_res.passed,
+            maxilun_violations_count=len(max_res.violations),
+            maxilun_violations_sample=[v.message for v in max_res.violations],
+            score_delta=max_res.score - raw_res.score,
+            governance_verdict="MAXILUN_SUPERIOR"
+        )
+
+    def _benchmark_ai_rag_retrieval(self) -> BenchmarkResult:
+        prompt = "Implement a hybrid search RAG pipeline with semantic chunking and prompt evals."
+
+        raw_code = """
+import openai
+
+def ask_llm(question, docs):
+    # naive character cut without semantic boundary
+    chunks = [docs[i:i+300] for i in range(0, len(docs), 300)]
+    emb = openai.Embedding.create(input=question)
+    # prompt without grounding instructions or schemas
+    prompt = f"Answer this seamlessly: {question} based on {chunks}"
+    resp = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=[{"role": "user", "content": prompt}])
+    return resp.choices[0].message.content
+"""
+
+        maxilun_code = """
+from typing import List, Dict, Any
+from dataclasses import dataclass
+
+@dataclass
+class RetrievedChunk:
+    doc_id: str
+    heading_path: str
+    content: str
+    rrf_score: float
+
+def reciprocal_rank_fusion(dense_ranks: Dict[str, int], sparse_ranks: Dict[str, int], k: int = 60) -> List[str]:
+    scores = {}
+    for doc_id, rank in dense_ranks.items():
+        scores[doc_id] = scores.get(doc_id, 0.0) + (1.0 / (k + rank))
+    for doc_id, rank in sparse_ranks.items():
+        scores[doc_id] = scores.get(doc_id, 0.0) + (1.0 / (k + rank))
+    return sorted(scores.keys(), key=lambda d: scores[d], reverse=True)
+
+def build_grounded_system_prompt(chunks: List[RetrievedChunk]) -> str:
+    context_blocks = [f"[{c.heading_path}]\\n{c.content}" for c in chunks]
+    return (
+        "You are an evidence-first technical assistant.\\n"
+        "Ground your answers strictly on the provided context below.\\n"
+        "If the answer is not present in the context, explicitly state [UNVERIFIED].\\n\\n"
+        "Context:\\n" + "\\n---\\n".join(context_blocks)
+    )
+"""
+        raw_res = self.validator.validate_text(raw_code, file_path="rag.py")
+        max_res = self.validator.validate_text(maxilun_code, file_path="rag.py")
+
+        return BenchmarkResult(
+            benchmark_id="ai_rag_retrieval",
+            title="AI & LLM: Deterministic Hybrid RAG & Grounded Evidence Prompting",
             prompt=prompt,
             raw_score=raw_res.score,
             raw_passed=raw_res.passed,

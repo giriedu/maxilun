@@ -21,7 +21,7 @@ description: >
   One-paragraph description of what this specialist does.
   Include trigger keywords in natural language.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use

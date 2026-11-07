@@ -10,7 +10,7 @@ description: >
   "data-driven video", "batch video", "server-side video render", "video component", "timeline composition",
   "AI footage", "image-to-video", "text-to-video", "visual frame generation".
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use

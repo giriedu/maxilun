@@ -8,7 +8,7 @@ description: >
   Triggers: "/maxilun-seo-audit", "/msal-seo", "audit SEO", "technical SEO", "kenapa tidak ranking",
   "meta tags", "sitemap", "structured data", "schema markup", "canonical", or search optimization.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -21,6 +21,9 @@ metadata:
     - codex
     - zed
     - gemini-cli
+  references:
+    - references/index.md
+    - references/technical-seo-standards.md
 ---
 
 # Maxilun SEO Audit: Technical SEO & Search Performance

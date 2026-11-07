@@ -9,7 +9,7 @@ description: >
   "state management", "code splitting", "Next.js patterns",
   or any modern React/Next.js architecture task.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -21,7 +21,10 @@ metadata:
     - cursor
     - codex
     - zed
-    - gemini-cli
+  references:
+    - references/index.md
+    - references/rsc-flight-patterns.md
+    - references/caching-revalidation-recipes.md
 ---
 
 # Maxilun Frontend: Next.js 15 & React 19 Architecture
@@ -34,7 +37,7 @@ Bertanggung jawab atas arsitektur aplikasi Next.js 15 dan React 19: batas ekseku
 - **Does not own**: visual identity/tokens (`maxilun-craft`), database schemas or ORM design (`maxilun-data`), application-wide auth/crypto policy (`maxilun-sentinel`), UX copywriting (`maxilun-content`), or technical SEO audits (`maxilun-seo-audit`).
 - **Inputs**: route requirements, API/action contracts, Next.js/React versions in manifest, existing route graph (`maxilun-knowledge-graph`), and latency/CWV targets.
 - **Outputs**: runtime-safe component trees, explicit caching/mutation flows, hydration-clean client islands, and measurable bundle/CWV decisions.
-- **Handoff**: pair with `maxilun-craft` for UI/design-system specs, `maxilun-motion` for choreography, `maxilun-content` for user-facing copy, `maxilun-data` for DB/ORM queries, `maxilun-sentinel` for auth/CSRF/CSP hardening, `maxilun-engineer` for general implementation, and `maxilun-verify` for E2E/regression proof.
+- **Handoff**: pair with `maxilun-craft` for UI/design-system specs (pada seluruh pembuatan/perombakan halaman visual, wajib mengonsumsi arsitektur tata letak, tipografi, dan token OKLCH dari `maxilun-craft`; dilarang mengarang template visual sendiri), `maxilun-motion` for choreography, `maxilun-content` for user-facing copy, `maxilun-data` for DB/ORM queries, `maxilun-sentinel` for auth/CSRF/CSP hardening, `maxilun-engineer` for general implementation, and `maxilun-verify` for E2E/regression proof.
 
 <!-- CORE-RULES:START -->
 ## Core Rules (Selalu Aktif)
@@ -91,7 +94,7 @@ export default async function OrderPage({
 ### Semantik Caching Eksplisit & Topologi Rute
 - **Uncached by Default**: Di Next.js 15, `fetch()` dan `GET` Route Handlers **tidak di-cache secara default**, dan *Client Router Cache* memakai `staleTime: 0` untuk segmen halaman. Aktifkan caching secara eksplisit (`cache: 'force-cache'`, `next: { revalidate, tags }`, atau direktif `'use cache'` bila dikonfigurasi) dan pasangkan dengan invalidasi terarah via `revalidateTag(tag)` atau `revalidatePath(path)`.
 - **Eliminasi Waterfall & Streaming**: Paralelkan pembacaan data independen dengan `Promise.all` atau bungkus bagian lambat dalam `<Suspense fallback={...}>` / `loading.tsx` sehingga HTML awal terkirim seketika.
-- **Konvensi Rute & Middleware**: Gunakan `layout.tsx` untuk shell persisten, `template.tsx` bila state wajib di-reset per navigasi, `error.tsx` (`'use client'`) per segmen, `@slot` + `default.tsx` untuk *Parallel Routes*, dan `(.)route` *Intercepting Routes* untuk modal URL. Jaga `middleware.ts` tetap ringan (redirect, header keamanan, pengecekan sesi awal) dan **jangan** menjadikannya satu-satunya pemeriksaan otorisasi.
+- **Konvensi Rute & Middleware**: Gunakan `layout.tsx` untuk shell persisten, `template.tsx` bila state wajib di-reset per navigasi, `error.tsx` (`'use client'`) per segmen, `@slot` + `default.tsx` untuk *Parallel Routes*, dan `(.)route` *Intercepting Routes* untuk modal URL. Jaga `middleware.ts` tetap ringan (redirect, header keamanan, pengecekan sesi awal) dan **jangan** menjadikannya satu-satunya pemeriksaan otorisasi. Pada tugas redesign antarmuka, bebaskan pembungkus `layout.tsx` dari batas kontainer sempit lama dan perbarui variabel root di `globals.css` bersama `maxilun-craft` agar desain baru tidak tercekik kunci lama (`SYS-001` .. `SYS-005`).
 
 ## 3. Server Actions sebagai Endpoint HTTP Publik
 

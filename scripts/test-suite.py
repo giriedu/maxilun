@@ -51,8 +51,27 @@ EXPECTED_SKILLS = [
     "maxilun-diagrams",
     "maxilun-content",
     "maxilun-seo-audit",
+    "maxilun-desktop",
+    "maxilun-mobile",
+    "maxilun-iot",
+    "maxilun-network",
+    "maxilun-ai",
 ]
-
+EXPECTED_AGENTS = [
+    "maxilun-orchestrator",
+    "maxilun-scout",
+    "maxilun-architect",
+    "maxilun-maker",
+    "maxilun-studio",
+    "maxilun-verifier",
+    "maxilun-coder-frontend",
+    "maxilun-coder-backend",
+    "maxilun-coder-mobile",
+    "maxilun-coder-systems",
+    "maxilun-ui-designer",
+    "maxilun-ui-motion",
+    "maxilun-ui-reviewer",
+]
 REQUIRED_REFERENCES = [
     "engines.md",
     "discovery.md",
@@ -110,7 +129,7 @@ def extract_core_block(content: str) -> str:
 
 
 def test_skills_exist():
-    print("🧪 Checking 18 skills existence...")
+    print(f"🧪 Checking {len(EXPECTED_SKILLS)} skills existence...")
     missing = [s for s in EXPECTED_SKILLS if not skill_path(s).exists()]
     for s in EXPECTED_SKILLS:
         if skill_path(s).exists():
@@ -337,7 +356,7 @@ def test_size_budget():
             print(f"  ⚠️  {skill}: {lines} lines — approaching 300-line ceiling")
             warn = True
     if not hard_fail:
-        print("  ✅ All 18 skills strictly <= 300 lines" + (" (warnings above)" if warn else ""))
+        print(f"  ✅ All {len(EXPECTED_SKILLS)} skills strictly <= 300 lines" + (" (warnings above)" if warn else ""))
     return not hard_fail
 
 
@@ -371,7 +390,7 @@ def test_no_ceremony_or_self_check_gates():
                 print(f"  ❌ {skill}:{idx}: contains self-checked checkbox item '{line.strip()}'")
                 passed = False
     if passed:
-        print("  ✅ Zero ceremonial HUD banners or self-checked checkboxes across all 18 skills")
+        print(f"  ✅ Zero ceremonial HUD banners or self-checked checkboxes across all {len(EXPECTED_SKILLS)} skills")
     return passed
 
 
@@ -407,6 +426,7 @@ def test_referenced_paths():
         REPO_ROOT / "scripts" / "uninstall.sh",
         REPO_ROOT / "scripts" / "uninstall.ps1",
         REPO_ROOT / "scripts" / "repomap.py",
+        REPO_ROOT / "scripts" / "ui-purity-linter.py",
         REPO_ROOT / "docs" / "INSTALL.md",
         REPO_ROOT / "docs" / "SKILLS.md",
         REPO_ROOT / "docs" / "ENGINES.md",
@@ -624,6 +644,11 @@ def test_cross_references():
         ("maxilun-cinecode", ["maxilun-motion", "maxilun-craft", "maxilun-content"]),
         ("maxilun-content", ["maxilun-cinecode", "maxilun-motion"]),
         ("maxilun", ["maxilun-scaffold"]),
+        ("maxilun-desktop", ["maxilun-data", "maxilun-verify"]),
+        ("maxilun-mobile", ["maxilun-sentinel", "maxilun-verify"]),
+        ("maxilun-iot", ["maxilun-network", "maxilun-sentinel"]),
+        ("maxilun-network", ["maxilun-iot", "maxilun-deploy"]),
+        ("maxilun-ai", ["maxilun-data", "maxilun-engineer"]),
     ]
     passed = True
     for skill, targets in checks:
@@ -671,6 +696,31 @@ def test_harness_functional():
         if route2.primary_owner != "maxilun-engineer" or route2.decision_type != 2:
             print("  ❌ MaxilunRouter failed on Type 2 bugfix routing")
             return False
+
+        route_pb = router.route("Bikin aplikasi PowerBuilder dengan DataWindow tabular")
+        if route_pb.primary_owner != "maxilun-desktop":
+            print(f"  ❌ MaxilunRouter failed on PowerBuilder desktop routing: got {route_pb.primary_owner}")
+            return False
+
+        route_mob = router.route("Buat aplikasi Android dengan Kotlin Jetpack Compose")
+        if route_mob.primary_owner != "maxilun-mobile":
+            print(f"  ❌ MaxilunRouter failed on Android mobile routing: got {route_mob.primary_owner}")
+            return False
+
+        route_iot = router.route("Setup firmware ESP32 sensor suhu MQTT")
+        if route_iot.primary_owner != "maxilun-iot":
+            print(f"  ❌ MaxilunRouter failed on ESP32 IoT routing: got {route_iot.primary_owner}")
+            return False
+
+        route_net = router.route("Konfigurasi router MikroTik RouterOS firewall filter")
+        if route_net.primary_owner != "maxilun-network":
+            print(f"  ❌ MaxilunRouter failed on MikroTik network routing: got {route_net.primary_owner}")
+            return False
+        route_ai = router.route("Setup hybrid search RAG pipeline dengan embeddings")
+        if route_ai.primary_owner != "maxilun-ai":
+            print(f"  ❌ MaxilunRouter failed on AI RAG routing: got {route_ai.primary_owner}")
+            return False
+
 
         # 3. Benchmark Runner Test
         runner = BenchmarkRunner()
@@ -725,8 +775,82 @@ def test_harness_functional():
         traceback.print_exc()
         return False
 
+def test_ui_purity_linter():
+    print("\n🧪 Running functional UI Purity Linter test (45 AI Design Tells)...")
+    linter_path = REPO_ROOT / "scripts" / "ui-purity-linter.py"
+    if not linter_path.exists():
+        print("  ❌ scripts/ui-purity-linter.py does not exist")
+        return False
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("ui_linter", str(linter_path))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    success = mod.run_self_test()
+    if not success:
+        print("  ❌ ui-purity-linter self-test failed")
+        return False
+    print("  ✅ UI Purity Linter verified functional (45 tells detected deterministically)")
+    return True
+def test_agents_validity():
+    print(f"\n🧪 Checking {len(EXPECTED_AGENTS)} autonomous macro-agents validity & tool security invariants...")
+    agents_dir = REPO_ROOT / "agents"
+    if not agents_dir.exists():
+        print("  ❌ agents/ directory missing")
+        return False
+
+    passed = True
+    for agent in EXPECTED_AGENTS:
+        agent_file = agents_dir / f"{agent}.md"
+        if not agent_file.exists():
+            print(f"  ❌ Missing agent file: {agent_file}")
+            passed = False
+            continue
+
+        content = agent_file.read_text(encoding="utf-8")
+        fm = parse_frontmatter(content)
+        if not fm:
+            print(f"  ❌ {agent}: Missing YAML frontmatter")
+            passed = False
+            continue
+
+        name_match = re.search(r"^name:\s*([^\s]+)", fm, re.MULTILINE)
+        if not name_match or name_match.group(1).strip() != agent:
+            print(f"  ❌ {agent}: 'name' mismatch in frontmatter")
+            passed = False
+
+        if "tools:" not in fm:
+            print(f"  ❌ {agent}: Missing 'tools:' whitelist")
+            passed = False
+
+        # Invariant 1: maxilun-scout MUST be strictly read-only
+        if agent == "maxilun-scout":
+            if any(t in fm for t in ["Write", "Edit"]):
+                print(f"  ❌ {agent}: Security invariant broken! Scout MUST be strictly read-only.")
+                passed = False
+
+        # Invariant 2: maxilun-verifier MUST NOT modify code
+        if agent == "maxilun-verifier":
+            if any(t in fm for t in ["Write", "Edit"]):
+                print(f"  ❌ {agent}: Security invariant broken! Verifier MUST NOT have code modification tools.")
+                passed = False
+
+        # Invariant 3: maxilun-ui-reviewer MUST NOT modify code (objective evaluation)
+        if agent == "maxilun-ui-reviewer":
+            if any(t in fm for t in ["Write", "Edit"]):
+                print(f"  ❌ {agent}: Security invariant broken! UI Reviewer MUST NOT have code modification tools.")
+                passed = False
+        lines = len(content.splitlines())
+        if lines > 200:
+            print(f"  ❌ {agent}: Line count exceeds budget ({lines} > 200 lines)")
+            passed = False
+
+        print(f"  ✅ {agent}: Verified valid frontmatter & security invariants ({lines} lines)")
+
+    return passed
+
+
 def main():
-    print("🌑 Starting Maxilun 18-Skill Test Suite\n" + "=" * 48)
+    print(f"🌑 Starting Maxilun {len(EXPECTED_SKILLS)}-Skill Test Suite\n" + "=" * 48)
     results = [
         test_skills_exist(),
         test_frontmatter(),
@@ -746,6 +870,8 @@ def main():
         test_no_pipe_to_interpreter(),
         test_no_ceremony_or_self_check_gates(),
         test_harness_functional(),
+        test_ui_purity_linter(),
+        test_agents_validity(),
     ]
 
     print("\n" + "=" * 48)

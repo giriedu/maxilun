@@ -68,11 +68,19 @@ Jangan memasang satu jenis header ke semua situs. Pilih pola yang sesuai dengan 
 4. **Thumb-Zone Mobile Navigation (`< 768px`)**: gunakan **Bottom Tab Bar (3–4 tujuan inti)** setinggi `56–64px` + `env(safe-area-inset-bottom)` untuk aplikasi berulang, atau **Bottom Sheet Drawer** untuk menu sekunder — hindari daftar teks layar penuh yang memutus orientasi pengguna.
 
 ### 4.2 Komposisi Tata Letak Pengganti Template Klise
-Hindari pola *hero rata-tengah + 3 kartu fitur identik + 4 kotak KPI palsu*. Pilih struktur yang melayani isi:
-- **Split Artifact Showcase**: teks proposisi tajam di satu sisi, artefak produk interaktif hidup (*One Live Thing*) di sisi pendamping.
-- **Functional Asymmetric Grid (`2:1` / `1:2`)**: gunakan hanya ketika panel utama memang menampung komponen kerja berdimensi besar dan panel pendamping menampung ringkasan/kontrol sekunder — bukan sekadar memotong teks biasa ke dalam kotak-kotak Bento.
-- **Editorial Sequence / Comparison Table**: untuk menjelaskan alur proses berurutan atau perbandingan spesifikasi secara jujur tanpa membungkus setiap paragraf dalam kartu.
-- **4-Level Surface Ladder**: bedakan bidang lewat nada permukaan halus (`Canvas` → `Surface` dengan garis `1px` atau spasi → `Elevated` dengan bayangan kontak tipis → `Overlay` untuk dialog/sheet), bukan menumpuk bayangan tebal di semua kotak.
+Hindari pola *hero rata-tengah + 3 kartu fitur identik + 4 kotak KPI palsu* yang membuat hero *"biasa saja tapi jadi aneh"* akibat ditambal dekorasi pelangi dan kanvas 3D palsu. Terapkan 4 arketipe hero produksi nyata:
+1. **The Interactive Split Engine (Developer Tools, API Gateways, B2B Infrastructure)**:
+   - Rasio 55/45 atau 50/50 penyejajaran teks awal (*text-align: start*).
+   - Kiri: Display typeface solid tegas + 2 kalimat proposisi nilai riil + 1 tombol aksi solid primer + blok copy perintah instalasi (`$ npx aetherlink@latest` atau `$ docker run ...`).
+   - Kanan: **The Living Engine** — komponen kerja operasional nyata (bukan ilustrasi / bukan 3D particle mesh). Misal pada gateway pesan: live WhatsApp QR terminal pairing + live WebSocket JSON event stream (`messages.upsert`, latensi p95 `18ms`).
+2. **The Task-First Hero (Fintech, Booking, Travel, Utilitas Kerja)**:
+   - Antarmuka tugas langsung menjadi pahlawan paruh atas layar (misal: widget konversi mata uang riil dengan kurs live atau pemilih tanggal & kamar terpadu alih-alih foto dekoratif).
+3. **The Editorial Masthead (Media, Riset, Publikasi, AI Naratif)**:
+   - Kolom baca proporsional (`60–70ch`), kontras skala serif/sans tajam, ringkasan eksekutif langsung terbaca, dan stempel waktu baca faktual.
+4. **Functional Asymmetric Grid (`2:1` / `1:2`)**:
+   - Gunakan hanya ketika panel utama memang menampung komponen kerja berdimensi besar dan panel pendamping menampung kontrol sekunder.
+5. **4-Level Surface Ladder**:
+   - Bedakan bidang lewat nada permukaan halus (`Canvas` → `Surface` dengan garis `1px` atau spasi → `Elevated` dengan bayangan kontak tipis → `Overlay` untuk dialog/sheet), bukan menumpuk bayangan tebal di semua kotak.
 
 ### 4.3 Validasi Form, Tabel Data, Dialog & Toast
 - **Form UX**: validasi saat `blur`, lalu perbarui instan saat `input` begitu pengguna memperbaiki nilai; hubungkan pesan perbaikan spesifik via `aria-describedby`; aktifkan indikator sibuk (`aria-busy="true"`) saat pengiriman berlangsung.
@@ -85,4 +93,15 @@ Hindari pola *hero rata-tengah + 3 kartu fitur identik + 4 kotak KPI palsu*. Pil
 
 1. **Input & Keyboard Semantik Mobile**: font `<input>`/`<select>`/`<textarea>` minimal `16px`, target sentuh `≥ 44×44px` dengan jeda `≥ 8px`, serta `inputmode` dan `autocomplete` yang sesuai (`numeric`, `decimal`, `tel`, `one-time-code`).
 2. **Aksi Geser Aksesibel**: setiap aksi *swipe* wajib memiliki padanan tombol/menu yang dapat diakses keyboard dan pembaca layar.
-3. **Verifikasi 3 Lebar Layar (`375px`, `768px`, `1440px`)**: pastikan hierarki utama terbaca jelas di paruh atas layar pertama, tidak ada kebocoran scroll horizontal, serta tema terang dan gelap bebas kedip awal (*flash prevention*) dan memenuhi kontras WCAG.
+3. **Pemeriksaan Ketat 3 Lebar Layar (`375px`, `768px`, `1440px`) & Zero Canvas Leak**:
+   - *Uji Kebocoran Layar Ponsel 375px (`document.documentElement.scrollWidth <= window.innerWidth`)*:
+     - Dilarang `100vw` atau `w-screen` (penyebab #1 scrollbar horizontal samping bocor). Gunakan `w-full`.
+     - Dilarang padding horizontal berlebihan: gunakan `px-4 sm:px-6` (bukan `px-12` atau `px-20` di mobile).
+     - Seluruh flex/grid child wajib menyertakan `min-w-0` agar pemotongan teks (`truncate`) dan `break-words` berfungsi tanpa mendorong kontainer melebar.
+   - *Ukuran Navbar Mobile (Maksimal 64px)*:
+     - Header mobile wajib kompak `56px–64px` (`h-14 sm:h-16`).
+     - Tautan menu teks desktop disembunyikan di `< 768px` (`hidden md:flex`).
+     - Tombol CTA navbar desktop disembunyikan atau diringkas menjadi satu ikon agar tidak menabrak logo di layar sempit.
+   - *Disiplin Fluid Heading & Anti-Typo Overflow*:
+     - Judul display wajib memakai skala responsif bertahap (`text-2xl sm:text-4xl lg:text-6xl`) atau `clamp()` dan diberi `break-words`.
+     - Monospace, URL, token, dan hash wajib `break-all` atau dimasukkan ke dalam wrapper berbatas dengan `overflow-x-auto`.

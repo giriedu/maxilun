@@ -33,11 +33,13 @@ Tulis ulang teks bila memenuhi satu atau lebih tanda berikut:
 Prinsip inti: **tolak klise mentah LLM sekaligus tolak monokultur cetakan tunggal.** Desain antarmuka wajib lahir dari karakter subjek, audiens, dan tugas utama produk.
 
 ### B1. Tipografi
-1. **Hierarki datar tanpa skala tipografi (`TYPO-001`)** — menggunakan font sistem/standar tanpa pembedaan peran (display vs body vs metadata), tanpa pengaturan `line-height`/`letter-spacing`, atau memakai lebih dari 5 ukuran acak di luar skala (`TYPO-005`). *(Catatan: `Inter`, `Geist`, atau `system-ui` sah untuk aplikasi operasional padat selama skala, kontras bobot, dan `tabular-nums` terkalibrasi; untuk halaman editorial/brand, pasangkan typeface berkarakter).*
+1. **Hierarki datar & font sans generik seragam (`TYPO-001`)** — menggunakan satu font sans polos generik (Inter default tanpa kalibrasi) untuk seluruh tingkatan tanpa pembedaan peran (display vs body vs metadata teknis). Wajib pasangkan typeface display berkarakter kuat untuk judul (`tracking: -0.02em` s.d. `-0.04em`) + monospace fungsional untuk spesifikasi protokol/payload + sans terukur untuk teks tubuh.
 2. **Kontras teks lemah (`TYPO-002` / `CLR-002`)** — teks abu-abu pucat di atas permukaan berwarna dengan rasio `< 4.5:1`.
 3. **Hitam/abu-abu tak terkalibrasi pada tema terang (`TYPO-003`)** — teks `#000000` murni di atas latar putih menyilaukan yang melelahkan bacaan panjang. *(Pengecualian sah: kanvas gelap kontras tinggi seperti `#010102`/`#000000` pada referensi seperti `linear.app.md` atau `vercel.md`, serta garis tepi media `1px` alpha `oklch(0 0 0 / 0.1)`).*
 4. **Panjang baris ekstrem (`TYPO-004`)** — paragraf bacaan melebar `> 75ch` tanpa batas lebar baca (`max-w-[65ch]`).
 5. **Input mobile `< 16px` (`TYPO-007`)** — memicu auto-zoom paksa di iOS Safari.
+6. **Gradien teks pelangi pada judul (`TYPO-008` / `CLR-008`)** — mewarnai kata-kata judul dengan gradien warna-warni (`bg-gradient-to-r ... bg-clip-text text-transparent`) untuk menutupi tipografi yang membosankan. DILARANG KERAS. Judul wajib bertinta solid dengan kontras tinggi ($\ge 4.5:1$, tema gelap $\ge 7:1$). Wibawa visual lahir dari bentuk huruf (*typeface character*), kontras bobot, dan skala ukuran, bukan efek gradien murahan.
+7. **Ukuran teks display raksasa tanpa skala mobile (`TYPO-009`)** — menggunakan ukuran font statis besar (`text-5xl` / `text-6xl` tanpa responsivitas) atau teks panjang (URL, JID, token hash) tanpa `break-words`/`min-w-0`, memicu kata panjang terpotong keluar melebihi canvas layar pada lebar $\le 375\text{px}$. Wajib terapkan fluid scaling (`text-2xl sm:text-4xl lg:text-6xl`) dan `break-words`.
 
 ### B2. Warna & Permukaan
 6. **Gradien ungu-biru dekoratif default (`CLR-001`)** — gradien `#667eea → #764ba2` atau glow neon acak tanpa makna merek/status.
@@ -52,21 +54,32 @@ Prinsip inti: **tolak klise mentah LLM sekaligus tolak monokultur cetakan tungga
 13. **Strip 4 kotak KPI dekoratif (`LAY-009` / `LAY-012`)** — empat kartu angka statis di puncak halaman dengan persentase hijau karangan (`+12.5%`) tanpa konteks waktu, filter, atau tindakan lanjut.
 14. **Hero dengan dua tombol primer kembar (`LAY-010` / `CMP-017`)** — dua tombol solid/pill berebut fokus utama. Tetapkan tepat satu aksi primer per tampilan; aksi pendamping tampil netral/sekunder.
 15. **Pembungkusan kartu berlapis (`LAY-001` / `LAY-002`)** — kartu di dalam kartu di dalam kartu; gunakan pengelompokan spasi (`2x` jarak antar-grup dibanding intra-grup) sebelum menambah kotak atau garis.
+16. **Navbar obesitas & menu meluap di mobile (`LAY-015`)** — tinggi navbar mobile $> 64\text{px}$, tautan desktop tidak disembunyikan (`hidden md:flex`), tombol CTA desktop menutupi logo di layar sentuh, atau drawer menu tanpa kunci scroll latar (`overscroll-behavior: contain`).
+17. **Kebocoran scroll horizontal mobile (`LAY-016`)** — memakai `width: 100vw` atau `w-screen` (menghitung scrollbar desktop sehingga bocor di mobile), fixed width tanpa `max-w-full`, atau padding `px-12`/`px-20` pada viewport sempit.
 
 ### B4. Komponen & Navigasi
 16. **Breadcrumb redundan di halaman datar (`CMP-001` / `CMP-011`)** — menampilkan `Home > Dashboard > Settings` pada landing page, halaman login, atau aplikasi bersarang dangkal. Gunakan judul konteks atau tautan balik tunggal; simpan *breadcrumb* hanya untuk taksonomi dalam (`≥ 3` level seperti dokumentasi besar, sistem berkas, atau katalog multi-kategori).
-17. **Kapsul pill dekoratif di atas H1 (`CMP-015`)** — badge melayang `• FITUR BARU •` dengan titik menyala di setiap hero.
-18. **Gimmick fiksi ilmiah palsu (`CMP-016`)** — menamai utilitas biasa dengan istilah berlebihan (*"Chamber 01"*, *"Quantum Core"*, bola wireframe 3D tanpa fungsi) alih-alih menampilkan artefak produk asli.
-19. **Badge pemasaran tanpa fakta (`CMP-002`)** & **Emoji sebagai ikon fungsional (`CMP-003`)**.
+17. **Kapsul pill tagline dekoratif di atas H1 (`CMP-015`)** — badge mengambang `• SIGNAL PROTOCOL TCP • MULTI-DEVICE ... •` berbentuk kapsul pill oval (`rounded-full`) dengan peluru bullet `•` di atas judul utama. Ini adalah *tanda tangan utama template AI*. DILARANG KERAS. Jika konteks teknis atau kategori perlu ditampilkan, gunakan teks murni tanpa kapsul (eyebrow editorial kecil, huruf kapital berjarak, tanpa border, tanpa background pill terisolasi) atau integrasikan langsung ke dalam kalimat judul.
+18. **Gimmick fiksi ilmiah & kanvas 3D palsu (`CMP-016`)** — menampilkan kanvas 3D partikel mengambang, kubus wireframe, atau istilah karangan (*"3D MESH TOPOLOGY // 60 FPS"*, *"Tembak Paket 3D ⚡"*, *"Chamber 01"*) pada produk backend, API gateway, atau infrastruktur pesan. Untuk produk developer/infrastruktur, artefak kerja hidup (**The Live Artifact**) **WAJIB berupa konsol operasional nyata**: live WebSocket stream dengan event asli (`messages.upsert`), status pairing WhatsApp QR nyata, latensi p95 faktual, dan blok kode cURL / REST SDK interaktif.
+19. **Badge pemasaran tanpa fakta (`CMP-002`)** & **Polusi Emoji/Emoticon pada Antarmuka (`CMP-003`)** — menyusupkan karakter emoji Unicode (`🚀`, `✨`, `🔥`, `⚡`, `💡`, `🎉`, `⭐`, `✅`, `❌`, `⚠️`, `👉`, `💎`, `🌟`, `🤖`, `💬`, dll.) sebagai ikon tombol, prefix judul heading (`<h3>⚡ Performa</h3>`), ikon kartu fitur, peluru checklist (`<li>✅ 99.9%</li>`), badge hero, atau sel status tabel. Ini adalah *tanda tangan kemalasan AI paling mencolok* yang merusak line-height, pecah antar-OS (iOS vs Windows), dan merusak screen reader. DILARANG KERAS. Wajib gunakan ikon vektor SVG monokrom geometris terstandarisasi (`stroke="currentColor"` / `fill="currentColor"`) yang lulus *1-Bit Monochrome Test*.
 20. **Radius seragam mengabaikan geometri bersarang (`CMP-004`)** — container dan anak memakai radius sama tanpa memperhitungkan padding konsentris.
 21. **Elemen navigasi/kontrol mati (`CMP-005` / `CMP-012`)** — kotak cari, ikon lonceng, filter, atau tombol yang tidak melakukan apa-apa saat diklik.
 22. **Label navigasi generik tanpa konteks domain (`CMP-010`)** — sidebar hanya menulis *Menu 1, Analytics, Reports* tanpa menyebut entitas bisnis sesungguhnya.
+23. **Border neon saturated pada kartu (`CMP-018`)** — membungkus keliling kartu dengan garis border berwarna saturasi tinggi (`border-cyan-500`, `border-purple-500`, dsb.) dan glow menyala. DILARANG KERAS. Kontainer kartu wajib memakai hairline neutral border `1px solid var(--border)` (`oklch(1 0 0 / 0.08)` pada mode gelap). Warna aksen hanya untuk indikator titik aktif kecil.
+24. **Radial glow blob di belakang kartu (`CMP-019`)** — memasang lingkaran blur besar (`blur-3xl bg-cyan-500/20`) di balik kartu untuk menciptakan kesan menyala palsu. Gantikan dengan *4-Level Surface Ladder* dan bayangan kontak transparan tipis.
+25. **Telemetri & status teater palsu (`CMP-020`)** — menempelkan badge dekoratif fiktif (`// 60 FPS`, `• PING: 0.1ms`, `SYSTEM NORMAL`) tanpa sumber data riil. Wajib tampilkan telemetri operasional nyata dengan filter atau tindakan.
 
 ### B5. Gerak & Aksesibilitas
 23. **Animasi properti layout (`ANI-002`)** — menganimasikan `width`, `height`, `top`, `left` yang memicu reflow; gunakan `transform` dan `opacity`.
 24. **Mengabaikan `prefers-reduced-motion` (`ANI-003`)** atau **memutar media otomatis tanpa kendali (`ANI-005`)**.
 25. **Pelanggaran aksesibilitas dasar (`A11Y-001..007`)** — kontrol tanpa nama aksesibel, input tanpa `<label>`, `:focus-visible` dihapus, atau target sentuh mobile `< 44x44px` (`LAY-004`).
 
+### B6. Kunci Sistem Desain & Jebakan Tambal Sulam Redesign
+26. **Kunci Token & Variabel Usang (`SYS-001`)** — mempertahankan token warna/spasi CSS lama (misal: slate generik `#3b82f6`, background `#f8fafc`, `--radius: 0.5rem`) saat pengguna meminta redesign, sehingga antarmuka baru tetap terkungkung estetika kusam lama. Wajib ganti di tingkat root (`globals.css` / theme) dengan OKLCH domain fisik.
+27. **Kunci Pembungkus Shell & Layout (`SYS-002`)** — membiarkan kontainer root (`max-w-7xl mx-auto px-4`, hardcoded `bg-gray-50` di body) mencekik komposisi baru. Wajib rombak kontainer agar ritme spasial $2\times$ bernapas bebas.
+28. **Kunci Komponen Primitif Zombie (`SYS-003`)** — tetap memakai wrapper `<Card>` atau `<Button>` lama yang memaksakan border pucat flat dan radius seragam tanpa formula konsentris. Wajib mutakhirkan primitif komponen ke standar interface engineering.
+29. **Jebakan Redesign Tambal Sulam (`SYS-004`)** — hanya mengedit leaf JSX atau menambahkan inline overrides (`!important` / `style={{...}}`) di atas fondasi sistem desain yang rusak, menghasilkan UI yang "begitu-begitu saja".
+30. **Tabrakan Styling Dua Sistem (`SYS-005`)** — menumpuk class styling baru tanpa menghapus CSS lama yang bertentangan, menyisakan kelas zombie dan layout glitch. Wajib lakukan *Clean Cutover* (hapus tuntas kode styling lama).
 ---
 
 ## C. Ringkasan Kode Pemeriksaan Kontekstual
@@ -75,12 +88,13 @@ Gunakan kode referensi ini saat melaporkan hasil audit desain/kode secara presis
 
 | Kategori | Rentang ID | Fokus Evaluasi Utama |
 |---|---|---|
-| Tipografi | `TYPO-001` .. `TYPO-007` | Hierarki skala peran, lebar baca `60–75ch`, kontras terukur, `tabular-nums`, input mobile `≥16px` |
-| Warna | `CLR-001` .. `CLR-007` | Bebas gradien dekoratif klise, kroma latar tenang, status punya ikon/teks pendamping, `color-scheme` |
-| Tata Letak | `LAY-001` .. `LAY-013` | Bebas cetakan rata-tengah monoton, bebas monokultur Bento salah domain, 1 aksi primer, target sentuh |
-| Komponen | `CMP-001` .. `CMP-017` | Bebas kontrol mati, bebas kapsul/gimmick palsu, radius konsentris, navigasi berbasis entitas domain |
+| Tipografi | `TYPO-001` .. `TYPO-009` | Hierarki skala peran, bebas gradien teks pelangi, bebas overflow mobile, `tabular-nums` |
+| Warna | `CLR-001` .. `CLR-008` | Bebas gradien dekoratif klise, bebas neon glow berlebih, kroma latar tenang, `color-scheme` |
+| Tata Letak | `LAY-001` .. `LAY-016` | Bebas tumpukan senter, bebas navbar obesitas mobile, bebas kebocoran scroll horizontal (`100vw`) |
+| Komponen | `CMP-001` .. `CMP-020` | Bebas kapsul pill, bebas border neon kartu, bebas status teater palsu, radius konsentris |
 | Gerak | `ANI-001` .. `ANI-007` | Hanya `transform`/`opacity`, durasi mikro `≤250ms`, hormati `prefers-reduced-motion` |
 | Aksesibilitas | `A11Y-001` .. `A11Y-007` | Nama aksesibel, asosiasi `<label>`, indikator `:focus-visible`, urutan heading semantik |
+| Kunci Desain & Redesign | `SYS-001` .. `SYS-005` | Deteksi pengunci sistem desain, hapus token kusam root, buka shell layout, clean cutover |
 
 ---
 

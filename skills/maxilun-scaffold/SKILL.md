@@ -13,7 +13,7 @@ description: >
   "bikin PRD", "setup dokumentasi project", or any request to bootstrap
   project context files before development begins.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use

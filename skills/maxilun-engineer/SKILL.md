@@ -7,7 +7,7 @@ description: >
   Triggers: "/maxilun-engineer", "tulis kode", "buat fitur", "fix bug", "refactor kode",
   "implementasikan fungsi", or any direct coding task.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -20,6 +20,10 @@ metadata:
     - codex
     - zed
     - gemini-cli
+  references:
+    - references/index.md
+    - references/simplicity-ladder.md
+    - references/root-cause-convergence.md
 ---
 
 # Maxilun Engineer: Senior Code Implementation

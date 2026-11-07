@@ -8,7 +8,7 @@ description: >
   Triggers: "/maxilun-diagrams", "/msal-diagram", "buat diagram", "gambar arsitektur",
   "sequence diagram", "alur kerja", "data flow diagram", or system visualization tasks.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -21,6 +21,9 @@ metadata:
     - codex
     - zed
     - gemini-cli
+  references:
+    - references/index.md
+    - references/architecture-diagram-patterns.md
 ---
 
 # Maxilun Diagrams: System Visualization & Flow Mapping

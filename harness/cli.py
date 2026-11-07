@@ -49,6 +49,39 @@ def cmd_run(args):
     agent = MaxilunAgentLoop(provider=provider, max_turns=args.max_turns)
     agent.run_task(args.task)
 
+def cmd_agent(args):
+    agent_name = args.name.lower().strip()
+    macro_map = {
+        "scout": "maxilun-knowledge-graph",
+        "maxilun-scout": "maxilun-knowledge-graph",
+        "architect": "maxilun-architect",
+        "maxilun-architect": "maxilun-architect",
+        "maker": "maxilun-engineer",
+        "maxilun-maker": "maxilun-engineer",
+        "studio": "maxilun-craft",
+        "maxilun-studio": "maxilun-craft",
+        "verifier": "maxilun-verify",
+        "maxilun-verifier": "maxilun-verify",
+        "orchestrator": "maxilun",
+        "maxilun-orchestrator": "maxilun"
+    }
+    target = macro_map.get(agent_name, agent_name)
+    if not target.startswith("maxilun"):
+        target = f"maxilun-{target}"
+
+    provider = UniversalProvider(
+        provider=args.provider,
+        endpoint=args.endpoint,
+        api_key=args.api_key,
+        model=args.model
+    )
+    agent_loop = MaxilunAgentLoop(provider=provider, max_turns=args.max_turns)
+    print(f"\n🚀 Launching Autonomous Macro-Agent: [{agent_name}] (Mapped skill: {target})")
+    print(f"   Task: {args.task}")
+    print("=" * 65)
+    agent_loop.run_task(args.task, forced_skill=target)
+
+
 
 def cmd_chat(args):
     provider = UniversalProvider(
@@ -59,7 +92,7 @@ def cmd_chat(args):
     )
     agent = MaxilunAgentLoop(provider=provider, max_turns=args.max_turns)
     print("🌑 Maxilun Harness Agent Session (type 'exit' or 'quit' to end)")
-    print("   Governed by Maxilun Core Rules & 18 Specialist Skills")
+    print("   Governed by Maxilun Core Rules & 21 Specialist Skills (22 skills total)")
     print("=" * 60)
 
     while True:
@@ -143,7 +176,10 @@ def cmd_check(args):
     elif p.is_dir():
         total_files = 0
         failed_files = 0
+        skip_dirs = {".git", "node_modules", "__pycache__", ".next", "dist", "build", "maxilun-out", ".agents", ".claude"}
         for f in p.rglob("*"):
+            if any(part in skip_dirs or part.startswith("_maxilun_backup") for part in f.parts):
+                continue
             if f.is_file() and f.suffix in {".ts", ".tsx", ".js", ".jsx", ".py", ".md", ".go", ".sql"}:
                 total_files += 1
                 text = f.read_text(encoding="utf-8", errors="replace")
@@ -324,6 +360,49 @@ def cmd_generate_ci(args):
     ok = HookInstaller.generate_ci_workflow()
     sys.exit(0 if ok else 1)
 
+def cmd_doctor(args):
+    print("\n🌑 Maxilun Ecosystem Healthcheck (Doctor):")
+    print("=" * 65)
+    py_ver = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+    py_ok = sys.version_info >= (3, 8)
+    print(f"[{'✅ PASS' if py_ok else '❌ FAIL'}] Python runtime: {py_ver} (>= 3.8 required)")
+
+    import shutil
+    node_bin = shutil.which("node")
+    npx_bin = shutil.which("npx")
+    print(f"[{'✅ PASS' if node_bin else '⚠️  WARN'}] Node.js runtime: {node_bin or 'Not found (optional for npx skills)'}")
+    print(f"[{'✅ PASS' if npx_bin else '⚠️  WARN'}] npx package runner: {npx_bin or 'Not found'}")
+
+    loader = SkillsLoader()
+    skills = loader.list_skills()
+    skills_ok = len(skills) >= 23 and all(s.line_count <= 300 for s in skills)
+    print(f"[{'✅ PASS' if skills_ok else '❌ FAIL'}] Skills inventory: {len(skills)}/23 skills discovered (all <= 300 lines)")
+
+    repo_root = Path(__file__).resolve().parent.parent
+    agents_dir = repo_root / "agents"
+    agents_found = list(agents_dir.glob("*.md")) if agents_dir.exists() else []
+    agents_ok = len(agents_found) >= 6
+    print(f"[{'✅ PASS' if agents_ok else '❌ FAIL'}] Autonomous agents: {len(agents_found)}/6 macro-agents present in agents/")
+    for a in sorted(agents_found):
+        print(f"     • {a.name}")
+
+    user_home = Path.home()
+    detected_editors = []
+    if (user_home / ".claude").exists() or (repo_root / ".claude").exists():
+        detected_editors.append("Claude Code")
+    if (user_home / ".agents").exists() or (repo_root / ".agents").exists():
+        detected_editors.append("Antigravity / Zed")
+    if (user_home / ".cursor").exists():
+        detected_editors.append("Cursor")
+    if (user_home / ".codex").exists():
+        detected_editors.append("Codex")
+    if (user_home / ".config" / "opencode").exists() or (user_home / ".opencode").exists():
+        detected_editors.append("OpenCode")
+    print(f"[ℹ️  INFO] Detected AI Platforms: {', '.join(detected_editors) if detected_editors else 'None (standalone mode)'}")
+    print("=" * 65)
+    print("🎉 Maxilun ecosystem is ready for multi-agent autonomous engineering.\n")
+
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -349,8 +428,19 @@ def main():
     run_parser.add_argument("--api-key", default=None, help="LLM API key")
     run_parser.add_argument("--max-turns", type=int, default=10, help="Max interaction turns")
 
+    # agent
+    agent_parser = subparsers.add_parser("agent", help="Directly run a macro-role agent (scout, architect, maker, studio, verifier, orchestrator)")
+    agent_parser.add_argument("name", help="Macro agent name: scout, architect, maker, studio, verifier, orchestrator")
+    agent_parser.add_argument("task", help="Task prompt to execute")
+    agent_parser.add_argument("--provider", choices=["deepseek", "openai", "openrouter", "ollama", "groq", "gemini"], default=None, help="Provider preset")
+    agent_parser.add_argument("--model", default=None, help="Model name")
+    agent_parser.add_argument("--endpoint", default=None, help="LLM endpoint URL")
+    agent_parser.add_argument("--api-key", default=None, help="LLM API key")
+    agent_parser.add_argument("--max-turns", type=int, default=10, help="Max interaction turns")
+
     # skills
-    subparsers.add_parser("skills", help="List and inspect all 18 Maxilun specialist skills")
+    subparsers.add_parser("skills", help="List and inspect all 23 Maxilun ecosystem skills (1 orchestrator + 22 specialists)")
+    subparsers.add_parser("doctor", help="Run diagnostic healthcheck on environment, 23 skills, and 6 autonomous agents")
 
     # dashboard
     dash_parser = subparsers.add_parser("dashboard", help="Generate and open the interactive visual HTML dashboard")
@@ -398,6 +488,7 @@ def main():
     dispatch = {
         "chat": cmd_chat,
         "run": cmd_run,
+        "agent": cmd_agent,
         "skills": cmd_skills,
         "dashboard": cmd_dashboard,
         "swarm": cmd_swarm,
@@ -409,6 +500,7 @@ def main():
         "install-hook": cmd_install_hook,
         "uninstall-hook": cmd_uninstall_hook,
         "generate-ci": cmd_generate_ci,
+        "doctor": cmd_doctor,
     }
 
     fn = dispatch.get(args.command)

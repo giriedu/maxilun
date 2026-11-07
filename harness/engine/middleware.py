@@ -7,11 +7,11 @@ Intercepts the agent loop at key execution boundaries:
 Zero external dependencies.
 """
 
+from pathlib import Path
 from typing import Dict, Any, List, Optional
 from ..purity_validator import PurityValidator
 from ..router import MaxilunRouter
 from ..tools.kg_tool import KnowledgeGraphTool
-
 
 class MiddlewarePipeline:
     """Manages pre-tool, post-response, and reversibility hooks during agent execution."""
@@ -28,7 +28,7 @@ class MiddlewarePipeline:
             target_path = arguments.get("path", "")
             # If editing code files, ensure caller blast radius is known
             if target_path.endswith((".ts", ".tsx", ".py", ".go")):
-                filename = target_path.split("/")[-1]
+                filename = Path(target_path).name
                 kg_res = self.kg.query("importersOf", filename)
                 if kg_res and kg_res.get("match_count", 0) > 0:
                     importers = [m.get("importer") for m in kg_res.get("results", [])[:3]]

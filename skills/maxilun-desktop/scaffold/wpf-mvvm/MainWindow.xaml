@@ -1,0 +1,39 @@
+<Window x:Class="MaxilunDesktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:MaxilunDesktop.ViewModels"
+        Title="Maxilun Enterprise Desktop" Height="500" Width="800"
+        Background="{StaticResource BgBrush}">
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" Text="Maxilun Enterprise Data Console"
+                   FontSize="18" FontWeight="SemiBold"
+                   Foreground="{StaticResource TextMainBrush}" Margin="0,0,0,16"/>
+
+        <!-- Main Data Surface (4-State Matrix: Loading, Empty, Populated, Error) -->
+        <Border Grid.Row="1" Background="{StaticResource CardBrush}"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="16">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="{Binding StatusText}" Foreground="{StaticResource TextMutedBrush}"
+                           FontSize="14" HorizontalAlignment="Center" Margin="0,0,0,12"/>
+                <Button Content="Sync Transaction Buffer" Command="{Binding SyncCommand}"
+                        Background="{StaticResource PrimaryBrush}" Foreground="White"
+                        Padding="16,8" BorderThickness="0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Footer -->
+        <TextBlock Grid.Row="2" Text="{Binding FooterStatus}"
+                   FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,12,0,0"/>
+    </Grid>
+</Window>

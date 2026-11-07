@@ -10,7 +10,7 @@ description: >
   "ganti UI UX", "redesign", "buat logo", "brand identity", "brand guideline pdf",
   "sistem desain", "tampilan antarmuka", "responsif", "aksesibilitas", "dark mode".
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -29,7 +29,13 @@ metadata:
     - references/component-mobile-patterns.md
     - references/brand-logo-guidelines.md
     - references/interface-engineering.md
----
+    - references/design-decision-records.md
+    - references/surface-state-topology.md
+    - references/resilient-interaction-recovery.md
+    - references/cognitive-friction-audit.md
+    - references/platform-surface-specs.md
+    - references/task-flow-choreography.md
+    - references/interaction-telemetry-benchmarks.md
 
 # Maxilun Craft: Domain-Authentic UI/UX & Production Design Systems
 
@@ -64,15 +70,19 @@ Detail lengkap: `../maxilun/references/engines.md`.
 
 ## 1. Engine Overrides & Anti-Monokultur
 
-- **Purity Dua Arah**: Tolak klise mentah LLM (`../maxilun/references/purity-catalog.md`: gradien ungu-biru `CLR-001`, tumpukan seksi rata-tengah monoton `LAY-011`, kapsul pill hero `CMP-015`, angka fiktif) **sekaligus** tolak monokultur baru (`LAY-013`: memaksakan dashboard gelap ala developer tools, Bento kotak-kotak seragam, atau shortcut `Cmd+K` pada produk non-teknis).
+- **Purity Dua Arah**: Tolak klise mentah LLM (`../maxilun/references/purity-catalog.md`: gradien ungu-biru dan gradien teks pelangi `CLR-001`/`TYPO-008`, kapsul pill hero melayang `• TAG •` `CMP-015`, polusi emoji/emoticon pada tombol/judul/list `CMP-003`, font sans generik polos seragam `TYPO-001`, tumpukan seksi rata-tengah monoton `LAY-011`, gimmick fiksi ilmiah 3D palsu `CMP-016`, border neon kartu `CMP-018`, angka fiktif) **sekaligus** tolak monokultur baru (`LAY-013`: memaksakan dashboard gelap ala developer tools, Bento kotak-kotak seragam, atau shortcut `Cmd+K` pada produk non-teknis).
 - **Minimalist CSS Native**: Utamakan CSS Grid, Flexbox, `@container`, `oklch()`, `<dialog>`, dan properti logis CSS di atas library komponen berat bila repo belum memakainya.
 
 ## 2. Penjangkaran Domain & Pemilihan Arsitektur Visual
 
 Sebelum menyusun komponen, periksa sistem desain yang sudah ada di repositori. Jika membangun permukaan baru atau melakukan *redesign*:
 
-1. **Inventarisasi Subjek Produk**: Kumpulkan entitas nyata, satuan ukur asli, dokumen/objek kerja harian, dan satu interaksi hidup (*One Live Thing* — mis. kalkulator cicilan riil, pemilih slot jadwal langsung, atau inspektor payload nyata) yang membuktikan fungsi produk tanpa teks promosi kosong.
-2. **Pilih Arsitektur Tata Letak & Navigasi dari Sifat Tugas** (bukan satu resep tetap):
+1. **Urutan Operasi & Penjangkaran Fisik (`references/design-decision-records.md`)**:
+   - **Riset 3 Pemimpin Kategori Nyata**: Telusuri standar industri aktual sebelum menulis kode untuk mengidentifikasi konvensi dan menentukan satu pembeda utama.
+   - **Ekstraksi Palet Fisik Dunia Nyata**: Turunkan warna dari material fisik yang nyata ada di lingkungan subjek produk (batu kapur, tinta timbal, minyak baja, terakota), bukan palet generik internet.
+   - **Tipografi Berkarakter Kontekstual**: Pilih jenis huruf display dari katalog hidup yang memiliki akar historis/geografis dengan domain, dipadukan dengan sans fungsional untuk data tabular.
+   - **Inventarisasi Subjek & Objek Inti**: Kumpulkan entitas nyata dan pusatkan layar pada satu objek pengendali utama (*The Interface IS the Object* — mis. jam melingkar, kanvas arch, atau inspektor payload).
+2. **Pilih Arsitektur Tata Letak & Navigasi dari Sifat Tugas**:
 
 | Ranah Produk | Struktur Tata Letak & Navigasi yang Tepat | Contoh Rujukan di `references/design-md/` |
 |---|---|---|
@@ -82,10 +92,21 @@ Sebelum menyusun komponen, periksa sistem desain yang sudah ada di repositori. J
 | **Developer Tools, Cloud & Observabilitas** | Panel telemetri/terminal autentik, metadata monospaced fungsional, navigasi keyboard/command palette bila alur kerja memang berbasis perintah | `tailscale.md`, `github.md`, `linear.app.md`, `datadog.md` |
 | **Studio Kreatif, Desain & Komunitas** | Kanvas kerja ekspresif, pengelompokan spasial dinamis, mikro-interaksi taktil presisi | `figma.md`, `framer.md`, `notion.md` |
 
-3. **Protokol Saat UI Dinilai "Generik AI" atau Diminta Redesign**:
-   - **Dilarang tambal sulam kosmetik** (sekadar menggeser radius/margin di atas kerangka klise).
-   - Jika preferensi estetika belum terbaca dari repo maupun prompt, ajukan **maksimal 1 pertanyaan singkat** berisi **3 arketipe kontras** yang relevan dengan domain (misal: *Warm Editorial* vs *Crisp Light Operational* vs *High-Contrast Minimal*). Jika pengguna meminta langsung dieksekusi, pilih arah paling autentik bagi domain produk, nyatakan rasional 2 kalimat, dan rombak struktur tata letaknya dari nol.
-
+3. **Tiga Arah Bersaing & Eliminasi Terbukti**:
+   - Susun 3 konsep kontras: *Direction 1 (The Generic AI Trap — wajib diidentifikasi untuk ditolak)*, *Direction 2 (Authentic Domain Artifact)*, dan *Direction 3 (Radical Utility & Density)*.
+   - Wajib justifikasi kemenangan arah terpilih dan catat elemen yang sengaja dibuang ke dalam DDR (*Design Decision Record*).
+4. **Protokol Buka Kunci Desain pada Redesign (Dismantling Legacy Design Locks)**:
+   - **Identifikasi 5 Kunci Sistem Desain (`SYS-001` .. `SYS-005`)**:
+     1. *Token & Variable Lock*: variabel `:root` / Tailwind `@theme` yang mematok warna ke abu-abu/slate generik atau border flat (`SYS-001`).
+     2. *Shell & Container Lock*: kontainer global (`layout.tsx`, `<div className="container mx-auto max-w-7xl px-4 py-8">`, hardcoded `bg-gray-50`) yang mencekik tata letak baru (`SYS-002`).
+     3. *Component Primitive Lock*: wrapper `<Card>`, `<Button>`, `<Input>` usang yang memaksakan radius seragam atau border pucat (`SYS-003`).
+     4. *Typography Lock*: font sans tunggal tanpa karakter display, tanpa batas measure `60–75ch`, dan tanpa `tabular-nums`.
+     5. *Zombie Style Lock*: CSS usang, CSS modules, atau inline styles lama yang bertabrakan (`SYS-005`).
+   - **Tindakan Buka Kunci Bersih (Clean Cutover, Bukan Tambal Sulam `SYS-004`)**:
+     - **Dilarang menambal lokal**: jangan menumpuk utility `!important` atau inline style sementara kunci lama dibiarkan hidup di background—itu penyebab utama UI/UX "begitu-begitu saja".
+     - **Ganti fondasi di root**: perbarui token `:root` / Tailwind theme dengan palet OKLCH material fisik domain produk.
+     - **Bebaskan shell layout**: perbarui kontainer halaman agar ritme spasial $2\times$ dan hierarki paruh atas bernapas bebas.
+     - **Mutakhirkan primitif komponen & hapus kode mati**: tingkatkan tombol/kartu ke standar radius konsentris dan 1 aksi primer, serta hapus tuntas stylesheet/kelas zombie yang usang.
 ## 3. Presisi Matematis Token, Tipografi & Spasi
 
 Rincian penuh berada di `references/interface-engineering.md`:
@@ -93,29 +114,36 @@ Rincian penuh berada di `references/interface-engineering.md`:
 - **Skala Spasial 4px & Pengelompokan 2x**: Kelompokkan elemen dengan ruang kosong lebih dulu sebelum garis/kartu; jarak antar-grup minimal **2×** jarak antar-elemen di dalam grup yang sama.
 - **Radius Konsentris Eksak**: Untuk elemen bersarang dengan padding merata $\le 24\text{px}$, terapkan $\text{radius}_{\text{inner}} = \max(0, \text{radius}_{\text{outer}} - \text{padding} - \text{border})$.
 - **Satu Aksi Primer per Tampilan**: Hanya satu tombol yang mendapat warna aksen solid di satu area pandang; aksi sekunder tampil netral/outline/tautan. Label tombol memakai kata kerja + objek spesifik (*"Kirim Tagihan"*, *"Jadwalkan Konsultasi"*, bukan *"Submit"* atau *"Get Started"*).
-- **Disiplin Tipografi**: `text-wrap: balance` pada judul, `text-wrap: pretty` pada paragraf (`60–75ch`), dan wajib `font-variant-numeric: tabular-nums` pada harga, waktu, metrik, serta kolom angka.
+- **Disiplin Tipografi & Anti-Gradien Teks**: `text-wrap: balance` pada judul, `text-wrap: pretty` pada paragraf (`60–75ch`), dan wajib `font-variant-numeric: tabular-nums` pada harga, waktu, metrik, serta kolom angka. **Dilarang keras memakai gradien teks pelangi pada judul (`bg-clip-text text-transparent`)**; judul wajib bertinta solid dengan kontras tajam. Padukan display typeface berkarakter untuk H1 + monospace fungsional untuk protokol/payload + sans terukur untuk body.
+- **Eliminasi Kapsul Hero Pill & Gimmick 3D**: Dilarang memasang kapsul pill oval (`rounded-full`) dengan peluru bullet `•` mengambang di atas H1 (`CMP-015`). Dilarang mengganti telemetri gateway/API dengan kanvas 3D partikel/mesh palsu (`CMP-016`); wajib tampilkan konsol operasional nyata (live WebSocket stream, status pairing QR, inspektor JSON).
 
 ## 4. Keadaan Data, Ergonomi Interaksi & Aksesibilitas
 
-1. **4 State Data Wajib pada Permukaan Asinkron**:
-   - *Loading*: kerangka geometri proporsional (`CLS = 0`), bukan spinner kosong di tengah layar.
-   - *Empty*: alasan faktual mengapa belum ada data + aksi langkah pertama.
+1. **Topologi 6 Status Antarmuka (`references/surface-state-topology.md`)**:
+   - *Idle*: struktur dasar tenang.
+   - *Loading*: kerangka geometri proporsional 1:1 (`CLS = 0`), bukan spinner mengambang di layar kosong.
    - *Populated*: tahan teks panjang (`min-w-0` + `truncate`) dan angka ekstrem.
-   - *Error*: penyebab spesifik tepat di dekat titik gagal + tombol/jalur pemulihan langsung.
-2. **Kontrol Interaktif & Higienitas Form**:
-   - Dukung siklus penuh default, hover (dibungkus `@media (hover: hover)`), `:focus-visible` jelas, active press (`scale(0.96)` `150ms ease-out`), disabled, dan busy/spinner.
-   - Input mobile minimal `16px`, target sentuh `≥ 44×44px`, dilarang memblokir *paste*, pasang `spellCheck={false}` pada email/kode/token, dan gunakan *Undo Toast* untuk aksi yang dapat dibatalkan alih-alih modal konfirmasi berulang (`references/component-mobile-patterns.md`).
+   - *Empty*: alasan faktual mengapa data kosong + aksi langkah pertama yang dapat diklik.
+   - *Pending / Optimistic*: pembaruan instan lokal dengan snapshot rollback aman jika mutasi gagal.
+   - *Error*: pesan pemulihan inline dekat titik gagal (`references/resilient-interaction-recovery.md`).
+2. **Ergonomi Platform & Pemulihan Galat Tahan Gangguan**:
+   - Terapkan pola *Undo Toast* berbatas waktu 5–8 detik untuk mutasi yang dapat dibatalkan alih-alih modal konfirmasi berulang. Dilarang mengosongkan data formulir saat transmisi gagal.
+   - Patuhi spesifikasi native platform (`references/platform-surface-specs.md`): Liquid Glass translusen, SafeArea insets, Dynamic Type, dan target sentuh minimal $44\text{pt}$ (iOS) / $48\text{dp}$ (Android).
 3. **Aksesibilitas & Logo/Brand PDF**:
    - Kontras teks minimal `4.5:1` (`3:1` teks besar dan batas kontrol), seluruh aksi terjangkau keyboard, dan patuhi `@media (prefers-reduced-motion: reduce)`.
    - Untuk pembuatan logo SVG berbasis grid `64×64` (lulus *1-Bit Monochrome Test*) dan kompilasi `Brand-Guidelines.pdf` 8 halaman, ikuti `references/brand-logo-guidelines.md`.
-
+4. **Standar Dashboard & Pembersihan Kontainer Generik (`references/interface-engineering.md` §9)**:
+   - Gantikan strip 4 kotak KPI palsu (`LAY-012`) dengan Operational Status Bar faktual atau tabel ledger padat `tabular-nums`.
+   - Terapkan hairline neutral border pada kontainer kartu (`CMP-018`); tolak border berwarna neon menyala dan radial glow blob di belakang kartu (`CMP-019`).
+   - Wajibkan 4 state data pada seluruh panel/tabel, dan hapus emoji fungsional pada tombol/tab navigasi (`CMP-003`).
 ## 5. Verifikasi Sebelum Serah Terima
 
 Jangan mencetak blok checklist `PASS/FAIL` buatan sendiri. Buktikan kualitas antarmuka melalui pemeriksaan nyata:
-1. Periksa tampilan/kode pada lebar `375px`, `768px`, dan `1440px` (bebas *horizontal overflow*, bebas potongan konten pada zoom 200%, bebas ke-13 *Escalation Triggers* di `references/interface-engineering.md`).
-2. Pastikan navigasi memakai kata benda/kerja asli domain produk (`aria-current="page"` pada rute aktif) dan tidak ada satupun tombol/pencarian mati.
-3. Bila runtime browser tersedia, buka halaman dan verifikasi visual serta state interaktif secara langsung sebelum menyerahkan hasil.
-
+1. **Protokol Subtraksi Antarmuka (`references/task-flow-choreography.md`)**: Pangkas elemen dekoratif berulang satu per satu hingga efisiensi visual mencapai batas optimal.
+2. **Pemeriksaan Lintas Viewport & Zero Canvas Leak (`references/interaction-telemetry-benchmarks.md` & `references/component-mobile-patterns.md` §5)**: Periksa tampilan/kode pada lebar `375px`, `768px`, dan `1440px`. Buktikan bebas horizontal overflow (`100vw`/`w-screen` terlarang), navbar mobile kompak $\le 64\text{px}$ tanpa tautan meluap, judul memakai skala fluid `break-words` tanpa memotong canvas layar, flex/grid child menyertakan `min-w-0`, dan bebas ke-13 *Escalation Triggers*. Target $INP \le 200\text{ms}$ dan $CLS = 0$.
+3. **Audit Beban Kognitif (`references/cognitive-friction-audit.md`)**: Pastikan navigasi memakai kata benda/kerja asli domain produk (`aria-current="page"` pada rute aktif) dan tidak ada satupun kontrol/tombol interaktif yang mati.
+4. **Verifikasi Pembongkaran Kunci Desain**: Pada tugas redesign, buktikan bahwa token `:root` kusam, background hardcoded lama, dan wrapper layout pembatas sudah digantikan bersih tanpa menyisakan tabrakan styling zombie (`SYS-001` .. `SYS-005`).
+5. Bila runtime browser tersedia, buka halaman dan verifikasi visual serta state interaktif secara langsung sebelum menyerahkan hasil.
 ## Related Skills
 
 - **`maxilun-frontend`**: Integrasi komponen ke arsitektur Next.js App Router, RSC, dan Server Actions.

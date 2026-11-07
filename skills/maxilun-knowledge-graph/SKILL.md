@@ -6,9 +6,9 @@ description: >
   inspection for trivial isolated edits and clean search/read fallback when graph
   tooling is unavailable. Triggers: "/maxilun-knowledge-graph", "/msal-trace",
   "/msal-graph", "cari kode", "di mana fungsi", "petakan dependensi", "siapa panggil",
-  "relasi modul", "analisis impor", codebase lookup, navigation, pre-edit mapping, "graphify", "graphify-out".
+  "relasi modul", "analisis impor", codebase lookup, navigation, pre-edit mapping.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -21,6 +21,9 @@ metadata:
     - codex
     - zed
     - gemini-cli
+  references:
+    - references/index.md
+    - references/ast-graph-specifications.md
 ---
 
 # Maxilun Knowledge Graph

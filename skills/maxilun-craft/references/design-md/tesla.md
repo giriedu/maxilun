@@ -139,7 +139,7 @@ All buttons use barely-rounded rectangles (4px border-radius) — creating a sha
 ### Navigation
 - **Desktop**: Centered horizontal nav with TESLA wordmark (spaced uppercase letters) on the left, five category buttons center-aligned, and three icon buttons (help, globe/language, account) on the right
 - **Background**: White (transitions from transparent over dark hero to opaque white on scroll via class toggle `tds-site-header--white-background`)
-- **Dropdown panel**: Full-width white panel with 3-column vehicle grid + right sidebar text links, no shadow, no border — appears seamlessly below the nav
+- **Dropdown panel**: Full-width white panel with 3-column vehicle grid + right sidebar text links, no shadow, no border — mounts flush below the nav
 - **Sticky behavior**: `sticky-without-slide` class — stays at top without slide-in animation
 - **Mobile**: Hamburger collapse pattern
 - **No visible separator** between nav and content — the nav blends with the hero
