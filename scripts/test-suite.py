@@ -57,6 +57,7 @@ EXPECTED_SKILLS = [
     "maxilun-network",
     "maxilun-ai",
     "maxilun-game",
+    "maxilun-hunt",
 ]
 EXPECTED_AGENTS = [
     "maxilun-orchestrator",
@@ -656,6 +657,7 @@ def test_cross_references():
         ("maxilun-network", ["maxilun-iot", "maxilun-deploy"]),
         ("maxilun-ai", ["maxilun-data", "maxilun-engineer"]),
         ("maxilun-game", ["maxilun-craft", "maxilun-motion", "maxilun-verify"]),
+        ("maxilun-hunt", ["maxilun-sentinel", "maxilun-verify"]),
     ]
     passed = True
     for skill, targets in checks:

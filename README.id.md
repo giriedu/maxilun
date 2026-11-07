@@ -2,13 +2,13 @@
 
 <div align="center">
 
-<img src="assets/banner.jpg" alt="Maxilun — 24 Skill: 1 Orchestrator + 23 Spesialis · Purity Engine · Empat Engine" width="100%">
+<img src="assets/banner.jpg" alt="Maxilun — 25 Skill: 1 Orchestrator + 24 Spesialis · Purity Engine · Empat Engine" width="100%">
 
 <br/>
 
 [![CI](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml/badge.svg)](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml)
 [![Version](https://img.shields.io/badge/version-1.1.0-7c3aed?style=flat-square)](CHANGELOG.md)
-[![Skills](https://img.shields.io/badge/skills-24_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
+[![Skills](https://img.shields.io/badge/skills-25_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
 [![License](https://img.shields.io/badge/license-Free_to_Use-22c55e?style=flat-square)](LICENSE)
 [![Platform](https://img.shields.io/badge/runs_on-Claude_·_Cursor_·_Codex_·_Antigravity_·_Zed_·_Termul-white?style=flat-square)](#dukungan-platform-ai)
 [![skills.sh](https://skills.sh/b/giriedu/maxilun?style=flat-square)](https://skills.sh/giriedu/maxilun)
@@ -21,7 +21,7 @@
 
 ---
 
-**Maxilun** adalah ekosistem 24 skill AI untuk tim rekayasa perangkat lunak: satu orchestrator dan 23 spesialis. Setiap skill membawa blok **Core Rules** yang sama, sehingga empat engine kualitas ikut terpasang bersama skill, bukan tertinggal di folder terpisah. Orchestrator menegakkan triase keputusan berbasis reversibilitas (eksekusi dari bukti repositori lebih dulu; tanyakan hanya keputusan yang mahal dibalik), kohesi satu pemilik per permukaan kerja, koordinasi wave saat benar-benar lintas-domain, dan bukti verifikasi nyata tanpa banner HUD seremonial. Materi mendalam (detail engine, katalog purity, higienitas kode, disiplin rekayasa bedah, discovery, dan corpus referensi) ada di `references/` dalam masing-masing skill dan hanya dimuat saat dibutuhkan.
+**Maxilun** adalah ekosistem 25 skill AI untuk tim rekayasa perangkat lunak: satu orchestrator dan 24 spesialis. Setiap skill membawa blok **Core Rules** yang sama, sehingga empat engine kualitas ikut terpasang bersama skill, bukan tertinggal di folder terpisah. Orchestrator menegakkan triase keputusan berbasis reversibilitas (eksekusi dari bukti repositori lebih dulu; tanyakan hanya keputusan yang mahal dibalik), kohesi satu pemilik per permukaan kerja, koordinasi wave saat benar-benar lintas-domain, dan bukti verifikasi nyata tanpa banner HUD seremonial. Materi mendalam (detail engine, katalog purity, higienitas kode, disiplin rekayasa bedah, discovery, dan corpus referensi) ada di `references/` dalam masing-masing skill dan hanya dimuat saat dibutuhkan.
 
 ## Dua Cara Menggunakan Maxilun
 
@@ -45,11 +45,11 @@ python harness/cli.py chat --provider openrouter  # Claude 3.5 Sonnet
 ```
 
 ### Opsi B: Pasang sebagai Skill Pack di Editor AI Anda
-Pasang seluruh 24 skill ke Claude Code, Cursor, Codex, OpenCode, Zed, atau Antigravity:
+Pasang seluruh 25 skill ke Claude Code, Cursor, Codex, OpenCode, Zed, atau Antigravity:
 ```bash
 npx skills add giriedu/maxilun
 ```
-> Pantau dan jelajahi seluruh 24 skill di [skills.sh/giriedu/maxilun](https://skills.sh/giriedu/maxilun).  
+> Pantau dan jelajahi seluruh 25 skill di [skills.sh/giriedu/maxilun](https://skills.sh/giriedu/maxilun).  
 > **Mode Non-interaktif**: `npx skills add giriedu/maxilun -y` (tambahkan `-g` untuk instalasi global).  
 > **Installer Bawaan**: Gunakan `./scripts/install.sh` (Linux/macOS) atau `.\scripts\install.ps1` (Windows) — lihat [docs/INSTALL.md](docs/INSTALL.md).
 
@@ -109,7 +109,7 @@ flowchart LR
 
 ---
 
-## 24 Skill: 1 Orchestrator + 23 Spesialis
+## 25 Skill: 1 Orchestrator + 24 Spesialis
 
 Disusun berdasarkan siklus rekayasa perangkat lunak dari fondasi arsitektur hingga eksekusi produksi:
 
@@ -139,12 +139,13 @@ Disusun berdasarkan siklus rekayasa perangkat lunak dari fondasi arsitektur hing
 | 22 | `maxilun-network` | Infrastruktur Jaringan — MikroTik RouterOS (v6/v7), Linux networking, stateful firewall, QoS/PCQ, WireGuard, routing | `/maxilun-network` |
 | 23 | `maxilun-ai` | Rekayasa Aplikasi AI & LLM — hybrid retrieval RAG (dense vector + BM25), chunking semantik, evaluasi regresi prompt, context caching | `/maxilun-ai`, `/msal-ai` |
 | 24 | `maxilun-game` | Rekayasa Game Studio & Multi-Engine — arsitektur engine (Godot, Unreal, Unity), sinkronisasi fisika, authoritative netcode, GDD | `/maxilun-game`, `/maxilun-gamestudio` |
+| 25 | `maxilun-hunt` | Audit Kerentanan Ofensif — skenario serangan nyata, IDOR/BOLA, SSRF, triase bukti 7-Question Gate, paket bukti reproducible | `/maxilun-hunt`, `/msal-hunt` |
 
 ---
 
 ## Empat Engine Kualitas yang Selalu Aktif
 
-Digunakan di seluruh 24 skill sebagai blok `CORE-RULES` identik yang diverifikasi oleh CI:
+Digunakan di seluruh 25 skill sebagai blok `CORE-RULES` identik yang diverifikasi oleh CI:
 
 | Mesin | Fungsi Utama |
 |---|---|

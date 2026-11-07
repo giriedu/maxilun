@@ -11,7 +11,7 @@ for arg in "$@"; do
     esac
 done
 
-echo "🌑 Installing Maxilun ${VERSION} (24 skills + 13 autonomous agents)"
+echo "🌑 Installing Maxilun ${VERSION} (25 skills + 13 autonomous agents)"
 echo ""
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

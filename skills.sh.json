@@ -16,7 +16,8 @@
       "description": "System architecture, C4 modeling, ADRs, defensive security, and OWASP/STRIDE audit.",
       "skills": [
         "maxilun-architect",
-        "maxilun-sentinel"
+        "maxilun-sentinel",
+        "maxilun-hunt"
       ]
     },
     {

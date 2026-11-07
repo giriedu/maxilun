@@ -1,7 +1,7 @@
 {
   "name": "maxilun",
   "version": "1.1.0",
-  "description": "AI engineering co-pilot & autonomous agent runtime — 24 skills (1 master orchestrator + 23 specialists) + 13 autonomous agents, reversibility triage, in-process Knowledge Graph, AST security inspection, and interactive dashboard.",
+  "description": "AI engineering co-pilot & autonomous agent runtime — 25 skills (1 master orchestrator + 24 specialists) + 13 autonomous agents, reversibility triage, in-process Knowledge Graph, AST security inspection, and interactive dashboard.",
   "keywords": [
     "ai-skills",
     "claude-code",
@@ -42,7 +42,10 @@
     "game-development",
     "godot",
     "unreal-engine",
-    "unity"
+    "unity",
+    "vulnerability-hunting",
+    "attack-surface",
+    "bug-bounty"
   ],
   "author": "Maxilun Architecture",
   "license": "SEE LICENSE IN LICENSE",

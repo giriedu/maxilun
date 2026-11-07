@@ -80,7 +80,16 @@ class MaxilunRouter:
                     return True
             return False
 
-        if any(k in p for k in ["login", "auth", "token", "password", "oauth", "jwt", "csrf", "xss", "keamanan", "enkripsi", "secret", "totp"]):
+        if match_tokens(["hunt", "bug bounty", "pentest", "uji penetrasi", "idor", "attack surface", "poc exploit", "dast", "audit kerentanan", "bounty", "vulnerability hunting"]):
+            owner = "maxilun-hunt"
+            rationale = "Adversarial vulnerability hunting, attack surface verification, and 7-Question Gate proof triage."
+            pre_flight = "Check target scope allowlist (zero out-of-scope invariant), non-destructive testing boundaries, and baseline auth sessions."
+            if any(k in p for k in ["fix", "perbaiki", "kode"]):
+                companions.append("maxilun-engineer")
+            elif any(k in p for k in ["defensif", "crypto", "hardening", "dpop"]):
+                companions.append("maxilun-sentinel")
+
+        elif any(k in p for k in ["login", "auth", "token", "password", "oauth", "jwt", "csrf", "xss", "keamanan", "enkripsi", "secret", "totp"]):
             owner = "maxilun-sentinel"
             rationale = "Authentication, authorization, or trust-boundary hardening."
             pre_flight = "Review trust boundaries, secrets storage, and session lifecycles."
