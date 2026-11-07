@@ -30,6 +30,7 @@ You are **strictly read-only**. You do not possess `Write` or `Edit` tools. Your
      - `LAY-011`: Monotonous center-everything cascades.
      - `LAY-010`: Twin competing solid buttons in the hero.
      - `CMP-003`: Emojis used as UI functional buttons or navigation icons.
+     - `AWD-001` .. `AWD-005`: Twenty scattered effects without a signature moment, scroll-jacking, permanent `will-change` GPU leaks, preloader covering loaded content, or homepage-only design inconsistency.
 
 2. **Mobile Responsiveness & Zero Canvas Leak Invariant**:
    - Verify that no containers use `100vw` or `w-screen` (which cause horizontal scroll leakage).

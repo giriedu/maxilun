@@ -39,6 +39,12 @@ Versioning follows [Semantic Versioning](https://semver.org/).
     - `maxilun-ui-designer`: Domain-authentic visual architecture from 100 brand design systems, design lock dismantling (*Clean Cutover*), asymmetric split hero layouts, and solid display typography.
     - `maxilun-ui-motion`: 60 FPS GPU-accelerated motion dynamics, `ScrollBlurReveal` progressive focus & rise choreography, and analytical spring physics.
     - `maxilun-ui-reviewer`: Strict read-only visual quality gatekeeper auditing 45 AI design tells (`ui-purity-linter`), concentric radius tolerances, WCAG contrast ratios, mobile 375px zero canvas leaks, and navbar heights.
+
+- **Awwwards Jury Standard ($\ge 7.0$) & Motion Synthesis Integration (`maxilun-craft`, `maxilun-motion`)**:
+  - Embedded the Awwwards Jury Rubric (Design 40%, Usability 30%, Creativity 20%, Content 10%) into `skills/maxilun-craft/references/awwwards-craft-engine.md`.
+  - Enforced the **One Signature Moment** protocol: exactly one hero interaction specified before coding (trigger, phases, timing, touch version, reduced-motion fallback).
+  - Shipped `skills/maxilun-motion/references/scroll-spines-and-transitions.md` codifying the **One-Loop Rule** (unified RAF driving DOM, Lenis smooth scroll, and Three.js in a single tick), scrubbed value normalization ($0.0 \to 1.0$), custom magnetic button physics (`makeMagnetic`), View Transitions API, and zero-byte Web Audio tactile sound synthesis.
+  - Codified 5 Awwwards score killers in `skills/maxilun/references/purity-catalog.md` (`AWD-001` .. `AWD-005`): twenty scattered effects, scroll-jacking, permanent `will-change` GPU leaks, preloader covering loaded content, and homepage-only design inconsistency.
 ### Enhanced
 - **Design Lock Dismantling & High-Craft Redesign Protocol (`maxilun-craft`, `maxilun`, `maxilun-frontend`)**:
   - Eliminated "The Legacy Design Lock Trap" where redesign requests stall or yield monotonous UI/UX ("begitu-begitu saja") because models fear deleting legacy `:root` variables, Tailwind configs, rigid layout shells, or zombie component styles under a misplaced interpretation of "follow existing repository conventions".

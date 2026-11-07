@@ -36,6 +36,7 @@ metadata:
     - references/platform-surface-specs.md
     - references/task-flow-choreography.md
     - references/interaction-telemetry-benchmarks.md
+    - references/awwwards-craft-engine.md
 
 # Maxilun Craft: Domain-Authentic UI/UX & Production Design Systems
 

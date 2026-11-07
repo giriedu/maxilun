@@ -29,6 +29,7 @@ metadata:
     - references/choreography-styles.md
     - references/3d-scenes.md
     - references/visual-reference-workflow.md
+    - references/scroll-spines-and-transitions.md
 ---
 
 # Maxilun Motion: Interactive Motion, 3D Scenes & Frame Choreography
