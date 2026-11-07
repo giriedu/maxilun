@@ -3,7 +3,7 @@
 Maxilun Skill Ecosystem Test Suite
 
 Structural and functional validation:
-- 18 skills exist with valid frontmatter and one shared version
+- 25 skills exist with valid frontmatter and one shared version
 - Every skill embeds the identical CORE-RULES block (drift detection)
 - Every referenced file inside a skill resolves from that skill's folder
 - No references to external skills or to the removed root rules/ layout

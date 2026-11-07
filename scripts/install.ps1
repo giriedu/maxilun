@@ -15,6 +15,8 @@ if (-not (Test-Path $SkillsSrc)) {
     $SkillsSrc = Join-Path $ScriptDir ".agents\skills"
 }
 $AgentsSrc = Join-Path $ScriptDir "agents"
+$ExpectedSkillCount = @(Get-ChildItem -Path $SkillsSrc -Directory -ErrorAction SilentlyContinue | Where-Object { Test-Path (Join-Path $_.FullName "SKILL.md") }).Count
+if ($ExpectedSkillCount -eq 0) { $ExpectedSkillCount = 25 }
 
 $InstalledTo = @()
 $BackedUp = @()
@@ -154,10 +156,10 @@ foreach ($loc in $InstalledTo) {
     $skillFiles = Get-ChildItem -Path $targetDir -Filter "SKILL.md" -Recurse -Depth 2 -ErrorAction SilentlyContinue |
         Where-Object { $_.FullName -match '[\\/](maxilun|maxilun-[^\\/]+|msal-[^\\/]+)[\\/]SKILL\.md$' }
     $count = if ($skillFiles) { @($skillFiles).Count } else { 0 }
-    if ($count -ge 18) {
-        Write-Host "    $platformLabel : ${count}/18 skills" -ForegroundColor Green
+    if ($count -ge $ExpectedSkillCount) {
+        Write-Host "    $platformLabel : ${count}/${ExpectedSkillCount} skills" -ForegroundColor Green
     } else {
-        Write-Host "    $platformLabel : only ${count}/18 skills -- reinstall recommended" -ForegroundColor Red
+        Write-Host "    $platformLabel : only ${count}/${ExpectedSkillCount} skills -- reinstall recommended" -ForegroundColor Red
         $VerifyOk = $false
     }
     $engines = Join-Path $targetDir "maxilun\references\engines.md"

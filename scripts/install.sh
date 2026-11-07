@@ -20,6 +20,10 @@ if [ ! -d "$SKILLS_SRC" ]; then
     SKILLS_SRC="${SCRIPT_DIR}/.agents/skills"
 fi
 AGENTS_SRC="${SCRIPT_DIR}/agents"
+expected_skill_count=$(find "$SKILLS_SRC" -maxdepth 2 -name "SKILL.md" 2>/dev/null | wc -l | tr -d ' ')
+if [ -z "$expected_skill_count" ] || [ "$expected_skill_count" -le 0 ]; then
+    expected_skill_count=25
+fi
 
 installed_to=()
 installed_backups=()
@@ -188,10 +192,10 @@ for loc_entry in "${installed_to[@]}"; do
     target_dir="${loc_entry#*: }"
     platform_label="${loc_entry%%:*}"
     skill_count=$(find "$target_dir" -maxdepth 2 \( -path "*/maxilun/SKILL.md" -o -path "*/maxilun-*/SKILL.md" -o -path "*/msal-*/SKILL.md" \) 2>/dev/null | wc -l | tr -d ' ')
-    if [ "$skill_count" -ge 18 ]; then
-        echo "  ✅ ${platform_label}: ${skill_count}/18 skills"
+    if [ "$skill_count" -ge "$expected_skill_count" ]; then
+        echo "  ✅ ${platform_label}: ${skill_count}/${expected_skill_count} skills"
     else
-        echo "  ❌ ${platform_label}: only ${skill_count}/18 skills — reinstall recommended"
+        echo "  ❌ ${platform_label}: only ${skill_count}/${expected_skill_count} skills — reinstall recommended"
         verify_ok=false
     fi
     if [ -f "${target_dir}/maxilun/references/engines.md" ]; then
