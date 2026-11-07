@@ -9,6 +9,10 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- **Ecosystem Expansion: Game Studio & Multi-Engine Architecture (`maxilun-game`)**:
+  - `maxilun-game`: Spesialis studio game dan rekayasa multi-engine (Unreal Engine 5.x, Unity 6 LTS, Godot 4.x), sintesis arsitektur game loop bebas alokasi GC di tick, decoupled data-driven mechanics via external assets (tres, ScriptableObject, DataAsset), pemisahan antarmuka HUD/UI berbasis event bus/sinyal, determinisme fisika delta-time, authoritative netcode dengan client prediction dan server reconciliation rollback, pipeline standar shader, spesifikasi Game Design Document (GDD) 8 bagian, formula balancing matematika (diminishing returns armor mitigation, progresi kurva XP, TTK budgeting, sistem ekonomi tertutup), dan otomasi test game (gdUnit4, NUnit, Unreal Automation).
+  - Pustaka referensi domain: `skills/maxilun-game/references/` (`index.md`, `game-design-lifecycle.md`, `godot-playbook.md`, `unity-playbook.md`, `unreal-engine-playbook.md`).
+  - Pemutakhiran orchestrator `maxilun`, router `harness/router.py`, agent makro `maxilun-maker`, dan validasi test-suite 24 skill.
 - **Adopsi & Sintesis Pola Rekayasa Produksi (Berdasarkan Referensi google/skills)**:
   - `maxilun-ai` (**Maxilun Eval Quality Flywheel & Loss Clustering**):
     - Siklus evaluasi model & agen 5-tahap (Persiapan Data deterministik & simulasi skenario persona multi-turn, Inferensi terkontrol, Penilaian biner berbasis sitasi grounding, Loss Clustering taksonomi 5 kelas kegagalan, dan Loop Remediasi iteratif 5–10x).

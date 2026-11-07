@@ -56,6 +56,7 @@ EXPECTED_SKILLS = [
     "maxilun-iot",
     "maxilun-network",
     "maxilun-ai",
+    "maxilun-game",
 ]
 EXPECTED_AGENTS = [
     "maxilun-orchestrator",
@@ -468,6 +469,11 @@ def test_referenced_paths():
         SKILLS_DIR / "maxilun-content" / "references" / "cinematic-scriptwriting.md",
         SKILLS_DIR / "maxilun-knowledge-graph" / "LENS.md",
         SKILLS_DIR / "maxilun-knowledge-graph" / "graph-viewer" / "lens.html",
+        SKILLS_DIR / "maxilun-game" / "references" / "index.md",
+        SKILLS_DIR / "maxilun-game" / "references" / "game-design-lifecycle.md",
+        SKILLS_DIR / "maxilun-game" / "references" / "godot-playbook.md",
+        SKILLS_DIR / "maxilun-game" / "references" / "unity-playbook.md",
+        SKILLS_DIR / "maxilun-game" / "references" / "unreal-engine-playbook.md",
         REPO_ROOT / "assets" / "banner.jpg",
         REPO_ROOT / "assets" / "architecture-overview.svg",
         REPO_ROOT / "assets" / "raw-vs-maxilun-proof.svg",
@@ -649,6 +655,7 @@ def test_cross_references():
         ("maxilun-iot", ["maxilun-network", "maxilun-sentinel"]),
         ("maxilun-network", ["maxilun-iot", "maxilun-deploy"]),
         ("maxilun-ai", ["maxilun-data", "maxilun-engineer"]),
+        ("maxilun-game", ["maxilun-craft", "maxilun-motion", "maxilun-verify"]),
     ]
     passed = True
     for skill, targets in checks:
@@ -719,6 +726,10 @@ def test_harness_functional():
         route_ai = router.route("Setup hybrid search RAG pipeline dengan embeddings")
         if route_ai.primary_owner != "maxilun-ai":
             print(f"  ❌ MaxilunRouter failed on AI RAG routing: got {route_ai.primary_owner}")
+            return False
+        route_game = router.route("Bikin sistem combat di Godot Engine dengan GDScript")
+        if route_game.primary_owner != "maxilun-game":
+            print(f"  ❌ MaxilunRouter failed on Godot game routing: got {route_game.primary_owner}")
             return False
 
 

@@ -139,6 +139,14 @@ class MaxilunRouter:
             if any(k in p for k in ["tabel", "skema", "db", "pgvector"]):
                 companions.append("maxilun-data")
 
+        elif match_tokens(["game dev", "game engine", "godot", "unreal engine", "unreal", "unity", "gdd", "game design", "gameplay", "gdscript", "game ability system", "game studio", "game physics", "shader game", "bikin game"]):
+            owner = "maxilun-game"
+            rationale = "Game studio systems, multi-engine architecture (Unreal, Unity, Godot), gameplay code, and GDD design."
+            pre_flight = "Inspect engine project files (.uproject, Assets/, project.godot) and verify target frame rate & physics tick budget."
+            if any(k in p for k in ["ui", "hud", "tampilan", "desain"]):
+                companions.append("maxilun-craft")
+            elif any(k in p for k in ["kamera", "animasi", "partikel", "3d"]):
+                companions.append("maxilun-motion")
         elif any(k in p for k in ["skema", "tabel", "database", "migrasi", "index", "query plan", "rls", "postgres", "sql", "explain"]):
             owner = "maxilun-data"
             rationale = "Physical schema modeling, expand-contract migrations, indexing, or RLS isolation."
@@ -219,7 +227,7 @@ class MaxilunRouter:
 
             w2_specs = []
             for s in [owner] + companions:
-                if s in ("maxilun-engineer", "maxilun-frontend", "maxilun-craft", "maxilun-motion", "maxilun-cinecode", "maxilun-content", "maxilun-desktop", "maxilun-mobile", "maxilun-iot", "maxilun-ai"):
+                if s in ("maxilun-engineer", "maxilun-frontend", "maxilun-craft", "maxilun-motion", "maxilun-cinecode", "maxilun-content", "maxilun-desktop", "maxilun-mobile", "maxilun-iot", "maxilun-ai", "maxilun-game"):
                     if s not in w2_specs:
                         w2_specs.append(s)
             if not w2_specs:

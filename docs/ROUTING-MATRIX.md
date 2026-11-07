@@ -21,6 +21,7 @@ Use this matrix to assign **one cohesive primary owner** per deliverable and pre
 | Build embedded firmware, ESP32, sensors, or IoT telemetry | `maxilun-iot` | `maxilun-network` (broker/subnet routing), `maxilun-sentinel` (mTLS/secure boot) | `maxilun-engineer` as firmware owner |
 | Configure MikroTik RouterOS, Linux networking, or WireGuard | `maxilun-network` | `maxilun-deploy` (server gateway), `maxilun-sentinel` (firewall hardening) | `maxilun-engineer` as network owner |
 | Build RAG pipeline, hybrid vector search, or prompt regression evals | `maxilun-ai` | `maxilun-data` (vector index storage), `maxilun-verify` (eval suites) | `maxilun-engineer` as RAG owner |
+| Build game mechanics, multi-engine architecture (Unreal/Unity/Godot), or GDD | `maxilun-game` | `maxilun-craft` (UI/HUD art direction), `maxilun-motion` (camera/VFX), `maxilun-verify` (engine test runner) | `maxilun-engineer` as game engine owner |
 ## Handoff Record
 
 Keep cross-skill handoffs factual and free of ceremonial banners:

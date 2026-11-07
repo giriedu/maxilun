@@ -2,13 +2,13 @@
 
 <div align="center">
 
-<img src="assets/banner.jpg" alt="Maxilun — 23 Skills: 1 Orchestrator + 22 Specialists · Purity Engine · Four Always-On Engines" width="100%">
+<img src="assets/banner.jpg" alt="Maxilun — 24 Skills: 1 Orchestrator + 23 Specialists · Purity Engine · Four Always-On Engines" width="100%">
 
 <br/>
 
 [![CI](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml/badge.svg)](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml)
 [![Version](https://img.shields.io/badge/version-1.1.0-7c3aed?style=flat-square)](CHANGELOG.md)
-[![Skills](https://img.shields.io/badge/skills-23_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
+[![Skills](https://img.shields.io/badge/skills-24_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
 [![License](https://img.shields.io/badge/license-Free_to_Use-22c55e?style=flat-square)](LICENSE)
 [![Platform](https://img.shields.io/badge/runs_on-Claude_·_Cursor_·_Codex_·_Antigravity_·_Zed_·_Termul-white?style=flat-square)](#platform-support)
 [![skills.sh](https://skills.sh/b/giriedu/maxilun?style=flat-square)](https://skills.sh/giriedu/maxilun)
@@ -21,7 +21,7 @@
 
 ---
 
-**Maxilun** is an ecosystem of 23 AI skills for software engineering teams: one orchestrator and 22 specialists. Every skill carries the same **Core Rules** block, so the four quality engines travel with the skill instead of living in a separate folder. The orchestrator enforces reversibility-gated decision triage (act from repository evidence first; clarify only irreversible decisions), single-owner routing cohesion, wave coordination when genuinely multi-domain, and real execution proof without ceremonial HUD banners. Deeper material (engine detail, purity catalog, code hygiene, surgical engineering discipline, discovery, and reference corpora) lives in `references/` inside each skill and is loaded only when needed.
+**Maxilun** is an ecosystem of 24 AI skills for software engineering teams: one orchestrator and 23 specialists. Every skill carries the same **Core Rules** block, so the four quality engines travel with the skill instead of living in a separate folder. The orchestrator enforces reversibility-gated decision triage (act from repository evidence first; clarify only irreversible decisions), single-owner routing cohesion, wave coordination when genuinely multi-domain, and real execution proof without ceremonial HUD banners. Deeper material (engine detail, purity catalog, code hygiene, surgical engineering discipline, discovery, and reference corpora) lives in `references/` inside each skill and is loaded only when needed.
 
 ## Two Ways to Use Maxilun
 
@@ -45,11 +45,11 @@ python harness/cli.py chat --provider openrouter  # Claude 3.5 Sonnet
 ```
 
 ### Option B: Install as Skill Pack into your AI Editor
-Install all 23 skills into Claude Code, Cursor, Codex, OpenCode, Zed, or Antigravity:
+Install all 24 skills into Claude Code, Cursor, Codex, OpenCode, Zed, or Antigravity:
 ```bash
 npx skills add giriedu/maxilun
 ```
-> Track and explore all 23 skills on [skills.sh/giriedu/maxilun](https://skills.sh/giriedu/maxilun).  
+> Track and explore all 24 skills on [skills.sh/giriedu/maxilun](https://skills.sh/giriedu/maxilun).  
 > **Non-interactive**: `npx skills add giriedu/maxilun -y` (add `-g` for global availability across projects).  
 > **Native Installers**: Use `./scripts/install.sh` (Linux/macOS) or `.\scripts\install.ps1` (Windows) — see [docs/INSTALL.md](docs/INSTALL.md).
 
@@ -109,7 +109,7 @@ flowchart LR
 
 ---
 
-## 23 Skills: 1 Orchestrator + 22 Specialists
+## 24 Skills: 1 Orchestrator + 23 Specialists
 
 Structured by real-world software engineering lifecycle — from foundational architecture to production delivery:
 
@@ -138,12 +138,13 @@ Structured by real-world software engineering lifecycle — from foundational ar
 | 21 | `maxilun-iot` | IoT & Embedded Systems — microcontrollers (ESP32, STM32, Arduino, Pico), FreeRTOS, hardware buses (I2C/SPI), MQTT, Modbus, OTA | `/maxilun-iot` |
 | 22 | `maxilun-network` | Network Infrastructure — MikroTik RouterOS (v6/v7), Linux networking, stateful firewalls, QoS/PCQ, WireGuard, routing | `/maxilun-network` |
 | 23 | `maxilun-ai` | AI & LLM Application Engineering — hybrid RAG retrieval (dense vector + BM25), semantic chunking, prompt regression evals, context caching | `/maxilun-ai`, `/msal-ai` |
+| 24 | `maxilun-game` | Game Studio & Multi-Engine Engineering — engine architecture (Godot, Unreal, Unity), physics sync, authoritative netcode, GDD | `/maxilun-game`, `/maxilun-gamestudio` |
 
 ---
 
 ## Four Always-On Quality Engines
 
-Embedded in all 23 skills as an identical `CORE-RULES` block, verified by CI:
+Embedded in all 24 skills as an identical `CORE-RULES` block, verified by CI:
 | Engine | Core Responsibility |
 |---|---|
 | **Focus & Agency Engine** | Repo-first execution, reversibility-gated clarification (max 1 batched turn for irreversible choices), max 3 active workstreams, zero HUD/checkbox theater |

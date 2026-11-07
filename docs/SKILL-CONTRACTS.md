@@ -41,6 +41,7 @@ The primary skill owns the deliverable. Companion skills advise or validate; the
 | `maxilun-iot` | embedded microcontroller firmware (ESP32, STM32, Arduino), FreeRTOS, hardware buses, and telemetry | physical PCB hardware fabrication or client UI |
 | `maxilun-network` | MikroTik RouterOS automation, Linux networking, firewall policies, VLANs, and VPN tunnels | microcontroller firmware or cloud container scheduling |
 | `maxilun-ai` | RAG architecture, semantic chunking, hybrid retrieval, prompt regression evals, context caching, and structured tool schemas | general database schema design or non-AI code implementation |
+| `maxilun-game` | game studio multi-engine systems (Unreal, Unity, Godot), gameplay code, deterministic physics, authoritative replication, shader pipeline, and GDD specifications | non-game web/mobile UI design, marketing video rendering, or generic cloud container orchestration |
 ## Standalone rule
 
 Never require the orchestrator, a local path, a private tool, or another skill to produce the skill's primary output. If an optional companion is unavailable, use a clearly labeled fallback and preserve evidence quality.

@@ -1,4 +1,4 @@
-# Daftar 23 Skill Maxilun (1 Orchestrator + 22 Spesialis)
+# Daftar 24 Skill Maxilun (1 Orchestrator + 23 Spesialis)
 
 Kontrak kepemilikan dan aturan kohesi routing lintas-skill ada di [SKILL-CONTRACTS.md](SKILL-CONTRACTS.md) dan [ROUTING-MATRIX.md](ROUTING-MATRIX.md). Aturan Purity Gate publik ada di [PURITY-GATE.md](PURITY-GATE.md).
 
@@ -27,10 +27,11 @@ Kontrak kepemilikan dan aturan kohesi routing lintas-skill ada di [SKILL-CONTRAC
 | 21 | **maxilun-iot** | Sistem Embedded & IoT: mikrokontroler (ESP32, STM32, Arduino, Raspberry Pi), FreeRTOS, zero-heap ISR, driver bus (I2C, SPI, UART, GPIO), protokol telemetri MQTT, BLE, Modbus, dan OTA. | `/maxilun-iot`, `iot`, `embedded`, `esp32`, `arduino`, `firmware` |
 | 22 | **maxilun-network** | Rekayasa Jaringan & RouterOS: konfigurasi router MikroTik RouterOS (v6 & v7, WinBox/CLI), firewall stateful default-drop, QoS/PCQ bandwidth shaping, bridge VLAN, WireGuard, dan Linux networking. | `/maxilun-network`, `mikrotik`, `routeros`, `firewall`, `wireguard` |
 | 23 | **maxilun-ai** | Rekayasa Aplikasi LLM & RAG: arsitektur hybrid retrieval (dense vector + BM25), chunking semantik, reranking, evaluasi regresi prompt, LLM-as-a-judge, optimasi context caching, dan function calling schemas. | `/maxilun-ai`, `/msal-ai`, `rag`, `embedding`, `prompt eval` |
+| 24 | **maxilun-game** | Rekayasa Game Studio & Multi-Engine: arsitektur engine (Godot GDScript/GDExtension, Unreal Engine C++/GAS, Unity C#/DOTS), sinkronisasi fisika, authoritative netcode, spesifikasi GDD, dan otomasi test game (gdUnit4, NUnit, Unreal Automation). | `/maxilun-game`, `/maxilun-gamestudio`, `game dev`, `godot`, `unreal`, `unity`, `gdd` |
 
 ## Prinsip Integrasi Inti
 
 - **Satu Pemilik Kohesif**: Hindari memecah satu halaman atau satu endpoint ke banyak spesialis tanpa batas kapabilitas nyata.
 - **Investigasi Repo Sebelum Bertanya**: Gunakan `maxilun-knowledge-graph` dan pembacaan konfigurasi proyek untuk mengambil keputusan teknis secara mandiri; tanyakan hanya keputusan yang mahal dibalik.
 - **Anti-Monokultur Desain**: `maxilun-craft` memanfaatkan 100 analisis brand nyata di `skills/maxilun-craft/references/design-md/` untuk menyesuaikan struktur dengan domain produk, bukan menyeragamkan semua proyek ke satu template SaaS.
-- **Batas Instruksi Ramping (`≤300` Baris)**: Seluruh 23 berkas `SKILL.md` dijaga tetap padat di bawah 300 baris agar jendela konteks model tetap tajam, dengan referensi mendalam dimuat sesuai kebutuhan.
+- **Batas Instruksi Ramping (`≤300` Baris)**: Seluruh 24 berkas `SKILL.md` dijaga tetap padat di bawah 300 baris agar jendela konteks model tetap tajam, dengan referensi mendalam dimuat sesuai kebutuhan.

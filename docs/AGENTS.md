@@ -15,7 +15,7 @@ Maxilun menyediakan **13 Autonomous Agents** yang terdiri dari **6 Macro-Role Ag
 
 ---
 
-## 2. Peta 6 Macro-Role Agents & 21 Spesialis
+## 2. Peta 6 Macro-Role Agents & 23 Spesialis
 
 ```mermaid
 flowchart TD
@@ -52,7 +52,7 @@ flowchart TD
 | **`maxilun-orchestrator`** | `maxilun` | `Read`, `Grep`, `Glob`, `Bash` | Triase reversibilitas (Type 1 vs Type 2), penunjukan pemilik utama, orkestrasi Wave 1 $\rightarrow$ Wave 2 $\rightarrow$ Wave 3, dan gate bukti nyata. |
 | **`maxilun-scout`** | `maxilun-knowledge-graph`, `maxilun-insight`, `maxilun-seo-audit` | **Strict Read-Only**: `Read`, `Grep`, `Glob` | Pemetaan graf simbol (`defOf:`, `callsIn:`), pencarian akar masalah, audit radius dampak edit, dan crawlability SEO tanpa risiko mengubah file. |
 | **`maxilun-architect`** | `maxilun-architect`, `maxilun-data`, `maxilun-sentinel`, `maxilun-docsmith` | `Read`, `Grep`, `Glob`, `Write`, `Edit` (kontrak & docs) | Batas modul dalam (*Deep Modules*), migrasi skema zero-downtime, threat modeling OWASP/STRIDE, kontrak OpenAPI 3.1, dan ADR. |
-| **`maxilun-maker`** | `maxilun-engineer`, `maxilun-frontend`, `maxilun-desktop`, `maxilun-mobile`, `maxilun-iot`, `maxilun-network` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Payung makro eksekusi kode produksi lintas-surface dengan diff minimal. |
+| **`maxilun-maker`** | `maxilun-engineer`, `maxilun-frontend`, `maxilun-desktop`, `maxilun-mobile`, `maxilun-iot`, `maxilun-network`, `maxilun-game` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Payung makro eksekusi kode produksi lintas-surface dengan diff minimal. |
 | **`maxilun-studio`** | `maxilun-craft`, `maxilun-motion`, `maxilun-cinecode`, `maxilun-diagrams`, `maxilun-content` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Payung makro desain visual, motion graphics, video programatik Remotion, dan diagram Mermaid. |
 | **`maxilun-verifier`** | `maxilun-verify`, `maxilun-deploy` | `Read`, `Grep`, `Glob`, `Bash` (**Tanpa izin edit kode**) | Eksekusi test runner (unit, E2E Playwright), typecheck, audit aksesibilitas WCAG, hardening Docker non-root, dan pipeline CI/CD. |
 | **`maxilun-coder-frontend`** | `maxilun-frontend`, `maxilun-engineer` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Next.js 15 App Router, React 19 RSC vs Client boundaries, Server Actions, serialisasi Flight, client state, dan zero-leak layout. |
