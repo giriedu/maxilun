@@ -375,3 +375,124 @@ cp .env.example .env
 [perintah typecheck && lint && test]
 ```
 ```
+
+---
+
+## 11. The Lean 4-File Root Contract Suite (Fast-Context for Claude & Cursor)
+
+Alternatif ramping untuk tim yang membutuhkan *single source of truth* instan langsung di root repositori agar agen AI (Claude Code, Cursor, Codex, Antigravity) berhenti menebak skema, auth flow, dan konvensi:
+
+### A. `Security.md` (Root)
+```markdown
+# Security.md
+
+## Authentication
+- Method: [e.g. Session Cookies HttpOnly / JWT + Refresh Rotation / OAuth2]
+- Token expiry: [e.g. Access 15m, Refresh 7d]
+- CSRF Protection: [e.g. SameSite=Lax + Double Submit Cookie]
+
+## Secrets Management
+- All secrets live in .env (never committed to git)
+- Required vars: DATABASE_URL, AUTH_SECRET, API_KEY, ...
+- Production secrets: [e.g. AWS Secrets Manager / Vault / Cloudflare Secrets]
+
+## Data Protection & Privacy
+- Sensitive fields: [email, phone_number, password_hash, billing_address]
+- Encryption at rest: [AES-256-GCM for sensitive fields, CSPRNG 12-byte IV]
+- Logging policy: PII redacted from server logs; no secrets in stdout.
+
+## Access Control & Permissions
+- Roles: admin, member, viewer, guest
+- Multi-tenant rule: All queries MUST include `tenant_id === session.tenantId` (zero IDOR).
+- Public routes: `/api/health`, `/api/auth/login`, `/api/webhooks/*`
+
+## External Services & Scopes
+- Stripe: payments (restricted webhook signing key)
+- Resend: transactional email
+```
+
+### B. `Code-Style.md` (Root)
+```markdown
+# Code-Style.md
+
+## Naming Conventions
+- Variables & Functions: camelCase (verb + noun: `calculateInvoiceTax`)
+- Components: PascalCase (`InvoiceTable.tsx`)
+- Files & Folders: kebab-case (`invoice-table.tsx`, `use-invoice-query.ts`)
+- Database tables & columns: snake_case (`payment_intents`, `created_at`)
+
+## Folder Structure
+- `/src/components` (reusable UI components)
+- `/src/lib` (shared utilities, DB clients, API wrappers)
+- `/src/routes` or `/src/app` (routing & pages)
+- `/src/types` (TypeScript types & Zod schemas)
+
+## Core Engineering Rules
+- No default exports for components (use named exports).
+- Imports: external packages first, then internal modules with `@/` alias.
+- Prefer early returns & guard clauses over deep nesting (max nesting: 3 levels).
+- Maximum file size: 300 lines (split into cohesive submodules if growing).
+- Comments explain WHY (business invariant, security limit, workaround), never WHAT.
+- Zero-Emoji UI Invariant: Never inject Unicode emojis into UI components or buttons.
+```
+
+### C. `Database.md` (Root)
+```markdown
+# Database.md
+
+## Core Tables & Schema
+
+### users
+- id (uuid, primary key)
+- email (text, unique, indexed)
+- password_hash (text)
+- role (text, enum: admin, member, viewer)
+- created_at (timestamp with time zone, default now())
+
+### items
+- id (uuid, primary key)
+- user_id (uuid, foreign key -> users.id on delete cascade)
+- title (text, not null)
+- status (text, enum: draft, published, archived)
+- created_at (timestamp with time zone)
+
+## Relationships
+- users 1 -> many items (foreign key: `items.user_id`)
+
+## Indexes & Constraints
+- `idx_users_email` UNIQUE on `users(email)`
+- `idx_items_user_status` composite index on `items(user_id, status)`
+
+## Migration Invariants
+- Zero-Downtime Rule: Never run blocking `ALTER TABLE ... ADD COLUMN ... NOT NULL` without default or multi-step expand-contract.
+- All primary keys use UUIDv7 or BigInt identity.
+```
+
+### D. `API-Guide.md` (Root)
+```markdown
+# API-Guide.md
+
+## Standard Response Format
+- Success: `{ "data": T, "meta"?: Record<string, unknown> }`
+- Error (RFC 9457): `{ "type": string, "title": string, "status": number, "detail": string }`
+
+## Endpoints
+
+### POST /api/auth/login
+- Auth: Public
+- Body: `{ email: string, password: string }`
+- Returns: `{ data: { user: UserDTO }, token: string }`
+
+### GET /api/items
+- Auth: Bearer Token / Session Cookie (Required)
+- Query: `?page=1&limit=20&status=published`
+- Returns: `{ data: Item[], meta: { total: number, page: number } }`
+
+### POST /api/items
+- Auth: Required (Roles: admin, member)
+- Body: `{ title: string, content: string }`
+- Returns: `{ data: Item }` (HTTP 201)
+
+## External Webhooks
+- `POST /api/webhooks/stripe`: Verifies `Stripe-Signature` via constant-time HMAC before processing.
+```

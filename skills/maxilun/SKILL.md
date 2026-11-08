@@ -102,7 +102,7 @@ Pilih berdasarkan **artefak akhir yang berubah**, bukan kata benda yang disebut 
 | `maxilun-game` | Sistem game studio, arsitektur multi-engine (Godot, Unreal, Unity), gameplay, fisika, netcode, GDD | `/maxilun-game`, `/maxilun-gamestudio`, "game dev", "game engine", "godot", "unreal", "unity", "gdd" |
 ## 3. Arsitektur Pengambilan Keputusan & Routing Kohesif
 
-**Warisan Konteks Kode (Wajib sebelum menyentuh kode lintas-file):** Cek berurutan (1) hasil `maxilun-knowledge-graph` di sesi aktif, (2) cache `maxilun-out/graph.json` atau `.maxilun/graph.json`, (3) LSP/CodeGraph indeks simbol, baru (4) jalankan pemindaian `maxilun-knowledge-graph`. Dilarang memindai ulang konteks yang masih valid.
+**Warisan Konteks Kode (Wajib sebelum menyentuh kode lintas-file):** Cek berurutan (1) dokumen *Single Source of Truth* di root (`Security.md`, `Code-Style.md`, `Database.md`, `API-Guide.md` atau `docs/`), (2) hasil `maxilun-knowledge-graph` di sesi aktif, (3) cache `maxilun-out/graph.json` atau `.maxilun/graph.json`, (4) LSP/CodeGraph indeks simbol, baru (5) jalankan pemindaian `maxilun-knowledge-graph`. Dilarang menebak skema, auth flow, atau konvensi yang sudah terdokumentasi.
 
 ### 3.1 Triase Keputusan Berbasis Reversibilitas (Anti-Interogasi)
 Jangan melempar beban keputusan teknis rutin kembali ke pengguna:

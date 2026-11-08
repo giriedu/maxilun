@@ -9,8 +9,9 @@ Digunakan hanya ketika permintaan memiliki ruang tafsir terbuka yang berdampak m
 Sebelum mengajukan satu pun pertanyaan ke pengguna, jalankan 3 langkah ini secara internal:
 
 1. **Periksa Bukti Repositori**:
-   - Baca manifest (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`), struktur folder, skema DB, variabel environment contoh, token CSS/komponen yang sudah ada, dan `docs/` bila tersedia.
-   - Fakta yang terlihat di repositori **dilarang keras ditanyakan ulang**.
+   - **Periksa Dokumen Konteks Root & docs/**: Cari terlebih dahulu keberadaan *Single Source of Truth* repositori: baik berupa set dokumen di `docs/` (`PRD.md`, `TECHSTACK.md`, `SECURITY.md`, `DESIGN.md`) maupun 4 file konteks cepat di root repositori (`Security.md`, `Code-Style.md`, `Database.md`, `API-Guide.md`). Baca file ini sebelum menyentuh kode agar AI berhenti menebak skema, model auth, endpoint, atau konvensi penamaan.
+   - Baca manifest (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`), struktur folder, skema DB, variabel environment contoh, dan token CSS/komponen yang sudah ada.
+   - Fakta yang terlihat di repositori atau dokumen konteks tersebut **dilarang keras ditanyakan ulang**.
 2. **Ukur Biaya Membalik Keputusan (*Reversibility Check*)**:
    - **Type 2 (Murah dibalik)**: struktur komponen internal, penamaan lokal, tata letak satu halaman dengan sistem desain yang sudah ada, perbaikan performa/bug, atau endpoint CRUD standar.
    - **Type 1 (Mahal dibalik)**: pemecahan database/service, skema finansial/multi-tenant, perubahan *breaking* pada kontrak API publik, penghapusan fitur eksisting, atau penciptaan sistem identitas visual dari nol tanpa acuan sama sekali.

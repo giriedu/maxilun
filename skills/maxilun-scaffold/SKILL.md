@@ -38,10 +38,10 @@ Menghasilkan 10 dokumen konteks proyek terstruktur ke folder `docs/` sebagai sum
 
 ## Skill Contract
 
-- **Owns**: initial project-context document structure and baseline context capture (`docs/PRD.md`, `TECHSTACK.md`, `DESIGN.md`, `SECURITY.md`, `STYLEGUIDE.md`, `TASK.md`, `ARCHITECTURE.md`, `SKILLS.md`, `GLOSSARY.md`, `ONBOARDING.md`).
+- **Owns**: initial project-context document structure and baseline context capture (the 10-document `docs/` suite, or the lean 4-file root context contract: `Security.md`, `Code-Style.md`, `Database.md`, `API-Guide.md`).
 - **Does not own**: detailed architecture decisions, implementation, or final technical documentation.
 - **Inputs**: repository context, stated product goals, stack facts, known constraints, `references/index.md`, `references/prd-archetypes.md`, `references/doc-templates.md`, and (for UI products) up to two relevant design references from `../maxilun-craft/references/design-md/index.md` (`../maxilun-craft/references/design-md/README.md`).
-- **Outputs**: a consistent, labeled 10-document project-context set in `docs/` with unknowns preserved and `DESIGN.md` grounded in real UI/UX references or API/CLI ergonomics.
+- **Outputs**: a consistent, labeled 10-document project-context set in `docs/` or the lean 4-file root context contract (`Security.md`, `Code-Style.md`, `Database.md`, `API-Guide.md`) with unknowns preserved and `DESIGN.md` grounded in real UI/UX references or API/CLI ergonomics.
 - **Handoff**: send architecture decisions to `maxilun-architect`, engineering docs and feature specs to `maxilun-docsmith`, UI implementation to `maxilun-craft`, and code implementation to the relevant specialist.
 
 <!-- CORE-RULES:START -->
