@@ -8,6 +8,16 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+- **Purity Gate & Orchestrator Hardening: Anti-Emoji UI & Radical Redesign Mandate**:
+  - **Zero-Emoji UI Invariant (`CMP-003`)**: Embedded directly into Rule 2 (`Purity`) of the canonical `CORE-RULES` block across all 25 skills and `engines.md`. Strictly forbids inserting Unicode emojis/emoticons (`✨`, `🏫`, `🎓`, `🕒`, `🚀`, `✅`, etc.) into UI code, buttons, headings, or badges; mandates standardized monochrome SVGs (`stroke="currentColor"`) or editorial typography.
+  - **Orchestrator Redesign Dismantling Mandate (`SYS-001` .. `SYS-005`)**: Updated `maxilun`, `maxilun-orchestrator`, `maxilun-ui-designer`, `maxilun-coder-frontend`, and `maxilun-maker`. Redesign requests are explicitly classified as mandatory structural layout dismantling (*Clean Cutover*); strictly forbids cosmetic band-aids over old container shells ("tetap bentuknya", `SYS-004`).
+  - **UI Purity Linter Hardening (`scripts/ui-purity-linter.py`)**: Expanded `CMP-TEL-06` regex to scan all Unicode pictographs and dingbats (`[\U0001F300-\U0001FAFF]`, `[\u2600-\u27BF]`, `[\u2300-\u23FF]`), preventing unlisted emojis from slipping past the gate.
+- **Sintesis Ekosistem Web3D, Motion & Asset Pipeline (Audit `freshtechbro/claudedesignskills`)**:
+  - `docs/AUDIT-CLAUDEDESIGNSKILLS.md`: Laporan audit teknis 22 skill eksternal dan matriks adopsi ke dalam arsitektur original Maxilun.
+  - `skills/maxilun-motion/references/web3d-engine-playbook.md`: Arsitektur Three.js, React Three Fiber (R3F), Babylon.js, PlayCanvas, WebXR, PixiJS, anggaran hardware 60 FPS, zero-allocation RAF loop, penanganan `webglcontextlost`, dan *deep GPU memory disposal*.
+  - `skills/maxilun-motion/references/web3d-asset-pipeline.md`: Pipeline Blender GLTF/GLB decimation, batasan 64 bones mobile, gltf-transform CLI, dan pengepakan tekstur Substance 3D ORM (Red=AO, Green=Roughness, Blue=Metallic) untuk penghematan 66% VRAM GPU.
+  - `skills/maxilun-motion/references/interactive-choreography-playbook.md`: GSAP ScrollTrigger (`pin`, `scrub`, `matchMedia`, `ctx.revert()` cleanup di React), Framer Motion (`layoutId` shared element transitions, gestur drag, spring tanpa overshoot), Rive/Lottie state-machines, dan Barba.js / View Transitions API.
+  - Aset Produksi Baru: `starter-r3f-scene.jsx` (template scene R3F lengkap dengan Suspense, Float, OrbitControls) dan `substance-orm-packed.json` (preset ekspor Substance 3D ORM).
 ### Added
 - **Ecosystem Expansion: Game Studio & Multi-Engine Architecture (`maxilun-game`)**:
   - `maxilun-game`: Spesialis studio game dan rekayasa multi-engine (Unreal Engine 5.x, Unity 6 LTS, Godot 4.x), sintesis arsitektur game loop bebas alokasi GC di tick, decoupled data-driven mechanics via external assets (tres, ScriptableObject, DataAsset), pemisahan antarmuka HUD/UI berbasis event bus/sinyal, determinisme fisika delta-time, authoritative netcode dengan client prediction dan server reconciliation rollback, pipeline standar shader, spesifikasi Game Design Document (GDD) 8 bagian, formula balancing matematika (diminishing returns armor mitigation, progresi kurva XP, TTK budgeting, sistem ekonomi tertutup), dan otomasi test game (gdUnit4, NUnit, Unreal Automation).

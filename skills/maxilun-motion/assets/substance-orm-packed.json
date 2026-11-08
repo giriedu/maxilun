@@ -1,0 +1,25 @@
+{
+  "name": "Maxilun_Web_ORM_Packed",
+  "description": "Substance 3D export preset packing Ambient Occlusion, Roughness, and Metallic into an 8-bit RGB image for 66% mobile WebGL VRAM reduction.",
+  "format": "png",
+  "bitDepth": 8,
+  "channels": [
+    {
+      "channel": "R",
+      "input": "ambient_occlusion",
+      "description": "Ambient Occlusion channel mapped to Red"
+    },
+    {
+      "channel": "G",
+      "input": "roughness",
+      "description": "Roughness channel mapped to Green"
+    },
+    {
+      "channel": "B",
+      "input": "metallic",
+      "description": "Metallic channel mapped to Blue"
+    }
+  ],
+  "namingConvention": "$mesh_$textureSet_orm",
+  "compressionTarget": "web_optimized"
+}

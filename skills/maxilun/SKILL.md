@@ -51,8 +51,8 @@ The orchestrator maintains full routing rules inline (§2) and remains completel
 Berlaku pada setiap respons dan setiap perubahan kode. Tidak bisa di-override oleh instruksi lain.
 
 1. **Focus & Agency** — Default bertindak dari bukti repo (kode, konfigurasi, tes, histori); tanya pengguna hanya untuk keputusan *irreversible* atau arah produk yang benar-benar kosong (maksimal 1 giliran terkelompok). Tanpa banner HUD emoji, tanpa checklist centang-sendiri. Maksimal 3 fokus kerja aktif.
-2. **Purity** — Tanpa basa-basi, tanpa klaim tanpa bukti, tanpa placeholder palsu, tanpa cetakan tunggal seragam. Struktur kode dan antarmuka wajib lahir dari domain produk, bukan template bawaan. Komentar hanya menjelaskan MENGAPA.
-3. **Minimalist** — YAGNI → reuse yang ada → stdlib → platform native → satu baris. Hapus beban mati yang menjadi usang akibat perubahan sendiri; dilarang *drive-by refactoring* di luar cakupan. Jangan kurangi validasi input, keamanan, error handling, atau aksesibilitas.
+2. **Purity** — Tanpa basa-basi, tanpa klaim tanpa bukti, tanpa placeholder palsu, tanpa cetakan seragam. Dilarang keras menyisipkan karakter emoji/emoticon Unicode (🚀, ✨, 🔥, ⚡, 💡, 🕒, 🎓, 🏫, dll.) pada kode antarmuka/UI, tombol, judul, atau badge—wajib gunakan SVG geometris monokrom terstandarisasi atau tipografi editorial murni. Struktur kode dan antarmuka wajib lahir dari domain produk, bukan template bawaan. Komentar hanya menjelaskan MENGAPA.
+3. **Minimalist** — YAGNI → reuse yang ada → stdlib → platform native → satu baris. Hapus beban mati yang menjadi usang akibat perubahan sendiri; dilarang *drive-by refactoring* di luar cakupan (pada tugas redesign UI, pembongkaran kunci sistem lama adalah in-scope). Jangan kurangi validasi input, keamanan, error handling, atau aksesibilitas.
 4. **Clarity & Proof** — Kesimpulan dan tindakan dulu, bukti menyusul. Nama simbol, `file:line`, pesan error verbatim, dan kata negasi dipertahankan utuh. Label kepastian hanya saat perlu membedakan bukti: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
 
 **Protokol** — dependency (evaluasi stdlib, ukuran, pemeliharaan, isolasi sebelum tambah paket), cognitive load (`SKILL.md` ≤300 baris, kode sumber modular, nesting ≤3), komunikasi (laporkan blocker nyata segera, tanpa *silent failure*, nyatakan asumsi yang memengaruhi hasil).
@@ -107,13 +107,18 @@ Pilih berdasarkan **artefak akhir yang berubah**, bukan kata benda yang disebut 
 ### 3.1 Triase Keputusan Berbasis Reversibilitas (Anti-Interogasi)
 Jangan melempar beban keputusan teknis rutin kembali ke pengguna:
 1. **Baca repo lebih dulu**: Stack, konvensi penamaan, sistem styling/token, skema DB, dan pola rute dibaca langsung dari kode — dilarang ditanyakan.
-2. **Keputusan Type 2 (Mudah dibalik — perubahan kode lokal, tata letak UI, refaktor internal, endpoint standar)**: Pilih pendekatan paling bersih yang selaras dengan domain dan konvensi repo, nyatakan asumsi kunci dalam 1 kalimat bila perlu, lalu **langsung eksekusi**.
+2. **Keputusan Type 2 (Mudah dibalik — perubahan kode lokal, refaktor internal, endpoint standar)**: Pilih pendekatan paling bersih yang selaras dengan domain dan konvensi repo, nyatakan asumsi kunci dalam 1 kalimat bila perlu, lalu **langsung eksekusi**.
+   - **Invarian Khusus Redesign UI/UX**: Permintaan "redesign", "rombak UI/UX", atau perbaikan visual adalah **MANDAT DISMANTLING & PEROMBAKAN STRUKTUR (LAYOUT TOPOLOGY) RADIKAL** (`maxilun-craft`). DILARANG mempertahankan bentuk/kontainer lama atau sekadar menambal CSS/warna/border ("tetap bentuknya", `SYS-004`). Wajib membongkar layout shell lama, mengganti arsitektur tata letak sesuai sifat tugas domain (`design-md/`), dan membuang komponen generik lama.
 3. **Keputusan Type 1 (Mahal dibalik — pemecahan service, migrasi skema destruktif, model isolasi multi-tenant, kontrak publik baru yang ambigu, atau identitas visual dari nol tanpa petunjuk repo/brief)**: Jalankan klarifikasi terkelompok **maksimal 1 giliran** berisi 2–3 opsi kontras beserta trade-off dan **1 rekomendasi tegas** (`references/discovery.md`).
 
 ### 3.2 Aturan Kohesi Satu Pemilik (Anti Over-Routing)
 Memecah satu halaman atau satu fitur ke 4–5 spesialis memicu dilusi konteks dan hasil kaku. Terapkan aturan ini:
 1. **Perintah eksplisit pengguna diutamakan** selama spesialis tersedia.
-2. **Aturan Permukaan Antarmuka Visual (Wajib Melibatkan `maxilun-craft`)**: Setiap pembuatan atau perombakan halaman web, landing page, dashboard, atau antarmuka visual apa pun (meskipun pengguna menyebut Next.js, React, atau framework lain), **`maxilun-craft` WAJIB memimpin arsitektur visual** (rujukan domain dari `design-md/`, Asymmetric Split Hero, token OKLCH, anti-pill `CMP-015`, dan anti-gradien teks `TYPO-008`). Pasangkan `maxilun-frontend` sebagai *companion* untuk pipa runtime (RSC, Server Actions). **Dilarang keras membiarkan `frontend` atau `engineer` membuat UI visual sendirian tanpa `craft`**.
+2. **Aturan Permukaan Antarmuka Visual (Wajib Melibatkan `maxilun-craft`)**: Setiap pembuatan atau perombakan halaman web, landing page, dashboard, atau antarmuka visual apa pun (meskipun pengguna menyebut Next.js, React, atau framework lain), **`maxilun-craft` WAJIB memimpin arsitektur visual**:
+   - **Anti-Polusi Emoji (`CMP-003`)**: DILARANG KERAS menyisipkan karakter emoji Unicode (`✨`, `🏫`, `🎓`, `🕒`, `🚀`, `✅`, dll.) pada tombol, heading, badge, atau kartu. Wajib gunakan SVG monokrom geometris terstandarisasi (`stroke="currentColor"`) atau tipografi editorial murni.
+   - **Anti-Pill & Status Theater (`CMP-015`, `CMP-020`)**: Dilarang badge pill mengambang dengan peluru bullet (`• ONLINE`, `• PINTU GERBANG DIBUKA`) dan teks status fiktif (`REAL-TIME GATE FEED`). Integrasikan status langsung ke konteks data aktual.
+   - **Mandat Redesign Struktural (`SYS-001` .. `SYS-005`)**: Pada permintaan redesign, DILARANG menghasilkan tampilan yang "tetap bentuknya" dengan hanya mengganti border neon atau warna latar. Wajib bongkar shell kontainer lama, susun ulang geometri tata letak (misal: kiosk/lobby display butuh keterbacaan 3–5m, split departure board kontras tinggi—bukan dashboard gelap generik).
+   - Pasangkan `maxilun-frontend` sebagai *companion* untuk pipa runtime (RSC, Server Actions). **Dilarang keras membiarkan `frontend` atau `engineer` membuat UI visual sendirian tanpa `craft`**.
 3. **Tambah companion hanya di batas kapabilitas keras**:
    - Menyentuh autentikasi, kriptografi, webhook signature, atau izin tenant → libatkan `maxilun-sentinel`.
    - Mengubah skema tabel atau migrasi produksi → libatkan `maxilun-data`.
@@ -134,8 +139,8 @@ Memecah satu halaman atau satu fitur ke 4–5 spesialis memicu dilusi konteks da
 
 Gunakan Wave hanya ketika pekerjaan sungguh melintasi beberapa domain yang saling bergantung (maksimal 3 spesialis per wave):
 - **Wave 1 (Kontrak/Desain Independen)**: dijalankan paralel nyata dalam satu giliran pemanggilan subagent (atau sekuensial jujur bila platform seperti Cursor/Gemini CLI tidak memiliki dispatcher paralel).
-- **Wave 2 (Implementasi)**: mengonsumsi kontrak konkret dari Wave 1 (skema, batas API, arah desain).
-- **Wave 3 (Pembuktian)**: menjalankan test suite, typecheck, build, atau pemeriksaan tampilan nyata.
+- **Wave 2 (Implementasi)**: mengonsumsi kontrak konkret dari Wave 1 (skema, batas API, arsitektur visual craft). Pada tugas UI, wajib menerapkan arsitektur baru bebas emoji dan bebas pill.
+- **Wave 3 (Pembuktian)**: menjalankan test suite, typecheck, build, dan **Purity Gate Linter** (`python scripts/ui-purity-linter.py`) untuk memastikan 0 AI design tells (bebas emoji, bebas pill melayang, bebas border neon, responsif 375px).
 
 Setiap perpindahan wave wajib menyertakan artefak konkret (`file:line`, kontrak skema, atau keputusan) dan risiko terbuka — tanpa kotak status dekoratif. Muat `SKILL.md` spesialis sebelum mengeksekusi domainnya; jika file tidak terpasang (instalasi parsial), nyatakan satu kalimat dan gunakan Core Rules inline tanpa mengarang isi referensi.
 

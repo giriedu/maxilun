@@ -28,6 +28,7 @@ Dokumen kanonik kualitas eksekusi ekosistem Maxilun. Ringkasannya tertanam di bl
 3. **Purpose Gate** — setiap abstraksi kode, dependensi, komponen UI, dan kalimat copy harus menjawab fungsi nyatanya bagi pengguna atau sistem. Jika hanya dekorasi template, hapus.
 4. **Komentar Bernilai** — hanya menjelaskan *mengapa* (invarian bisnis, batasan protokol, alasan keamanan, atau *workaround* bug platform). Dilarang mengulang *apa* yang sudah tertulis di kode.
 5. **Integritas Data & Klaim** — dilarang mengarang metrik (`"99.9% lebih cepat"`, `"10.000+ pengguna"`), testimoni, atau hasil tes yang tidak dijalankan. Rujukan pola klise lengkap ada di `references/purity-catalog.md`.
+6. **Larangan Polusi Emoji pada Antarmuka (`CMP-003`)** — dilarang menyisipkan karakter emoji/emoticon Unicode (`🚀`, `✨`, `🔥`, `⚡`, `💡`, `🕒`, `🎓`, `🏫`, dll.) sebagai ikon tombol, heading, badge hero, list, atau kartu antarmuka. Gunakan ikon SVG monokrom geometris terstandarisasi (`stroke="currentColor"`) atau teks editorial semantik.
 
 ---
 

@@ -175,7 +175,7 @@ class UIPurityLinter:
             "CMP-TEL-06", "Komponen", "ERROR",
             "Emoji used as UI functional buttons, headings, badges, or list icons (AI slop)",
             "Gunakan ikon SVG semantik yang terstandarisasi optik (lulus 1-Bit Monochrome Test).",
-            re.compile(r"""<(?:button|a|h[1-6]|span|li|div|p)[^>]*>(?:[^<]*)(?:🚀|✨|🔥|🎉|💡|⚡|⭐|✅|❌|⚠️|👉|💎|🌟|🤖)(?:[^<]*)</(?:button|a|h[1-6]|span|li|div|p)>""", re.IGNORECASE)
+            re.compile(r"""<(?:[a-zA-Z0-9_\.\-]+)[^>]*>[^<]*(?:[\U0001F300-\U0001FAFF]|[\u2600-\u27BF]|[\u2300-\u23FF]|[\u2B50\u2B55]|🚀|✨|🔥|🎉|💡|⚡|⭐|✅|❌|⚠️|👉|💎|🌟|🤖)""", re.UNICODE | re.IGNORECASE)
         ),
         (
             "CMP-TEL-07", "Komponen", "WARNING",
@@ -455,7 +455,7 @@ class UIPurityLinter:
 
         # 2. Fix decorative emojis in spans or inline headings
         emoji_span_pat = re.compile(
-            r'<span[^>]*>\s*[🚀✨🔥💡🎉⭐👉💎🌟🤖💬]\s*</span>|\s*[🚀✨🔥💡🎉⭐👉💎🌟🤖💬]\s*',
+            r'<(?:span|badge|div|p|h[1-6]|button)[^>]*>\s*(?:[\U0001F300-\U0001FAFF]|[\u2600-\u27BF]|[\u2300-\u23FF]|[\u2B50\u2B55]|🚀|✨|🔥|💡|🎉|⭐|👉|💎|🌟|🤖|💬|🏫|🎓|🕒)\s*</(?:span|badge|div|p|h[1-6]|button)>|\s*(?:[\U0001F300-\U0001FAFF]|[\u2600-\u27BF]|[\u2300-\u23FF]|[\u2B50\u2B55]|🚀|✨|🔥|💡|🎉|⭐|👉|💎|🌟|🤖|💬|🏫|🎓|🕒)\s*',
             re.UNICODE
         )
         if emoji_span_pat.search(content):
