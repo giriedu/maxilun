@@ -1,0 +1,41 @@
+{
+  "skill_name": "maxilun-insight",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Investigasi CPU spike 100% dan hang pada Node.js backend setiap jam 12:00 siang.",
+      "expected_output": "Diagnoses root cause (event loop blocking, regex catastrophic backtracking, or unindexed batch job); provides CPU profile interpretation.",
+      "assertions": [
+        "identifies hang/loop root cause",
+        "traces event loop blockage",
+        "profiles CPU hotspot",
+        "provides deterministic fix",
+        "recommends watchdog metric"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Diagnosa memory leak di container worker yang crash OOMKilled setiap 4 jam.",
+      "expected_output": "Traces heap growth (unbounded event listeners, global cache without TTL, unclosed stream); identifies retained objects via heap snapshot.",
+      "assertions": [
+        "identifies memory leak mechanism",
+        "analyzes heap snapshot retention",
+        "adds bounded TTL/LRU eviction",
+        "verifies GC stabilization",
+        "recommends memory headroom SLO"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Tolong langsung ubah semua konfigurasi thread pool dan rewrite worker tanpa profiling.",
+      "expected_output": "Refuses guessing before profiling; requires baseline metrics and diagnostic data; isolates bottleneck before modifying production settings.",
+      "assertions": [
+        "insists on diagnostic proof first",
+        "refuses speculative tuning",
+        "requests trace/profile evidence",
+        "identifies true bottleneck",
+        "preserves stable configurations"
+      ]
+    }
+  ]
+}

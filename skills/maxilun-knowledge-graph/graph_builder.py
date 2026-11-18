@@ -4,12 +4,12 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional, Set, Tuple
 from collections import defaultdict, Counter
 
-from scanner import BaseScanner, PythonScanner, TypeScriptScanner, GenericScanner, MarkdownScanner
+from scanner import BaseScanner, PythonScanner, TypeScriptScanner, GenericScanner, MarkdownScanner, SchemaInfraScanner, AssetScanner
 from cache_manager import CacheManager
 
 
 class GraphBuilder:
-    SCANNERS = [PythonScanner(), TypeScriptScanner(), GenericScanner(), MarkdownScanner()]
+    SCANNERS = [PythonScanner(), TypeScriptScanner(), GenericScanner(), MarkdownScanner(), SchemaInfraScanner(), AssetScanner()]
 
     def __init__(self):
         self.projects: Dict[str, Dict[str, Any]] = {}
@@ -321,7 +321,10 @@ class GraphBuilder:
                 members.append(fid)
                 members.extend([n['id'] for n in nodes if node_to_file.get(n['id']) == fid and n['id'] != fid])
 
-            label_parts = [fid.replace('file:', '').replace('doc:', '').split('/')[-1].split('.')[0] for fid in fids[:3]]
+            label_parts = [
+                fid.replace('file:', '').replace('doc:', '').replace('schema:', '').replace('asset:', '').split('/')[-1].split('.')[0]
+                for fid in fids[:3]
+            ]
             comm_label = ' / '.join(label_parts) if label_parts else "Cluster"
             raw_communities.append(members)
             raw_labels.append(comm_label)

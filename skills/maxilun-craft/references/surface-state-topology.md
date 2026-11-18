@@ -6,14 +6,14 @@
   origin: "Maxilun Craft Engine"
 -->
 
-Panduan pemodelan status antarmuka (*surface states*) menggunakan mesin status terhingga (*finite state machine* / FSM). Setiap komponen asinkron dan permukaan layar dinamis wajib memiliki representasi visual terukur untuk keenam status diskrit guna menolak *impossible states*.
+Model interface states (*surface states*) as a finite state machine (FSM). Give every asynchronous component and dynamic screen surface a measured visual representation for all six discrete states, so *impossible states* cannot occur.
 
 ---
 
-## 1. Taksonomi 6 Status Antarmuka Diskrit
+## 1. Taxonomy of the 6 Discrete Interface States
 
 ```text
-       [Inisiasi / Idle]
+       [Initial / Idle]
                │
                ▼
        [Loading / Shimmer] ◄───┐
@@ -28,33 +28,33 @@ Panduan pemodelan status antarmuka (*surface states*) menggunakan mesin status t
        [Error / Degraded] ──────┘
 ```
 
-1. **Idle / Inisial**:
-   - Status sebelum pengguna melakukan interaksi atau sebelum pemuatan data pertama kali dipicu.
-   - Permukaan menampilkan struktur dasar, navigasi sistem, dan ruang konten yang tenang.
-2. **Loading / Shimmer (Disiplin CLS = 0)**:
-   - Dilarang menempatkan spinner animasi terisolasi di tengah layar kosong.
-   - Wajib menggunakan kerangka geometri (*skeleton*) dengan dimensi, rasio aspek, dan spasi yang persis 1:1 terhadap konten data akhir yang akan muncul.
-3. **Populated (Data Berisi)**:
-   - Status normal saat payload data sukses diterima dan dirender.
-   - Wajib tahan terhadap variasi ekstrem: teks nama panjang tanpa spasi (`min-w-0` + `truncate`), angka ratusan juta (`tabular-nums`), dan gambar dengan rasio tak terduga (`object-fit: cover`).
+1. **Idle / Initial**:
+   - The state before the user interacts or before the first data load is triggered.
+   - The surface shows the base structure, system navigation, and a calm content area.
+2. **Loading / Shimmer (CLS = 0 Discipline)**:
+   - Do not place an isolated animated spinner in the middle of an empty screen.
+   - Use a geometric *skeleton* whose dimensions, aspect ratio, and spacing match the final data content exactly 1:1.
+3. **Populated (Data Present)**:
+   - The normal state once the data payload is received and rendered.
+   - It must survive extreme variation: long names without spaces (`min-w-0` + `truncate`), numbers in the hundreds of millions (`tabular-nums`), and images with unexpected ratios (`object-fit: cover`).
 4. **Empty / Zero-Data**:
-   - Status ketika kueri berhasil namun koleksi entitas bernilai kosong ($N = 0$).
-   - Wajib menyertakan 3 komponen:
-     1. Penjelasan faktual mengapa data kosong (bukan pesan sedih atau ilustrasi kosong berlebih).
-     2. Tombol atau tautan aksi langkah pertama untuk mengisi data tersebut.
-     3. Tautan dokumentasi atau bantuan jika kekosongan data memerlukan izin akses khusus.
+   - The state when the query succeeds but the entity collection is empty ($N = 0$).
+   - Include these 3 components:
+     1. A factual explanation of why the data is empty (not a sad message or an oversized empty illustration).
+     2. A button or link for the first action that fills the data.
+     3. A documentation or help link when the empty data is caused by missing access permission.
 5. **Pending / Optimistic Mutating**:
-   - Status saat mutasi data sedang dikirim ke server.
-   - Terapkan pembaruan optimistik pada antarmuka dengan indikator mikro non-intrusif (tombol menampilkan state *busy*, opasitas $0.8$, teks aksi tetap terbaca).
-6. **Error / Degraded (Toleransi Gangguan)**:
-   - Status saat transmisi jaringan gagal, API mengembalikan kode non-200, atau koneksi terputus.
-   - Pisahkan antara galat tingkat field (ditangani secara inline) dan galat tingkat layar penuh (ditangani dengan fallback terisolasi).
+   - The state while a data mutation is being sent to the server.
+   - Apply an optimistic update to the interface with a non-intrusive micro indicator (button shows a *busy* state, opacity $0.8$, action text stays readable).
+6. **Error / Degraded (Fault Tolerance)**:
+   - The state when network transmission fails, the API returns a non-200 code, or the connection drops.
+   - Separate field-level errors (handled inline) from full-screen errors (handled with an isolated fallback).
 
 ---
 
-## 2. Tabel Transisi Status & Pencegahan Status Mustahil
+## 2. State Transition Table & Impossible State Prevention
 
-Dilarang merancang variabel boolean terpisah yang rentan konflik logika (misal: `isLoading = true` bersamaan dengan `isError = true`). Gunakan tipe diskrit seragam:
+Do not design separate boolean variables that can conflict logically (for example: `isLoading = true` together with `isError = true`). Use one uniform discriminated type:
 
 ```typescript
 type SurfaceState<T> =
@@ -62,22 +62,26 @@ type SurfaceState<T> =
   | { status: 'loading' }
   | { status: 'populated'; data: T }
   | { status: 'empty'; reason: string; actionText: string; onAction: () => void }
+  | { status: 'pending'; optimisticData: T; rollbackSnapshot: T }
   | { status: 'error'; message: string; recoverable: boolean; retry: () => void };
 ```
 
-| Status Saat Ini | Event Pemicu | Status Berikutnya | Invarian Visual yang Wajib Terpenuhi |
+*Note: The 4 standard data states (loading, empty, populated, error) form the core content subset of the 6 full surface states.*
+
+| Current State | Trigger Event | Next State | Visual Invariant That Must Hold |
 |---|---|---|---|
-| `idle` | `FETCH_START` | `loading` | Tampilkan skeleton geometri; kunci scroll jika layar penuh. |
-| `loading` | `FETCH_SUCCESS (len > 0)` | `populated` | Gantikan skeleton tanpa lonjakan layout (*zero shift*). |
-| `loading` | `FETCH_SUCCESS (len == 0)`| `empty` | Tampilkan panduan pembuatan data perdana. |
-| `loading` | `FETCH_FAILURE` | `error` | Tampilkan pesan spesifik dekat titik gagal + tombol coba lagi. |
-| `populated` | `MUTATE_OPTIMISTIC` | `pending` | Perbarui tampilan lokal seketika; catat snapshot rollback. |
-| `pending` | `MUTATE_REJECTED` | `error` | Kembalikan data ke snapshot awal (*rollback*) + notifikasi undo. |
+| `idle` | `FETCH_START` | `loading` | Show the geometric skeleton; lock scroll if full-screen. |
+| `loading` | `FETCH_SUCCESS (len > 0)` | `populated` | Replace the skeleton without a layout jump (*zero shift*). |
+| `loading` | `FETCH_SUCCESS (len == 0)`| `empty` | Show guidance for creating the first data. |
+| `loading` | `FETCH_FAILURE` | `error` | Show a specific message near the point of failure + a retry button. |
+| `populated` | `MUTATE_OPTIMISTIC` | `pending` | Update the local view immediately; record a rollback snapshot. |
+| `pending` | `MUTATE_CONFIRMED` | `populated` | Commit optimistic state; dismiss pending indicator without redraw flicker. |
+| `pending` | `MUTATE_REJECTED` | `error` | Restore the data to the initial snapshot (*rollback*) + undo notification. |
 
 ---
 
-## 3. Disiplin Geometri Skeleton
+## 3. Skeleton Geometry Discipline
 
-1. **Rasio Aspek Terkunci**: Gunakan `aspect-ratio` CSS eksplisit pada kotak gambar placeholder untuk mencegah reflow ketika file gambar dimuat.
-2. **Kroma Rendah**: Warna latar belakang shimmer wajib menggunakan warna netral bersuhu sama dengan tema aktif, dengan kontras kontur minimal agar tidak menyilaukan.
-3. **Peredaman Gerak**: Patuhi kueri `@media (prefers-reduced-motion: reduce)` dengan mematikan animasi denyut berkilau (*pulsing wave*) dan menggantinya dengan warna statis transparan.
+1. **Locked Aspect Ratio**: Set an explicit CSS `aspect-ratio` on placeholder image boxes to prevent reflow when the image file loads.
+2. **Low Chroma**: Use a neutral shimmer background with the same color temperature as the active theme, with minimal contour contrast so it does not glare.
+3. **Motion Damping**: Respect the `@media (prefers-reduced-motion: reduce)` query: turn off the shimmering pulse animation (*pulsing wave*) and replace it with a static transparent color.

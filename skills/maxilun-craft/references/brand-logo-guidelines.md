@@ -1,34 +1,35 @@
 # Brand Identity, Mathematical SVG Logo Construction & Brand Book PDF Reference
 
-Gunakan referensi ini bersama `maxilun-craft` saat pengguna meminta pembuatan **Logo**, **Brand Identity / Visual System**, **Brand Guidelines (PDF)**, serta koordinasi **Motion Logo Reveal** bersama `maxilun-motion` dan `maxilun-cinecode`.
+Use this reference with `maxilun-craft` when the user asks for a **Logo**, a **Brand Identity / Visual System**, or **Brand Guidelines (PDF)**, and when coordinating a **Motion Logo Reveal** with `maxilun-motion` and `maxilun-cinecode`.
 
 ---
 
-## 1. Prinsip Purity Pembuatan Logo (Bukan Klise Generator AI)
+## 1. Logo Purity Principles (Not AI-Generator Clichés)
 
-Logo yang kuat bersifat **geometris, sederhana, dan tahan uji skala** (tetap tajam dari ukuran favicon `16x16px` hingga billboard).
+A strong logo is **geometric, simple, and scale-proof**: it stays sharp from a `16x16px` favicon to a billboard.
 
-| DILARANG pada Desain Logo (Klise AI) | WAJIB DITERAPKAN (Standar Studio Brand) |
+| FORBIDDEN in Logo Design (AI Clichés) | REQUIRED (Brand Studio Standard) |
 |---|---|
-| Ikon generik (bola lampu, otak bercahaya, roket, perisai centang, jabat tangan, jaringan titik-titik) | Geometri abstrak bermakna, monogram huruf presisi, atau simbol yang diturunkan dari mekanisme unik produk |
-| Gradien warna pelangi atau 4+ warna bertumpuk di dalam simbol | **1-Bit / Monochrome Test wajib lulus dulu**: logo harus bekerja 100% dalam hitam-putih murni (`#000000` & `#ffffff`) sebelum diberi 1 warna aksen OKLCH |
-| Detail garis tipis `< 1.5px` yang hilang saat diperkecil ke `16x16px` | Ketebalan stroke terkalibrasi (`stroke-width >= 2px` pada `viewBox="0 0 32 32"`) dan ruang negatif (*negative space*) yang lega |
-| Sudut koordinat SVG acak hasil tebakan (`d="M12.37 41.89..."`) | Konstruksi **Mathematical Grid** (koordinat kelipatan `4` atau `8` pada kanvas `64x64` / `128x128`, sudut `45°`/`60°`/`90°`, dan rasio busur lingkaran konsisten) |
+| Generic icons (light bulb, glowing brain, rocket, shield with checkmark, handshake, dot network) | Meaningful abstract geometry, a precise letter monogram, or a symbol derived from the product's unique mechanism |
+| Rainbow gradients or 4+ stacked colors inside the symbol | **Pass the 1-Bit / Monochrome Test first**: the logo must work 100% in pure black and white (`#000000` & `#ffffff`) before it receives 1 OKLCH accent color |
+| Thin line details `< 1.5px` that disappear when scaled down to `16x16px` | Calibrated stroke weight (`stroke-width >= 2px` on `viewBox="0 0 32 32"`) and generous negative space |
+| Random, guessed SVG coordinates (`d="M12.37 41.89..."`) | **Mathematical Grid** construction (coordinates in multiples of `4` or `8` on a `64x64` / `128x128` canvas, angles of `45°`/`60°`/`90°`, and consistent arc ratios) |
 
 ---
 
-## 2. Arsitektur 6 Varian Logo Wajib (`SVG` Presisi)
+## 2. Architecture of the 6 Required Logo Variants (Precise `SVG`)
 
-Setiap kali menghasilkan identitas logo untuk sebuah brand, hasilkan file SVG bersih yang mencakup varian berikut:
+Each time you produce a logo identity for a brand, output clean SVG files covering these variants:
 
-1. **`logo-mark.svg` (Logomark / Simbol Ikonik)**: Kanvas persegi (`viewBox="0 0 64 64"`), terpusat secara optik, dirancang untuk app icon, avatar, dan spinner.
-2. **`logo-horizontal.svg` (Primary Lockup)**: Simbol + Wordmark tipografi dengan aturan jarak aman (*clearspace* = minimal `0.5x` tinggi simbol di seluruh sisi).
-3. **`logo-wordmark.svg` (Typographic Logotype)**: Nama brand dengan penyesuaian *kerning/letter-spacing* ketat (`-0.03em` s/d `-0.05em`) dan ciri khas optik pada salah satu huruf.
-4. **`logo-mono-light.svg` & `logo-mono-dark.svg`**: Versi satu warna solid (`currentColor` / hitam pekat / putih bersih) untuk cap dokumen, watermark, dan kontras ekstrem.
-5. **`favicon.svg`**: Versi disederhanakan untuk ukuran `16x16px` dan `32x32px` dengan `<style>@media (prefers-color-scheme: dark) { ... }</style>` adaptif.
+1. **`logo-mark.svg` (Logomark / Iconic Symbol)**: Square canvas (`viewBox="0 0 64 64"`), optically centered, designed for app icons, avatars, and spinners.
+2. **`logo-horizontal.svg` (Primary Lockup)**: Symbol + typographic wordmark with a clearspace rule (clearspace = at least `0.5x` the symbol height on every side).
+3. **`logo-wordmark.svg` (Typographic Logotype)**: Brand name with tight kerning/letter-spacing (`-0.03em` to `-0.05em`) and one optical signature on a single letter.
+4. **`logo-mono-light.svg`**: Solid monochrome version for dark backgrounds (`fill="#ffffff"` or `currentColor`).
+5. **`logo-mono-dark.svg`**: Solid monochrome version for light backgrounds (`fill="#000000"` or `currentColor`).
+6. **`favicon.svg`**: Simplified version for `16x16px` and `32x32px` with an adaptive `<style>@media (prefers-color-scheme: dark) { ... }</style>`.
 
-### Contoh Konstruksi SVG Logo Berbasis Grid Matematis (`64x64` Grid)
-Every path node harus diberi `id` atau `class` semantik (`mark-outer`, `mark-core`, `mark-accent`) agar langsung dapat dianimasikan oleh `maxilun-motion` dan `maxilun-cinecode`:
+### Example: SVG Logo Built on a Mathematical Grid (`64x64` Grid)
+Give every path node a semantic `id` or `class` (`mark-outer`, `mark-core`, `mark-accent`) so `maxilun-motion` and `maxilun-cinecode` can animate it directly:
 
 ```xml
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 64" fill="none" role="img" aria-label="Brand Primary Lockup">
@@ -50,26 +51,26 @@ Every path node harus diberi `id` atau `class` semantik (`mark-outer`, `mark-cor
 
 ---
 
-## 3. Pembuatan Dokumen **Brand Guidelines & Visual System (PDF)**
+## 3. Producing the **Brand Guidelines & Visual System (PDF)** Document
 
-Ketika pengguna meminta output berupa **PDF Konsep Logo & Sistem Visual (`Brand-Guidelines.pdf`)**, bangun dokumen HTML/CSS multi-halaman berstandar cetak (`@page` CSS Paged Media) lalu render menjadi PDF vektor tajam menggunakan headless Chromium (Puppeteer / Playwright `page.pdf({ printBackground: true })` yang sudah tersedia di ekosistem Maxilun):
+When the user asks for a **Logo Concept & Visual System PDF (`Brand-Guidelines.pdf`)**, build a multi-page, print-standard HTML/CSS document (`@page` CSS Paged Media). Then render it to a sharp vector PDF with headless Chromium (Puppeteer / Playwright `page.pdf({ printBackground: true })`, already available in the Maxilun ecosystem):
 
-### 3.1 Struktur 8 Halaman Standar *Brand Book / Visual Identity PDF*
-| Halaman | Judul Halaman | Isi Wajib di Dalam PDF |
+### 3.1 Standard 8-Page Structure of the *Brand Book / Visual Identity PDF*
+| Page | Page Title | Required Content in the PDF |
 |---|---|---|
-| **Halaman 1** | **Cover & Brand Manifesto** | Lockup logo utama ukuran besar, nama brand, tagline (`<= 8 kata`), versi dokumen, dan tanggal rilis |
-| **Halaman 2** | **Logo Concept & Rationale** | Filosofi bentuk (mengapa geometri ini dipilih berdasarkan masalah bisnis & audiens), tanpa cerita klise mengada-ada |
-| **Halaman 3** | **Construction Grid & Clearspace** | Diagram blueprint SVG yang memperlihatkan rasio grid (`8px`/`1x`), sudut kemiringan, zona bebas (*exclusion zone*), dan ukuran minimum (`24px` tinggi) |
-| **Halaman 4** | **Logo Variants & Misuse Rules** | Lockup horizontal, logomark, monochrome light/dark, serta 6 kotak **"Do Not"** (jangan distorsi proporsi, jangan beri drop-shadow murahan, jangan ubah kontras) |
-| **Halaman 5** | **Color System (OKLCH, Hex & RGB)** | Swatch warna permukaan, teks, aksen brand, dan status semantik lengkap dengan nilai `OKLCH`, `HEX`, `RGB`, dan rasio kontras **WCAG AA/AAA** terukur |
-| **Halaman 6** | **Typography & Numeric System** | Hirarki Display, Heading, Body, dan Monospace, aturan `line-height`, batas lebar baca `65ch`, dan kewajiban `tabular-nums` |
-| **Halaman 7** | **UI Component & Layout System** | Penerapan identitas pada komponen nyata (tombol, input, tabel padat, badge faktual, dan aturan 4 state UI tanpa breadcrumb) |
-| **Halaman 8** | **Motion Logo & Sonic/Kinetic DNA** | Storyboard 4 frame bagaimana logo bergerak (kurva pegas `stiffness/damping`, durasi `ms`/`frames`, dan aturan `prefers-reduced-motion`) |
+| **Page 1** | **Cover & Brand Manifesto** | Large primary logo lockup, brand name, tagline (`<= 8 words`), document version, and release date |
+| **Page 2** | **Logo Concept & Rationale** | Form philosophy: why this geometry was chosen, based on the business problem and the audience. No invented, clichéd backstory |
+| **Page 3** | **Construction Grid & Clearspace** | SVG blueprint diagram showing the grid ratio (`8px`/`1x`), slant angles, exclusion zone, and minimum size (`24px` height) |
+| **Page 4** | **Logo Variants & Misuse Rules** | Horizontal lockup, logomark, monochrome light/dark, plus 6 **"Do Not"** boxes (do not distort proportions, do not add a cheap drop shadow, do not change the contrast) |
+| **Page 5** | **Color System (OKLCH, Hex & RGB)** | Swatches for surface, text, brand accent, and semantic status colors, each with `OKLCH`, `HEX`, and `RGB` values and a measured **WCAG AA/AAA** contrast ratio |
+| **Page 6** | **Typography & Numeric System** | Display, Heading, Body, and Monospace hierarchy, `line-height` rules, the `65ch` reading-width limit, and the `tabular-nums` requirement |
+| **Page 7** | **UI Component & Layout System** | The identity applied to real components (buttons, inputs, dense tables, factual badges, and the 4-UI-state rule without breadcrumbs) |
+| **Page 8** | **Motion Logo & Sonic/Kinetic DNA** | 4-frame storyboard of how the logo moves (spring curve `stiffness/damping`, duration in `ms`/`frames`, and the `prefers-reduced-motion` rule) |
 
-### 3.2 CSS Print-to-PDF Presisi (`A4 Landscape` atau `16:9 Presentation Deck`)
+### 3.2 Precise Print-to-PDF CSS (`A4 Landscape` or `16:9 Presentation Deck`)
 ```css
 @page {
-  size: 297mm 210mm; /* A4 Landscape — ideal untuk Brand Guidelines Deck */
+  size: 297mm 210mm; /* A4 Landscape — ideal for a Brand Guidelines deck */
   margin: 0;
 }
 @media print {
@@ -90,10 +91,15 @@ Ketika pengguna meminta output berupa **PDF Konsep Logo & Sistem Visual (`Brand-
 }
 ```
 
-### 3.3 Script Generator PDF Vektor (`Puppeteer` / `Chromium`)
-Simpan dokumen sebagai `brand-guidelines.html`, lalu jalankan konversi ke `Brand-Guidelines.pdf` (semua logo SVG dan teks akan tersimpan sebagai **vektor asli di dalam PDF**, bukan gambar pecah):
+### 3.3 Vector PDF Generator Script (`Puppeteer` / `Chromium`)
+Save the document as `brand-guidelines.html`, then convert it to `Brand-Guidelines.pdf`. All SVG logos and text are stored as **true vectors inside the PDF**, not as pixelated images:
 ```javascript
-// Render HTML Brand Book menjadi PDF vektor tajam
+import puppeteer from 'puppeteer';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+
+// Requires `puppeteer` installed, or use Chrome CLI fallback:
+// chrome --headless --disable-gpu --print-to-pdf="Brand-Guidelines.pdf" brand-guidelines.html
 const browser = await puppeteer.launch({ headless: 'new' });
 const page = await browser.newPage();
 await page.goto(pathToFileURL(path.resolve('brand-guidelines.html')).href, { waitUntil: 'networkidle0' });
@@ -109,18 +115,18 @@ await browser.close();
 
 ---
 
-## 4. Pipeline Terpadu: Dari Konsep Logo → PDF Brand Book → Motion Logo Video
+## 4. Unified Pipeline: Logo Concept → Brand Book PDF → Motion Logo Video
 
-Ketika pengguna meminta paket lengkap (**Logo + Sistem Visual PDF + Motion Logo**), jalankan alur 4 spesialis berikut:
+When the user asks for the full package (**Logo + Visual System PDF + Motion Logo**), run this 4-specialist flow:
 
 ```mermaid
 flowchart LR
-    Craft["1. maxilun-craft\nRancang Geometri SVG Logo,\nGrid Konstruksi & Token OKLCH"] --> DocPDF["2. maxilun-craft + maxilun-docsmith\nKompilasi 8-Page Brand Book\nke Vektor PDF (Brand-Guidelines.pdf)"]
-    Craft --> Motion["3. maxilun-motion\nBuat Animasi Logo Interaktif\n(Animated SVG / Lottie + Spring DNA)"]
-    Motion --> Cine["4. maxilun-cinecode\nRender Video Intro/Outro Logo\n(<LogoReveal> ke MP4 1080p & WebM Alpha)"]
+    Craft["1. maxilun-craft\nDesign the SVG Logo Geometry,\nConstruction Grid & OKLCH Tokens"] --> DocPDF["2. maxilun-craft + maxilun-docsmith\nCompile the 8-Page Brand Book\ninto a Vector PDF (Brand-Guidelines.pdf)"]
+    Craft --> Motion["3. maxilun-motion\nBuild the Interactive Logo Animation\n(Animated SVG / Lottie + Spring DNA)"]
+    Motion --> Cine["4. maxilun-cinecode\nRender the Logo Intro/Outro Video\n(<LogoReveal> to MP4 1080p & WebM Alpha)"]
 ```
 
-1. **Output 1 — Aset Vektor Logo (`assets/brand/*.svg`)**: `logo-mark.svg`, `logo-horizontal.svg`, `logo-mono.svg`, `favicon.svg`.
-2. **Output 2 — Dokumen PDF Sistem Visual (`docs/Brand-Guidelines.pdf`)**: 8 halaman lengkap dengan blueprint grid konstruksi logo, swatch OKLCH/Hex, tipografi, dan aturan UI.
-3. **Output 3 — Motion Logo Interaktif Web (`assets/brand/logo-animated.svg` / `.html`)**: Animasi `stroke-dashoffset` trace + spring assembly dengan fallback `prefers-reduced-motion`.
-4. **Output 4 — Video Motion Logo (`out/logo-reveal.mp4` & `out/logo-stinger-alpha.webm`)**: Video intro/outro deterministik yang siap ditempelkan ke video produk menggunakan komponen `<LogoReveal>` di `maxilun-cinecode`.
+1. **Output 1 — Logo Vector Assets (`assets/brand/*.svg`)**: `logo-mark.svg`, `logo-horizontal.svg`, `logo-wordmark.svg`, `logo-mono-light.svg`, `logo-mono-dark.svg`, `favicon.svg`.
+2. **Output 2 — Visual System PDF Document (`docs/Brand-Guidelines.pdf`)**: 8 pages with the logo construction grid blueprint, OKLCH/Hex swatches, typography, and UI rules.
+3. **Output 3 — Interactive Web Motion Logo (`assets/brand/logo-animated.svg` / `.html`)**: `stroke-dashoffset` trace animation + spring assembly with a `prefers-reduced-motion` fallback.
+4. **Output 4 — Motion Logo Video (`out/logo-reveal.mp4` & `out/logo-stinger-alpha.webm`)**: Deterministic intro/outro video, ready to attach to product videos through the `<LogoReveal>` component in `maxilun-cinecode`.

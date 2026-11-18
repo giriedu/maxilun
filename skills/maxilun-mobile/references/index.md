@@ -1,17 +1,17 @@
 # Maxilun Mobile References Index
 
-Indeks pustaka rekayasa mobile native dan cross-platform.
+Index of references for native and cross-platform mobile engineering.
 
-## Berkas Referensi Domain
+## Domain Reference Files
 
 1. **`android-engineering.md`**:
-   Kotlin, Jetpack Compose, ViewModel StateFlow, Room database migrations, WorkManager background jobs, Android 13+ runtime permissions, dan konfigurasi R8/ProGuard.
+   Kotlin, Jetpack Compose, ViewModel StateFlow, Room database migrations, WorkManager background jobs, Android 13+ runtime permissions, and R8/ProGuard configuration.
 2. **`ios-engineering.md`**:
-   Swift modern, SwiftUI, `@MainActor` & Task concurrency, eliminasi retain cycle (`[weak self]`), integrasi Keychain Services, dan kepatuhan Privacy Manifest.
+   Modern Swift, SwiftUI, `@MainActor` & Task concurrency, retain cycle elimination (`[weak self]`), Keychain Services integration, and Privacy Manifest compliance.
 3. **`cross-platform-mobile.md`**:
-   Flutter Dart isolates & widget tree optimization, React Native New Architecture (Fabric/TurboModules), dan arsitektur shared logic Kotlin Multiplatform (KMP).
+   Flutter Dart isolates & widget tree optimization, React Native New Architecture (Fabric/TurboModules), and Kotlin Multiplatform (KMP) shared logic architecture.
 
-## Panduan Pemuatan
-- Proyek Android native → baca `references/android-engineering.md`.
-- Proyek iOS native → baca `references/ios-engineering.md`.
-- Proyek Flutter, React Native, atau KMP → baca `references/cross-platform-mobile.md`.
+## Loading Guide
+- Native Android project → read `references/android-engineering.md`.
+- Native iOS project → read `references/ios-engineering.md`.
+- Flutter, React Native, or KMP project → read `references/cross-platform-mobile.md`.

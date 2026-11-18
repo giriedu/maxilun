@@ -6,60 +6,60 @@
   origin: "Maxilun Craft Engine"
 -->
 
-Panduan koreografi alur tugas pengguna (*task flow choreography*) untuk meminimalkan beban kognitif dan memotong titik gesekan navigasi. Menghilangkan ketergantungan pada diagram alur abstrak dan berfokus pada efisiensi transisi layar nyata dalam menyelesaikan tugas utama.
+Choreograph user task flows (*task flow choreography*) to minimize cognitive load and cut navigation friction points. Do not rely on abstract flow diagrams. Focus on how efficiently real screen transitions complete the primary task.
 
 ---
 
-## 1. Dekonstruksi Jalur Mental Pengguna (User Mental Pathways)
+## 1. Deconstructing User Mental Pathways
 
-Setiap tugas pengguna dalam aplikasi terdiri dari 4 tahapan mental diskrit:
+Every user task in an application consists of 4 discrete mental stages:
 
 ```text
-[Orientasi Konteks] ──> [Evaluasi Pilihan] ──> [Konfirmasi Aksi] ──> [Verifikasi Hasil]
+[Context Orientation] ──> [Option Evaluation] ──> [Action Confirmation] ──> [Result Verification]
 ```
 
-1. **Orientasi Konteks (< 2 detik)**:
-   - Pengguna memahami di mana mereka berada dan apa tujuan halaman saat ini.
-   - Wajib menampilkan judul yang jelas dalam format *sentence case* dan identifikasi entitas kerja utama.
-2. **Evaluasi Pilihan**:
-   - Membatasi opsi yang disajikan pada satu waktu (Hukum Hick).
-   - Tampilkan parameter paling menentukan terlebih dahulu (misal: harga, ketersediaan tanggal, atau status pesanan) sebelum menyajikan opsi pengaturan sekunder.
-3. **Konfirmasi Aksi**:
-   - Tombol tindakan primer wajib menggunakan label spesifik berbentuk kata kerja + objek (misal: *"Konfirmasi Reservasi"*, *"Kirim Laporan"*).
-   - Hindari tombol dengan label generik (*"Submit"*, *"OK"*, *"Next"*).
-4. **Verifikasi Hasil**:
-   - Tampilkan bukti visual bahwa aksi telah berhasil dicatat oleh sistem (perubahan status seketika, ringkasan bukti transaksi, atau nomor referensi).
+1. **Context Orientation (< 2 seconds)**:
+   - Users understand where they are and what the current page is for.
+   - Show a clear title in *sentence case* and identify the main work entity.
+2. **Option Evaluation**:
+   - Limit the options presented at one time (Hick's Law).
+   - Show the most decisive parameters first (for example: price, date availability, or order status) before secondary settings.
+3. **Action Confirmation**:
+   - Label the primary action button with a specific verb + object (for example: *"Confirm Reservation"*, *"Send Report"*).
+   - Avoid buttons with generic labels (*"Submit"*, *"OK"*, *"Next"*).
+4. **Result Verification**:
+   - Show visual proof that the system recorded the action (immediate status change, transaction receipt summary, or reference number).
 
 ---
 
-## 2. Mengeliminasi Pantulan Layar (Screen Bounce)
+## 2. Eliminating Screen Bounce
 
-Pantulan layar (*screen bounce*) terjadi saat pengguna dipaksa berpindah layar penuh hanya untuk memasukkan sepotong kecil data, lalu kembali lagi ke layar awal.
+*Screen bounce* happens when users are forced onto a full separate screen only to enter one small piece of data, and then return to the original screen.
 
-Gantikan dengan pola **In-Place Choreography**:
+Replace it with the **In-Place Choreography** pattern:
 
-| Kasus Interaksi | Pola Konvensional (Banyak Pantulan) | Pola Koreografi Maxilun (Tanpa Pantulan) |
+| Interaction Case | Conventional Pattern (Many Bounces) | Maxilun Choreography Pattern (No Bounce) |
 |---|---|---|
-| **Filter & Pengurutan Data** | Pindah ke halaman filter terpisah. | Gunakan panel laci (*bottom sheet*) atau filter inline langsung di atas tabel data. |
-| **Penyuntingan Baris Tunggal** | Pindah ke formulir edit layar penuh. | Terapkan penyuntingan inline (*click-to-edit*) atau drawer samping non-intrusif. |
-| **Pratinjau Rincian Item** | Pindah ke rute baru, lalu menekan tombol kembali. | Terapkan pratinjau split (*master-detail pane*) di desktop atau ekspansi akordeon di mobile. |
+| **Data Filtering & Sorting** | Move to a separate filter page. | Use a drawer panel (*bottom sheet*) or an inline filter directly above the data table. |
+| **Single-Row Editing** | Move to a full-screen edit form. | Apply inline editing (*click-to-edit*) or a non-intrusive side drawer. |
+| **Item Detail Preview** | Move to a new route, then press the back button. | Apply a split preview (*master-detail pane*) on desktop or accordion expansion on mobile. |
 
 ---
 
-## 3. Disiplin Pengungkapan Bertahap (Progressive Disclosure)
+## 3. Progressive Disclosure Discipline
 
-1. **Aturan 80/20**:
-   - Tampilkan 80% parameter umum yang dibutuhkan mayoritas pengguna secara langsung di permukaan utama.
-   - Sembunyikan 20% konfigurasi tingkat lanjut (*advanced settings*) di balik kontrol pengungkapan bertahap (*disclosure toggle* atau tab sekunder).
-2. **Konteks Bertahan**:
-   - Saat pengguna membuka rincian opsi lanjutan, pastikan ringkasan parameter utama sebelumnya tetap terlihat sebagai jangkar pembanding.
+1. **80/20 Rule**:
+   - Show the 80% of common parameters that most users need directly on the main surface.
+   - Hide the 20% of *advanced settings* behind a progressive disclosure control (*disclosure toggle* or secondary tab).
+2. **Persistent Context**:
+   - When users open the advanced option details, keep the summary of the earlier main parameters visible as a comparison anchor.
 
 ---
 
-## 4. Eksekusi Subtraction Pass dalam Alur Kerja
+## 4. Running the Subtraction Pass in a Workflow
 
-Gunakan daftar periksa subtraksi ini sebelum memfinalisasi alur tugas:
+Use this subtraction checklist before finalizing a task flow:
 
-1. **Pemeriksaan Redundansi**: Apakah ada teks instruksi yang sebenarnya sudah jelas dari label input itu sendiri? (Jika ya, hapus teks instruksi tersebut).
-2. **Pemeriksaan Garis Batas**: Apakah pemisahan visual bisa dicapai cukup dengan spasi 2x (*spatial rhythm*) alih-alih menambahkan garis pembatas atau kartu baru? (Jika ya, hapus garis/kartu tersebut).
-3. **Pemeriksaan Klik**: Apakah ada langkah dalam alur yang bisa digabungkan tanpa membebani pemahaman pengguna? (Jika ya, pangkas jumlah langkahnya).
+1. **Redundancy Check**: Is there instruction text that the input label already makes clear? (If yes, delete that instruction text.)
+2. **Divider Check**: Can 2x spacing (*spatial rhythm*) alone achieve the visual separation, instead of a new divider line or card? (If yes, delete the line/card.)
+3. **Click Check**: Can any steps in the flow be merged without burdening user comprehension? (If yes, cut the number of steps.)

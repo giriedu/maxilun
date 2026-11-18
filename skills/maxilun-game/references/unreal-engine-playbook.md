@@ -1,14 +1,14 @@
 # Unreal Engine 5.x Architecture & Playbook
 
-Standar rekayasa Unreal Engine 5.x: C++20 modern, Gameplay Ability System (GAS), Enhanced Input, Nanite & Lumen, Chaos Physics, replikasi jaringan berotoritas, dan Automation Testing.
+Unreal Engine 5.x engineering standards: modern C++20, Gameplay Ability System (GAS), Enhanced Input, Nanite & Lumen, Chaos Physics, authoritative network replication, and Automation Testing.
 
 ---
 
-## 1. Standar C++20 Modern di UE5
+## 1. Modern C++20 Standards in UE5
 
 ### 1.1 `TObjectPtr<T>` & Garbage Collection Hygiene
 
-Gunakan `TObjectPtr<T>` sebagai pengganti raw pointer `T*` untuk properti UObject anggota kelas:
+Use `TObjectPtr<T>` instead of a raw `T*` pointer for UObject member properties of a class:
 
 ```cpp
 #pragma once
@@ -47,7 +47,7 @@ protected:
 
 ### 1.2 Structured Bindings & Type Safety
 
-Gunakan structured bindings untuk dekonstruksi tuple atau hasil perhitungan:
+Use structured bindings to destructure a tuple or a calculation result:
 
 ```cpp
 if (auto [bSuccess, ImpactPoint, HitActor] = TraceProjectilePath(); bSuccess)
@@ -60,15 +60,15 @@ if (auto [bSuccess, ImpactPoint, HitActor] = TraceProjectilePath(); bSuccess)
 
 ## 2. Gameplay Ability System (GAS)
 
-Arsitektur kemampuan gameplay dibangun di atas empat pilar GAS:
+Build the gameplay ability architecture on the four pillars of GAS:
 
-1. **Gameplay Tags**: Gunakan tag hierarkis (misal `State.Debuff.Stun`, `Ability.Attack.Melee`) untuk perizinan dan blokir kemampuan.
-2. **Gameplay Attributes**: Nilai numerik terukur (Health, MaxHealth, Mana, Armor) yang didefinisikan dalam `UAttributeSet`.
-3. **Gameplay Effects (GE)**: Modifikasi atribut secara instan, berdurasi, atau periodik dengan kalkulasi mitigasi eksternal.
-4. **Gameplay Abilities (GA)**: Logika aktivasi skill asinkron menggunakan Ability Tasks untuk penanganan animasi montase atau target visual trace.
+1. **Gameplay Tags**: Use hierarchical tags (for example `State.Debuff.Stun`, `Ability.Attack.Melee`) to permit and block abilities.
+2. **Gameplay Attributes**: Measured numeric values (Health, MaxHealth, Mana, Armor) defined in a `UAttributeSet`.
+3. **Gameplay Effects (GE)**: Attribute modifications that are instant, timed, or periodic, with external mitigation calculation.
+4. **Gameplay Abilities (GA)**: Asynchronous skill activation logic that uses Ability Tasks to handle montage animations or visual target traces.
 
 ```cpp
-// Menambahkan tag state ke Ability System Component
+// Add a state tag to the Ability System Component
 FGameplayTag StunTag = FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun"));
 AbilitySystemComponent->AddLooseGameplayTag(StunTag);
 ```
@@ -77,7 +77,7 @@ AbilitySystemComponent->AddLooseGameplayTag(StunTag);
 
 ## 3. Enhanced Input System
 
-Pisahkan penangkapan input mentah dari logika aksi permainan menggunakan Input Mapping Contexts (IMC) dan Input Actions (IA):
+Separate raw input capture from game action logic with Input Mapping Contexts (IMC) and Input Actions (IA):
 
 ```cpp
 void AHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -95,9 +95,9 @@ void AHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 ---
 
-## 4. Replikasi Jaringan & Netcode Otoritatif
+## 4. Network Replication & Authoritative Netcode
 
-Server memvalidasi seluruh aksi kritis permainan. Klien menjalankan prediksi lokal pada pergerakan karakter dan merekonsiliasi state saat terjadi koreksi server (*desync*):
+The server validates every critical game action. The client runs local prediction for character movement and reconciles state when the server sends a correction (*desync*):
 
 ```cpp
 #include "Net/UnrealNetwork.h"
@@ -115,7 +115,7 @@ void Server_RequestFireWeapon(const FVector_NetQuantize& AimTarget);
 
 bool Server_RequestFireWeapon_Validate(const FVector_NetQuantize& AimTarget)
 {
-    // Validasi jangkauan maksimum dan raycast sanitization
+    // Validate maximum range and sanitize the raycast
     return FVector::DistSquared(GetActorLocation(), AimTarget) <= FMath::Square(5000.0f);
 }
 
@@ -127,9 +127,9 @@ void Server_RequestFireWeapon_Implementation(const FVector_NetQuantize& AimTarge
 
 ---
 
-## 5. Otomasi Pengujian dengan Unreal Automation Tool
+## 5. Test Automation with Unreal Automation Tool
 
-Tulis pengujian fungsional unit menggunakan makro pengujian standar Unreal Engine:
+Write functional unit tests with the standard Unreal Engine test macros:
 
 ```cpp
 #include "Misc/AutomationTest.h"
@@ -141,18 +141,18 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FCombatDamageMitigationTest, "MyGame.Combat.Mit
 bool FCombatDamageMitigationTest::RunTest(const FString& Parameters)
 {
     const float RawDamage = 100.0f;
-    const float Armor = 100.0f; // K = 100 konstanta mitigasi
+    const float Armor = 100.0f; // K = 100 mitigation constant
     const float ExpectedDamage = 50.0f;
 
     const float ActualDamage = UCombatCalculation::CalculateDamage(RawDamage, Armor);
 
-    TestEqual(TEXT("Kerusakan setelah mitigasi armor harus sesuai kurva 50%"), ActualDamage, ExpectedDamage);
+    TestEqual(TEXT("Damage after armor mitigation must match the 50% curve"), ActualDamage, ExpectedDamage);
     return true;
 }
 ```
 
-Eksekusi CLI headless via AutomationTool:
+Headless CLI run through AutomationTool:
 ```cmd
 Engine\Binaries\Win64\UnrealEditor-Cmd.exe "D:\MyGame\MyGame.uproject" -ExecCmds="Automation RunTests MyGame.; Quit" -unattended -nullrhi -stdout -FullStdOutLogOutput
 ```
-Exit code 0 menandakan seluruh suite pengujian lulus.
+Exit code 0 means the whole test suite passed.

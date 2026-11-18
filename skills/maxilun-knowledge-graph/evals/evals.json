@@ -1,0 +1,65 @@
+{
+  "skill_name": "maxilun-knowledge-graph",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Scan codebase dan cari semua caller dari fungsi processPayment sebelum refactor.",
+      "expected_output": "Executes callsIn: query; reports exact file:line caller coordinates; identifies blast radius and dynamic call risks.",
+      "assertions": [
+        "uses callsIn: operator",
+        "reports exact file:line coordinates",
+        "identifies caller blast radius",
+        "detects dynamic call patterns",
+        "no unverified guesses"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Periksa apakah ada circular dependency antara modul billing dan subscription.",
+      "expected_output": "Scans import graph; detects cycles (A -> B -> A); identifies cycle breaking seam for maxilun-architect.",
+      "assertions": [
+        "traces import graph",
+        "detects circular dependency cycle",
+        "names exact importing files",
+        "proposes interface seam",
+        "reports clean graph analysis"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Scan ulang seluruh repository dari awal padahal cache graf baru dibuat 1 menit yang lalu.",
+      "expected_output": "Checks existing cache first (Search Ladder Tier 0); re-parses only changed files; refuses redundant full-repo rescan.",
+      "assertions": [
+        "uses incremental cache",
+        "checks mtime_ns / hash",
+        "refuses redundant full rescan",
+        "adheres to Search Ladder",
+        "conserves compute"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Graph sudah di-scan. Sekarang cari di mana logika perhitungan total tagihan dan diskon berada, lalu jelaskan alurnya.",
+      "expected_output": "Runs one locate call phrased in code-side words with --also identifiers; reads only the Read plan ranges; follows callers via query; never lists a directory and opens files one by one.",
+      "assertions": [
+        "uses locate before any file read",
+        "passes likely identifiers through --also",
+        "reads only ranges from the Read plan",
+        "at most two locate calls per sub-question",
+        "does not open files sequentially to explore"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Export gagal dengan error: TypeError: Cannot read properties of undefined (reading 'map') at buildRows (src/export/csv.ts:45:12). Cari sumbernya.",
+      "expected_output": "Pastes the stack trace verbatim into locate; starts at the pinned frame range; traces callsIn: upstream to the convergence point; reports file:line evidence.",
+      "assertions": [
+        "pastes the stack trace into locate",
+        "starts from the pinned trace frame",
+        "traces upstream callers with callsIn:",
+        "reports exact file:line coordinates",
+        "no whole-repository reading"
+      ]
+    }
+  ]
+}

@@ -1,14 +1,14 @@
 ---
 name: maxilun-seo-audit
 description: >
-  Technical SEO auditor and search performance analyzer. Audits crawlability,
-  indexation, metadata, canonical tags, JSON-LD structured data, internal linking,
-  Core Web Vitals, and AI agent discovery readiness (llms.txt).
-  Adheres to 4 always-on engines and 3 operating protocols (Focus, Purity, Minimalist, Clarity).
-  Triggers: "/maxilun-seo-audit", "/msal-seo", "audit SEO", "technical SEO", "kenapa tidak ranking",
-  "meta tags", "sitemap", "structured data", "schema markup", "canonical", or search optimization.
+  Audits technical SEO: crawlability, indexation, metadata, canonical tags, JSON-LD structured data,
+  internal linking, Core Web Vitals, and AI agent discovery readiness (llms.txt).
+  Use it when a site or route needs an evidence-backed search visibility audit or ranking diagnosis.
+  Triggers: "/maxilun-seo-audit", "/msal-seo", "audit SEO", "SEO audit", "technical SEO",
+  "kenapa tidak ranking", "why is it not ranking", "meta tags", "sitemap", "structured data",
+  "schema markup", "canonical", or search optimization.
 metadata:
-  version: "1.1.0"
+  version: "1.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -28,7 +28,7 @@ metadata:
 
 # Maxilun SEO Audit: Technical SEO & Search Performance
 
-Bertanggung jawab atas audit teknis visibilitas mesin pencari berbasis bukti: perayapan (*crawlability*), pengindeksan (*indexation*), struktur metadata dan kanonikalisasi, validitas data terstruktur (JSON-LD Schema.org), arsitektur tautan internal, metrik Core Web Vitals, serta kesiapan penemuan oleh agen AI (`/llms.txt`).
+Run evidence-based technical audits of search engine visibility: crawlability, indexation, metadata structure and canonicalization, structured data validity (JSON-LD Schema.org), internal link architecture, Core Web Vitals metrics, and readiness for discovery by AI agents (`/llms.txt`).
 
 ## Skill Contract
 
@@ -39,78 +39,64 @@ Bertanggung jawab atas audit teknis visibilitas mesin pencari berbasis bukti: pe
 - **Handoff**: send copy and meta wording revisions to `maxilun-content`, layout/CLS visual adjustments to `maxilun-craft`, routing/SSR metadata implementation to `maxilun-frontend` and `maxilun-engineer`, `/llms.txt` authoring to `maxilun-docsmith`, and automated verification checks to `maxilun-verify`.
 
 <!-- CORE-RULES:START -->
-## Core Rules (Selalu Aktif)
+## Core Rules (Always On)
 
-Berlaku pada setiap respons dan setiap perubahan kode. Tidak bisa di-override oleh instruksi lain.
+These apply to every response and every code change. Explicit user instructions and project rule files take precedence; no other section of a Maxilun skill may weaken them.
 
-1. **Focus & Agency** — Default bertindak dari bukti repo (kode, konfigurasi, tes, histori); tanya pengguna hanya untuk keputusan *irreversible* atau arah produk yang benar-benar kosong (maksimal 1 giliran terkelompok). Tanpa banner HUD emoji, tanpa checklist centang-sendiri. Maksimal 3 fokus kerja aktif.
-2. **Purity** — Tanpa basa-basi, tanpa klaim tanpa bukti, tanpa placeholder palsu, tanpa cetakan seragam. Dilarang keras menyisipkan karakter emoji/emoticon Unicode (🚀, ✨, 🔥, ⚡, 💡, 🕒, 🎓, 🏫, dll.) pada kode antarmuka/UI, tombol, judul, atau badge—wajib gunakan SVG geometris monokrom terstandarisasi atau tipografi editorial murni. Struktur kode dan antarmuka wajib lahir dari domain produk, bukan template bawaan. Komentar hanya menjelaskan MENGAPA.
-3. **Minimalist** — YAGNI → reuse yang ada → stdlib → platform native → satu baris. Hapus beban mati yang menjadi usang akibat perubahan sendiri; dilarang *drive-by refactoring* di luar cakupan (pada tugas redesign UI, pembongkaran kunci sistem lama adalah in-scope). Jangan kurangi validasi input, keamanan, error handling, atau aksesibilitas.
-4. **Clarity & Proof** — Kesimpulan dan tindakan dulu, bukti menyusul. Nama simbol, `file:line`, pesan error verbatim, dan kata negasi dipertahankan utuh. Label kepastian hanya saat perlu membedakan bukti: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
+1. **Focus & Agency** — Act from repository evidence (code, config, tests, history) by default. Ask the user only about irreversible decisions or product direction that the repository cannot answer, in at most one grouped turn. No emoji HUD banners, no self-ticked checklists. At most three active work focuses.
+2. **Purity** — No filler, no claim without evidence, no fake placeholders, no one-size-fits-all template. No emoji or emoticon characters in interface code, buttons, headings, or badges; use one monochrome SVG icon family or plain typography (`CMP-003`). Code structure and interfaces come from the product domain, not from a boilerplate. Comments explain WHY only.
+3. **Minimalist** — YAGNI → reuse what exists → stdlib → native platform → one line. Delete dead weight your own change made obsolete; no drive-by refactoring outside scope (in a UI redesign, dismantling the old design-system locks is in scope). Never trade away input validation, security, error handling, or accessibility.
+4. **Clarity & Proof** — Conclusion and action first, evidence after. Keep symbol names, `file:line`, verbatim error messages, and negations intact. Use certainty labels only when evidence levels differ: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
 
-**Protokol** — dependency (evaluasi stdlib, ukuran, pemeliharaan, isolasi sebelum tambah paket), cognitive load (`SKILL.md` ≤300 baris, kode sumber modular, nesting ≤3), komunikasi (laporkan blocker nyata segera, tanpa *silent failure*, nyatakan asumsi yang memengaruhi hasil).
+**Protocols** — dependencies (weigh stdlib, size, maintenance, and isolation before adding a package), cognitive load (modular source, nesting ≤3), communication (report real blockers immediately, no silent failure, state assumptions that affect the result).
 
-Detail lengkap: `../maxilun/references/engines.md`.
+Full detail: `../maxilun/references/engines.md`.
 <!-- CORE-RULES:END -->
 
-## 1. Domain Overrides
+## 1. Domain Overrides & Crawlability Directives
 
-- **Purity & Bukti Render**: Tolak laporan audit generik (tunduk pada `../maxilun/references/purity-catalog.md`). Jangan mengklaim tag meta atau JSON-LD "hilang" (`[UNVERIFIED]`) jika pemeriksaan hanya membaca shell CSR kosong tanpa memeriksa komponen pemberi metadata di kode sumber atau HTML hasil SSR/build (`[CONFIRMED]`).
-- **Minimalist**: Utamakan fitur metadata bawaan framework (misal `generateMetadata` di Next.js, head standar di Astro/Remix) dan HTML semantik dibanding pustaka SEO pihak ketiga.
-- **Clarity (Format Temuan Seragam)**: Setiap temuan wajib mengikuti urutan: **Masalah → Bukti URL / `file:line` → Dampak Crawl/Ranking → Perbaikan Konkret**.
+Apply `references/technical-seo-standards.md` to every technical search audit:
+- **Purity & Render Evidence**: Reject generic audit claims. Do not claim a tag or JSON-LD script is missing from an empty CSR shell; mark as `[UNVERIFIED]` until verified against source components or rendered SSR/HTML build output.
+- **`robots.txt` vs `noindex`**: Ensure `robots.txt` never blocks CSS/JS assets. To deindex a page, serve `<meta name="robots" content="noindex">` on a crawlable URL without a blocking `robots.txt` disallow.
+- **Canonical Architecture**: Every indexable route requires exactly one self-referencing canonical (`<link rel="canonical" href="https://...">`) matching trailing-slash and protocol rules.
 
-```mermaid
-flowchart LR
-    A["Inventarisasi Rute & robots.txt"] -->|Periksa SSR/HTML & source| B["Audit Meta, Canonical & JSON-LD"]
-    B -->|Analisis link & CWV| C["Evaluasi Internal Link & Vitals"]
-    C -->|Urutkan berdasar dampak| D["Susun Temuan & Kode Perbaikan"]
-```
+## 2. On-Page Metadata & Search Intent Calibration
 
-## 2. Kerangka Kerja Audit SEO Teknis
+Calibrate metadata directly to query intent:
+1. **Title & Description Ergonomics**:
+   - Transactional / product pages: primary keyword and distinct value proposition (50–60 chars title, 140–160 chars description).
+   - Technical / API docs: exact symbol or endpoint name with technical parameters; no sales fluff.
+2. **Heading Hierarchy & Image Semantics**: Enforce exactly one main `<h1>` per document with sequential `<h2>`-`<h3>` subheadings. Enforce descriptive `alt` tags and explicit `width`/`height` attributes to prevent CLS.
 
-### 2.1 Perayapan, Indeksasi & Kanonikalisasi
-- **`robots.txt` vs Direktif `noindex`**: Pastikan `robots.txt` tidak memblokir aset CSS/JS kritis. Ingat bahwa jika sebuah URL diblokir di `robots.txt`, Googlebot tidak dapat membaca tag `<meta name="robots" content="noindex">` di halaman tersebut—gunakan `noindex` tanpa blokir `robots.txt` bila ingin menghapus halaman dari indeks.
-- **XML Sitemap**: Hanya boleh memuat URL kanonikal berstatus `200 OK` yang dapat diindeks (tanpa URL redirect `3xx`, `404`, atau halaman ber-tag `noindex`).
-- **Tag Kanonikal & `hreflang`**: Setiap rute indeks harus memiliki tepat satu *self-referencing canonical* (`<link rel="canonical" href="https://...">`) dengan protokol, domain, dan aturan *trailing slash* yang konsisten. Untuk situs multibahasa, pastikan pasangan `hreflang` bersifat timbal-balik (*reciprocal*) beserta `x-default`.
+## 3. Structured Data (JSON-LD Schema.org) & Entity Architecture
 
-### 2.2 Metadata On-Page & Kalibrasi Search Intent
-- **Kalibrasi Berdasarkan Niat Pencarian (*Search Intent*)**:
-  - *Halaman Transaksional / Landing Produk*: `title` (50–60 karakter) memuat kata kunci utama dan proposisi nilai; `meta description` (140–160 karakter) merangkum manfaat utama disertai ajakan bertindak yang relevan.
-  - *Halaman Dokumentasi Teknis / Referensi API*: `title` menonjolkan nama konsep/fungsi/endpoint secara presisi; `meta description` merangkum cakupan teknis, parameter, atau masalah yang diselesaikan tanpa memaksakan kalimat promosi penjualan.
-  - *Halaman Programatik / Katalog*: Gunakan template variabel yang membedakan atribut spesifik tiap halaman agar terhindar dari duplikasi metadata massal.
-- **Hierarki Heading & Gambar**: Pastikan satu `<h1>` utama per dokumen dengan urutan subjudul `<h2>`–`<h3>` yang logis; pastikan gambar memiliki atribut `alt` deskriptif serta dimensi `width`/`height` eksplisit.
+1. **Syntax & Entity Accuracy**: Validate every `<script type="application/ld+json">` block against Schema.org standards (`SoftwareApplication`, `Article`, `Organization`, `BreadcrumbList`).
+2. **Breadcrumb Hierarchy**: Ensure `itemListElement` ordering mirrors URL taxonomy.
+3. **Purity Boundary**: Never promise CTR gains from deprecated or restricted rich snippet schemas (such as commercial `FAQPage`).
 
-### 2.3 Data Terstruktur (JSON-LD Schema.org)
-- Validasi sintaksis dan kesesuaian properti `<script type="application/ld+json">` terhadap konten yang benar-benar tampil di halaman (`Article`, `Product`, `SoftwareApplication`, `Organization`, `BreadcrumbList`).
-- Pastikan urutan `itemListElement` pada schema `BreadcrumbList` mencerminkan hierarki URL aktual (keputusan apakah komponen navigasi ditampilkan secara visual di layar adalah ranah `maxilun-craft`).
-- *Catatan `FAQPage`*: Rich result `FAQPage` di Google Search dibatasi untuk situs kesehatan dan pemerintah bereputasi tinggi; jangan menjanjikan kenaikan CTR dari penambahan schema `FAQPage` pada situs komersial umum.
+## 4. Core Web Vitals, Rendering Performance & AI Discovery (llms.txt)
 
-### 2.4 Arsitektur Internal Linking, Core Web Vitals & `/llms.txt`
-- **Internal Linking & Paginasi**: Identifikasi halaman yatim (*orphan pages*), pastikan halaman penting terjangkau dalam `<= 3` klik dari beranda dengan *anchor text* deskriptif, dan pastikan halaman paginasi memiliki *self-canonical* serta tautan `<a href>` yang dapat dirayapi.
-- **Core Web Vitals**: Audit penyebab teknis **LCP** (`> 2.5s`, misal gambar LCP memakai `loading="lazy"` atau tanpa `fetchpriority="high"`), **INP** (`> 200ms`, tugas sinkron berat di main thread), dan **CLS** (`> 0.1`, media/font/komponen dinamis tanpa reservasi dimensi).
-- **Kesiapan Agen AI (`/llms.txt`)**: Periksa ketersediaan `/llms.txt` sebagai indeks dokumentasi Markdown bagi agen AI (komplementer terhadap `robots.txt` dan `sitemap.xml`, bukan pengganti standar indeksasi mesin pencari).
+1. **Core Web Vitals Invariants**:
+   - **LCP** (`<= 2.5s`): Preload above-the-fold assets (`fetchpriority="high"`), avoid `loading="lazy"` on hero media.
+   - **INP** (`<= 200ms`): Eliminate long tasks (`> 50ms`) on the main thread during hydration.
+   - **CLS** (`<= 0.1`): Reserve explicit CSS aspect ratio containers for dynamic embeds and images.
+2. **AI Agent Discovery (`/llms.txt`)**: Audit availability of `/llms.txt` and `/llms-full.txt` markdown maps for autonomous agent crawlability.
 
-## 3. Format Pelaporan Hasil Audit
+## 5. Audit Report Format, Remediation Priority & Verification
 
-Susun laporan berprioritas (Kritis → Tinggi → Menengah) menggunakan format baku berikut tanpa kotak banner emoji:
+Format findings strictly by priority (Critical → High → Medium) without ceremonial HUD banners:
 
-1. **Tag Kanonikal Absen pada Rute Produk Berparameter** (`[CONFIRMED]`)
-   - **Masalah**: Halaman detail produk tidak merender `<link rel="canonical">`, sehingga variasi query `?ref=` dan `?sort=` terindeks sebagai duplikat.
-   - **Bukti**: `src/app/products/[slug]/page.tsx:18` hanya mengembalikan `title` pada objek `generateMetadata` tanpa properti `alternates.canonical`.
-   - **Dampak Crawl/Ranking**: Pemborosan *crawl budget* dan dilusi sinyal peringkat antar-URL duplikat.
-   - **Perbaikan Konkret**: Tambahkan `alternates: { canonical: \`/products/\${params.slug}\` }` beserta `metadataBase` di `src/app/layout.tsx`.
-
-2. **Gambar Hero Memperlambat LCP karena Lazy Loading** (`[CONFIRMED]`)
-   - **Masalah**: Elemen gambar utama di *above-the-fold* menggunakan atribut `loading="lazy"`.
-   - **Bukti**: `src/components/HeroBanner.tsx:42` (`<img src="/hero.avif" loading="lazy" ... />`).
-   - **Dampak Crawl/Ranking**: Menunda penemuan aset LCP oleh browser dan menurunkan skor LCP di bawah ambang `2.5s`.
-   - **Perbaikan Konkret**: Hapus `loading="lazy"`, tambahkan `fetchpriority="high"`, dan pastikan atribut `width` serta `height` terdefinisi.
+1. **Canonical Tag Missing on Parameterized Routes** (`[CONFIRMED]`)
+   - **Problem**: Query variant routes index duplicate pages due to missing canonical meta tags.
+   - **Evidence**: `src/app/products/[slug]/page.tsx:18` generates metadata without `alternates.canonical`.
+   - **Impact**: Ranking dilution across duplicated index entries.
+   - **Fix**: Add `alternates: { canonical: \`/products/\${params.slug}\` }`.
 
 ## Related Skills
 
-- **maxilun-content**: Penulisan ulang *title*, *meta description*, dan copy halaman yang selaras dengan *search intent*.
-- **maxilun-craft**: Perbaikan tata letak visual, ukuran kontainer, dan pencegahan *Cumulative Layout Shift* (CLS).
-- **maxilun-frontend**: Implementasi metadata dinamis, SSR/SSG, `sitemap.ts`, dan optimasi komponen gambar/font di tingkat framework.
-- **maxilun-engineer**: Perbaikan logika routing, kode status HTTP (`200`/`301`/`404`/`410`), dan kinerja server.
-- **maxilun-docsmith**: Penyusunan dan pemeliharaan berkas `/llms.txt` serta `/llms-full.txt` untuk penemuan agen AI.
-- **maxilun-verify**: Validasi hasil build HTML, pengujian regresi metadata, dan pemeriksaan performa terotomasi.
+- **maxilun-content**: Rewrites title, meta description, and page copy to match search intent.
+- **maxilun-craft**: Fixes visual layout, typography hierarchy, and container sizing to prevent CLS.
+- **maxilun-frontend**: Implements dynamic metadata, SSR/SSG, `sitemap.ts`, and image optimization.
+- **maxilun-engineer**: Fixes routing logic, HTTP status codes, and server response headers.
+- **maxilun-docsmith**: Writes and maintains `/llms.txt` and `/llms-full.txt` files for AI discovery.
+- **maxilun-verify**: Automates metadata regression tests, build validation, and performance checks.

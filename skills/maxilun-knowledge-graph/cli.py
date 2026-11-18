@@ -12,6 +12,7 @@ Usage:
   python cli.py snapshot [path]
   python cli.py diff <target1> <target2> [--path <repo-path>]
   python cli.py query <operator> <symbol> [--json] [--path <repo-path>]
+  python cli.py locate "<question | stack trace | symbol>" [--path <repo-path>] [--also a,b] [--top N] [--json]
   python cli.py serve [--port <port>] [--host <host>] [--open]
   python cli.py export <path> <output>
 
@@ -164,7 +165,7 @@ def _generate_maxilun_report(graph, stats):
         "4. **Arsip Snapshot Baru**: Jalankan `python cli.py scan --snapshot`.",
         "",
         "---",
-        "*Dihasilkan oleh Maxilun Knowledge Graph Engine v1.2.0*",
+        "*Dihasilkan oleh Maxilun Knowledge Graph Engine v1.3.0*",
     ])
     return "\n".join(lines)
 
@@ -255,7 +256,7 @@ def cmd_scan(args):
     if args.name:
         names = [args.name] + [None] * (len(args.paths) - 1)
 
-    print("\n  Maxilun Knowledge Graph Scanner (v1.2.0)")
+    print("\n  Maxilun Knowledge Graph Scanner (v1.3.0)")
     print("  " + "=" * 45)
 
     use_cache = not getattr(args, 'no_cache', False)
@@ -617,6 +618,30 @@ def cmd_context(args):
     print(output)
     return output
 
+def cmd_locate(args):
+    from locate import locate, render
+
+    project = args.path or "."
+    if args.refresh:
+        builder = GraphBuilder()
+        graph = builder.scan_project(str(Path(project).resolve()))
+        try:
+            _export_maxilun_out(project, graph, builder.get_stats())
+        except Exception:
+            pass
+    else:
+        graph = _load_or_build_graph(args.graph, project)
+
+    also = [a.strip() for a in (args.also or "").split(",") if a.strip()]
+    result = locate(" ".join(args.question), root=project, graph=graph, top=args.top, lines=args.lines,
+                    budget=args.budget, also=also, include_tests=args.tests)
+    if args.json:
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+    else:
+        print(render(result))
+    return result
+
+
 def cmd_serve(args):
     server = MaxilunServer(port=args.port, host=args.host)
 
@@ -688,6 +713,19 @@ def main():
     context_parser.add_argument('--graph', '-g', help='Path to graph JSON file')
     context_parser.add_argument('--path', help='Project path (default: .)')
 
+    # locate
+    locate_parser = subparsers.add_parser('locate', help='Answer "where is the code that does X" with ranked file:line ranges and verbatim excerpts')
+    locate_parser.add_argument('question', nargs='+', help='Plain-language question, stack trace, or symbol name')
+    locate_parser.add_argument('--path', help='Project path (default: .)')
+    locate_parser.add_argument('--graph', '-g', help='Path to graph JSON file')
+    locate_parser.add_argument('--also', help='Comma-separated extra identifiers or synonyms the code may use')
+    locate_parser.add_argument('--top', type=int, default=5, help='Maximum files to return (default: 5)')
+    locate_parser.add_argument('--lines', type=int, default=14, help='Maximum excerpt lines per range (default: 14)')
+    locate_parser.add_argument('--budget', type=int, default=6000, help='Total excerpt characters (default: 6000)')
+    locate_parser.add_argument('--tests', action='store_true', help='Rank test files equally with production code')
+    locate_parser.add_argument('--refresh', action='store_true', help='Run an incremental scan before answering')
+    locate_parser.add_argument('--json', action='store_true', help='Output results as JSON')
+
     # serve
     serve_parser = subparsers.add_parser('serve', help='Start visualizer server')
     serve_parser.add_argument('--port', '-p', type=int, default=8765, help='Server port (default: 8765)')
@@ -716,6 +754,8 @@ def main():
         cmd_query(args)
     elif args.command == 'context':
         cmd_context(args)
+    elif args.command == 'locate':
+        cmd_locate(args)
     elif args.command == 'serve':
         cmd_serve(args)
     elif args.command == 'export':

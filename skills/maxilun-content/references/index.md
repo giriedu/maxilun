@@ -1,5 +1,5 @@
 # Maxilun Content Reference Corpus
 
-Indeks referensi copywriting dan penulisan naskah:
+Index of copywriting and scriptwriting references:
 
-- `cinematic-scriptwriting.md` — Prinsip narasi spoken, timing vokal, SSML markup, dan konfigurasi Google Cloud TTS untuk video `maxilun-cinecode`.
+- `cinematic-scriptwriting.md` — Spoken narration principles, vocal timing, SSML markup, and Google Cloud TTS configuration for `maxilun-cinecode` video.

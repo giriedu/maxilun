@@ -1,32 +1,32 @@
 # MikroTik RouterOS Engineering Playbook (RouterOS v6 & v7)
 
-Panduan konfigurasi, otomatisasi skrip, manajemen firewall, QoS/PCQ, dan routing tingkat produksi untuk MikroTik RouterOS.
+Production guide for MikroTik RouterOS configuration, script automation, firewall management, QoS/PCQ, and routing.
 
-## 1. Arsitektur Firewall Stateful Standar Produksi
+## 1. Production Stateful Firewall Architecture
 
-### 1.1 Aturan Filter Input & Forward
-Terapkan prinsip *default-drop* dengan inspeksi state koneksi:
+### 1.1 Input & Forward Filter Rules
+Apply the default-drop principle with connection state inspection:
 ```routeros
-# Filter Input (Melindungi Router Sendiri)
+# Input filter (protects the router itself)
 /ip firewall filter
-add chain=input action=accept connection-state=established,related,untracked comment="Terima koneksi established/related"
-add chain=input action=drop connection-state=invalid comment="Buang paket invalid"
-add chain=input action=accept protocol=icmp comment="Izinkan ICMP terukur"
-add chain=input action=accept in-interface-list=LAN comment="Izinkan akses administrasi hanya dari LAN"
-add chain=input action=drop comment="Default drop seluruh akses input luar"
+add chain=input action=accept connection-state=established,related,untracked comment="Accept established/related connections"
+add chain=input action=drop connection-state=invalid comment="Drop invalid packets"
+add chain=input action=accept protocol=icmp comment="Allow limited ICMP"
+add chain=input action=accept in-interface-list=LAN comment="Allow administrative access from LAN only"
+add chain=input action=drop comment="Default drop all outside input access"
 
-# Filter Forward (Melindungi Trafik Antar-Subnet & Internet)
-add chain=forward action=fasttrack-connection connection-state=established,related comment="FastTrack untuk efisiensi CPU"
-add chain=forward action=accept connection-state=established,related,untracked comment="Terima koneksi established/related"
-add chain=forward action=drop connection-state=invalid comment="Buang paket invalid"
-add chain=forward action=accept in-interface-list=LAN out-interface-list=WAN comment="Izinkan trafik LAN menuju WAN"
-add chain=forward action=accept connection-nat-state=dstnat in-interface-list=WAN comment="Izinkan port forwarding resmi"
-add chain=forward action=drop comment="Default drop seluruh trafik forward tak dikenal"
+# Forward filter (protects inter-subnet and internet traffic)
+add chain=forward action=fasttrack-connection connection-state=established,related comment="FastTrack for CPU efficiency"
+add chain=forward action=accept connection-state=established,related,untracked comment="Accept established/related connections"
+add chain=forward action=drop connection-state=invalid comment="Drop invalid packets"
+add chain=forward action=accept in-interface-list=LAN out-interface-list=WAN comment="Allow LAN traffic to WAN"
+add chain=forward action=accept connection-nat-state=dstnat in-interface-list=WAN comment="Allow authorized port forwarding"
+add chain=forward action=drop comment="Default drop all unknown forward traffic"
 ```
 
-### 1.2 Aturan NAT & Hairpin NAT
-- **Masquerade**: Selalu tentukan `out-interface-list=WAN` atau `out-interface=ether1`. Dilarang membuat rule masquerade tanpa batasan antarmuka keluar karena dapat memicu kebocoran IP dan loop routing internal.
-- **Hairpin NAT**: Wajib saat server lokal diakses oleh klien LAN menggunakan IP publik atau nama domain:
+### 1.2 NAT & Hairpin NAT Rules
+- **Masquerade**: Always set `out-interface-list=WAN` or `out-interface=ether1`. Never create a masquerade rule without an outgoing interface restriction, because it can cause IP leaks and internal routing loops.
+- **Hairpin NAT**: Required when LAN clients reach a local server through its public IP or domain name:
   ```routeros
   /ip firewall nat
   add chain=srcnat action=masquerade src-address=192.168.88.0/24 dst-address=192.168.88.10 protocol=tcp dst-port=443 comment="Hairpin NAT HTTPS"
@@ -34,16 +34,16 @@ add chain=forward action=drop comment="Default drop seluruh trafik forward tak d
 
 ---
 
-## 2. Manajemen Bandwidth (QoS & PCQ)
+## 2. Bandwidth Management (QoS & PCQ)
 
 ### 2.1 Mangle & Packet Marking
-- Saat menandai paket di `/ip firewall mangle`:
-  1. Tandai koneksi terlebih dahulu (`action=mark-connection`, `passthrough=yes`).
-  2. Tandai paket berdasarkan tanda koneksi (`action=mark-packet`, `passthrough=no`).
-- Nonaktifkan `FastTrack` pada antarmuka atau subnet yang wajib melalui antrean Queue Tree, karena FastTrack memotong jalur pemrosesan paket (*bypass*) sebelum mencapai layer antrean.
+- When marking packets in `/ip firewall mangle`:
+  1. Mark the connection first (`action=mark-connection`, `passthrough=yes`).
+  2. Mark packets based on the connection mark (`action=mark-packet`, `passthrough=no`).
+- Disable `FastTrack` on any interface or subnet that must pass through a Queue Tree, because FastTrack bypasses packet processing before the queue layer.
 
-### 2.2 Per Connection Queue (PCQ) untuk Pembagian Rata
-Gunakan tipe antrean PCQ untuk mendistribusikan bandwidth secara adil tanpa mengalokasikan limit tetap per pengguna:
+### 2.2 Per Connection Queue (PCQ) for Even Sharing
+Use the PCQ queue type to distribute bandwidth fairly without allocating a fixed limit per user:
 ```routeros
 /queue type
 add name="PCQ-Download" kind=pcq pcq-classifier=dst-address pcq-rate=0 pcq-total-limit=2000KiB
@@ -58,7 +58,7 @@ add name="Total-LAN" target=192.168.88.0/24 max-limit=100M/100M queue=PCQ-Upload
 ## 3. Bridge VLAN Filtering & WireGuard (RouterOS v7)
 
 ### 3.1 Bridge VLAN Filtering
-Gunakan satu bridge perangkat keras dengan `vlan-filtering=yes`:
+Use one hardware bridge with `vlan-filtering=yes`:
 ```routeros
 /interface bridge
 add name=bridge1 vlan-filtering=yes
@@ -73,7 +73,7 @@ add bridge=bridge1 tagged=bridge1,ether24 untagged=ether2 vlan-ids=10
 add bridge=bridge1 tagged=bridge1,ether24 untagged=ether3 vlan-ids=20
 ```
 
-### 3.2 WireGuard di RouterOS v7
+### 3.2 WireGuard on RouterOS v7
 ```routeros
 /interface wireguard
 add name=wg0 listen-port=13231 private-key="<SERVER_PRIVATE_KEY>"

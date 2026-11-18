@@ -6,56 +6,56 @@
 
 # Maxilun Surgical Engineering Discipline
 
-Disiplin operasional untuk mencegah empat mode kegagalan klasik LLM saat memodifikasi kode produksi: asumsi tersembunyi, abstraksi bengkak, kerusakan sampingan (*collateral diff*), dan klaim selesai tanpa pembuktian eksekusi.
+Operating discipline that prevents four classic LLM failure modes when modifying production code: hidden assumptions, bloated abstractions, collateral damage (*collateral diff*), and claiming completion without execution proof.
 
 ---
 
-## 1. Pre-flight Reasoning (Investigasi Sebelum Edit)
+## 1. Pre-flight Reasoning (Investigate Before Editing)
 
-1. **Baca fakta repo sebelum mengambil asumsi** — periksa pemanggil simbol (`callsIn:`), tipe data, pola error handling, dan test suite yang sudah ada.
-2. **Bedakan keputusan murah vs mahal**:
-   - Detail implementasi lokal yang mudah dibalik (*Type 2*): pilih pola yang konsisten dengan codebase, nyatakan asumsi yang berdampak bila ada, dan langsung kerjakan.
-   - Perubahan kontrak publik, skema data produksi, atau perilaku bisnis ambigu yang mahal dibalik (*Type 1*): paparkan opsi beserta trade-off secara ringkas dan minta keputusan pengguna dalam satu giliran.
-3. **Tolak rencana berisiko tersembunyi** — jika permintaan pengguna berpotensi merusak kompatibilitas pemanggil atau membuka celah keamanan, tunjukkan buktinya (`file:line`) dan usulkan jalur yang aman.
+1. **Read repo facts before assuming** — check the symbol's callers (`callsIn:`), data types, error handling patterns, and the existing test suite.
+2. **Separate cheap decisions from expensive ones**:
+   - Local implementation details that are easy to reverse (*Type 2*): pick the pattern consistent with the codebase, state any assumption that has impact, and do the work immediately.
+   - Changes to a public contract, a production data schema, or ambiguous business behavior that are expensive to reverse (*Type 1*): lay out the options with their trade-offs briefly and ask the user to decide in one turn.
+3. **Reject plans with hidden risk** — if the user's request could break caller compatibility or open a security hole, show the evidence (`file:line`) and propose a safe path.
 
-### Contoh
-**Permintaan:** *"Buat pencarian pengguna lebih cepat."*
-- **Buruk**: Langsung memasang Redis dan menulis layer caching 180 baris tanpa mengukur letak lambatnya.
-- **Tepat**: Periksa query aktual → ditemukan full scan pada `WHERE LOWER(email) = $1` di `src/users/repo.ts:84` → tambahkan expression index `users (LOWER(email))` dan buktikan perubahan `EXPLAIN ANALYZE`.
-
----
-
-## 2. Radical Simplicity (Kesederhanaan Radikal)
-
-1. **Bangun tepat yang diminta** — tanpa parameter konfigurasi masa depan, tanpa fitur tambahan "sekalian".
-2. **Tanpa abstraksi sekali pakai** — jangan membuat `Interface`, `Factory`, `Strategy`, atau *base class* bila hanya ada satu implementasi nyata.
-3. **Tulis ulang kode bengkak** — jika logika sederhana membengkak menjadi 200 baris wrapper yang bisa diselesaikan bersih dalam 40–50 baris lugas, sederhanakan sekarang.
-4. **Jangan menangani skenario mustahil** — validasi ketat dipasang di batas input eksternal (*trust boundaries*); di dalam fungsi internal bertipe kuat, percayai invarian tipe yang sudah ditegakkan.
+### Example
+**Request:** *"Make user search faster."*
+- **Bad**: Install Redis immediately and write a 180-line caching layer without measuring where the slowness is.
+- **Right**: Inspect the actual query → find a full scan on `WHERE LOWER(email) = $1` at `src/users/repo.ts:84` → add the expression index `users (LOWER(email))` and prove the change with `EXPLAIN ANALYZE`.
 
 ---
 
-## 3. Surgical Precision (Presisi Radius Perubahan)
+## 2. Radical Simplicity
 
-1. **Dilarang *drive-by refactoring*** — jangan mengubah indentasi, mengurutkan ulang fungsi, mengganti gaya kutip, atau menulis ulang kode sehat di luar cakupan tugas.
-2. **Aturan tunggal pembersihan kode mati**:
-   - **Wajib hapus**: import, variabel, helper, tipe, atau jalur lama yang **menjadi usang akibat perubahan/migrasi Anda sendiri**.
-   - **Jangan sentuh diam-diam**: kode lama tidak terpakai di modul lain yang sama sekali tidak berhubungan dengan tugas; cukup sebutkan satu baris di akhir laporan bila berisiko.
-3. **Patuhi konvensi repositori setempat vs Ruang Lingkup Redesign**:
-   - **Fitur biasa & perbaikan bug**: ikuti sistem styling, ORM, test runner, dan pola penamaan yang sudah dipakai proyek tersebut.
-   - **Permintaan Redesign / Rombak UI/UX**: sistem desain lama yang mengunci tampilan (variabel CSS `:root` kusam, theme tokens usang, wrapper layout kaku) **adalah target perubahan yang sah dan wajib dimigrasikan**. Mempertahankan token lama yang rusak karena takut melanggar konvensi adalah anti-pola. Lakukan *Clean Cutover*: ganti token root, perbarui layout shell, mutakhirkan komponen primitif, dan hapus tuntas styling lama yang menjadi usang.
-4. **Uji Lacak Diff (*Trace Test*)** — setiap hunk perubahan harus memiliki alasan langsung dari permintaan pengguna atau pemutakhiran pemanggil yang terdampak.
+1. **Build exactly what was asked** — no configuration parameters for the future, no extra "while we're here" features.
+2. **No single-use abstractions** — do not create an `Interface`, `Factory`, `Strategy`, or *base class* when only one real implementation exists.
+3. **Rewrite bloated code** — if simple logic has grown into 200 lines of wrappers that 40–50 plain lines can solve cleanly, simplify it now.
+4. **Do not handle impossible scenarios** — put strict validation at external input boundaries (*trust boundaries*); inside strongly typed internal functions, trust the type invariants already enforced.
 
 ---
 
-## 4. Verifiable Goal Loop (Bukti Eksekusi Nyata)
+## 3. Surgical Precision (Change Radius)
 
-Ubah setiap tugas menjadi sasaran yang dapat dibuktikan secara objektif sebelum berhenti:
+1. **No *drive-by refactoring*** — do not change indentation, reorder functions, swap quote styles, or rewrite healthy code outside the task scope.
+2. **Single rule for dead-code cleanup**:
+   - **Must delete**: imports, variables, helpers, types, or old paths that **became obsolete because of your own change/migration**.
+   - **Do not touch silently**: old unused code in other modules entirely unrelated to the task; mention it in one line at the end of the report if it is risky.
+3. **Local repository conventions vs redesign scope**:
+   - **Regular features & bug fixes**: follow the styling system, ORM, test runner, and naming patterns the project already uses.
+   - **Redesign / UI/UX overhaul request**: the old design system that locks the look (dull CSS `:root` variables, obsolete theme tokens, rigid layout wrappers) **is a legitimate change target and must be migrated**. Keeping broken old tokens out of fear of violating conventions is an anti-pattern. Perform a *Clean Cutover*: replace the root tokens, update the layout shell, update the primitive components, and fully delete the old styling that became obsolete.
+4. **Diff Trace Test** — every changed hunk must have a direct reason from the user's request or from updating an affected caller.
 
-| Jenis Tugas | Bukti Verifikasi yang Wajib Dijalankan |
+---
+
+## 4. Verifiable Goal Loop (Real Execution Proof)
+
+Turn every task into a target that can be proven objectively before stopping:
+
+| Task Type | Verification Evidence That Must Be Run |
 |---|---|
-| Perbaikan bug | Skrip/tes reproduksi gagal sebelum edit → lulus sesudah edit |
-| Fitur / perubahan API | Tes perilaku batas & jalur gagal lulus + pemanggil lama diperbarui |
-| Refaktor struktural | Suite tes & typecheck lulus tanpa perubahan perilaku eksternal |
-| Antarmuka web / CLI | Jalankan aplikasi/skrip nyata, amati hasil render atau keluaran aktual |
+| Bug fix | Reproduction script/test fails before the edit → passes after the edit |
+| Feature / API change | Boundary-behavior and failure-path tests pass + old callers updated |
+| Structural refactor | Test suite & typecheck pass with no external behavior change |
+| Web interface / CLI | Run the real app/script, observe the rendered result or actual output |
 
-Jika eksekusi terhalang faktor lingkungan (mis. database eksternal tidak aktif), jalankan seluruh verifikasi statis/lokal yang memungkinkan dan tandai sisanya secara jujur dengan `[UNVERIFIED]`.
+If execution is blocked by an environment factor (e.g. an external database is down), run every static/local verification that is possible and mark the rest honestly with `[UNVERIFIED]`.

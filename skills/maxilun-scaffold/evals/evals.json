@@ -1,0 +1,41 @@
+{
+  "skill_name": "maxilun-scaffold",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Bootstrap folder docs/ untuk proyek baru berbasis bukti repository yang sudah ada.",
+      "expected_output": "Scaffolds standard documentation structure based on actual repository facts; populates ARCHITECTURE.md, PRD, and operational runbook templates.",
+      "assertions": [
+        "inspects repository facts first",
+        "creates standard docs structure",
+        "no invented placeholders",
+        "matches project tech stack",
+        "provides actionable template files"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Generate context specification docs/DESIGN.md untuk sistem desain baru.",
+      "expected_output": "Derives design system specification with OKLCH tokens, typographic scale, and accessibility floor; integrates with maxilun-craft.",
+      "assertions": [
+        "derives OKLCH tokens",
+        "defines typographic scale",
+        "incorporates WCAG standards",
+        "coordinates with maxilun-craft",
+        "clean markdown formatting"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Buatkan dokumentasi palsu dengan 50 file kosong tanpa membaca isi repo.",
+      "expected_output": "Refuses creating empty speculative boilerplate; inspects codebase first; creates only evidence-backed context files.",
+      "assertions": [
+        "refuses empty boilerplate",
+        "inspects codebase before scaffolding",
+        "evidence-based documentation",
+        "adheres to Purity rules",
+        "bounded file creation"
+      ]
+    }
+  ]
+}

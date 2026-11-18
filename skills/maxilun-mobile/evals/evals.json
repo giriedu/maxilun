@@ -1,0 +1,41 @@
+{
+  "skill_name": "maxilun-mobile",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Buat screen profil mobile di Jetpack Compose (Android) dengan touch target 48dp dan offline room database.",
+      "expected_output": "Compose screen; minimum touch target 48dp; Room database with Coroutine Flow; proper Scaffold and innerPadding handling.",
+      "assertions": [
+        "minimum 48dp touch target",
+        "uses Scaffold with safe padding",
+        "Flow/Coroutine asynchronous state",
+        "Room entity with migration",
+        "handles offline state"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Implementasikan SwiftUI View untuk iOS dengan Dynamic Type, SafeAreaInsets, dan Swift Concurrency.",
+      "expected_output": "SwiftUI view using Dynamic Type scaled fonts; respects safeAreaInsets; minimum 44pt touch target; async/await network task.",
+      "assertions": [
+        "Dynamic Type support",
+        "safe area insets respected",
+        "minimum 44pt touch targets",
+        "Swift concurrency async/await",
+        "handles reduced motion"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Set hardcoded padding 0px dan paksa font 10px di semua text input mobile.",
+      "expected_output": "Refuses violating mobile ergonomics; mandates minimum 16px font size on inputs to prevent iOS auto-zoom; enforces 44pt/48dp touch targets.",
+      "assertions": [
+        "enforces 16px input font minimum",
+        "enforces 44pt/48dp touch targets",
+        "cites platform surface specs",
+        "safe area padding",
+        "accessible mobile ergonomics"
+      ]
+    }
+  ]
+}

@@ -6,24 +6,24 @@
   origin: "Maxilun Frontend Engine"
 -->
 
-Panduan operasional semantik caching eksplisit, invalidasi berbasis tag, dan topologi rute asinkron di Next.js 15.
+Operational guide to explicit caching semantics, tag-based invalidation, and async route topology in Next.js 15.
 
 ---
 
-## 1. Perubahan Paradigma Caching di Next.js 15
+## 1. The Caching Model Change in Next.js 15
 
-Di Next.js 15, seluruh fungsi `fetch()` dan Route Handler GET bersifat **tidak di-cache secara default** (*uncached by default*), dan Client Router Cache menggunakan `staleTime: 0` untuk rute halaman dinamis.
+In Next.js 15, every `fetch()` call and GET Route Handler is **uncached by default**, and the Client Router Cache uses `staleTime: 0` for dynamic page routes.
 
-### Pengaktifan Cache Eksplisit
-Gunakan opsi cache secara sadar sesuai kebutuhan data:
+### Enabling the Cache Explicitly
+Choose a cache option deliberately, according to what the data needs:
 
 ```typescript
-// 1. Caching statis dengan durasi waktu (Time-based Revalidation)
+// 1. Static caching with a time window (Time-based Revalidation)
 const res = await fetch('https://api.example.com/products', {
-  next: { revalidate: 3600 }, // 1 jam
+  next: { revalidate: 3600 }, // 1 hour
 });
 
-// 2. Caching berbasis tag terarah (On-demand Revalidation)
+// 2. Targeted tag-based caching (On-demand Revalidation)
 const res = await fetch(`https://api.example.com/orders/${id}`, {
   next: { tags: [`order:${id}`, 'orders'] },
 });
@@ -31,9 +31,9 @@ const res = await fetch(`https://api.example.com/orders/${id}`, {
 
 ---
 
-## 2. Invalidasi Tag Terarah (On-Demand Revalidation)
+## 2. Targeted Tag Invalidation (On-Demand Revalidation)
 
-Hindari penggunaan `revalidatePath('/')` global yang membatalkan cache seluruh aplikasi. Gunakan invalidasi presisi berbasis tag:
+Avoid a global `revalidatePath('/')`, which invalidates the cache for the whole application. Use precise tag-based invalidation:
 
 ```typescript
 import { revalidateTag } from 'next/cache';
@@ -41,16 +41,16 @@ import { revalidateTag } from 'next/cache';
 export async function updateOrderStatus(orderId: string, status: string) {
   'use server';
   await db.updateOrder(orderId, status);
-  // Hanya invalidasi cache untuk order spesifik ini
+  // Invalidate the cache for this specific order only
   revalidateTag(`order:${orderId}`);
 }
 ```
 
 ---
 
-## 3. Topologi Rute Asinkron (Async Request APIs)
+## 3. Async Route Topology (Async Request APIs)
 
-Di Next.js 15, `params`, `searchParams`, `cookies()`, dan `headers()` bersifat asinkron dan wajib di-`await`:
+In Next.js 15, `params`, `searchParams`, `cookies()`, and `headers()` are asynchronous and must be `await`ed:
 
 ```tsx
 export default async function ProductPage({
@@ -71,9 +71,9 @@ export default async function ProductPage({
 
 ---
 
-## 4. Eliminasi Waterfall dengan Streaming & Suspense
+## 4. Eliminating Waterfalls with Streaming & Suspense
 
-1. **Paralelisasi Kueri Independen**:
-   Gunakan `Promise.all` saat membaca beberapa sumber data yang tidak saling bergantung.
-2. **Streaming Komponen Lambat**:
-   Bungkus komponen yang memproses data eksternal lambat dengan `<Suspense fallback={<Skeleton />}>` sehingga kerangka halaman utama dan navigasi langsung terkirim ke browser tanpa menunggu komponen tersebut selesai.
+1. **Parallelize independent queries**:
+   Use `Promise.all` when reading several data sources that do not depend on each other.
+2. **Stream slow components**:
+   Wrap a component that processes slow external data in `<Suspense fallback={<Skeleton />}>`, so the main page shell and navigation reach the browser immediately without waiting for that component to finish.

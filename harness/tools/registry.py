@@ -5,7 +5,7 @@ and executes tool calls deterministically. Zero external dependencies.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List, Callable
+from typing import Dict, Any, List, Callable, Optional, Set
 
 from .fs_tools import FSTools
 from .bash_tool import BashTool
@@ -31,11 +31,12 @@ class ToolRegistry:
             "execute_bash": self.bash.execute,
             "kg_query": self.kg.query,
             "kg_scan": self.kg.scan,
+            "kg_locate": self.kg.locate,
         }
 
-    def get_tool_schemas(self) -> List[Dict[str, Any]]:
+    def get_tool_schemas(self, allowed_tools: Optional[Set[str]] = None) -> List[Dict[str, Any]]:
         """Returns standard OpenAI/DeepSeek function schemas for tool calling."""
-        return [
+        schemas = [
             {
                 "type": "function",
                 "function": {
@@ -131,6 +132,23 @@ class ToolRegistry:
             {
                 "type": "function",
                 "function": {
+                    "name": "kg_locate",
+                    "description": "Locate code, schemas, docs, or assets by natural-language question, symbol, or stack trace. Returns a ranked file:start-end Read plan with excerpts.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "question": {"type": "string", "description": "Question, behaviour, stack trace, or symbol to locate"},
+                            "target_path": {"type": "string", "description": "Project root path", "default": "."},
+                            "also": {"type": "string", "description": "Comma-separated identifier hints", "default": ""},
+                            "top": {"type": "integer", "description": "Max ranked hits", "default": 5}
+                        },
+                        "required": ["question"]
+                    }
+                }
+            },
+            {
+                "type": "function",
+                "function": {
                     "name": "kg_query",
                     "description": "Query the Knowledge Graph AST index (defOf, callsIn, callsOut, importersOf).",
                     "parameters": {
@@ -141,6 +159,23 @@ class ToolRegistry:
                             "target_path": {"type": "string", "description": "Project root path", "default": "."}
                         },
                         "required": ["operator", "symbol"]
+                    }
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "kg_locate",
+                    "description": "Find where behaviour lives. Takes a plain-language question, a stack trace, or a symbol name; returns ranked file:line ranges with verbatim excerpts and caller leads. Call this before read_file or grep_files when the target location is unknown.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "question": {"type": "string", "description": "Question, stack trace, or symbol name"},
+                            "also": {"type": "string", "description": "Comma-separated identifiers or synonyms the code may use"},
+                            "target_path": {"type": "string", "description": "Project root path", "default": "."},
+                            "top": {"type": "integer", "description": "Maximum files to return", "default": 5}
+                        },
+                        "required": ["question"]
                     }
                 }
             },
@@ -158,9 +193,14 @@ class ToolRegistry:
                 }
             }
         ] + list(self._custom_schemas.values())
+        if allowed_tools is None:
+            return schemas
+        return [s for s in schemas if s.get("function", {}).get("name") in allowed_tools]
 
-    def execute(self, tool_name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
+    def execute(self, tool_name: str, arguments: Dict[str, Any], allowed_tools: Optional[Set[str]] = None) -> Dict[str, Any]:
         """Dispatches tool execution safely with error handling."""
+        if allowed_tools is not None and tool_name not in allowed_tools:
+            return {"error": f"Permission denied: tool '{tool_name}' is not allowed for this agent."}
         fn = self._tools.get(tool_name)
         if not fn:
             return {"error": f"Tool '{tool_name}' not found in registry."}

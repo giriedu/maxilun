@@ -3,10 +3,10 @@ param(
 )
 
 #Requires -Version 5.1
-$Version = "1.1.0"
+$Version = "1.3.0"
 Write-Host ""
 Write-Host "  MAXILUN $Version Installer" -ForegroundColor Cyan
-Write-Host "  25 skills + 13 autonomous agents" -ForegroundColor DarkCyan
+Write-Host "  25 skills + 15 autonomous agents" -ForegroundColor DarkCyan
 Write-Host ""
 
 $ScriptDir = Split-Path -Parent $PSScriptRoot
@@ -94,6 +94,12 @@ foreach ($target in $Targets) {
         $BackedUp += "  $($target.Name): $backupRoot"
         $existingMaxilun | Remove-Item -Recurse -Force
     }
+
+        # Keep at most 2 most recent backups to prevent disk bloat
+        $oldBackups = @(Get-ChildItem -Path $parentDir -Directory -Filter "_maxilun_backup_*" -ErrorAction SilentlyContinue | Sort-Object CreationTime -Descending)
+        if ($oldBackups.Count -gt 2) {
+            $oldBackups | Select-Object -Skip 2 | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+        }
 
     if (-not (Test-Path $target.Path)) {
         New-Item -ItemType Directory -Path $target.Path -Force | Out-Null

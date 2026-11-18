@@ -6,112 +6,112 @@
   origin: "Maxilun Architect Engine"
 -->
 
-Panduan perancangan arsitektur sistem holistik, protokol discovery kebutuhan bebas bias, resolusi kontradiksi teknis, dan evaluasi 6 pilar arsitektur rekayasa perangkat lunak.
+A guide to end-to-end system architecture design: a bias-free requirements discovery protocol, resolution of technical contradictions, and evaluation against the 6 software engineering architecture pillars.
 
 ---
 
-## 1. Protokol Solution Discovery & Anti-Premature Design
+## 1. Solution Discovery Protocol & Anti-Premature Design
 
-Salah satu penyebab utama kegagalan arsitektur adalah melompat langsung ke pemilihan tumpukan teknologi (*technology stack*), alat, atau pemecahan layanan sebelum memahami karakteristik beban dan kendala domain.
+A leading cause of architecture failure is jumping straight to a *technology stack*, a tool, or a service split before understanding the load characteristics and domain constraints.
 
-### 1.1 Pemisahan Fase yang Ketat (*Strict Phase Separation*)
+### 1.1 Strict Phase Separation
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│ Fase 1: Requirements Discovery & Trade-off Resolution                  │
-│ (Fungsional, Non-Fungsional, Kondisi Eksisting, Resolusi Kontradiksi)   │
+│ Phase 1: Requirements Discovery & Trade-off Resolution                 │
+│ (Functional, Non-Functional, Existing State, Contradiction Resolution) │
 └───────────────────────────────────┬────────────────────────────────────┘
-                                    │ Persyaratan disepakati & bebas kontradiksi
+                                    │ Requirements agreed, no contradictions
                                     ▼
 ┌────────────────────────────────────────────────────────────────────────┐
-│ Fase 2: Dekomposisi Sistem & Arsitektur Solusi (6 Pilar WAF)          │
-│ (Komponen Logis, Batas Modul, Kontrak API, Pilihan Teknologi)          │
+│ Phase 2: System Decomposition & Solution Architecture (6 WAF Pillars)  │
+│ (Logical Components, Module Boundaries, API Contracts, Tech Choices)   │
 └───────────────────────────────────┬────────────────────────────────────┘
-                                    │ Rencana arsitektur divalidasi
+                                    │ Architecture plan validated
                                     ▼
 ┌────────────────────────────────────────────────────────────────────────┐
-│ Fase 3: Validasi Solusi (Pre-Deployment Dry-Run & Runtime Checks)       │
-│ (Topologi Statis, Policy Check, Canary Routing, Verification Script)   │
+│ Phase 3: Solution Validation (Pre-Deployment Dry-Run & Runtime Checks) │
+│ (Static Topology, Policy Check, Canary Routing, Verification Script)   │
 └───────────────────────────────────┬────────────────────────────────────┘
-                                    │ Bukti verifikasi sah
+                                    │ Verification evidence accepted
                                     ▼
 ┌────────────────────────────────────────────────────────────────────────┐
-│ Fase 4: Finalisasi Artefak ADR & Handoff Spesialis                     │
-│ (ADR formal, OpenAPI 3.1, Fitness Functions di CI)                     │
+│ Phase 4: Finalize ADR Artifacts & Specialist Handoff                   │
+│ (Formal ADR, OpenAPI 3.1, Fitness Functions in CI)                     │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Aturan Emas**: Pada Fase 1 (Discovery), **DILARANG KERAS** merekomendasikan tumpukan produk, vendor cloud tertentu, atau rancangan mikroservis. Fokus sepenuhnya pada penggalian fakta:
-1. **Persyaratan Fungsional**: Alur bisnis kritis, entitas domain inti, pemangku kepentingan, dan mutasi data utama.
-2. **Persyaratan Non-Fungsional**:
-   - *Ketersediaan & SLA*: Target uptime (99.9% vs 99.99%), target RTO (*Recovery Time Objective*) dan RPO (*Recovery Point Objective*).
-   - *Latensi & Throughput*: Latensi batas atas $p95$/$p99$, estimasi RPS normal dan beban puncak (*sustained peak*).
-   - *Keamanan & Kepatuhan*: Batas privasi data (GDPR/UU PDP, PCI-DSS), model tenant (multi-tenant shared vs isolated).
-   - *Amplop Biaya*: Batasan anggaran komputasi, storage, dan tenaga operasional.
-3. **Kondisi Eksisting (Brownfield)**: Infrastruktur yang sudah berjalan, bahasa pemrograman tim, dan basis data aktif.
-4. **Dependensi Eksternal**: Layanan pihak ketiga, API mitra, dan karakteristik latensi/keandalannya.
+**Golden Rule**: During Phase 1 (Discovery), **never** recommend a product stack, a specific cloud vendor, or a microservice design. Focus entirely on gathering facts:
+1. **Functional Requirements**: Critical business flows, core domain entities, stakeholders, and the main data mutations.
+2. **Non-Functional Requirements**:
+   - *Availability & SLA*: Uptime target (99.9% vs 99.99%), RTO (*Recovery Time Objective*) and RPO (*Recovery Point Objective*) targets.
+   - *Latency & Throughput*: Upper-bound $p95$/$p99$ latency, estimated normal RPS, and peak load (*sustained peak*).
+   - *Security & Compliance*: Data privacy limits (GDPR/UU PDP, PCI-DSS), tenant model (multi-tenant shared vs isolated).
+   - *Cost Envelope*: Budget limits for compute, storage, and operations staff.
+3. **Existing State (Brownfield)**: Infrastructure already running, the team's programming languages, and active databases.
+4. **External Dependencies**: Third-party services, partner APIs, and their latency/reliability characteristics.
 
 ---
 
-## 2. Resolusi Ambiguitas & Kontradiksi Teknis
+## 2. Resolving Ambiguity & Technical Contradictions
 
-Ketika persyaratan pengguna mengandung tujuan yang saling bertentangan secara fundamental (misalnya: isolasi jaringan zero-trust tanpa akses publik sama sekali vs kebutuhan webhook real-time dari payment gateway publik; atau konsistensi ACID multi-region terdistribusi vs latensi tulis sub-milidetik):
+When user requirements contain fundamentally conflicting goals (for example: zero-trust network isolation with no public access at all vs a need for real-time webhooks from a public payment gateway; or distributed multi-region ACID consistency vs sub-millisecond write latency):
 
-1. **Identifikasi Kontradiksi Secara Eksplisit**: Sebutkan dua atau lebih persyaratan yang saling bertentangan secara teknis.
-2. **Jelaskan Mengapa Tidak Dapat Terpenuhi Bersamaan**: Paparkan batas hukum fisika komputasi (misal Teorema CAP, batas kecepatan propagasi jaringan, atau trade-off keamanan).
-3. **Sajikan Opsi Trade-off Terukur**:
-   - Berikan maksimal 2–3 opsi kontras yang realistis beserta risiko masing-masing.
-   - Sertakan **1 rekomendasi tegas** berlandaskan prinsip *Safety* dan *Simplicity*.
-   - Minta persetujuan pengguna (Keputusan Type 1) sebelum melanjutkan ke perancangan struktur.
-
----
-
-## 3. Enam Pilar Maxilun Well-Architected Framework (WAF)
-
-Evaluasi setiap perancangan arsitektur terhadap 6 pilar rekayasa berikut:
-
-### Pilar 1: Reliability & Fault Tolerance (Keandalan & Ketahanan)
-- **Graceful Degradation**: Saat dependensi hilir (database sekunder, cache, broker, atau API pihak ketiga) mengalami pelambatan atau padam, sistem utama tetap melayani rute kritis dalam mode degradasi.
-- **Circuit Breaker & Retry with Jitter**: Cegah badai koneksi (*thundering herd*). Terapkan batas waktu ketat (*timeout* $\le 2.5\text{s}$), backoff eksponensial dengan jitter acak, dan pemutus sirkuit.
-- **Failover & RPO/RTO**: Pastikan basis data memiliki replika baca dan prosedur pemulihan PITR dengan bukti uji restore berkala.
-
-### Pilar 2: Security & Trust Boundaries (Keamanan & Batas Kepercayaan)
-- **Zero Trust Architecture**: Jangan mempercayai request semata-mata karena berasal dari jaringan internal. Autentikasi dan otorisasi wajib diverifikasi pada setiap batas layanan.
-- **Cryptographic Sender-Constraining (DPoP)**: Untuk endpoint sensitif berisiko tinggi, gunakan token yang terikat secara kriptografis ke pasangan kunci klien (RFC 9449) guna mencegah eksfiltrasi dan replay serangan.
-- **Least Privilege & RLS**: Akses data dibatasi di level database menggunakan Row-Level Security (RLS) PostgreSQL, memitigasi risiko IDOR pada lapisan aplikasi.
-
-### Pilar 3: Performance & Capacity Envelope (Kinerja & Batas Kapasitas)
-- **Amplop Kapasitas Kuantitatif**: Tetapkan angka eksplisit untuk RPS normal, kapasitas memori per instance, dan kuota connection pool database.
-- **Pemrosesan Asinkron**: Alihkan tugas I/O berat (pembuatan laporan, pengiriman email/notifikasi, resize gambar) ke antrean latar belakang (*background workers*).
-- **Backpressure & Concurrency Limits**: Lindungi layanan dari kehabisan memori (*OOM*) dengan menolak atau menahan request saat antrean worker melebihi batas ambang.
-
-### Pilar 4: Cost Optimization & Anti-Waste (Efisiensi Biaya & Anti-Mubazir)
-- **Modular Monolith Baseline**: Tolak mikroservis prematur. Satu aplikasi monolit modular menghemat 70–90% biaya jaringan egress, dependensi cluster orchestration, dan kompleksitas operasional.
-- **Right-Sizing Komputasi**: Sesuaikan ukuran instance dengan profil memori aktual, manfaatkan auto-scaling berbasis antrean/metrik nyata, dan matikan lingkungan staging yang tidak aktif di luar jam kerja.
-- **Storage Tiering**: Pindahkan log dan arsip historis yang jarang diakses ke penyimpanan objek berbiaya rendah dengan kebijakan lifecycle otomatis.
-
-### Pilar 5: Operational Excellence & Fitness Functions (Kecakapan Operasional)
-- **SRE SLO Alerting**: Pasang alert berbasis error budget menggunakan pola *Multi-Window Multi-Burn-Rate* (menghindari alert fatigue akibat lonjakan CPU sesaat).
-- **Structured Logs & Distributed Tracing**: Setiap request membawa `traceId` konsisten dari edge ke database.
-- **Architecture Fitness Functions**: Terjemahkan invarian arsitektur (arah dependensi modul, ketiadaan impor sirkular, kepatuhan batas modul) ke dalam pemeriksaan otomatis di CI pipeline.
-
-### Pilar 6: Evolutionary Simplicity & Radical Minimalism (Kesederhanaan Evolusioner)
-- **The Deletion Test**: Komponen atau modul dirancang sedemikian rupa sehingga dapat dihapus atau diganti tanpa merombak logika internal pemanggil (*caller*).
-- **Two-Adapter Seam Rule**: Dilarang membuat interface/abstraksi spekulatif bila hanya ada satu implementasi konkret tanpa kebutuhan fake test memori.
-- **Revisit Triggers Kuantitatif**: Tetapkan batas numerik konkret kapan struktur monolitik modular layak dipecah menjadi layanan independen (misal: penulisan tabel inti $>2.500\text{ TPS}$ konstan).
+1. **Identify the Contradiction Explicitly**: Name the two or more requirements that technically conflict.
+2. **Explain Why They Cannot Both Hold**: State the physical limit of computing involved (for example the CAP theorem, the network propagation speed limit, or a security trade-off).
+3. **Present Measured Trade-off Options**:
+   - Give at most 2–3 realistic contrasting options with the risk of each.
+   - Include **1 firm recommendation** based on the *Safety* and *Simplicity* principles.
+   - Ask for user approval (Type 1 decision) before continuing to structural design.
 
 ---
 
-## 4. Siklus Validasi Solusi: Pre-Deployment & Runtime
+## 3. The Six Pillars of the Maxilun Well-Architected Framework (WAF)
 
-Sebelum arsitektur dinyatakan siap rilis ke produksi, jalankan dua tahap pembuktian:
+Evaluate every architecture design against these 6 engineering pillars:
 
-### 4.1 Validasi Pre-Deployment (Statis & Dry-Run)
-1. **Pemeriksaan Topologi & Routing**: Verifikasi bahwa topologi jaringan tidak menyisakan endpoint privat yang terbuka ke publik.
-2. **Dry-Run Konfigurasi**: Eksekusi perintah validasi sintaksis infrastruktur (misal `terraform plan` atau dry-run manifes) tanpa memodifikasi sumber daya aktif.
-3. **Audit Kebijakan Keamanan**: Pastikan aturan firewall, kebijakan RLS, dan variabel environment rahasia terdefinisi lengkap tanpa nilai default placeholder.
+### Pillar 1: Reliability & Fault Tolerance
+- **Graceful Degradation**: When a downstream dependency (secondary database, cache, broker, or third-party API) slows down or goes dark, the main system keeps serving critical routes in a degraded mode.
+- **Circuit Breaker & Retry with Jitter**: Prevent connection storms (*thundering herd*). Apply a strict time limit (*timeout* $\le 2.5\text{s}$), exponential backoff with random jitter, and a circuit breaker.
+- **Failover & RPO/RTO**: Give the database read replicas and a PITR recovery procedure, with evidence of periodic restore tests.
 
-### 4.2 Validasi Runtime (Post-Deployment)
-1. **Canary & Health Check**: Lepaskan trafik bertahap ($5\% \to 25\% \to 100\%$) dan verifikasi kode status HTTP `200` pada probe `/health`.
-2. **Synthetic Probing**: Jalankan pengujian sintetis dari luar jaringan untuk mengukur latensi round-trip aktual dan fungsionalitas rute kritis.
-3. **Kesiapan Rollback**: Uji satu perintah rollback digest image versi sebelumnya dan buktikan pemulihan berhasil dalam waktu $\le 5$ menit.
+### Pillar 2: Security & Trust Boundaries
+- **Zero Trust Architecture**: Do not trust a request only because it comes from the internal network. Verify authentication and authorization at every service boundary.
+- **Cryptographic Sender-Constraining (DPoP)**: For sensitive high-risk endpoints, use tokens cryptographically bound to the client key pair (RFC 9449) to prevent exfiltration and replay attacks.
+- **Least Privilege & RLS**: Restrict data access at the database level with PostgreSQL Row-Level Security (RLS), which mitigates IDOR risk in the application layer.
+
+### Pillar 3: Performance & Capacity Envelope
+- **Quantitative Capacity Envelope**: Set explicit numbers for normal RPS, memory capacity per instance, and the database connection pool quota.
+- **Asynchronous Processing**: Move heavy I/O work (report generation, email/notification delivery, image resizing) to background queues (*background workers*).
+- **Backpressure & Concurrency Limits**: Protect the service from running out of memory (*OOM*) by rejecting or holding requests when the worker queue exceeds its threshold.
+
+### Pillar 4: Cost Optimization & Anti-Waste
+- **Modular Monolith Baseline**: Reject premature microservices. One modular monolith application saves 70–90% of network egress cost, cluster orchestration dependencies, and operational complexity.
+- **Compute Right-Sizing**: Match instance size to the actual memory profile, use auto-scaling driven by queues/real metrics, and shut down idle staging environments outside working hours.
+- **Storage Tiering**: Move rarely accessed logs and historical archives to low-cost object storage with an automatic lifecycle policy.
+
+### Pillar 5: Operational Excellence & Fitness Functions
+- **SRE SLO Alerting**: Set error-budget alerts with the *Multi-Window Multi-Burn-Rate* pattern (this avoids alert fatigue from brief CPU spikes).
+- **Structured Logs & Distributed Tracing**: Every request carries a consistent `traceId` from the edge to the database.
+- **Architecture Fitness Functions**: Turn architecture invariants (module dependency direction, absence of circular imports, module boundary compliance) into automated checks in the CI pipeline.
+
+### Pillar 6: Evolutionary Simplicity & Radical Minimalism
+- **The Deletion Test**: Design each component or module so it can be deleted or replaced without reworking the internal logic of its *callers*.
+- **Two-Adapter Seam Rule**: Do not create a speculative interface/abstraction when only one concrete implementation exists and no in-memory test fake is needed.
+- **Quantitative Revisit Triggers**: Set concrete numeric limits for when the modular monolith should be split into independent services (for example: sustained core-table writes $>2{,}500\text{ TPS}$).
+
+---
+
+## 4. Solution Validation Cycle: Pre-Deployment & Runtime
+
+Before declaring an architecture ready for production release, run two proof stages:
+
+### 4.1 Pre-Deployment Validation (Static & Dry-Run)
+1. **Topology & Routing Check**: Verify that the network topology leaves no private endpoint open to the public.
+2. **Configuration Dry-Run**: Run the infrastructure syntax validation command (for example `terraform plan` or a manifest dry-run) without modifying live resources.
+3. **Security Policy Audit**: Confirm that firewall rules, RLS policies, and secret environment variables are fully defined, with no default placeholder values.
+
+### 4.2 Runtime Validation (Post-Deployment)
+1. **Canary & Health Check**: Release traffic in stages ($5\% \to 25\% \to 100\%$) and verify HTTP status code `200` on the `/health` probe.
+2. **Synthetic Probing**: Run synthetic tests from outside the network to measure actual round-trip latency and the function of critical routes.
+3. **Rollback Readiness**: Test a single rollback command to the previous image digest and prove recovery succeeds within $\le 5$ minutes.

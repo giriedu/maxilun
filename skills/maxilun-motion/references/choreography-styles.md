@@ -1,24 +1,24 @@
 # Motion DNA, Style Signatures, Storyboard Hooks & Camera/Audio Choreography
 
-Gunakan referensi ini saat merancang arah gerak (*motion direction*), mengekstrak *Motion DNA* dari token `maxilun-craft`, menyusun storyboard opener/explainer, atau menyerahkan spesifikasi koreografi frame ke `maxilun-cinecode`.
+Use this reference when designing motion direction, extracting *Motion DNA* from `maxilun-craft` tokens, building an opener/explainer storyboard, or handing a frame choreography spec to `maxilun-cinecode`.
 
 ---
 
-## 1. Pipeline Brand DNA → Motion DNA (Terintegrasi `maxilun-craft`)
+## 1. Brand DNA → Motion DNA Pipeline (Integrated with `maxilun-craft`)
 
-Ambil token visual dari proyek atau pilih 1–2 referensi yang setara dari `../maxilun-craft/references/design-md/index.md`, lalu petakan ke parameter fisika gerak:
+Take the visual tokens from the project, or pick 1–2 comparable references from `../maxilun-craft/references/design-md/index.md`, then map them to motion physics parameters:
 
-| Token `maxilun-craft` | Parameter `maxilun-motion` | Aturan Konversi Produksi |
+| `maxilun-craft` Token | `maxilun-motion` Parameter | Production Conversion Rule |
 |---|---|---|
 | `--space-2` (`8px`) | `timing.fast` (`80ms - 120ms` / `3-4 frames @30fps`) | Micro-feedback (hover, focus, toggle) |
-| `--space-4` (`16px`) | `timing.normal` (`160ms - 220ms` / `5-7 frames @30fps`) | Transisi state komponen, drawer, dropdown |
-| `--space-8` (`32px`) | `timing.slow` (`320ms - 450ms` / `10-14 frames @30fps`) | Transisi antar-scene, reveal hero, modal |
-| `typography.weight >= 700` | `kineticMode: "punch"` (`stiffness: 180, damping: 16`) | Headline tegas (misal gaya `stripe.md`, `nike.md`, `linear.app.md`) |
-| `typography.weight <= 400` | `kineticMode: "editorial-glide"` (`stiffness: 100, damping: 20`) | Tipografi editorial halus (misal gaya `apple.md`, `wired.md`) |
-| `borderRadius <= 4px` | `curvature: "architectural-snap"` (zero overshoot, `damping >= 22`) | Presisi teknikal, grid ketat |
-| `borderRadius >= 12px` | `curvature: "elastic-spring"` (`stiffness: 130, damping: 14`) | Consumer app yang ramah dan taktil |
+| `--space-4` (`16px`) | `timing.normal` (`160ms - 220ms` / `5-7 frames @30fps`) | Component state transitions, drawer, dropdown |
+| `--space-8` (`32px`) | `timing.slow` (`320ms - 450ms` / `10-14 frames @30fps`) | Scene-to-scene transitions, hero reveal, modal |
+| `typography.weight >= 700` | `kineticMode: "punch"` (`stiffness: 180, damping: 16`) | Assertive headline (for example the `stripe.md`, `nike.md`, `linear.app.md` style) |
+| `typography.weight <= 400` | `kineticMode: "editorial-glide"` (`stiffness: 100, damping: 20`) | Soft editorial typography (for example the `apple.md`, `wired.md` style) |
+| `borderRadius <= 4px` | `curvature: "architectural-snap"` (zero overshoot, `damping >= 22`) | Technical precision, strict grid |
+| `borderRadius >= 12px` | `curvature: "elastic-spring"` (`stiffness: 130, damping: 14`) | Friendly, tactile consumer app |
 
-### Format Profil Motion DNA (`motion-dna.json`)
+### Motion DNA Profile Format (`motion-dna.json`)
 ```json
 {
   "referenceSource": "../maxilun-craft/references/design-md/linear.app.md",
@@ -34,85 +34,85 @@ Ambil token visual dari proyek atau pilih 1–2 referensi yang setara dari `../m
 
 ---
 
-## 2. Matriks 14 Style Signature Motion
+## 2. Matrix of 14 Motion Style Signatures
 
-Gunakan signature sebagai kosakata referensi, bukan preset wajib. Pilih satu pengaruh dominan bila itu membantu menyatukan gerak; gabungkan pengaruh yang kompatibel atau abaikan matriks bila brief membutuhkan bahasa visual lain. Konsistensi datang dari art direction, motif, timing, dan aturan transisi, bukan dari memaksakan satu efek ke semua shot.
+Use a signature as reference vocabulary, not as a mandatory preset. Pick one dominant influence when that helps unify the motion. Combine compatible influences, or ignore the matrix when the brief needs a different visual language. Consistency comes from art direction, motifs, timing, and transition rules, not from forcing one effect onto every shot.
 
-| # | Style Signature | Karakteristik Фиsika & Easing | Cocok Untuk Domain | Referensi `design-md` Terdekat |
+| # | Style Signature | Physics & Easing Characteristics | Suited Domains | Closest `design-md` References |
 |---|---|---|---|---|
-| 1 | **Kinetic Minimal** | Snap-to-grid, zero overshoot (`damping: 24`), aksen monokrom + 1 warna semantik | B2B SaaS, Fintech, Issue Tracker | `linear.app.md`, `vercel.md`, `mercury.md` |
-| 2 | **Fluid Organic** | Kurva kontinu halus, morphing organik, tanpa hard cut | Wellness, Consumer Lifestyle, Health | `oura.md`, `airbnb.md` |
-| 3 | **Architectural Depth** | Bidang kedalaman paralaks terukur, garis struktural menggambar grid (`Trace`) | Arsitektur, Enterprise Infra, Hardware | `apple.md`, `spacex.md`, `dji.md` |
-| 4 | **Tactile Card & Craft** | Lipatan bertahap, bayangan dinamis saat diangkat, pegas responsif | Edukasi, Kolaborasi Visual, Workspace | `notion.md`, `figma.md`, `miro.md` |
-| 5 | **Data Flow Cascade** | Aliran partikel sepanjang jalur SVG (`MotionPath`), aktivasi node berurutan | Observability, Analytics, Database, AI | `sentry.md`, `posthog.md`, `clickhouse.md`, `supabase.md` |
-| 6 | **Editorial Crisp** | Reveal per baris dengan mask tajam, transisi kontras tinggi | Media, Jurnalisme, Dokumentasi | `wired.md`, `theverge.md`, `mintlify.md` |
-| 7 | **Financial Precision** | Angka `tabular-nums` berputar presisi (*odometer*), grafik tumbuh dengan spring | Payment Gateway, Crypto, Perbankan | `stripe.md`, `wise.md`, `revolut.md` |
-| 8 | **High-Velocity Sport** | Cut cepat pada beat, tipografi miring/tebal masuk dengan momentum tinggi | Otomotif, Olahraga, Gaming | `nike.md`, `ferrari.md`, `bmw-m.md`, `playstation.md` |
-| 9 | **Command-First Micro** | Feedback `< 100ms`, keyboard highlight instan, list morphing tanpa delay | IDE, CLI, Developer Productivity | `raycast.md`, `cursor.md`, `warp.md`, `superhuman.md` |
-| 10 | **Cinematic Spotlight** | Dolly lambat, pencahayaan terfokus pada subjek tunggal, kontras gelap | Luxury, Peluncuran Produk Flagship | `bugatti.md`, `lamborghini.md` |
-| 11 | **Brutalist Slam** | Hard cut 0ms dikombinasikan dengan scale slam ber-kontras ekstrem | Agensi Kreatif, Kampanye Event | `framer.md`, `webflow.md` |
-| 12 | **Commerce Showcase** | Transisi produk mulus, zoom detail tekstur, badge harga jelas | E-Commerce, Retail Modern | `shopify.md`, `starbucks.md` |
-| 13 | **Narrative Scroll** | Timeline terikat posisi scroll (`ScrollTimeline`), subjek persisten antar-bab | Landing Page Produk, Laporan Tahunan | `apple.md`, `stripe.md` |
-| 14 | **Audio-Synced Pulse** | Transisi dan skala elemen terkunci pada BPM/transien audio | Musik, Promo Video Sosial, Teaser | `spotify.md` |
+| 1 | **Kinetic Minimal** | Snap-to-grid, zero overshoot (`damping: 24`), monochrome accents + 1 semantic color | B2B SaaS, Fintech, Issue Tracker | `linear.app.md`, `vercel.md`, `mercury.md` |
+| 2 | **Fluid Organic** | Smooth continuous curves, organic morphing, no hard cuts | Wellness, Consumer Lifestyle, Health | `oura.md`, `airbnb.md` |
+| 3 | **Architectural Depth** | Measured parallax depth planes, structural lines drawing the grid (`Trace`) | Architecture, Enterprise Infra, Hardware | `apple.md`, `spacex.md`, `dji.md` |
+| 4 | **Tactile Card & Craft** | Staged folds, dynamic shadow on lift, responsive springs | Education, Visual Collaboration, Workspace | `notion.md`, `figma.md`, `miro.md` |
+| 5 | **Data Flow Cascade** | Particles flowing along an SVG path (`MotionPath`), sequential node activation | Observability, Analytics, Database, AI | `sentry.md`, `posthog.md`, `clickhouse.md`, `supabase.md` |
+| 6 | **Editorial Crisp** | Line-by-line reveal with a sharp mask, high-contrast transitions | Media, Journalism, Documentation | `wired.md`, `theverge.md`, `mintlify.md` |
+| 7 | **Financial Precision** | `tabular-nums` digits rolling precisely (*odometer*), charts growing with a spring | Payment Gateway, Crypto, Banking | `stripe.md`, `wise.md`, `revolut.md` |
+| 8 | **High-Velocity Sport** | Fast cuts on the beat, slanted/bold typography entering with high momentum | Automotive, Sports, Gaming | `nike.md`, `ferrari.md`, `bmw-m.md`, `playstation.md` |
+| 9 | **Command-First Micro** | Feedback `< 100ms`, instant keyboard highlight, list morphing with no delay | IDE, CLI, Developer Productivity | `raycast.md`, `cursor.md`, `warp.md`, `superhuman.md` |
+| 10 | **Cinematic Spotlight** | Slow dolly, lighting focused on a single subject, dark contrast | Luxury, Flagship Product Launch | `bugatti.md`, `lamborghini.md` |
+| 11 | **Brutalist Slam** | 0ms hard cut combined with an extreme-contrast scale slam | Creative Agency, Event Campaign | `framer.md`, `webflow.md` |
+| 12 | **Commerce Showcase** | Smooth product transitions, texture detail zoom, clear price badge | E-Commerce, Modern Retail | `shopify.md`, `starbucks.md` |
+| 13 | **Narrative Scroll** | Timeline bound to scroll position (`ScrollTimeline`), subject persists across chapters | Product Landing Page, Annual Report | `apple.md`, `stripe.md` |
+| 14 | **Audio-Synced Pulse** | Transitions and element scale locked to BPM/audio transients | Music, Social Video Promo, Teaser | `spotify.md` |
 
 ---
 
-## 3. Katalog 22 Konsep Opener & Promo Hook
+## 3. Catalog of 22 Opener & Promo Hook Concepts
 
-Konsep berikut adalah pemantik ide, bukan kewajiban atau durasi baku. Pilih, ubah, atau abaikan berdasarkan pesan, platform, dan footage yang tersedia. Jangan memakai KPI, klaim, atau UI contoh kecuali sumbernya benar-benar tersedia.
+These concepts are idea starters, not requirements or fixed durations. Choose, change, or ignore them based on the message, the platform, and the available footage. Do not use a KPI, a claim, or sample UI unless its source actually exists.
 
 ### A. Opener
-1. **Logo Assembly** — Elemen geometri menyatu ke titik tengah menggunakan simulasi spring (`stiffness: 150, damping: 15`).
-2. **Type Scramble Decode** — Karakter acak monospace terdekode menjadi judul utama dalam 24 frame.
-3. **Portal Iris Wipe** — Mask lingkaran membesar dari elemen fokus utama membuka scene.
-4. **Depth Plane Plunge** — Kamera bergerak maju (`dolly`) menembus 3 lapisan UI transparan menuju layar inti.
-5. **Signal Lock** — Garis gelombang/data acak terkunci menjadi grafik metrik yang tajam.
-6. **Grid Construct** — Garis hairline `1px` menggambar struktur tata letak sebelum konten muncul (`Trace` + `Reveal`).
-7. **Light Sweep** — Kilau cahaya terarah menyapu kontur produk di atas permukaan gelap.
-8. **Morph Entry** — Ikon masalah berubah bentuk (`SVG path morph`) menjadi komponen solusi.
-9. **Stagger Cascade** — Baris data atau kartu fitur aktif berurutan dengan jeda `3 frame` (`100ms`).
-10. **Metric Counter Snap** — Angka KPI berputar cepat dari baseline lama ke angka target baru.
+1. **Logo Assembly** — Geometric elements converge on the center point using a spring simulation (`stiffness: 150, damping: 15`).
+2. **Type Scramble Decode** — Random monospace characters decode into the main title within 24 frames.
+3. **Portal Iris Wipe** — A circular mask grows from the primary focus element to open the scene.
+4. **Depth Plane Plunge** — The camera moves forward (`dolly`) through 3 transparent UI layers toward the core screen.
+5. **Signal Lock** — Random wave/data lines lock into a sharp metric chart.
+6. **Grid Construct** — `1px` hairlines draw the layout structure before content appears (`Trace` + `Reveal`).
+7. **Light Sweep** — A directed light sheen sweeps the product contour over a dark surface.
+8. **Morph Entry** — A problem icon changes shape (`SVG path morph`) into the solution component.
+9. **Stagger Cascade** — Data rows or feature cards activate in sequence with a `3 frame` (`100ms`) gap.
+10. **Metric Counter Snap** — A KPI number rolls quickly from the old baseline to the new target value.
 
-### B. Hook Narasi & Penjelas (Explainer Beats)
-11. **Problem Friction Split** — Layar terbelah dua: sisi kiri menampilkan alur manual yang lambat (merah redup), sisi kanan menampilkan alur otomatis 1-klik (hijau tajam).
-12. **Before/After Slider Sweep** — Garis vertikal menyapu layar mengubah tampilan lama menjadi sistem baru.
-13. **Architecture Node Activation** — Request bergerak dari node User → API → DB dengan indikator latensi `ms` nyata.
-14. **Code-to-UI Live Compile** — Baris kode diketik di kiri (45 frame), langsung me-render komponen produksi di kanan.
-15. **Feature Unfold** — Kartu ringkas membuka lapisan detail secara spasial tanpa berpindah konteks.
-16. **Timeline March** — Stepper progres berjalan mendorong pergantian scene.
-17. **Comparison Scale** — Grafik batang horizontal tumbuh berdampingan membandingkan beban waktu/biaya.
-18. **Interactive Cursor Guided Tour** — Kursor vektor bergerak dengan kurva alami, menekan tombol, dan memicu toast sukses.
-19. **Security Shield Lock** — Payload masuk divalidasi dan dikunci dengan indikator enkripsi/status hijau.
-20. **Social Proof Grid** — Kutipan metrik terverifikasi muncul bergantian dengan ritme tenang.
-21. **CTA Magnetic Focus** — Seluruh elemen sekunder meredup (`opacity: 0.35`) sementara tombol aksi utama mendapat fokus kontras penuh.
-22. **Looping Seamless Outro** — Frame terakhir kembali menyambung ke komposisi frame 0 untuk pemutaran berulang di media sosial.
+### B. Narrative & Explainer Hooks (Explainer Beats)
+11. **Problem Friction Split** — The screen splits in two: the left side shows the slow manual flow (dim red), the right side shows the automated 1-click flow (sharp green).
+12. **Before/After Slider Sweep** — A vertical line sweeps the screen and turns the old view into the new system.
+13. **Architecture Node Activation** — A request travels from the User → API → DB nodes with a real `ms` latency indicator.
+14. **Code-to-UI Live Compile** — Code lines are typed on the left (45 frames) and immediately render the production component on the right.
+15. **Feature Unfold** — A compact card opens its detail layer spatially without switching context.
+16. **Timeline March** — A progress stepper advances and drives the scene changes.
+17. **Comparison Scale** — Horizontal bar charts grow side by side to compare time/cost load.
+18. **Interactive Cursor Guided Tour** — A vector cursor moves along a natural curve, presses a button, and triggers a success toast.
+19. **Security Shield Lock** — An incoming payload is validated and locked with an encryption indicator/green status.
+20. **Social Proof Grid** — Verified metric quotes appear in turn at a calm rhythm.
+21. **CTA Magnetic Focus** — All secondary elements dim (`opacity: 0.35`) while the primary action button gets full-contrast focus.
+22. **Looping Seamless Outro** — The last frame connects back to the frame 0 composition for looped playback on social media.
 
 ---
 
-## 4. Sistem Kamera, Text Kinetics & Audio Reactivity
+## 4. Camera System, Text Kinetics & Audio Reactivity
 
-### 4.1 Kamera Virtual (Browser 3D / Canvas & `maxilun-cinecode`)
-- **Aturan Anti-Mual (Motion Sickness Guard)**: Batasi maksimal **1 jenis gerakan kamera** pada satu waktu (misal: `dolly` saja atau `pan` saja; jangan menggabungkan `orbit + tilt + shake`).
-- **Rack Focus**: Gunakan blur kedalaman hanya untuk memindahkan perhatian penonton dari latar ke komponen aktif (`filter: blur(0px)` vs `blur(4px)`).
+### 4.1 Virtual Camera (Browser 3D / Canvas & `maxilun-cinecode`)
+- **Motion Sickness Guard**: Allow at most **1 type of camera move** at a time (for example: `dolly` only or `pan` only; never combine `orbit + tilt + shake`).
+- **Rack Focus**: Use depth blur only to move the viewer's attention from the background to the active component (`filter: blur(0px)` vs `blur(4px)`).
 
-### 4.2 Text Kinetics (Tipografi Bergerak)
-- **Granularitas**:
-  - *Per-Character*: Hanya untuk judul pendek (`<= 4 kata`, misal angka atau kode).
-  - *Per-Word*: Untuk headline (`5 - 10 kata`) dengan stagger `40ms` (`1-2 frame`).
-  - *Per-Line*: Untuk subheadline atau kalimat penjelas agar mata pembaca tidak lelah.
-- **Invarian Aksesibilitas**: Teks di dalam DOM harus tetap utuh untuk screen reader (`aria-label` pada induk jika huruf dipecah ke dalam `<span>` individual).
+### 4.2 Text Kinetics
+- **Granularity**:
+  - *Per-Character*: Only for short titles (`<= 4 words`, for example numbers or code).
+  - *Per-Word*: For headlines (`5 - 10 words`) with a `40ms` (`1-2 frame`) stagger.
+  - *Per-Line*: For subheadlines or explanatory sentences, so the reader's eyes do not tire.
+- **Accessibility invariant**: Text in the DOM must stay intact for screen readers (`aria-label` on the parent when letters are split into individual `<span>` elements).
 
-### 4.3 Sinkronisasi Audio & Beat Grid
-- Hitung durasi frame per ketukan (beat) untuk sinkronisasi dengan `maxilun-cinecode`:
+### 4.3 Audio Sync & Beat Grid
+- Compute the frame duration per beat for sync with `maxilun-cinecode`:
   $$\text{Frames per Beat} = \text{round}\left(\frac{\text{FPS} \times 60}{\text{BPM}}\right)$$
-  *(Contoh: pada `30 FPS` dan musik `120 BPM`, 1 ketukan = `15 frame`, 1 bar (4 ketukan) = `60 frame` / `2 detik`)*
-- Bila edit memang mengikuti musik, gunakan beat/bar grid sebagai titik referensi dan sesuaikan cut dengan aksi serta narasi. Jangan mengunci semua transisi ke BPM; beberapa bagian perlu menahan gerak atau menyimpang dari beat untuk memberi dampak.
-- **8 Mode Visualisasi Reaktif Audio**:
-  1. *Waveform Ribbon* — Garis kurva SVG/Canvas mengalir mengikuti amplitudo gelombang suara.
-  2. *Circular Spectrum* — Bar frekuensi radial mengelilingi logo atau indikator suara aktif.
-  3. *Particle Field* — Kecepatan dan kerapatan partikel Canvas dikendalikan oleh energi frekuensi rendah (*bass*).
-  4. *Typography Pulse* — Ketebalan (`font-weight` variable font) atau skala teks berdenyut tepat pada transien beat.
-  5. *Color Shift* — Pergeseran lightness/chroma OKLCH terukur mengikuti pita frekuensi (`bass`, `mid`, `treble`).
-  6. *Geometry Morph* — Titik simpul (*vertices*) poligon bergeser halus mengikuti gelombang audio.
-  7. *Grid Distortion* — Kisi latar melengkung proporsional terhadap puncak desibel (*RMS amplitude*).
-  8. *Spotlight Transient* — Intensitas pencahayaan panggung meningkat saat vokal/narator berbicara (*voice-over envelope*).
+  *(Example: at `30 FPS` with `120 BPM` music, 1 beat = `15 frames`, 1 bar (4 beats) = `60 frames` / `2 seconds`)*
+- When the edit does follow the music, use the beat/bar grid as a reference point and fit cuts to the action and narration. Do not lock every transition to the BPM; some passages need to hold still or leave the beat to create impact.
+- **8 Audio-Reactive Visualization Modes**:
+  1. *Waveform Ribbon* — An SVG/Canvas curve flows with the sound wave amplitude.
+  2. *Circular Spectrum* — Radial frequency bars surround the logo or active voice indicator.
+  3. *Particle Field* — Low-frequency energy (*bass*) controls the speed and density of Canvas particles.
+  4. *Typography Pulse* — Weight (variable font `font-weight`) or text scale pulses exactly on beat transients.
+  5. *Color Shift* — A measured OKLCH lightness/chroma shift follows the frequency bands (`bass`, `mid`, `treble`).
+  6. *Geometry Morph* — Polygon vertices shift smoothly with the audio wave.
+  7. *Grid Distortion* — The background grid bends in proportion to the decibel peak (*RMS amplitude*).
+  8. *Spotlight Transient* — Stage lighting intensity rises while the vocalist/narrator speaks (*voice-over envelope*).

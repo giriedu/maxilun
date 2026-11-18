@@ -1,18 +1,18 @@
 # Scroll Spines, View Transitions & Kinetic Micro-Interactions
 
 <!-- metadata:
-  version: "1.1.0"
+  version: "1.3.0"
   sync_target: "skills/maxilun-motion/SKILL.md"
-  origin: "Maxilun Motion & Studio-Grade Kinetic Architecture"
+  origin: "Maxilun Motion & Kinetic Architecture"
 -->
 
-Panduan rekayasa tulang punggung scroll (*scroll spine*), transisi halaman halus (*View Transitions*), dan mikro-interaksi kinetik berkinerja tinggi (60 FPS GPU).
+Engineering guide for the scroll spine, View Transitions between pages, and kinetic micro-interactions that run on the GPU at a 60 FPS target.
 
 ---
 
-## 1. Aturan Satu Putaran (The One-Loop Rule)
+## 1. The One-Loop Rule
 
-Manipulasi DOM, smooth scroll (Lenis), dan kanvas 3D WebGL (Three.js) **wajib digerakkan oleh satu requestAnimationFrame loop bersama**. Dua putaran RAF independen memicu jeda 1 frame desinkronisasi antara kanvas dan DOM yang terlihat bergetar saat digulir.
+Drive DOM manipulation, smooth scroll (Lenis), and the WebGL 3D canvas (Three.js) from **one shared requestAnimationFrame loop**. Two independent RAF loops put the canvas and the DOM one frame out of sync, which shows as jitter while scrolling.
 
 ```typescript
 import Lenis from "lenis";
@@ -21,27 +21,27 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// 1. Inisialisasi Lenis tanpa autoRaf mandiri
+// 1. Initialize Lenis without its own autoRaf
 const lenis = new Lenis({
-  duration: 1.1,               // 1.0–1.2s optimal; di atas 1.4s terasa seperti scroll-jacking
+  duration: 1.1,               // 1.0–1.2s is optimal; above 1.4s feels like scroll-jacking
   easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-  syncTouch: false,            // Jangan lawan inersia scroll native di mobile!
-  autoRaf: false               // Wajib false agar dikendalikan oleh ticker GSAP
+  syncTouch: false,            // Do not fight native scroll inertia on mobile
+  autoRaf: false               // Must be false so the GSAP ticker drives it
 });
 
-// 2. Sambungkan event scroll Lenis ke ScrollTrigger
+// 2. Connect the Lenis scroll event to ScrollTrigger
 lenis.on("scroll", ScrollTrigger.update);
 
-// 3. Gabungkan seluruh render ke ticker tunggal GSAP
+// 3. Merge all rendering into the single GSAP ticker
 gsap.ticker.add((time) => {
-  lenis.raf(time * 1000);      // GSAP memberi satuan detik, Lenis butuh milidetik
-  renderWebGLScene?.();        // WebGL dirender tepat di tick yang sama setelah posisi scroll update
+  lenis.raf(time * 1000);      // GSAP provides seconds, Lenis needs milliseconds
+  renderWebGLScene?.();        // WebGL renders in the same tick, after the scroll position updates
 });
 
-// 4. Cegah animasi melompat mengejar lag
+// 4. Prevent animation from jumping to catch up with lag
 gsap.ticker.lagSmoothing(0);
 
-// 5. Matikan seketika di prefers-reduced-motion
+// 5. Disable immediately under prefers-reduced-motion
 if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
   lenis.destroy();
 }
@@ -49,9 +49,9 @@ if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
 
 ---
 
-## 2. Normalisasi Nilai Scrubbing (Scrubbed Value Architecture)
+## 2. Scrubbed Value Architecture
 
-Jangan memasang 10 pemicu scroll independen pada satu seksi. Dorong **satu nilai progres ternormalisasi ($0.0 \to 1.0$)** dan turunkan seluruh transformasi dari nilai tersebut:
+Do not attach 10 independent scroll triggers to one section. Publish **one normalized progress value ($0.0 \to 1.0$)** and derive every transform from it:
 
 ```typescript
 ScrollTrigger.create({
@@ -59,11 +59,11 @@ ScrollTrigger.create({
   start: "top top",
   end: "+=250%",
   pin: true,
-  scrub: 0.6, // 0.4–0.8 memberikan inersia halus; true kaku 1:1
+  scrub: 0.6, // 0.4–0.8 gives smooth inertia; true is a rigid 1:1
   onUpdate: (self) => {
-    const progress = self.progress; // 0.0 s.d. 1.0
+    const progress = self.progress; // 0.0 to 1.0
     
-    // Pecah ke sub-range koreografi
+    // Split into choreography sub-ranges
     const scaleStage = gsap.utils.clamp(0, 1, (progress - 0.0) / 0.4);
     const cameraPan  = gsap.utils.clamp(0, 1, (progress - 0.4) / 0.6);
     
@@ -74,14 +74,14 @@ ScrollTrigger.create({
 
 ---
 
-## 3. Elemen Magnetik Kinetik (Magnetic Physics Interaction)
+## 3. Magnetic Physics Interaction
 
-Tombol utama dan kontrol navigasi bereaksi mengikuti posisi kursor dengan tarikan magnetik dan pelepasan elastis:
+Primary buttons and navigation controls follow the cursor with a magnetic pull and an elastic release:
 
 ```typescript
 export function makeMagnetic(el: HTMLElement, strength: number = 0.35) {
   if (typeof window === "undefined" || window.matchMedia("(pointer: coarse)").matches) {
-    return; // Dilarang aktif di perangkat layar sentuh mobile
+    return; // Never active on mobile touch devices
   }
 
   const state = { x: 0, y: 0 };
@@ -114,9 +114,9 @@ export function makeMagnetic(el: HTMLElement, strength: number = 0.35) {
 
 ---
 
-## 4. Transisi Halaman Mulus (View Transitions API)
+## 4. Smooth Page Transitions (View Transitions API)
 
-Gunakan standar View Transitions bawaan browser modern untuk morphing antar-halaman tanpa ketergantungan library router berat:
+Use the browser-native View Transitions standard to morph between pages without a heavy router library:
 
 ```typescript
 export function navigateWithTransition(url: string, updateDOM: () => Promise<void> | void) {
@@ -132,7 +132,7 @@ export function navigateWithTransition(url: string, updateDOM: () => Promise<voi
 ```
 
 ```css
-/* Aturan Transisi Lembut Antar-Halaman */
+/* Soft transition rules between pages */
 ::view-transition-old(root) {
   animation: 250ms cubic-bezier(0.16, 1, 0.3, 1) both fade-out;
 }
@@ -152,9 +152,9 @@ export function navigateWithTransition(url: string, updateDOM: () => Promise<voi
 
 ---
 
-## 5. Umpan Balik Taktil Web Audio (Zero-Byte Synthesized Feedback)
+## 5. Web Audio Tactile Feedback (Zero-Byte Synthesized Feedback)
 
-Sintesis bunyi klik halus langsung dari API browser tanpa memuat berkas audio MP3/WAV eksternal (0 byte download):
+Synthesize a soft click directly from the browser API without loading an external MP3/WAV file (0 bytes downloaded):
 
 ```typescript
 let audioCtx: AudioContext | null = null;
@@ -178,7 +178,7 @@ export function playTactileClick(frequency: number = 800, durationMs: number = 2
   osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
   osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + durationMs / 1000);
 
-  gain.gain.setValueAtTime(0.04, audioCtx.currentTime); // Gain sangat rendah, halus
+  gain.gain.setValueAtTime(0.04, audioCtx.currentTime); // Very low gain, soft
   gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + durationMs / 1000);
 
   osc.connect(gain);

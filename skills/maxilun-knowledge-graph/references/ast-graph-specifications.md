@@ -6,13 +6,13 @@
   origin: "Maxilun Knowledge Graph Engine"
 -->
 
-Panduan struktur data representasi graf pengetahuan (*Knowledge Graph*), skema simpul-sisi (*node-edge schema*), dan protokol kueri simbolik berbasis AST.
+Reference for the knowledge graph data structure, the node-edge schema, and the AST-based symbolic query protocol.
 
 ---
 
-## 1. Skema Node & Edge Graph
+## 1. Graph Node & Edge Schema
 
-Graf diekspor ke dalam berkas `maxilun-out/graph.json` menggunakan format JSON terstandarisasi:
+The graph is exported to `maxilun-out/graph.json` in a standardized JSON format:
 
 ```json
 {
@@ -49,43 +49,43 @@ Graf diekspor ke dalam berkas `maxilun-out/graph.json` menggunakan format JSON t
 
 ---
 
-## 2. Tata Bahasa Kueri Simbol (Symbol Query Grammar)
+## 2. Symbol Query Grammar
 
-Gunakan perintah CLI `python cli.py query "<grammar>"` untuk menelusuri graf tanpa membaca berkas teks penuh:
+Use the CLI command `python cli.py query "<grammar>"` to trace the graph without reading full text files:
 
-1. **`defOf:<simbol>`**:
-   - Mencari titik definisi fungsi, kelas, atau tipe (mengembalikan `file:line`).
-2. **`callsIn:<fungsi>`**:
-   - Menemukan seluruh pemanggil downstream atau fungsi apa saja yang dipanggil oleh target.
+1. **`defOf:<symbol>`**:
+   - Finds the definition point of a function, class, or type (returns `file:line`).
+2. **`callsIn:<function>`**:
+   - Finds all downstream callers, or which functions the target calls.
 3. **`importersOf:<file>`**:
-   - Mengembalikan daftar seluruh berkas yang mengimpor modul target untuk menghitung radius dampak (*blast radius*).
+   - Returns the list of all files that import the target module, used to compute the blast radius.
 
 ---
 
-## 3. Kalkulasi Radius Dampak (Blast Radius)
+## 3. Blast Radius Calculation
 
-Sebelum fungsi publik diubah:
-1. **Derajat Ketergantungan Langsung (Degree 1)**: Modul yang langsung mengimpor simbol yang akan diedit.
-2. **Derajat Ketergantungan Transitif (Degree 2+)**: Modul hilir yang mengonsumsi hasil keluaran dari modul Degree 1.
-3. Jika Degree 1 $> 10$ berkas, eskalasi sebagai keputusan *Type 1 (Irreversible / High-Blast)* sebelum mengubah tanda tangan fungsi.
+Before a public function is changed:
+1. **Direct Dependency Degree (Degree 1)**: Modules that directly import the symbol to be edited.
+2. **Transitive Dependency Degree (Degree 2+)**: Downstream modules that consume the output of Degree 1 modules.
+3. If Degree 1 $> 10$ files, escalate as a *Type 1 (Irreversible / High-Blast)* decision before changing the function signature.
 
 ---
 
-## 4. Arsitektur Incremental AST Cache & Fingerprinting
+## 4. Incremental AST Cache Architecture & Fingerprinting
 
-Maxilun Knowledge Graph menggunakan sistem cache berlapis untuk menjamin kecepatan scan $O(1)$ pada berkas yang tidak berubah:
+Maxilun Knowledge Graph uses a layered cache so that scanning an unchanged file costs $O(1)$:
 
-1. **`stat-index.json`**: Menyimpan `st_size` dan `st_mtime_ns` dari setiap berkas terindeks. Jika filesystem stat sama, berkas tidak dibaca ulang dari disk.
-2. **Content Fingerprint (SHA-256)**: Jika timestamp berubah namun isi identik, hash mencegah re-parsing AST.
-3. **Per-file Granular AST Cache**: Hasil ekstraksi disimpan di `.maxilun/cache/ast/<version>/<sha256>.json`.
-4. **Stabilitas Komunitas**: Signature anggota komunitas disimpan di `.maxilun/community_signatures.json` agar ID dan label modul konsisten antar pemindaian.
+1. **`stat-index.json`**: Stores `st_size` and `st_mtime_ns` for every indexed file. If the filesystem stat is the same, the file is not re-read from disk.
+2. **Content Fingerprint (SHA-256)**: If the timestamp changed but the content is identical, the hash prevents AST re-parsing.
+3. **Per-file Granular AST Cache**: Extraction results are stored in `.maxilun/cache/ast/<version>/<sha256>.json`.
+4. **Community Stability**: Community member signatures are stored in `.maxilun/community_signatures.json` so module IDs and labels stay consistent between scans.
 
 ---
 
 ## 5. Temporal Snapshotting & Architectural Diff
 
-1. **Arsip Snapshot**: Menjalankan `python cli.py scan --snapshot` mengarsipkan artefak ke `maxilun-out/snapshots/YYYY-MM-DD/`.
-2. **Komparasi Diff**: Jalankan `python cli.py diff <target1> <target2>` untuk membandingkan dua snapshot bertanggal atau dua berkas `graph.json`:
-   - Delta Simbol (`+ / - nodes`)
-   - Delta Relasi (`+ / - edges`)
-   - Deteksi pergeseran *God Nodes* dan dependensi baru.
+1. **Snapshot Archive**: Running `python cli.py scan --snapshot` archives the artifacts to `maxilun-out/snapshots/YYYY-MM-DD/`.
+2. **Diff Comparison**: Run `python cli.py diff <target1> <target2>` to compare two dated snapshots or two `graph.json` files:
+   - Symbol delta (`+ / - nodes`)
+   - Relationship delta (`+ / - edges`)
+   - Detection of *God Node* shifts and new dependencies.

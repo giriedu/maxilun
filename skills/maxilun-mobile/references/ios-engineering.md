@@ -1,13 +1,13 @@
 # iOS Native Engineering Playbook (Swift, SwiftUI, UIKit, SPM)
 
-Panduan rekayasa aplikasi iOS native produksi berbasis Swift modern, SwiftUI deklaratif, konkurensi aman, dan kepatuhan App Store.
+Engineering guide for production native iOS apps: modern Swift, declarative SwiftUI, safe concurrency, and App Store compliance.
 
-## 1. Arsitektur SwiftUI & Swift Concurrency
+## 1. SwiftUI Architecture & Swift Concurrency
 
-### 1.1 Konkurensi Modern (`async/await` & `@MainActor`)
-- **Isolasi UI Thread**: Setiap view model atau presenter yang memodifikasi state antarmuka wajib dianotasi `@MainActor`.
-- **Protokol `Sendable`**: Pastikan model data yang ditransfer lintas task konkurensi mematuhi aturan `Sendable` untuk mencegah *data races*.
-- **Pola View Model Modern**:
+### 1.1 Modern Concurrency (`async/await` & `@MainActor`)
+- **UI thread isolation**: Annotate every view model or presenter that modifies UI state with `@MainActor`.
+- **`Sendable` protocol**: Make data models that cross concurrency tasks conform to `Sendable` to prevent data races.
+- **Modern view model pattern**:
   ```swift
   import SwiftUI
 
@@ -35,11 +35,11 @@ Panduan rekayasa aplikasi iOS native produksi berbasis Swift modern, SwiftUI dek
 
 ---
 
-## 2. Manajemen Memori & Pencegahan Retain Cycles
+## 2. Memory Management & Retain Cycle Prevention
 
-- **Klausul `[weak self]`**: Selalu gunakan `[weak self]` pada escaping closure, listener delegat, atau Combine subscriber yang berpotensi mempertahankan instance controller/view.
-- **Audit Deinitialization**: Pasangkan `deinit { print("\(Self.self) deallocated") }` pada pengujian manual untuk membuktikan pembebasan memori saat controller ditutup.
-- **Delegat Lemah (*Weak Delegates*)**: Setiap protokol delegat wajib dideklarasikan `weak`:
+- **`[weak self]` clause**: Always use `[weak self]` in escaping closures, delegate listeners, or Combine subscribers that could retain a controller/view instance.
+- **Deinitialization audit**: Add `deinit { print("\(Self.self) deallocated") }` during manual testing to prove memory is released when the controller closes.
+- **Weak delegates**: Declare every delegate protocol so it can be held `weak`:
   ```swift
   protocol OrderStatusDelegate: AnyObject {
       func orderDidComplete(_ order: Order)
@@ -48,14 +48,14 @@ Panduan rekayasa aplikasi iOS native produksi berbasis Swift modern, SwiftUI dek
 
 ---
 
-## 3. Persistensi & Keamanan Data (Keychain)
+## 3. Persistence & Data Security (Keychain)
 
-- **Keychain Services**: Token otentikasi, sertifikat privat, dan data sensitif wajib disimpan di iOS Keychain dengan atribut `kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly`. Dilarang menyimpan token di `UserDefaults`.
-- **SwiftData / CoreData**: Jalankan operasi batch insert atau fetch besar pada konteks background terpisah (`ModelContext` terisolasi) agar UI tidak stuttering.
+- **Keychain Services**: Store authentication tokens, private certificates, and sensitive data in the iOS Keychain with the `kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly` attribute. Never store a token in `UserDefaults`.
+- **SwiftData / CoreData**: Run batch inserts or large fetches on a separate background context (an isolated `ModelContext`) so the UI does not stutter.
 
 ---
 
-## 4. Kepatuhan Privasi & Rilis (Privacy Manifest)
+## 4. Privacy Compliance & Release (Privacy Manifest)
 
-- **`PrivacyInfo.xcprivacy`**: Cantumkan seluruh deklarasi API dengan alasan yang disetujui Apple (NSPrivacyAccessedAPITypeDiskSpace, SystemBootTime, dll.) dan pelacak domain jaringan pihak ketiga.
-- **Fastlane & Notarisasi**: Otomatiskan penandatanganan sertifikat dengan match, pengujian unit via `scan`, dan distribusi TestFlight via `gym` + `pilot`.
+- **`PrivacyInfo.xcprivacy`**: List every API declaration with an Apple-approved reason (NSPrivacyAccessedAPITypeDiskSpace, SystemBootTime, etc.) and the third-party network tracking domains.
+- **Fastlane & notarization**: Automate certificate signing with match, unit tests with `scan`, and TestFlight distribution with `gym` + `pilot`.

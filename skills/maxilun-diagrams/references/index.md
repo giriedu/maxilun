@@ -1,5 +1,5 @@
 # Maxilun Diagrams References Index
 
-Katalog referensi rekayasa diagram arsitektur, visualisasi relasi data, dan alur transisi status:
+Reference catalog for architecture diagrams, data relationship visualization, and state transition flows:
 
-- **`references/architecture-diagram-patterns.md`**: Pola diagram Mermaid untuk model C4, diagram sekuens (sequence lifelines), relasi entitas basis data (ERD), dan mesin status (state diagrams).
+- **`references/architecture-diagram-patterns.md`**: Mermaid diagram patterns for the C4 model, sequence diagrams (sequence lifelines), database entity relationships (ERD), and state machines (state diagrams).

@@ -6,45 +6,44 @@
   origin: "Maxilun Craft Engine"
 -->
 
-Panduan pengukuran kuantitatif kinerja pengalaman pengguna (*interaction telemetry benchmarks*). Kualitas desain tidak dinilai hanya dari estetika visual, melainkan melalui bukti telemetri terukur pada latensi interaksi, stabilitas tata letak, dan efisiensi penyelesaian tugas.
+Measure user-experience performance quantitatively (*interaction telemetry benchmarks*). Do not judge design quality on visual aesthetics alone. Judge it on measured telemetry: interaction latency, layout stability, and task completion efficiency.
 
 ---
 
-## 1. Ambang Batas Web Vitals (Frontend Telemetry)
+## 1. Web Vitals Thresholds (Frontend Telemetry)
 
-Setiap implementasi antarmuka berbasis web wajib mematuhi batas metrik inti berikut:
+Every web interface implementation must stay within these core metric limits:
 
-| Metrik | Nama Parameter | Target Kinerja | Mekanisme Penegakan di Kode |
+| Metric | Parameter Name | Performance Target | Enforcement Mechanism in Code |
 |---|---|---|---|
-| **INP** | *Interaction to Next Paint* | $\le 200\text{ms}$ | Hindari komputasi berat di event handler; gunakan `startTransition` di React untuk pembaruan non-mendesak. |
-| **CLS** | *Cumulative Layout Shift* | **$= 0$ (Nol Mutlak)** | Kunci ukuran elemen gambar dan wadah dinamis menggunakan `aspect-ratio` atau dimensi eksplisit; pakai skeleton proporsional 1:1. |
-| **LCP** | *Largest Contentful Paint* | $\le 2.5\text{s}$ | Utamakan pemuatan font lokal dan kompresi media modern (AVIF/WebP) dengan atribut `fetchpriority="high"`. |
-| **FID/TBT** | *Total Blocking Time* | $\le 150\text{ms}$ | Pecah bundle JavaScript berukuran besar dengan *code splitting* dan minimalkan eksekusi script pihak ketiga. |
+| **INP** | *Interaction to Next Paint* | $\le 200\text{ms}$ | Avoid heavy computation in event handlers; use `startTransition` in React for non-urgent updates. |
+| **CLS** | *Cumulative Layout Shift* | **$= 0$ (Absolute Zero)** | Lock the size of images and dynamic containers with `aspect-ratio` or explicit dimensions; use proportional 1:1 skeletons. |
+| **LCP** | *Largest Contentful Paint* | $\le 2.5\text{s}$ | Prioritize local font loading and modern media compression (AVIF/WebP) with the `fetchpriority="high"` attribute. |
+| **TBT** | *Total Blocking Time* | $\le 150\text{ms}$ | Split large JavaScript bundles with *code splitting* and minimize third-party script execution. |
 
 ---
 
-## 2. Anggaran Frame Perangkat Bergerak (Mobile Frame Budget)
+## 2. Mobile Frame Budget
 
-Pada aplikasi native iOS dan Android:
+In native iOS and Android applications:
 
-1. **Target 60 FPS / 120 FPS ProMotion**:
-   - Batas waktu render satu frame pada layar $60\text{Hz}$ adalah maksimal **$16.6\text{ms}$**.
-   - Batas waktu render satu frame pada layar $120\text{Hz}$ (ProMotion / High Refresh Rate) adalah maksimal **$8.3\text{ms}$**.
-2. **Isolasi UI Thread**:
-   - Parsing JSON berukuran besar, kueri database lokal, dan dekripsi berkas wajib berjalan di luar main thread (*background worker* / coroutine IO / Swift concurrency Task).
-   - Indikator kegagalan frame (*jank* atau frame drop) saat daftar digulir cepat wajib bernilai nol.
+1. **60 FPS / 120 FPS ProMotion Target**:
+   - On a $60\text{Hz}$ display, render one frame in at most **$16.6\text{ms}$**.
+   - On a $120\text{Hz}$ display (ProMotion / High Refresh Rate), render one frame in at most **$8.3\text{ms}$**.
+2. **UI Thread Isolation**:
+   - Run large JSON parsing, local database queries, and file decryption off the main thread (*background worker* / IO coroutine / Swift concurrency Task).
+   - Frame failures (*jank* or frame drops) during fast list scrolling must be zero.
 
 ---
 
-## 3. Metrik Efisiensi Interaksi Pengguna (Task Telemetry)
+## 3. Product-Analytics Telemetry Goals (Post-Release Telemetry)
 
-Ukur keberhasilan alur desain antarmuka menggunakan empat indikator kuantitatif:
-
-1. **Tingkat Keberhasilan Tugas (*Task Completion Rate* / TCR)**:
-   - Target $\ge 90\%$ dari pengguna yang memulai alur tugas berhasil menyelesaikan konfirmasi akhir tanpa mengalami kebuntuan atau galat berulang.
-2. **Waktu Penyelesaian Tugas (*Time-To-Task* / TTT)**:
-   - Bandingkan durasi waktu yang dibutuhkan pengguna untuk menyelesaikan formulir atau pemesanan sebelum dan sesudah perubahan desain. Redesign dinilai berhasil jika TTT terpangkas minimal 20%.
-3. **Kecepatan Pemulihan Galat (*Error Recovery Velocity*)**:
-   - Waktu rata-rata yang dibutuhkan pengguna dari saat menerima pesan galat hingga berhasil memperbaiki input dan melanjutkan proses (target $\le 10$ detik berkat pesan pemulihan inline yang jelas).
-4. **Rasio Pembatalan Formulir (*Form Drop-off Rate*)**:
-   - Pantau titik bidang formulir mana yang paling sering ditinggalkan pengguna. Bidang yang memiliki drop-off tinggi wajib dievaluasi untuk dihapus atau disederhanakan.
+These indicators measure real user behavior via product analytics tools (PostHog, Amplitude, custom telemetry) after release. They are operational product goals, distinct from the deterministic, code-verifiable gates in §1:
+1. ***Task Completion Rate* (TCR)**:
+   - Target: $\ge 90\%$ of users who start the task flow finish the final confirmation without a dead end or a repeated error.
+2. ***Time-To-Task* (TTT)**:
+   - Compare how long users need to complete a form or a booking before and after the design change. The redesign succeeds when TTT drops by at least 20%.
+3. ***Error Recovery Velocity***:
+   - The average time from the user receiving an error message to fixing the input and continuing (target $\le 10$ seconds, achieved through clear inline recovery messages).
+4. ***Form Drop-off Rate***:
+   - Track which form fields users abandon most often. Evaluate every high drop-off field for removal or simplification.

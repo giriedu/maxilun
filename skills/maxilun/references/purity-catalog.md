@@ -1,115 +1,117 @@
 # Maxilun Purity Catalog
 
 <!-- metadata:
-  version: "1.0.0"
+  version: "1.3.0"
   last_updated: "2026-11-02"
   sync_target: "scripts/test-suite.py:BANNED_WORDS"
   origin: "Maxilun Purity Engine"
 -->
 
-Katalog penolakan pola generik (*Purity Catalog*) untuk ekosistem Maxilun pada tiga domain: **Konten/Teks**, **Desain Antarmuka**, dan **Kode/Interaksi**. Panduan ini dipakai untuk evaluasi berbasis konteks produk — bukan pemindai buta yang menolak pola sah tanpa melihat fungsinya.
+Catalog of generic patterns to reject across three domains of the Maxilun ecosystem: **Content/Text**, **Interface Design**, and **Code/Interaction**. Use it for evaluation in the context of the product. It is not a blind scanner that rejects a legitimate pattern without looking at its function.
 
-> **Sinkronisasi Test Suite**: Daftar kosakata buzzword terlarang di Bagian A.5 selaras dengan `BANNED_WORDS` pada `scripts/test-suite.py`.
-
----
-
-## A. Pola Klise pada Konten & Teks
-
-Tulis ulang teks bila memenuhi satu atau lebih tanda berikut:
-
-1. **Generik tanpa jangkar domain (*Identity Swap Failure*)** — kalimat dapat dipindah ke produk kompetitor atau industri lain tanpa mengubah satu kata pun. Wajib sebut objek kerja, metrik nyata, atau alur tugas spesifik pengguna.
-2. **Rasio sinyal rendah** — banyak kalimat pembuka tetapi miskin fakta atau keputusan. Satu kalimat = satu informasi fungsional baru.
-3. **Klaim superlatif tanpa bukti** — menjanjikan hasil bombastis tanpa mekanisme atau angka terverifikasi.
-4. **Statistik atau testimoni karangan** — angka seperti `"99.9% akurasi"` atau `"10.000+ tim percaya kami"` tanpa sumber riil wajib dihapus.
-5. **Kosakata Buzzword Terlarang (`BANNED_WORDS`)** — dilarang dipakai sebagai klaim positif:
-   - Inggris: `delve`, `tapestry`, `synergy`, `holistic`, `leverage`, `seamlessly`, `robust`, `cutting-edge`, `game-changer`, `revolutionary`, `supercharge`, `dive in`, `elevate`, `empower`, `unlock`, `transformative`, `next-level`, `state-of-the-art`, `best-in-class`, `paradigm shift`.
-   - Indonesia: `menyelami`, `merajut harmoni`, `sinergi`, `holistik`, `memanfaatkan secara mulus`, `solusi mutakhir/terdepan`, `pengubah permainan`, `revolusioner`, `meningkatkan ke level berikutnya`, `mari selami`, `memberdayakan`, `membuka potensi`, `transformatif`, `kelas dunia`, `pergeseran paradigma`.
-6. **Slogan brosur kosong** — frasa cetakan seperti *"Revolutionize Your Workflow"*, *"Unlock Your Potential"*, *"Di era digital yang serba cepat"*, *"Solusi all-in-one terpercaya"*.
+> **Test Suite Sync**: The banned buzzword vocabulary in Section A.5 is aligned with `BANNED_WORDS` in `scripts/test-suite.py`.
+>
+> **Detection**: Mechanical detection of the visual tells is done by `python ../maxilun-craft/scripts/slopscan.py <path>` (relative to the installed maxilun skill folder). Judgement-only tells are listed in `../maxilun-craft/references/tells.md`.
 
 ---
 
-## B. Pola Klise Visual & Monokultur Desain Antarmuka
+## A. Cliché Patterns in Content & Text
 
-Prinsip inti: **tolak klise mentah LLM sekaligus tolak monokultur cetakan tunggal.** Desain antarmuka wajib lahir dari karakter subjek, audiens, dan tugas utama produk.
+Rewrite the text when it shows one or more of these signs:
 
-### B1. Tipografi
-1. **Hierarki datar & font sans generik seragam (`TYPO-001`)** — menggunakan satu font sans polos generik (Inter default tanpa kalibrasi) untuk seluruh tingkatan tanpa pembedaan peran (display vs body vs metadata teknis). Wajib pasangkan typeface display berkarakter kuat untuk judul (`tracking: -0.02em` s.d. `-0.04em`) + monospace fungsional untuk spesifikasi protokol/payload + sans terukur untuk teks tubuh.
-2. **Kontras teks lemah (`TYPO-002` / `CLR-002`)** — teks abu-abu pucat di atas permukaan berwarna dengan rasio `< 4.5:1`.
-3. **Hitam/abu-abu tak terkalibrasi pada tema terang (`TYPO-003`)** — teks `#000000` murni di atas latar putih menyilaukan yang melelahkan bacaan panjang. *(Pengecualian sah: kanvas gelap kontras tinggi seperti `#010102`/`#000000` pada referensi seperti `linear.app.md` atau `vercel.md`, serta garis tepi media `1px` alpha `oklch(0 0 0 / 0.1)`).*
-4. **Panjang baris ekstrem (`TYPO-004`)** — paragraf bacaan melebar `> 75ch` tanpa batas lebar baca (`max-w-[65ch]`).
-5. **Input mobile `< 16px` (`TYPO-007`)** — memicu auto-zoom paksa di iOS Safari.
-6. **Gradien teks pelangi pada judul (`TYPO-008` / `CLR-008`)** — mewarnai kata-kata judul dengan gradien warna-warni (`bg-gradient-to-r ... bg-clip-text text-transparent`) untuk menutupi tipografi yang membosankan. DILARANG KERAS. Judul wajib bertinta solid dengan kontras tinggi ($\ge 4.5:1$, tema gelap $\ge 7:1$). Wibawa visual lahir dari bentuk huruf (*typeface character*), kontras bobot, dan skala ukuran, bukan efek gradien murahan.
-7. **Ukuran teks display raksasa tanpa skala mobile (`TYPO-009`)** — menggunakan ukuran font statis besar (`text-5xl` / `text-6xl` tanpa responsivitas) atau teks panjang (URL, JID, token hash) tanpa `break-words`/`min-w-0`, memicu kata panjang terpotong keluar melebihi canvas layar pada lebar $\le 375\text{px}$. Wajib terapkan fluid scaling (`text-2xl sm:text-4xl lg:text-6xl`) dan `break-words`.
+1. **Generic with no domain anchor (*Identity Swap Failure*)** — the sentence can be moved to a competitor's product or another industry without changing a word. Name the work object, a real metric, or the user's specific task flow.
+2. **Low signal ratio** — many opening sentences but few facts or decisions. One sentence = one new piece of functional information.
+3. **Superlative claims without evidence** — promising inflated results with no mechanism or verified number.
+4. **Invented statistics or testimonials** — delete numbers such as `"99.9% accuracy"` or `"10,000+ teams trust us"` that have no real source.
+5. **Banned Buzzword Vocabulary (`BANNED_WORDS`)** — must not be used as a positive claim:
+   - English: `delve`, `tapestry`, `synergy`, `holistic`, `leverage`, `seamlessly`, `robust`, `cutting-edge`, `game-changer`, `revolutionary`, `supercharge`, `dive in`, `elevate`, `empower`, `unlock`, `transformative`, `next-level`, `state-of-the-art`, `best-in-class`, `paradigm shift`.
+   - Indonesian: `menyelami`, `merajut harmoni`, `sinergi`, `holistik`, `memanfaatkan secara mulus`, `solusi mutakhir/terdepan`, `pengubah permainan`, `revolusioner`, `meningkatkan ke level berikutnya`, `mari selami`, `memberdayakan`, `membuka potensi`, `transformatif`, `kelas dunia`, `pergeseran paradigma`.
+6. **Empty brochure slogans** — stock phrases such as *"Revolutionize Your Workflow"*, *"Unlock Your Potential"*, and, in Indonesian copy, *"Di era digital yang serba cepat"* ("In today's fast-paced digital era") or *"Solusi all-in-one terpercaya"* ("The trusted all-in-one solution").
 
-### B2. Warna & Permukaan
-6. **Gradien ungu-biru dekoratif default (`CLR-001`)** — gradien `#667eea → #764ba2` atau glow neon acak tanpa makna merek/status.
-7. **Latar belakang terlalu jenuh (`CLR-005`)** — permukaan kerja utama menggunakan kroma tinggi (`chroma > 0.05` di OKLCH) yang mengganggu keterbacaan konten.
-8. **Status hanya mengandalkan warna (`CLR-004`)** — merah/hijau tanpa ikon atau label teks pendamping.
-9. **Dark mode tempelan (`CLR-007`)** — membalik warna secara naif tanpa sistem token permukaan dan tanpa `color-scheme: dark`.
-10. **Perangkap Kontras Tema Ganda / Black-on-Black Light Mode (`CLR-009`)** — komponen dengan background gelap hardcoded (`#030509` / radial-gradient gelap) tanpa aturan pembalik tema `[data-theme="light"]`. Saat tema beralih ke terang, teks mewarisi `var(--text)` gelap (`#090d16`), menghasilkan teks hitam di atas latar hitam (kontras $< 1.5:1$). Setiap komponen kustom wajib memiliki aturan simetris pada kedua tema.
-11. **Canvas Tidak Sinkron Tema / Invisible Canvas Text (`MOT-005`)** — elemen HTML5 `<canvas>` me-render teks atau garis dengan warna hardcoded (`#ffffff` / `#060910`) tanpa memeriksa tema aktif (`document.documentElement.dataset.theme`). Saat tema dibalik, teks canvas menjadi putih di atas putih atau hitam di atas hitam. Wajib membaca status tema aktif secara dinamis di setiap render frame.
-### B3. Tata Letak & Bahaya Monokultur Baru
-10. **Tumpukan rata-tengah monoton (`LAY-011`)** — seluruh halaman mengulang pola *overline kapital tengah → H2 tengah → subteks 2 baris tengah → kartu simetris* dari atas ke bawah.
-11. **Tiga kartu simetris tanpa diferensiasi (`LAY-008`)** — `grid-cols-3` berisi 3 kotak identik dengan ikon bulat di atas dan 2 kalimat basa-basi. Ganti sesuai sifat konten: tabel perbandingan faktual, alur langkah bernomor, *split showcase* artefak kerja nyata, komposisi editorial, atau grid asimetris bila tiap panel punya peran berbeda.
-12. **Monokultur SaaS Bento / `Cmd+K` Salah Tempat (`LAY-013`)** — menyalin mentah estetika dashboard gelap developer tools (Bento gelap, palet biru-slate dingin, badge shortcut `Cmd+K`, label teknis monospaced) untuk produk non-teknis seperti klinik kesehatan, kuliner, pendidikan, media editorial, atau ritel konsumen.
-13. **Strip 4 kotak KPI dekoratif (`LAY-009` / `LAY-012`)** — empat kartu angka statis di puncak halaman dengan persentase hijau karangan (`+12.5%`) tanpa konteks waktu, filter, atau tindakan lanjut.
-14. **Hero dengan dua tombol primer kembar (`LAY-010` / `CMP-017`)** — dua tombol solid/pill berebut fokus utama. Tetapkan tepat satu aksi primer per tampilan; aksi pendamping tampil netral/sekunder.
-15. **Pembungkusan kartu berlapis (`LAY-001` / `LAY-002`)** — kartu di dalam kartu di dalam kartu; gunakan pengelompokan spasi (`2x` jarak antar-grup dibanding intra-grup) sebelum menambah kotak atau garis.
-16. **Navbar obesitas & menu meluap di mobile (`LAY-015`)** — tinggi navbar mobile $> 64\text{px}$, tautan desktop tidak disembunyikan (`hidden md:flex`), tombol CTA desktop menutupi logo di layar sentuh, atau drawer menu tanpa kunci scroll latar (`overscroll-behavior: contain`).
-17. **Kebocoran scroll horizontal mobile (`LAY-016`)** — memakai `width: 100vw` atau `w-screen` (menghitung scrollbar desktop sehingga bocor di mobile), fixed width tanpa `max-w-full`, atau padding `px-12`/`px-20` pada viewport sempit.
-
-### B4. Komponen & Navigasi
-16. **Breadcrumb redundan di halaman datar (`CMP-001` / `CMP-011`)** — menampilkan `Home > Dashboard > Settings` pada landing page, halaman login, atau aplikasi bersarang dangkal. Gunakan judul konteks atau tautan balik tunggal; simpan *breadcrumb* hanya untuk taksonomi dalam (`≥ 3` level seperti dokumentasi besar, sistem berkas, atau katalog multi-kategori).
-17. **Kapsul pill tagline dekoratif di atas H1 (`CMP-015`)** — badge mengambang `• SIGNAL PROTOCOL TCP • MULTI-DEVICE ... •` berbentuk kapsul pill oval (`rounded-full`) dengan peluru bullet `•` di atas judul utama. Ini adalah *tanda tangan utama template AI*. DILARANG KERAS. Jika konteks teknis atau kategori perlu ditampilkan, gunakan teks murni tanpa kapsul (eyebrow editorial kecil, huruf kapital berjarak, tanpa border, tanpa background pill terisolasi) atau integrasikan langsung ke dalam kalimat judul.
-18. **Gimmick fiksi ilmiah & kanvas 3D palsu (`CMP-016`)** — menampilkan kanvas 3D partikel mengambang, kubus wireframe, atau istilah karangan (*"3D MESH TOPOLOGY // 60 FPS"*, *"Tembak Paket 3D ⚡"*, *"Chamber 01"*) pada produk backend, API gateway, atau infrastruktur pesan. Untuk produk developer/infrastruktur, artefak kerja hidup (**The Live Artifact**) **WAJIB berupa konsol operasional nyata**: live WebSocket stream dengan event asli (`messages.upsert`), status pairing WhatsApp QR nyata, latensi p95 faktual, dan blok kode cURL / REST SDK interaktif.
-19. **Badge pemasaran tanpa fakta (`CMP-002`)** & **Polusi Emoji/Emoticon pada Antarmuka (`CMP-003`)** — menyusupkan karakter emoji Unicode (`🚀`, `✨`, `🔥`, `⚡`, `💡`, `🎉`, `⭐`, `✅`, `❌`, `⚠️`, `👉`, `💎`, `🌟`, `🤖`, `💬`, dll.) sebagai ikon tombol, prefix judul heading (`<h3>⚡ Performa</h3>`), ikon kartu fitur, peluru checklist (`<li>✅ 99.9%</li>`), badge hero, atau sel status tabel. Ini adalah *tanda tangan kemalasan AI paling mencolok* yang merusak line-height, pecah antar-OS (iOS vs Windows), dan merusak screen reader. DILARANG KERAS. Wajib gunakan ikon vektor SVG monokrom geometris terstandarisasi (`stroke="currentColor"` / `fill="currentColor"`) yang lulus *1-Bit Monochrome Test*.
-20. **Radius seragam mengabaikan geometri bersarang (`CMP-004`)** — container dan anak memakai radius sama tanpa memperhitungkan padding konsentris.
-21. **Elemen navigasi/kontrol mati (`CMP-005` / `CMP-012`)** — kotak cari, ikon lonceng, filter, atau tombol yang tidak melakukan apa-apa saat diklik.
-22. **Label navigasi generik tanpa konteks domain (`CMP-010`)** — sidebar hanya menulis *Menu 1, Analytics, Reports* tanpa menyebut entitas bisnis sesungguhnya.
-23. **Border neon saturated pada kartu (`CMP-018`)** — membungkus keliling kartu dengan garis border berwarna saturasi tinggi (`border-cyan-500`, `border-purple-500`, dsb.) dan glow menyala. DILARANG KERAS. Kontainer kartu wajib memakai hairline neutral border `1px solid var(--border)` (`oklch(1 0 0 / 0.08)` pada mode gelap). Warna aksen hanya untuk indikator titik aktif kecil.
-24. **Radial glow blob di belakang kartu (`CMP-019`)** — memasang lingkaran blur besar (`blur-3xl bg-cyan-500/20`) di balik kartu untuk menciptakan kesan menyala palsu. Gantikan dengan *4-Level Surface Ladder* dan bayangan kontak transparan tipis.
-25. **Telemetri & status teater palsu (`CMP-020`)** — menempelkan badge dekoratif fiktif (`// 60 FPS`, `• PING: 0.1ms`, `SYSTEM NORMAL`) tanpa sumber data riil. Wajib tampilkan telemetri operasional nyata dengan filter atau tindakan.
-
-### B5. Gerak & Aksesibilitas
-23. **Animasi properti layout (`ANI-002`)** — menganimasikan `width`, `height`, `top`, `left` yang memicu reflow; gunakan `transform` dan `opacity`.
-24. **Mengabaikan `prefers-reduced-motion` (`ANI-003`)** atau **memutar media otomatis tanpa kendali (`ANI-005`)**.
-25. **Pelanggaran aksesibilitas dasar (`A11Y-001..007`)** — kontrol tanpa nama aksesibel, input tanpa `<label>`, `:focus-visible` dihapus, atau target sentuh mobile `< 44x44px` (`LAY-004`).
-
-### B6. Kunci Sistem Desain & Jebakan Tambal Sulam Redesign
-26. **Kunci Token & Variabel Usang (`SYS-001`)** — mempertahankan token warna/spasi CSS lama (misal: slate generik `#3b82f6`, background `#f8fafc`, `--radius: 0.5rem`) saat pengguna meminta redesign, sehingga antarmuka baru tetap terkungkung estetika kusam lama. Wajib ganti di tingkat root (`globals.css` / theme) dengan OKLCH domain fisik.
-27. **Kunci Pembungkus Shell & Layout (`SYS-002`)** — membiarkan kontainer root (`max-w-7xl mx-auto px-4`, hardcoded `bg-gray-50` di body) mencekik komposisi baru. Wajib rombak kontainer agar ritme spasial $2\times$ bernapas bebas.
-28. **Kunci Komponen Primitif Zombie (`SYS-003`)** — tetap memakai wrapper `<Card>` atau `<Button>` lama yang memaksakan border pucat flat dan radius seragam tanpa formula konsentris. Wajib mutakhirkan primitif komponen ke standar interface engineering.
-29. **Jebakan Redesign Tambal Sulam (`SYS-004`)** — hanya mengedit leaf JSX atau menambahkan inline overrides (`!important` / `style={{...}}`) di atas fondasi sistem desain yang rusak, menghasilkan UI yang "begitu-begitu saja".
-30. **Tabrakan Styling Dua Sistem (`SYS-005`)** — menumpuk class styling baru tanpa menghapus CSS lama yang bertentangan, menyisakan kelas zombie dan layout glitch. Wajib lakukan *Clean Cutover* (hapus tuntas kode styling lama).
-
-### B7. Pembunuh Kualitas Studio Kelas Dunia (Studio Score Killers)
-31. **Dua Puluh Efek Tanpa Satu Momen Khas (`JURY-001`)** — menumpuk lusinan animasi mikro acak tanpa satu interaksi utama (*One Signature Moment*). Keriuhan efek terbaca oleh penilai sebagai rasa tidak percaya diri visual.
-32. **Pembajakan Scroll / Scroll-Jacking Membeku (`JURY-002`)** — melawan inersia roda mouse, menonaktifkan tombol keyboard (`Space`/`PageDown`), atau mematikan inersia scroll alami di perangkat layar sentuh mobile.
-33. **Kebocoran Memori GPU Akibat will-change Permanen (`JURY-003`)** — membiarkan `will-change: transform, opacity` aktif terus-menerus di CSS/JS alih-alih me-resetnya ke `auto` setelah animasi selesai, menghabiskan VRAM GPU mobile.
-34. **Preloader Menutupi Konten yang Sudah Siap (`JURY-004`)** — memasang layar pembuka yang menahan pengguna selama 3–5 detik padahal konten HTML sudah siap di belakang layar, merusak metrik LCP.
-35. **Desain Halaman Beranda Tunggal (`JURY-005`)** — halaman beranda dipoles mewah tetapi halaman dalam (tentang, detail, 404, dokumentasi) dibiarkan berantakan seperti proyek lain. Pengguna profesional selalu menguji halaman dalam.
 ---
 
-## C. Ringkasan Kode Pemeriksaan Kontekstual
+## B. Visual Cliché Patterns & Interface Design Monoculture
 
-Gunakan kode referensi ini saat melaporkan hasil audit desain/kode secara presisi (`file:line` + ID + perbaikan konkret):
+Core principle: **reject raw LLM clichés and reject single-mold monoculture as well.** Interface design must come from the character of the subject, the audience, and the product's primary task.
 
-| Kategori | Rentang ID | Fokus Evaluasi Utama |
+### B1. Typography
+1. **Flat hierarchy & uniform generic sans font (`TYPO-001`)** — one plain generic sans font (default Inter with no calibration) used for every level with no role distinction (display vs body vs technical metadata). Pair a display typeface with strong character for headings (`tracking: -0.02em` to `-0.04em`) + a functional monospace for protocol/payload specifications + a measured sans for body text.
+2. **Weak text contrast (`TYPO-002` / `CLR-002`)** — pale gray text on a colored surface with a ratio `< 4.5:1`.
+3. **Uncalibrated black/gray on a light theme (`TYPO-003`)** — pure `#000000` text on a glaring white background that tires the eye over long reading. *(Legitimate exceptions: high-contrast dark canvases such as `#010102`/`#000000` in references like `linear.app.md` or `vercel.md`, and `1px` media edge lines at alpha `oklch(0 0 0 / 0.1)`).*
+4. **Extreme line length (`TYPO-004`)** — reading paragraphs wider than `> 75ch` with no reading-width limit (`max-w-[65ch]`).
+5. **Mobile inputs `< 16px` (`TYPO-007`)** — triggers forced auto-zoom on iOS Safari.
+6. **Rainbow text gradient on headings (`TYPO-008` / `CLR-008`)** — coloring heading words with a multicolor gradient (`bg-gradient-to-r ... bg-clip-text text-transparent`) to hide dull typography. STRICTLY PROHIBITED. Headings must use solid ink with high contrast ($\ge 4.5:1$, dark theme $\ge 7:1$). Visual authority comes from letterform (*typeface character*), weight contrast, and size scale, not from a cheap gradient effect.
+7. **Giant display text with no mobile scale (`TYPO-009`)** — a large static font size (`text-5xl` / `text-6xl` with no responsiveness) or long text (URL, JID, token hash) without `break-words`/`min-w-0`, which pushes long words past the screen canvas at widths $\le 375\text{px}$. Apply fluid scaling (`text-2xl sm:text-4xl lg:text-6xl`) and `break-words`.
+
+### B2. Color & Surface
+6. **Default decorative purple-blue gradient (`CLR-001`)** — a `#667eea → #764ba2` gradient or random neon glow with no brand/status meaning.
+7. **Oversaturated background (`CLR-005`)** — the main work surface uses high chroma (`chroma > 0.05` in OKLCH) that hurts content readability.
+8. **Status conveyed by color alone (`CLR-004`)** — red/green with no accompanying icon or text label.
+9. **Bolted-on dark mode (`CLR-007`)** — naively inverting colors with no surface token system and no `color-scheme: dark`.
+10. **Dual-Theme Contrast Trap / Black-on-Black Light Mode (`CLR-009`)** — a component with a hardcoded dark background (`#030509` / dark radial-gradient) and no `[data-theme="light"]` theme-inversion rule. When the theme switches to light, the text inherits the dark `var(--text)` (`#090d16`), producing black text on a black background (contrast $< 1.5:1$). Every custom component must have symmetric rules for both themes.
+11. **Canvas Out of Sync with Theme / Invisible Canvas Text (`MOT-005`)** — an HTML5 `<canvas>` element renders text or lines in a hardcoded color (`#ffffff` / `#060910`) without checking the active theme (`document.documentElement.dataset.theme`). When the theme flips, canvas text becomes white on white or black on black. Read the active theme state dynamically on every render frame.
+### B3. Layout & New Monoculture Hazards
+10. **Monotonous center-aligned stack (`LAY-011`)** — the whole page repeats the pattern *centered uppercase overline → centered H2 → centered 2-line subtext → symmetric cards* from top to bottom.
+11. **Three symmetric cards with no differentiation (`LAY-008`)** — a `grid-cols-3` of 3 identical boxes with a round icon on top and 2 filler sentences. Replace it according to the nature of the content: a factual comparison table, a numbered step flow, a *split showcase* of a real work artifact, an editorial composition, or an asymmetric grid when each panel has a different role.
+12. **SaaS Bento Monoculture / Misplaced `Cmd+K` (`LAY-013`)** — copying the dark developer-tools dashboard aesthetic as-is (dark Bento, cold blue-slate palette, `Cmd+K` shortcut badge, monospaced technical labels) for a non-technical product such as a health clinic, food business, education, editorial media, or consumer retail.
+13. **Decorative strip of 4 KPI boxes (`LAY-009` / `LAY-012`)** — four static number cards at the top of the page with an invented green percentage (`+12.5%`) and no time context, filter, or follow-up action.
+14. **Hero with two twin primary buttons (`LAY-010` / `CMP-017`)** — two solid/pill buttons competing for the main focus. Set exactly one primary action per view; the companion action appears neutral/secondary.
+15. **Nested card wrapping (`LAY-001` / `LAY-002`)** — a card inside a card inside a card. Group with spacing first (`2x` the distance between groups compared with inside a group) before adding boxes or lines.
+16. **Oversized navbar & overflowing menu on mobile (`LAY-015`)** — mobile navbar height $> 64\text{px}$, desktop links not hidden (`hidden md:flex`), a desktop CTA button covering the logo on touch screens, or a menu drawer without background scroll lock (`overscroll-behavior: contain`).
+17. **Mobile horizontal scroll leak (`LAY-016`)** — using `width: 100vw` or `w-screen` (which counts the desktop scrollbar and so leaks on mobile), a fixed width without `max-w-full`, or `px-12`/`px-20` padding on a narrow viewport.
+
+### B4. Components & Navigation
+16. **Redundant breadcrumb on a flat page (`CMP-001` / `CMP-011`)** — showing `Home > Dashboard > Settings` on a landing page, a login page, or a shallowly nested app. Use a context title or a single back link; keep the *breadcrumb* only for deep taxonomies (`≥ 3` levels, such as large documentation, a file system, or a multi-category catalog).
+17. **Decorative tagline pill capsule above the H1 (`CMP-015`)** — a floating badge `• SIGNAL PROTOCOL TCP • MULTI-DEVICE ... •` shaped as an oval pill capsule (`rounded-full`) with `•` bullets above the main heading. This is *the primary signature of an AI template*. STRICTLY PROHIBITED. If technical context or a category must be shown, use plain sentence-case text in the secondary text role (no capsule, no border, no isolated pill background), or fold the context into the headline.
+18. **Sci-fi gimmicks & fake 3D canvas (`CMP-016`)** — showing a 3D canvas of floating particles, wireframe cubes, or invented terms (*"3D MESH TOPOLOGY // 60 FPS"*, *"Fire 3D Packet ⚡"*, *"Chamber 01"*) on a backend, API gateway, or messaging infrastructure product. For developer/infrastructure products, the live work artifact (**The Live Artifact**) **MUST be a real operational console**: a live WebSocket stream with real events (`messages.upsert`), real WhatsApp QR pairing status, factual p95 latency, and interactive cURL / REST SDK code blocks.
+19. **Marketing badges with no facts (`CMP-002`)** & **Emoji/Emoticon Pollution in Interfaces (`CMP-003`)** — inserting Unicode emoji characters (`🚀`, `✨`, `🔥`, `⚡`, `💡`, `🎉`, `⭐`, `✅`, `❌`, `⚠️`, `👉`, `💎`, `🌟`, `🤖`, `💬`, etc.) as button icons, heading prefixes (`<h3>⚡ Performance</h3>`), feature card icons, checklist bullets (`<li>✅ 99.9%</li>`), hero badges, or table status cells. This is *the most visible signature of AI laziness*: it breaks line-height, renders differently across operating systems (iOS vs Windows), and breaks screen readers. STRICTLY PROHIBITED. Use standardized geometric monochrome SVG vector icons (`stroke="currentColor"` / `fill="currentColor"`) that pass the *1-Bit Monochrome Test*.
+20. **Uniform radius ignoring nested geometry (`CMP-004`)** — container and child use the same radius without accounting for concentric padding.
+21. **Dead navigation/control elements (`CMP-005` / `CMP-012`)** — a search box, bell icon, filter, or button that does nothing when clicked.
+22. **Generic navigation labels with no domain context (`CMP-010`)** — the sidebar only says *Menu 1, Analytics, Reports* without naming the actual business entities.
+23. **Saturated neon border on cards (`CMP-018`)** — wrapping a card's perimeter in a high-saturation border (`border-cyan-500`, `border-purple-500`, etc.) with a glowing halo. STRICTLY PROHIBITED. Card containers must use a neutral hairline border `1px solid var(--border)` (`oklch(1 0 0 / 0.08)` in dark mode). Accent color is only for small active-dot indicators.
+24. **Radial glow blob behind cards (`CMP-019`)** — placing a large blurred circle (`blur-3xl bg-cyan-500/20`) behind a card to fake a glowing look. Replace it with the *4-Level Surface Ladder* and a thin transparent contact shadow.
+25. **Fake telemetry & status theater (`CMP-020`)** — attaching fictional decorative badges (`// 60 FPS`, `• PING: 0.1ms`, `SYSTEM NORMAL`) with no real data source. Show real operational telemetry with a filter or an action.
+
+### B5. Motion & Accessibility
+23. **Animating layout properties (`ANI-002`)** — animating `width`, `height`, `top`, `left`, which triggers reflow; use `transform` and `opacity`.
+24. **Ignoring `prefers-reduced-motion` (`ANI-003`)** or **autoplaying media with no controls (`ANI-005`)**.
+25. **Basic accessibility violations (`A11Y-001..007`)** — a control with no accessible name, an input with no `<label>`, `:focus-visible` removed, or a mobile touch target `< 44x44px` (`LAY-004`).
+
+### B6. Design System Locks & Patchwork Redesign Traps
+26. **Obsolete Token & Variable Lock (`SYS-001`)** — keeping old CSS color/spacing tokens (for example: generic slate `#3b82f6`, background `#f8fafc`, `--radius: 0.5rem`) when the user asks for a redesign, so the new interface stays confined to the old dull aesthetic. Replace them at root level (`globals.css` / theme) with OKLCH values from the product's physical domain.
+27. **Shell & Layout Wrapper Lock (`SYS-002`)** — leaving the root container (`max-w-7xl mx-auto px-4`, hardcoded `bg-gray-50` on body) to choke the new composition. Rework the container so the $2\times$ spatial rhythm has room.
+28. **Zombie Primitive Component Lock (`SYS-003`)** — still using the old `<Card>` or `<Button>` wrapper that forces a flat pale border and uniform radius with no concentric formula. Update the component primitives to the interface engineering standard.
+29. **Patchwork Redesign Trap (`SYS-004`)** — editing only leaf JSX or adding inline overrides (`!important` / `style={{...}}`) on top of a broken design system foundation, which produces a UI that looks the same as before.
+30. **Two-System Styling Collision (`SYS-005`)** — stacking new styling classes without deleting the conflicting old CSS, leaving zombie classes and layout glitches. Perform a *Clean Cutover* (fully delete the old styling code).
+
+### B7. Studio Score Killers
+31. **Twenty Effects With No Signature Moment (`JURY-001`)** — stacking dozens of random micro-animations with no single main interaction (*One Signature Moment*). Reviewers read the noise of effects as a lack of visual confidence.
+32. **Scroll-Jacking / Frozen Scroll (`JURY-002`)** — fighting mouse-wheel inertia, disabling keyboard keys (`Space`/`PageDown`), or turning off natural scroll inertia on mobile touch devices.
+33. **GPU Memory Leak From Permanent will-change (`JURY-003`)** — leaving `will-change: transform, opacity` active permanently in CSS/JS instead of resetting it to `auto` after the animation ends, which exhausts mobile GPU VRAM.
+34. **Preloader Covering Ready Content (`JURY-004`)** — an intro screen that holds the user for 3–5 seconds although the HTML content is already ready behind it, which damages the LCP metric.
+35. **Homepage-Only Design (`JURY-005`)** — the homepage is polished while inner pages (about, detail, 404, documentation) are left untidy, like a different project. Professional users always test inner pages.
+---
+
+## C. Contextual Check Code Summary
+
+Use these reference codes to report design/code audit results precisely (`file:line` + ID + concrete fix):
+
+| Category | ID Range | Main Evaluation Focus |
 |---|---|---|
-| Tipografi | `TYPO-001` .. `TYPO-009` | Hierarki skala peran, bebas gradien teks pelangi, bebas overflow mobile, `tabular-nums` |
-| Warna | `CLR-001` .. `CLR-008` | Bebas gradien dekoratif klise, bebas neon glow berlebih, kroma latar tenang, `color-scheme` |
-| Tata Letak | `LAY-001` .. `LAY-016` | Bebas tumpukan senter, bebas navbar obesitas mobile, bebas kebocoran scroll horizontal (`100vw`) |
-| Komponen | `CMP-001` .. `CMP-020` | Bebas kapsul pill, bebas border neon kartu, bebas status teater palsu, radius konsentris |
-| Gerak | `ANI-001` .. `ANI-007` | Hanya `transform`/`opacity`, durasi mikro `≤250ms`, hormati `prefers-reduced-motion` |
-| Aksesibilitas | `A11Y-001` .. `A11Y-007` | Nama aksesibel, asosiasi `<label>`, indikator `:focus-visible`, urutan heading semantik |
-| Kunci Desain & Redesign | `SYS-001` .. `SYS-005` | Deteksi pengunci sistem desain, hapus token kusam root, buka shell layout, clean cutover |
-| Kualitas Studio & Juri | `JURY-001` .. `JURY-005` | Satu signature moment, bebas scroll-jacking, will-change cleanup, konsistensi halaman dalam |
+| Typography | `TYPO-001` .. `TYPO-009` | Role-based scale hierarchy, no rainbow text gradient, no mobile overflow, `tabular-nums` |
+| Color | `CLR-001` .. `CLR-008` | No clichéd decorative gradient, no excessive neon glow, calm background chroma, `color-scheme` |
+| Layout | `LAY-001` .. `LAY-016` | No centered stack, no oversized mobile navbar, no horizontal scroll leak (`100vw`) |
+| Components | `CMP-001` .. `CMP-020` | No pill capsule, no neon card border, no fake status theater, concentric radius |
+| Motion | `ANI-001` .. `ANI-007` | `transform`/`opacity` only, micro duration `≤250ms`, respect `prefers-reduced-motion` |
+| Accessibility | `A11Y-001` .. `A11Y-007` | Accessible name, `<label>` association, `:focus-visible` indicator, semantic heading order |
+| Design Locks & Redesign | `SYS-001` .. `SYS-005` | Detect design system locks, delete dull root tokens, open the layout shell, clean cutover |
+| Studio Quality & Jury | `JURY-001` .. `JURY-005` | One signature moment, no scroll-jacking, will-change cleanup, inner page consistency |
 
 ---
 
-## D. Evaluasi Kontekstual Sebelum Selesai
+## D. Contextual Evaluation Before Finishing
 
-Sebelum menyerahkan karya teks atau antarmuka, uji tiga hal ini secara jujur:
-1. **Uji Tukar Identitas**: Jika logo dan nama produk ditutupi, apakah struktur dan bahasanya masih mencerminkan domain spesifik produk ini, atau tampak seperti seribu template AI lainnya?
-2. **Uji Pengurangan**: Adakah kartu, badge, pembungkus `<div>`, atau kalimat pengantar yang jika dihapus justru memperjelas tugas utama pengguna?
-3. **Uji Kejujuran Fungsional**: Apakah setiap tombol, state kosong/gagal, dan angka yang tampil di layar benar-benar bekerja dan jujur?
+Before handing over text or interface work, test these three things honestly:
+1. **Identity Swap Test**: If the logo and product name are covered, do the structure and language still reflect this product's specific domain, or does it look like a thousand other AI templates?
+2. **Subtraction Test**: Is there a card, badge, `<div>` wrapper, or introductory sentence whose removal would make the user's primary task clearer?
+3. **Functional Honesty Test**: Does every button, empty/failure state, and number shown on screen actually work and tell the truth?

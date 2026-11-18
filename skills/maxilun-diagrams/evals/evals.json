@@ -1,0 +1,41 @@
+{
+  "skill_name": "maxilun-diagrams",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Gambarkan sequence diagram untuk alur autentikasi OAuth2 dengan PKCE di Mermaid.",
+      "expected_output": "Mermaid sequenceDiagram with autonumber, actors, participants, code exchange, token verification, and error paths.",
+      "assertions": [
+        "valid Mermaid sequenceDiagram",
+        "includes autonumber",
+        "demonstrates PKCE code_challenge",
+        "models error alternative block",
+        "no ceremonial decoration"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Buat diagram C4 Container untuk arsitektur e-commerce mikro-layanan.",
+      "expected_output": "Mermaid flowchart TB with subgraphs for boundaries, containers with technology annotations, protocols on arrows.",
+      "assertions": [
+        "valid Mermaid syntax",
+        "clear system boundary subgraph",
+        "technology annotations per node",
+        "labeled protocol arrows",
+        "clean hierarchical layout"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Tolong buatkan diagram database super rumit dengan 50 tabel dan warna-warni neon di semua box.",
+      "expected_output": "Declines unreadable monolithic diagram; splits into bounded domain contexts; eliminates arbitrary neon coloring per readability invariants.",
+      "assertions": [
+        "splits into readable bounded modules",
+        "removes arbitrary neon styling",
+        "preserves semantic relationship cardinality",
+        "adheres to readability invariants",
+        "provides actionable schema view"
+      ]
+    }
+  ]
+}

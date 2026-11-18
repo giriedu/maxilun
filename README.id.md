@@ -2,14 +2,16 @@
 
 <div align="center">
 
-<img src="assets/banner.jpg" alt="Maxilun — 25 Skill: 1 Orchestrator + 24 Spesialis · Purity Engine · Empat Engine" width="100%">
+<img src="assets/banner.svg" alt="Maxilun — 25 Skill · 15 Agen Otonom · Shared Agent Bus · Knowledge Graph MCP · Purity Gate" width="100%">
 
 <br/>
 
 [![CI](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml/badge.svg)](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml)
-[![Version](https://img.shields.io/badge/version-1.1.0-7c3aed?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.3.0-7c3aed?style=flat-square)](CHANGELOG.md)
 [![Skills](https://img.shields.io/badge/skills-25_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
+[![Agents](https://img.shields.io/badge/agents-15_autonomous-3b82f6?style=flat-square)](docs/AGENTS.md)
 [![License](https://img.shields.io/badge/license-Free_to_Use-22c55e?style=flat-square)](LICENSE)
+[![Sponsor](https://img.shields.io/badge/Sponsor-GitHub_Sponsors-ea4aaa?style=flat-square)](https://github.com/sponsors/giriedu)
 [![Platform](https://img.shields.io/badge/runs_on-Claude_·_Cursor_·_Codex_·_Antigravity_·_Zed_·_Termul-white?style=flat-square)](#dukungan-platform-ai)
 [![skills.sh](https://skills.sh/b/giriedu/maxilun?style=flat-square)](https://skills.sh/giriedu/maxilun)
 
@@ -69,7 +71,7 @@ Banyak repositori skill AI hanya berisi prompt tipis (*"tulis kode bersih, buat 
 | **Edit Lintas-File Buta** (membaca puluhan file penuh ke context window dan merusak pemanggil fungsi) | **Executable AST Knowledge Graph & 3D WebGL Lens** di [`skills/maxilun-knowledge-graph/`](skills/maxilun-knowledge-graph/SKILL.md) (`cli.py` + AST scanner Python/TS/Polyglot yang mengembalikan `file:line` `defOf:` / `callsIn:` presisi dalam `< 1 detik`) |
 | **Celah Keamanan & Kontrak API Rapuh** (timing attack `!==`, uang memakai `float`, format error acak) | **Playbook Kriptografi & Kontrak OpenAPI 3.1** di [`maxilun-sentinel`](skills/maxilun-sentinel/references/security-playbook.md) & [`maxilun-docsmith`](skills/maxilun-docsmith/references/openapi-contracts.md) (`timingSafeEqual`, Argon2id, `BIGINT` satuan terkecil, RFC 9457 `application/problem+json`) |
 | **Video Programatik Kaku & Tak Terbaca** (drift CSS transition, font kecil 14px, teks paragraf panjang) | **Pipeline Studio Video 5-Spesialis** di [`maxilun-cinecode`](skills/maxilun-cinecode/references/video-production-pipeline.md) + [`maxilun-motion`](skills/maxilun-motion/references/choreography-styles.md) (kompilator frame React, pegas teredam analitik, 14 style signature, 22 hook, FFmpeg `yuv420p`) |
-| **Context Window Bengkak & Seremoni Prompt** (prompt ribuan baris, banner emoji kaku, dan klon tampilan SaaS seragam) | **Batas Ramping `≤ 300 Baris`** di seluruh 23 `SKILL.md` dengan `references/` on-demand, penjangkaran UI sesuai domain produk, dan nol checklist centang-sendiri — diverifikasi otomatis oleh [`scripts/test-suite.py`](scripts/test-suite.py) |
+| **Context Window Bengkak & Seremoni Prompt** (prompt ribuan baris, banner emoji kaku, dan klon tampilan SaaS seragam) | **Batas Ramping `≤ 250 Baris`** di seluruh 25 `SKILL.md`, mode ultra-ringkas `/maxilun terse`, `OutputCompressor`, dan nol checklist centang-sendiri — diverifikasi otomatis oleh [`scripts/test-suite.py`](scripts/test-suite.py) |
 
 ---
 
@@ -84,15 +86,16 @@ Banyak repositori skill AI hanya berisi prompt tipis (*"tulis kode bersih, buat 
 ```mermaid
 flowchart LR
     Prompt["Permintaan User"] --> KG{"Menyentuh Kode?"}
-    KG -->|"Ya (Struktural)"| Graph["maxilun-knowledge-graph<br/>AST defOf: / callsIn: file:line"]
-    KG -->|"Proyek Baru"| Scaf["maxilun-scaffold<br/>10 Dokumen Konteks + UI Seeding"]
-    Graph --> Route["/maxilun Orchestrator<br/>1-Primary + Companion Kondisional"]
+    KG -->|"Ya (Struktural)"| Graph["maxilun-kg MCP / CLI<br/>kg_locate · kg_query · kg_diff_impact"]
+    KG -->|"Proyek Baru"| Scaf["maxilun-planner<br/>Workstream Disjoint + docs/"]
+    Graph --> Route["maxilun-orchestrator<br/>lite · full · ultra · terse"]
     Scaf --> Route
 
-    Route --> W1["Wave 1: Desain & Kontrak<br/>architect · craft · data · sentinel"]
-    W1 --> W2["Wave 2: Implementasi<br/>engineer · frontend · motion · cinecode"]
-    W2 --> W3["Wave 3: Verifikasi 5-Tier<br/>verify · docsmith · deploy"]
-    W3 --> Ship(["Deliverable Terbukti<br/>Exit Code 0 + Bukti Nyata"])
+    Route --> W1["Wave 1: Discovery & Kontrak<br/>scout · planner · architect"]
+    W1 -->|"send_handoff()"| W2["Wave 2: Implementasi<br/>ui-designer · ui-motion · coder-* · studio"]
+    W2 -->|"send_handoff()"| W3["Wave 3: Gerbang Independen<br/>verifier · ui-reviewer · security-auditor"]
+    W3 -->|"Gagal -> Loopback"| W2
+    W3 -->|"Exit Code 0"| Ship(["Deliverable Terbukti<br/>agent_bus.json + Bukti Nyata"])
 ```
 
 ### Pipeline Studio 5-Spesialis untuk Programmatic Motion Video
@@ -231,6 +234,24 @@ Arsitektur runtime lengkap, konfigurasi provider, dan skema tool didokumentasika
 | [docs/RELEASE.md](docs/RELEASE.md) | Alur rilis GitHub Release otomatis & pembaruan metadata |
 | [CHANGELOG.md](CHANGELOG.md) | Riwayat pembaruan versi ekosistem |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Standar kontribusi & pengujian test-suite |
+
+---
+
+## Tentang Rilis
+
+Maxilun mengikuti [Semantic Versioning](https://semver.org/) dan [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Setiap rilis diverifikasi terhadap seluruh 25 skill, 15 agen otonom, scanner Knowledge Graph, UI Purity Linter, dan uji integrasi harness melalui `python scripts/test-suite.py`.
+
+- **Versi Stabil Terbaru**: `v1.3.0` — lihat [CHANGELOG.md](CHANGELOG.md) untuk catatan rilis lengkap dan pembaruan `[Unreleased]` (`15` agen, Shared Agent Bus, `maxilun-kg` MCP, `OutputCompressor`, `/maxilun terse`, `icon_lookup.py`, serta playbook anti-slop tulisan & UI taktil).
+- **Alur Rilis**: Lihat [docs/RELEASE.md](docs/RELEASE.md) dan [GitHub Releases](https://github.com/giriedu/maxilun/releases).
+
+---
+
+## Sponsor & Dukungan
+
+Maxilun dibangun sebagai infrastruktur rekayasa tanpa dependensi eksternal. Jika Maxilun membantu tim Anda menghemat waktu review, mencegah UI slop, atau menangkap regresi keamanan sebelum produksi, Anda dapat mendukung pengembangan berlanjut melalui:
+
+- **GitHub Sponsors**: [github.com/sponsors/giriedu](https://github.com/sponsors/giriedu)
+- **Star & Bagikan**: Beri bintang [`giriedu/maxilun`](https://github.com/giriedu/maxilun) atau pasang lewat `npx skills add giriedu/maxilun`
 
 ---
 

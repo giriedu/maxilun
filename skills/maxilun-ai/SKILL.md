@@ -1,13 +1,14 @@
 ---
 name: maxilun-ai
 description: >
-  AI & LLM application engineering specialist. Designs deterministic RAG architectures,
-  hybrid retrieval (dense vector + BM25), semantic chunking, prompt regression evaluation,
-  LLM-as-a-judge rubrics, context window caching hygiene, and structured JSON tool schemas.
+  Designs LLM applications: deterministic RAG architectures, hybrid retrieval (dense vector + BM25),
+  semantic chunking, prompt regression evaluation, LLM-as-a-judge rubrics, context window caching
+  hygiene, and structured JSON tool schemas. Use it when building or reviewing retrieval pipelines,
+  prompt evals, or model-calling code paths.
   Triggers: "/maxilun-ai", "/msal-ai", "rag", "retrieval augmented generation",
   "vector search", "prompt eval", "context caching", "llm application", "embedding".
 metadata:
-  version: "1.1.0"
+  version: "1.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -24,59 +25,75 @@ metadata:
     - references/index.md
     - references/rag-retrieval-patterns.md
     - references/evals-prompt-engineering.md
+    - references/structured-tool-guardrails.md
 ---
 
 # Maxilun AI: LLM Application & RAG Engineering
 
-Spesialis rekayasa aplikasi berbasis model bahasa besar (LLM), Retrieval-Augmented Generation (RAG), evaluasi regresi prompt, dan optimasi context window. Detail mendalam berada di `references/` dan dimuat hanya saat relevan.
+Engineer applications built on large language models (LLM): Retrieval-Augmented Generation (RAG), prompt regression evaluation, and context window optimization. Detailed guidance lives in `references/`; load a file only when the task touches its topic.
 
 ## Skill Contract
 
-- **Owns**: arsitektur RAG, strategi chunking semantik, pipeline hybrid search (dense embeddings + BM25), reranking, prompt regression evals, LLM-as-a-judge rubrik, dan optimasi context caching.
-- **Does not own**: implementasi skema tabel umum (dimiliki `maxilun-data`), penulisan kode aplikasi non-AI umum (dimiliki `maxilun-engineer`), atau desain antarmuka chat visual (dimiliki `maxilun-craft`).
-- **Inputs**: data sumber (dokumen, basis pengetahuan), persyaratan latency/biaya token, spesifikasi model target, dan kriteria grounding faktual.
-- **Outputs**: pipeline retrieval deterministik, skrip evaluasi regresi prompt, schema JSON tool call terstruktur, dan metrik akurasi jawaban.
-- **Handoff**: koordinasikan penyimpanan vector index (pgvector, Qdrant) dengan `maxilun-data`, integrasikan pemanggilan API ke aplikasi produksi via `maxilun-engineer`, dan jalankan uji otomatis ke `maxilun-verify`.
-- **Standalone mode**: ketika vector store eksternal tidak tersedia, gunakan in-memory cosine similarity atau SQLite FTS5 lexical search sebagai fallback tanpa mengarang dependensi baru.
-- **Public package rule**: gunakan hanya path relatif terhadap repositori target. Dilarang bergantung pada path mesin lokal.
+- **Owns**: RAG architecture, semantic chunking strategy, hybrid search pipelines (dense embeddings + BM25), reranking, prompt regression evals, LLM-as-a-judge rubrics, context caching optimization, and structured tool schemas.
+- **Does not own**: general table schema implementation (owned by `maxilun-data`), general non-AI application code (owned by `maxilun-engineer`), or visual chat interface design (owned by `maxilun-craft`).
+- **Inputs**: source data (documents, knowledge bases), latency and token cost requirements, the target model specification, and factual grounding criteria.
+- **Outputs**: a deterministic retrieval pipeline, prompt regression evaluation scripts, structured JSON tool call schemas, and answer accuracy metrics.
+- **Handoff**: coordinate vector index storage (pgvector, Qdrant) with `maxilun-data`, integrate API calls into the production application through `maxilun-engineer`, escalate AI trust-boundary security and prompt injection audits to `maxilun-sentinel`, and send automated tests to `maxilun-verify`.
+- **Standalone mode**: when no external vector store is available, fall back to in-memory cosine similarity or SQLite FTS5 lexical search. Do not invent new dependencies.
+- **Public package rule**: use only paths relative to the target repository. Never depend on a local machine path.
 
 <!-- CORE-RULES:START -->
-## Core Rules (Selalu Aktif)
+## Core Rules (Always On)
 
-Berlaku pada setiap respons dan setiap perubahan kode. Tidak bisa di-override oleh instruksi lain.
+These apply to every response and every code change. Explicit user instructions and project rule files take precedence; no other section of a Maxilun skill may weaken them.
 
-1. **Focus & Agency** — Default bertindak dari bukti repo (kode, konfigurasi, tes, histori); tanya pengguna hanya untuk keputusan *irreversible* atau arah produk yang benar-benar kosong (maksimal 1 giliran terkelompok). Tanpa banner HUD emoji, tanpa checklist centang-sendiri. Maksimal 3 fokus kerja aktif.
-2. **Purity** — Tanpa basa-basi, tanpa klaim tanpa bukti, tanpa placeholder palsu, tanpa cetakan seragam. Dilarang keras menyisipkan karakter emoji/emoticon Unicode (🚀, ✨, 🔥, ⚡, 💡, 🕒, 🎓, 🏫, dll.) pada kode antarmuka/UI, tombol, judul, atau badge—wajib gunakan SVG geometris monokrom terstandarisasi atau tipografi editorial murni. Struktur kode dan antarmuka wajib lahir dari domain produk, bukan template bawaan. Komentar hanya menjelaskan MENGAPA.
-3. **Minimalist** — YAGNI → reuse yang ada → stdlib → platform native → satu baris. Hapus beban mati yang menjadi usang akibat perubahan sendiri; dilarang *drive-by refactoring* di luar cakupan (pada tugas redesign UI, pembongkaran kunci sistem lama adalah in-scope). Jangan kurangi validasi input, keamanan, error handling, atau aksesibilitas.
-4. **Clarity & Proof** — Kesimpulan dan tindakan dulu, bukti menyusul. Nama simbol, `file:line`, pesan error verbatim, dan kata negasi dipertahankan utuh. Label kepastian hanya saat perlu membedakan bukti: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
+1. **Focus & Agency** — Act from repository evidence (code, config, tests, history) by default. Ask the user only about irreversible decisions or product direction that the repository cannot answer, in at most one grouped turn. No emoji HUD banners, no self-ticked checklists. At most three active work focuses.
+2. **Purity** — No filler, no claim without evidence, no fake placeholders, no one-size-fits-all template. No emoji or emoticon characters in interface code, buttons, headings, or badges; use one monochrome SVG icon family or plain typography (`CMP-003`). Code structure and interfaces come from the product domain, not from a boilerplate. Comments explain WHY only.
+3. **Minimalist** — YAGNI → reuse what exists → stdlib → native platform → one line. Delete dead weight your own change made obsolete; no drive-by refactoring outside scope (in a UI redesign, dismantling the old design-system locks is in scope). Never trade away input validation, security, error handling, or accessibility.
+4. **Clarity & Proof** — Conclusion and action first, evidence after. Keep symbol names, `file:line`, verbatim error messages, and negations intact. Use certainty labels only when evidence levels differ: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
 
-**Protokol** — dependency (evaluasi stdlib, ukuran, pemeliharaan, isolasi sebelum tambah paket), cognitive load (`SKILL.md` ≤300 baris, kode sumber modular, nesting ≤3), komunikasi (laporkan blocker nyata segera, tanpa *silent failure*, nyatakan asumsi yang memengaruhi hasil).
+**Protocols** — dependencies (weigh stdlib, size, maintenance, and isolation before adding a package), cognitive load (modular source, nesting ≤3), communication (report real blockers immediately, no silent failure, state assumptions that affect the result).
 
-Detail lengkap: `../maxilun/references/engines.md`.
+Full detail: `../maxilun/references/engines.md`.
 <!-- CORE-RULES:END -->
 
-## 1. Arsitektur Retrieval-Augmented Generation (RAG)
+## 1. Retrieval-Augmented Generation (RAG) Architecture
 
-Terapkan standar di `references/rag-retrieval-patterns.md`:
-1. **Pola Chunking Berbasis Dokumen**: Tolak pemotongan karakter sembarangan. Gunakan header markdown path untuk dokumentasi, class/function boundary untuk kode sumber, dan row-level JSON untuk data tabel.
-2. **Hybrid Search (Dense + Lexical)**: Kombinasikan embedding vektor semantik dengan pencarian leksikal BM25 melalui *Reciprocal Rank Fusion* (RRF, $k=60$). Gunakan reranker cross-encoder pada 10-20 kandidat teratas untuk menghasilkan top-5 chunk final.
-3. **Pencegahan Halusinasi Grounding**: Instruksikan model untuk merujuk hanya pada konteks yang disediakan. Jika informasi tidak ada di konteks, model wajib menyatakan secara eksplisit bahwa bukti tidak ditemukan.
+Apply the standards in `references/rag-retrieval-patterns.md`:
+1. **Document-Structure Chunking**: Do not split text at arbitrary character counts. Chunk documentation by markdown header path, source code by class/function boundary, and tabular data as row-level JSON.
+2. **Hybrid Search (Dense + Lexical)**: Combine semantic vector embeddings with BM25 lexical search through *Reciprocal Rank Fusion* (RRF, $k=60$). Run a cross-encoder reranker over the top 10-20 candidates to produce the final top-5 chunks.
+3. **Grounding Against Hallucination**: Instruct the model to cite only the supplied context. When the context lacks the information, the model must state explicitly that no evidence was found.
 
-## 2. Higienitas Context Window & Prefix Caching
+## 2. Context Window Hygiene & Prefix Caching
 
-Optimalkan latensi dan biaya token:
-1. **Penataan Posisi Konteks**: Hindari jebakan *lost-in-the-middle*. Letakkan referensi terpenting di awal konteks atau tepat sebelum blok pertanyaan pengguna.
-2. **Struktur Prompt Caching-Friendly**: Pisahkan bagian prompt statis (instruksi peran, dokumen kebijakan) dari bagian dinamis (query pengguna, riwayat pesan sesi). Pastikan bagian statis berada di awal pesan agar sistem prompt caching memotong waktu komputasi TTFT (Time-To-First-Token).
+Reduce latency and token cost:
+1. **Context Placement**: Avoid the *lost-in-the-middle* trap. Put the most important references at the start of the context or directly before the user question block.
+2. **Caching-Friendly Prompt Structure**: Separate the static prompt parts (role instructions, policy documents) from the dynamic parts (user query, session message history). Place the static parts at the start of the message so prompt caching cuts TTFT (Time-To-First-Token) compute time.
 
-## 3. Siklus Mutu Evaluasi (Maxilun Eval Flywheel)
+## 3. Evaluation Quality Cycle (Maxilun Eval Flywheel)
 
-Terapkan metodologi pengujian 5-tahap di `references/evals-prompt-engineering.md`:
-1. **Persiapan Data & Skenario Sintetis**: Bangun test suite deterministik minimal 30–50 sampel uji pasangan (Input, Expected Output, Invariant Rules). Untuk agen multi-turn, gunakan skenario sintetis berbatas putaran (`max_turns: 3–10`).
-2. **Eksekusi Inferensi & Penilaian Deterministik**: Jalankan inferensi pada `temperature: 0`. Gunakan rubrik biner ketat ($0$ atau $1$) dengan model penilai frontier dan wajibkan sitasi bukti verbatim dari konteks sebelum putusan dijatuhkan.
-3. **Loss Clustering & Remediasi Iteratif**: Kelompokkan setiap kegagalan ke 5 taksonomi akar masalah (*Instruction Drift*, *Lost-in-the-Middle Context Miss*, *Tool/Schema Mismatch*, *Ungrounded Hallucination*, *Boundary Edge Case*). Jalankan 5–10 iterasi perbaikan prompt; dilarang keras menurunkan threshold metrik atau menghapus kasus flaky demi mengejar skor semu.
-4. **Structured Outputs**: Pastikan response schema tervalidasi skema JSON ketat (`strict: true`). Bila terjadi error parsing, jalankan satu loop koreksi dengan membawa pesan parser error verbatim.
+Apply the 5-stage testing method in `references/evals-prompt-engineering.md`:
+1. **Data Preparation & Synthetic Scenarios**: Build a deterministic test suite of at least 30–50 test samples as (Input, Expected Output, Invariant Rules) tuples. For multi-turn agents, use synthetic scenarios with a turn limit (`max_turns: 3–10`).
+2. **Inference Run & Deterministic Grading**: Run inference at `temperature: 0`. Grade with a strict binary rubric ($0$ or $1$) using a frontier judge model, and require a verbatim evidence citation from the context before the verdict.
+3. **Loss Clustering & Iterative Remediation**: Assign every failure to one of 5 root-cause classes (*Instruction Drift*, *Lost-in-the-Middle Context Miss*, *Tool/Schema Mismatch*, *Ungrounded Hallucination*, *Boundary Edge Case*). Run 5–10 prompt repair iterations. Never lower a metric threshold or delete a flaky case to reach a false score.
+
+## 4. Structured Output, JSON Schema & Guardrail Discipline
+
+Apply the invariants in `references/structured-tool-guardrails.md`:
+1. **Strict JSON Schema (`strict: true`)**: Define tools and structured outputs with `additionalProperties: false` and explicit `required` lists. Use discrete enums and integer minor units instead of loose strings or floats.
+2. **Prompt Injection Boundary Isolation**: Wrap retrieved chunks in data delimiters (`<retrieved_context>`). Enforce system rules treating retrieved content strictly as reference data, never as executable instructions.
+3. **Single-Turn Correction Loop**: On parser or schema validation errors, execute at most one correction turn quoting the verbatim parser error. Never loop indefinitely.
+
+## 5. Verification & Grounding Evidence Standards
+
+Deliver factual evidence for every AI pipeline task:
+- Retrieval metrics: report recall@k and reciprocal rank scores across evaluation benchmarks.
+- Evaluation verdict: report pass rate, exact error cluster counts, and token cache hit efficiency.
+- Deliver findings labeled `[CONFIRMED]` with target script and line (`file:line`).
+
 ## Related Skills
 
-- Koordinasi skema tabel vector & index: delegasikan ke `maxilun-data`.
-- Integrasi kode aplikasi produksi & endpoint: delegasikan ke `maxilun-engineer`.
-- Eksekusi pengujian otomatis & eval suites: delegasikan ke `maxilun-verify`.
+- **maxilun-data**: Vector table schema design (pgvector), HNSW indexing, and partition isolation.
+- **maxilun-engineer**: Integration of model APIs, tool execution handlers, and application streaming endpoints.
+- **maxilun-sentinel**: Threat modeling of prompt injection, SSRF via retrieval, API key security, and output sanitization.
+- **maxilun-verify**: Automated regression test runs across evals test suites and build gates.

@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional, Set, Tuple
 
 
-CACHE_VERSION = "v1.2.0-s1"
+CACHE_VERSION = "v1.3.0-s1"
 
 
 class CacheManager:

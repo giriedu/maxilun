@@ -1,14 +1,14 @@
 ---
 name: maxilun-mobile
 description: >
-  Mobile application engineering specialist for native Android (Kotlin, Jetpack
-  Compose), native iOS (Swift, SwiftUI), and cross-platform mobile frameworks
-  (Flutter, React Native, Kotlin Multiplatform).
-  Triggers: "/maxilun-mobile", "aplikasi mobile", "android", "ios",
-  "flutter", "react native", "swiftui", "jetpack compose", "kotlin mobile",
-  "swift mobile", "kmp".
+  Builds and fixes mobile applications on native Android (Kotlin, Jetpack
+  Compose), native iOS (Swift, SwiftUI), and cross-platform frameworks
+  (Flutter, React Native, Kotlin Multiplatform). Use when a task touches mobile UI,
+  lifecycle, threading, on-device storage, or mobile release builds.
+  Triggers: "/maxilun-mobile", "aplikasi mobile", "mobile app", "android", "ios", "flutter",
+  "react native", "swiftui", "jetpack compose", "kotlin mobile", "swift mobile", "kmp".
 metadata:
-  version: "1.1.0"
+  version: "1.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -30,78 +30,78 @@ metadata:
 
 # Maxilun Mobile: Native & Cross-Platform Mobile Specialist
 
-Bertanggung jawab atas arsitektur, implementasi, performa frame, dan rilis aplikasi mobile native Android, native iOS, serta framework lintas platform (Flutter, React Native, KMP). Detail teknis dimuat hanya saat dibutuhkan dari `references/`.
+Covers architecture, implementation, frame performance, and release of native Android apps, native iOS apps, and cross-platform frameworks (Flutter, React Native, KMP). Load technical detail from `references/` only when the task needs it.
 
 ## Skill Contract
 
-- **Owns**: Logika antarmuka mobile (Jetpack Compose, SwiftUI, Flutter, React Native), siklus hidup Activity/ViewController, persistensi lokal terenkripsi (EncryptedSharedPreferences, Keychain), background worker (WorkManager, BackgroundTasks), dan arsitektur state offline.
-- **Does not own**: Antarmuka web browser (dimiliki `maxilun-frontend`), aplikasi desktop (dimiliki `maxilun-desktop`), arsitektur backend server (dimiliki `maxilun-engineer` atau `maxilun-architect`), atau skema database server (dimiliki `maxilun-data`).
-- **Inputs**: Manifest mobile (`AndroidManifest.xml`, `Info.plist`), berkas build (`build.gradle.kts`, `Podfile`, `Package.swift`, `pubspec.yaml`), kode sumber (Kotlin, Swift, Dart, TypeScript), dan laporan bug atau desain antarmuka.
-- **Outputs**: Kode mobile yang bersih, responsif 60/120 FPS tanpa freeze UI thread, bebas memory leak/retain cycle, dan lolos kompilasi target perangkat.
-- **Handoff**: Tugaskan companion `maxilun-sentinel` jika menangani enkripsi biometrik mendalam atau pin sertifikat SSL, atau `maxilun-verify` untuk eksekusi instrumentation test (Espresso, XCTest, Maestro).
-- **Standalone mode**: Jika spesialis lain tidak tersedia, eksekusi kode mobile langsung dengan mematuhi Core Rules.
-- **Public package rule**: Gunakan jalur relatif terhadap proyek atau skill terpasang.
+- **Owns**: Mobile UI logic (Jetpack Compose, SwiftUI, Flutter, React Native), Activity/ViewController lifecycle, encrypted local persistence (EncryptedSharedPreferences, Keychain), background workers (WorkManager, BackgroundTasks), and offline state architecture.
+- **Does not own**: Browser web UI (owned by `maxilun-frontend`), desktop applications (owned by `maxilun-desktop`), backend server architecture (owned by `maxilun-engineer` or `maxilun-architect`), or server database schema (owned by `maxilun-data`).
+- **Inputs**: Mobile manifests (`AndroidManifest.xml`, `Info.plist`), build files (`build.gradle.kts`, `Podfile`, `Package.swift`, `pubspec.yaml`), source code (Kotlin, Swift, Dart, TypeScript), and a bug report or UI design.
+- **Outputs**: Clean mobile code that holds 60/120 FPS without freezing the UI thread, has no memory leaks or retain cycles, and compiles for the target device.
+- **Handoff**: Hand off to `maxilun-sentinel` for in-depth biometric encryption or SSL certificate pinning, or to `maxilun-verify` to run instrumentation tests (Espresso, XCTest, Maestro).
+- **Standalone mode**: When no other specialist is available, write the mobile code directly and follow the Core Rules.
+- **Public package rule**: Use paths relative to the project or to the installed skill.
 
 <!-- CORE-RULES:START -->
-## Core Rules (Selalu Aktif)
+## Core Rules (Always On)
 
-Berlaku pada setiap respons dan setiap perubahan kode. Tidak bisa di-override oleh instruksi lain.
+These apply to every response and every code change. Explicit user instructions and project rule files take precedence; no other section of a Maxilun skill may weaken them.
 
-1. **Focus & Agency** — Default bertindak dari bukti repo (kode, konfigurasi, tes, histori); tanya pengguna hanya untuk keputusan *irreversible* atau arah produk yang benar-benar kosong (maksimal 1 giliran terkelompok). Tanpa banner HUD emoji, tanpa checklist centang-sendiri. Maksimal 3 fokus kerja aktif.
-2. **Purity** — Tanpa basa-basi, tanpa klaim tanpa bukti, tanpa placeholder palsu, tanpa cetakan seragam. Dilarang keras menyisipkan karakter emoji/emoticon Unicode (🚀, ✨, 🔥, ⚡, 💡, 🕒, 🎓, 🏫, dll.) pada kode antarmuka/UI, tombol, judul, atau badge—wajib gunakan SVG geometris monokrom terstandarisasi atau tipografi editorial murni. Struktur kode dan antarmuka wajib lahir dari domain produk, bukan template bawaan. Komentar hanya menjelaskan MENGAPA.
-3. **Minimalist** — YAGNI → reuse yang ada → stdlib → platform native → satu baris. Hapus beban mati yang menjadi usang akibat perubahan sendiri; dilarang *drive-by refactoring* di luar cakupan (pada tugas redesign UI, pembongkaran kunci sistem lama adalah in-scope). Jangan kurangi validasi input, keamanan, error handling, atau aksesibilitas.
-4. **Clarity & Proof** — Kesimpulan dan tindakan dulu, bukti menyusul. Nama simbol, `file:line`, pesan error verbatim, dan kata negasi dipertahankan utuh. Label kepastian hanya saat perlu membedakan bukti: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
+1. **Focus & Agency** — Act from repository evidence (code, config, tests, history) by default. Ask the user only about irreversible decisions or product direction that the repository cannot answer, in at most one grouped turn. No emoji HUD banners, no self-ticked checklists. At most three active work focuses.
+2. **Purity** — No filler, no claim without evidence, no fake placeholders, no one-size-fits-all template. No emoji or emoticon characters in interface code, buttons, headings, or badges; use one monochrome SVG icon family or plain typography (`CMP-003`). Code structure and interfaces come from the product domain, not from a boilerplate. Comments explain WHY only.
+3. **Minimalist** — YAGNI → reuse what exists → stdlib → native platform → one line. Delete dead weight your own change made obsolete; no drive-by refactoring outside scope (in a UI redesign, dismantling the old design-system locks is in scope). Never trade away input validation, security, error handling, or accessibility.
+4. **Clarity & Proof** — Conclusion and action first, evidence after. Keep symbol names, `file:line`, verbatim error messages, and negations intact. Use certainty labels only when evidence levels differ: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
 
-**Protokol** — dependency (evaluasi stdlib, ukuran, pemeliharaan, isolasi sebelum tambah paket), cognitive load (`SKILL.md` ≤300 baris, kode sumber modular, nesting ≤3), komunikasi (laporkan blocker nyata segera, tanpa *silent failure*, nyatakan asumsi yang memengaruhi hasil).
+**Protocols** — dependencies (weigh stdlib, size, maintenance, and isolation before adding a package), cognitive load (modular source, nesting ≤3), communication (report real blockers immediately, no silent failure, state assumptions that affect the result).
 
-Detail lengkap: `../maxilun/references/engines.md`.
+Full detail: `../maxilun/references/engines.md`.
 <!-- CORE-RULES:END -->
 
-## 1. Disiplin Antarmuka & Threading Mobile
+## 1. Mobile UI & Threading Discipline
 
-1. **Invarian UI Thread**:
-   - Seluruh operasi I/O jaringan, dekripsi, pembacaan database, dan parsing JSON besar dilarang berjalan di thread antarmuka.
-   - Gunakan `Dispatchers.IO` di Kotlin Coroutines, background task di Swift Concurrency, atau `Isolate.run()` di Dart.
-2. **Manajemen Memori & Retensi**:
-   - Di iOS (Swift), pastikan escaping closure dan delegate menggunakan `[weak self]` atau `weak delegate` untuk memutus siklus retain cycle.
-   - Di Android (Kotlin), batasi observer flow pada siklus hidup view (`repeatOnLifecycle` atau `collectAsStateWithLifecycle`) guna mencegah eksekusi saat fragment/activity di latar belakang.
-3. **Ergonomi Layar Sentuh**:
-   - Target sentuh minimal $48 \times 48\text{ dp/pt}$. Pastikan input formulir tidak tertutup oleh keyboard virtual (`imePadding`, `ignoresSafeArea`).
+1. **UI thread invariant**:
+   - Never run network I/O, decryption, database reads, or large JSON parsing on the UI thread.
+   - Use `Dispatchers.IO` in Kotlin Coroutines, a background task in Swift Concurrency, or `Isolate.run()` in Dart.
+2. **Memory & retention**:
+   - On iOS (Swift), make escaping closures and delegates use `[weak self]` or `weak delegate` to break retain cycles.
+   - On Android (Kotlin), bind flow observers to the view lifecycle (`repeatOnLifecycle` or `collectAsStateWithLifecycle`) so they do not run while the fragment/activity is in the background.
+3. **Touch ergonomics**:
+   - Minimum touch target is $48 \times 48\text{ dp/pt}$. Keep form inputs clear of the virtual keyboard (`imePadding`, `ignoresSafeArea`).
 
-## 2. Standar Rekayasa Android Native
+## 2. Native Android Engineering Standards
 
-Saat bekerja pada sistem Android:
+When working on an Android system:
 1. **Jetpack Compose**:
-   - Terapkan state hoisting. Gunakan `derivedStateOf` untuk kalkulasi nilai turunan yang sering berubah guna mencegah rekomendasi recomposition loop (rujuk `references/android-engineering.md`).
-2. **Database Room**:
-   - Pasang `@Index` pada kolom yang dicari dan sediakan objek `Migration` teruji untuk setiap perubahan versi skema.
-3. **Keamanan & Token**:
-   - Simpan token sensitif pada `EncryptedSharedPreferences` atau Keystore hardware.
+   - Apply state hoisting. Use `derivedStateOf` for derived values that change often, to prevent recomposition loops (see `references/android-engineering.md`).
+2. **Room database**:
+   - Put `@Index` on searched columns and provide a tested `Migration` object for every schema version change.
+3. **Security & tokens**:
+   - Store sensitive tokens in `EncryptedSharedPreferences` or the hardware Keystore.
 
-## 3. Standar Rekayasa iOS Native
+## 3. Native iOS Engineering Standards
 
-Saat bekerja pada sistem iOS:
+When working on an iOS system:
 1. **SwiftUI & Swift Concurrency**:
-   - Beri anotasi `@MainActor` pada setiap kelas ViewModel yang mengikat properti antarmuka. Pastikan transfer data mematuhi `Sendable` (rujuk `references/ios-engineering.md`).
-2. **Keychain & Privasi**:
-   - Simpan kredensial pada iOS Keychain Services API. Sediakan berkas `PrivacyInfo.xcprivacy` yang mendeklarasikan seluruh alasan penggunaan API terproteksi Apple.
+   - Annotate every ViewModel class that binds UI properties with `@MainActor`. Make transferred data conform to `Sendable` (see `references/ios-engineering.md`).
+2. **Keychain & privacy**:
+   - Store credentials through the iOS Keychain Services API. Provide a `PrivacyInfo.xcprivacy` file that declares every reason for using Apple's protected APIs.
 
 ## 4. Cross-Platform (Flutter & React Native)
 
 1. **Flutter**:
-   - Gunakan `const` pada widget statis dan jalankan parsing data berat di isolate background.
+   - Use `const` on static widgets and run heavy data parsing in a background isolate.
 2. **React Native**:
-   - Manfaatkan New Architecture (TurboModules & Fabric). Gunakan pustaka Reanimated untuk menjalankan animasi transisi langsung pada UI thread (rujuk `references/cross-platform-mobile.md`).
+   - Use the New Architecture (TurboModules & Fabric). Use the Reanimated library to run transition animations directly on the UI thread (see `references/cross-platform-mobile.md`).
 
-## 5. Verifikasi & Standar Pelaporan
+## 5. Verification & Reporting Standards
 
-Setiap penyelesaian tugas mobile wajib ditopang bukti:
-- Kompilasi: status build tanpa error (`./gradlew assembleDebug`, `xcodebuild build`, `flutter build apk --debug`, `npx react-native bundle`).
-- Bukti penanganan lifecycle dan pencegahan crash: verifikasi null-safety pada data API.
-- Nyatakan bukti dengan format `[CONFIRMED]` beserta berkas dan baris yang diubah (`file:line`).
+Back every completed mobile task with evidence:
+- Compilation: build status with no errors (`./gradlew assembleDebug`, `xcodebuild build`, `flutter build apk --debug`, `npx react-native bundle`).
+- Lifecycle handling and crash prevention evidence: verify null-safety on API data.
+- State the evidence as `[CONFIRMED]` with the changed file and line (`file:line`).
 
 ## Related Skills
 
-- `maxilun-sentinel`: Audit keamanan penyimpanan token, pinning sertifikat SSL, dan pencegahan jailbreak/root.
-- `maxilun-verify`: Eksekusi pengujian otomatis UI mobile (Espresso, XCTest, Maestro, Appium).
-- `maxilun-craft`: Sistem token warna, tipografi, dan aset ikon vektor SVG untuk mobile.
+- `maxilun-sentinel`: Security audit of token storage, SSL certificate pinning, and jailbreak/root prevention.
+- `maxilun-verify`: Running automated mobile UI tests (Espresso, XCTest, Maestro, Appium).
+- `maxilun-craft`: Color token system, typography, and SVG vector icon assets for mobile.

@@ -1,6 +1,7 @@
 # Maxilun Frontend References Index
 
-Katalog referensi rekayasa arsitektur frontend untuk Next.js 15 dan React 19:
+Reference catalog for Next.js 15 App Router and React 19 architecture:
 
-- **`references/rsc-flight-patterns.md`**: Batas eksekusi React Server Components (RSC) vs Client, serialisasi React Flight, Donut Composition, dan Server Actions.
-- **`references/caching-revalidation-recipes.md`**: Semantik caching eksplisit, invalidasi tag terarah, eliminasi waterfall, dan rute asinkron Next.js 15.
+- **`references/rsc-flight-patterns.md`**: React Server Components (RSC) vs Client Component boundaries, Next.js 15 async Request APIs (`cookies()`, `headers()`, `params`), Flight payload serialization, and layout containment.
+- **`references/caching-revalidation-recipes.md`**: Deterministic cache profiles (`'force-cache'`, `'no-store'`), tag-based revalidation (`revalidateTag`), Time-Based ISR (`next: { revalidate }`), and Cache-Control headers.
+- **`references/server-actions-state-hierarchy.md`**: Server Actions security (public POST endpoint paradigm, Zod boundary validation), React 19 optimistic updates (`useOptimistic`), and the 4-layer state hierarchy (URL $\to$ RSC $\to$ Client Island $\to$ Optimistic).

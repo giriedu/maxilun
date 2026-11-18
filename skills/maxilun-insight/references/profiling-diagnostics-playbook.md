@@ -6,54 +6,54 @@
   origin: "Maxilun Insight Engine"
 -->
 
-Panduan diagnostik kinerja sistemik, pelacakan kebocoran memori (*memory leaks*), dan analisis titik jenuh CPU/IO.
+Guide to system performance diagnostics, *memory leak* tracing, and CPU/IO saturation analysis.
 
 ---
 
-## 1. Analisis Flamegraph CPU
+## 1. CPU Flamegraph Analysis
 
-1. **Mengidentifikasi Hot Path**:
-   - Periksa lebar balok (*plateau*) pada visualisasi flamegraph. Balok yang lebar menunjukkan fungsi yang menghabiskan waktu eksekusi CPU paling lama.
-2. **Pembedaan CPU Bound vs IO Bound**:
-   - Jika penggunaan CPU mendekati 100% dan grafik menunjukkan kalkulasi berulang, optimalkan algoritma atau terapkan memoization.
-   - Jika waktu tunggu tinggi tetapi CPU rendah, periksa latensi kueri basis data eksternal atau pemanggilan HTTP jaringan downstream.
-
----
-
-## 2. Pelacakan Kebocoran Memori (Heap Profiling)
-
-1. **Pengambilan 3 Snapshot Berurutan**:
-   - Ambil snapshot memori saat inisiasi (*Baseline*).
-   - Picu operasi sistem berulang kali (*Stress Test*).
-   - Ambil snapshot kedua, jalankan garbage collector paksa, lalu ambil snapshot ketiga (*Comparison*).
-2. **Mendeteksi Objek Tertahan (Retained Size)**:
-   - Bandingkan perbedaan objek antara snapshot 1 dan snapshot 3. Objek yang terus bertambah tanpa pernah dibersihkan menandakan adanya kebocoran referensi (misal: event listener yang tidak di-unregister, map cache tak berbatas, atau closure memegang referensi ke objek besar).
+1. **Identify the hot path**:
+   - Check the bar width (*plateau*) in the flamegraph. A wide bar marks the function that consumes the most CPU execution time.
+2. **Distinguish CPU bound from IO bound**:
+   - If CPU usage is near 100% and the graph shows repeated calculation, optimize the algorithm or apply memoization.
+   - If wait time is high but CPU is low, check the latency of external database queries or downstream network HTTP calls.
 
 ---
 
-## 3. Investigasi Deadlock & Kontensi Koneksi
+## 2. Memory Leak Tracing (Heap Profiling)
 
-1. **Pemantauan Pool Koneksi**:
-   - Jika latency melonjak tajam saat traffic naik, periksa apakah antrean pool koneksi basis data mengalami kehabisan slot (*pool exhaustion*).
-2. **Urutan Penguncian Konsisten (Lock Ordering)**:
-   - Untuk mencegah deadlock transaksi multi-tabel, pastikan seluruh alur kode mengunci baris atau tabel dengan urutan yang sama (misal: selalu urutkan ID secara menaik sebelum melakukan `SELECT ... FOR UPDATE`).
+1. **Take 3 snapshots in sequence**:
+   - Take a memory snapshot at startup (*Baseline*).
+   - Trigger the system operation repeatedly (*Stress Test*).
+   - Take the second snapshot, force a garbage collection, then take the third snapshot (*Comparison*).
+2. **Detect retained objects (Retained Size)**:
+   - Compare the object difference between snapshot 1 and snapshot 3. Objects that keep growing and are never cleaned up indicate a reference leak (for example: an event listener that is never unregistered, an unbounded cache map, or a closure holding a reference to a large object).
 
 ---
 
-## 4. Matriks Triage Diagnostik Sistemik (Hangs, Leaks, Exhaustion, Disruption)
+## 3. Deadlock & Connection Contention Investigation
 
-Saat sistem mengalami anomali runtime di lingkungan pengujian maupun produksi, gunakan matriks triage terstruktur untuk mengisolasi akar penyebab dalam 4 kelas kegagalan:
+1. **Monitor the connection pool**:
+   - If latency spikes sharply when traffic rises, check whether the database connection pool queue has run out of slots (*pool exhaustion*).
+2. **Keep lock ordering consistent (Lock Ordering)**:
+   - To prevent deadlocks in multi-table transactions, make every code path lock rows or tables in the same order (for example: always sort IDs ascending before running `SELECT ... FOR UPDATE`).
 
-| Kelas Kegagalan | Sinyal Teramati | Mekanisme Akar Penyebab | Instrumen Bukti & Verifikasi |
+---
+
+## 4. Systemic Diagnostic Triage Matrix (Hangs, Leaks, Exhaustion, Disruption)
+
+When a system shows a runtime anomaly in a test or production environment, use the structured triage matrix to isolate the root cause into one of 4 failure classes:
+
+| Failure Class | Observed Signals | Root Cause Mechanism | Evidence & Verification Instruments |
 |---|---|---|---|
-| **1. Hang & Process Stall** | Event-loop lag tinggi, proses tidak merespon `/health` padahal CPU rendah, thread pool beku | Mutex/row lock deadlock, panggilan I/O sinkron di loop async, transaksi database `idle in transaction` tanpa timeout, atau distributed lock tanpa auto-expiry | Node `perf_hooks.monitorEventLoopDelay()`, Python `py-spy dump`, Go `pprof/goroutine` (deteksi goroutine leak), `pg_stat_activity` (filter `state = 'idle in transaction'`) |
-| **2. Memory Leak & OOM Killer** | RSS memori menanjak monoton pasca-GC, jeda stop-the-world GC membesar, proses mati mendadak dengan exit code `137` | Map/cache memori tanpa eviksi LRU/TTL, closure menahan referensi objek besar, event listener tanpa `removeEventListener`, stream tanpa backpressure | Diff 3 heap snapshot V8/Python `tracemalloc`, inspeksi `dmesg -T \| grep -i oom`, bandingkan ukuran `Retained Size` objek |
-| **3. Connection & Resource Exhaustion** | Error `pool timeout`, `EMFILE / too many open files`, ribuan soket menggantung di `TIME_WAIT` | Koneksi database tidak dilepas di blok `finally`, response stream HTTP client tidak ditutup, atau koneksi keluar dibuat baru per request tanpa keep-alive | `lsof -p <pid> \| wc -l` (hitung file descriptor), `netstat -ant \| grep TIME_WAIT \| wc -l`, kueri jumlah koneksi aktif vs `max_connections` |
-| **4. Disruption & Unclean Shutdown** | Terputus `502 Bad Gateway` atau `ECONNRESET` saat deploy/restart, data mutasi terpotong | Kontainer dibungkus shell sehingga `SIGTERM` tidak sampai ke proses aplikasi (PID 1), handler shutdown tidak menolak request baru sambil menguras in-flight jobs, grace period terlalu pendek | Verifikasi `PID 1` di kontainer (`ps aux`), audit handler sinyal `SIGTERM`/`SIGINT`, dan uji coba simulasi `kill -15 <pid>` di staging |
+| **1. Hang & Process Stall** | High event-loop lag, process does not answer `/health` while CPU is low, frozen thread pool | Mutex/row lock deadlock, synchronous I/O call in an async loop, `idle in transaction` database transaction without a timeout, or a distributed lock without auto-expiry | Node `perf_hooks.monitorEventLoopDelay()`, Python `py-spy dump`, Go `pprof/goroutine` (goroutine leak detection), `pg_stat_activity` (filter `state = 'idle in transaction'`) |
+| **2. Memory Leak & OOM Killer** | RSS memory climbs monotonically after GC, stop-the-world GC pauses grow, process dies suddenly with exit code `137` | In-memory Map/cache without LRU/TTL eviction, closure retaining a large object reference, event listener without `removeEventListener`, stream without backpressure | Diff 3 V8 heap snapshots/Python `tracemalloc`, inspect `dmesg -T \| grep -i oom`, compare object `Retained Size` |
+| **3. Connection & Resource Exhaustion** | `pool timeout` errors, `EMFILE / too many open files`, thousands of sockets hanging in `TIME_WAIT` | Database connection not released in a `finally` block, HTTP client response stream not closed, or a new outbound connection created per request without keep-alive | `lsof -p <pid> \| wc -l` (count file descriptors), `netstat -ant \| grep TIME_WAIT \| wc -l`, query active connection count vs `max_connections` |
+| **4. Disruption & Unclean Shutdown** | `502 Bad Gateway` or `ECONNRESET` drops during deploy/restart, truncated mutation data | Container wrapped in a shell so `SIGTERM` never reaches the application process (PID 1), shutdown handler does not refuse new requests while draining in-flight jobs, grace period too short | Verify `PID 1` in the container (`ps aux`), audit the `SIGTERM`/`SIGINT` signal handlers, and run a `kill -15 <pid>` simulation in staging |
 
-### 4.1 Protokol 5 Langkah Triage Cepat
-1. **Cek Exit Code**: Apakah proses mati dengan `137` (OOM), `143` (SIGTERM timeout), atau `1` (uncaught exception)?
-2. **Identifikasi Sinyal I/O vs CPU**: Apakah CPU saturasi 100% (komputasi intensif/loop) atau 0–5% (deadlock/I/O wait)?
-3. **Periksa File Descriptors & Socket**: Apakah FD mendekati `ulimit -n` sistem?
-4. **Cek Transaksi Menggantung**: Apakah ada transaksi terbuka lebih dari 5 detik di database?
-5. **Formulasikan Rekomendasi Terukur**: Terapkan perbaikan minimal (misal: pasang `statement_timeout = '3s'`, bungkus stream dengan `pipeline()`, atau tambahkan graceful draining).
+### 4.1 5-Step Fast Triage Protocol
+1. **Check the exit code**: Did the process die with `137` (OOM), `143` (SIGTERM timeout), or `1` (uncaught exception)?
+2. **Identify I/O vs CPU signals**: Is CPU saturated at 100% (intensive computation/loop) or at 0–5% (deadlock/I/O wait)?
+3. **Check file descriptors & sockets**: Is the FD count near the system `ulimit -n`?
+4. **Check hanging transactions**: Is any transaction open for more than 5 seconds in the database?
+5. **Formulate a measured recommendation**: Apply the minimal fix (for example: set `statement_timeout = '3s'`, wrap the stream with `pipeline()`, or add graceful draining).

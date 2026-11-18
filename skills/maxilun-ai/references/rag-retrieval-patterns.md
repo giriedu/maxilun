@@ -1,25 +1,25 @@
 # RAG & Retrieval Architecture Patterns
 
-Arsitektur pengambilan dokumen deterministik untuk mengurangi halusinasi LLM dan memastikan grounding data faktual.
+Deterministic document retrieval architecture that reduces LLM hallucination and keeps answers grounded in factual data.
 
 ---
 
-## 1. Strategi Chunking Berbasis Struktur Dokumen
+## 1. Chunking by Document Structure
 
-Hindari chunking berbasis karakter tetap (e.g. fixed 500 characters) yang memotong kalimat atau tabel di tengah jalan.
+Avoid fixed-size character chunking (e.g. fixed 500 characters). It cuts sentences and tables in the middle.
 
-| Tipe Dokumen | Pola Chunking yang Benar | Invarian yang Dijaga |
+| Document Type | Correct Chunking Pattern | Invariant to Keep |
 |---|---|---|
-| **Markdown / Technical Specs** | Header-based chunking (`#`, `##`, `###`) | Pertahankan heading path sebagai metadata chunk (`section: "API > Auth"`). |
-| **Codebase / Source Code** | AST-based chunking (class, function, method scope) | Jangan memotong fungsi di tengah blok; simpan signature fungsi pada setiap chunk. |
-| **Tabular Data / CSV** | Row-level JSON serialization | Setiap baris menyertakan header kolom agar konteks makna kolom tidak hilang. |
-| **Narrative / Legal / Articles** | Sentence-boundary chunking dengan 15% overlap | Batas paragraf alami; overlap 2-3 kalimat untuk menjaga kontinuitas semantik. |
+| **Markdown / Technical Specs** | Header-based chunking (`#`, `##`, `###`) | Keep the heading path as chunk metadata (`section: "API > Auth"`). |
+| **Codebase / Source Code** | AST-based chunking (class, function, method scope) | Never split a function mid-block; store the function signature on every chunk. |
+| **Tabular Data / CSV** | Row-level JSON serialization | Every row carries the column headers so the meaning of each column is not lost. |
+| **Narrative / Legal / Articles** | Sentence-boundary chunking with 15% overlap | Split at natural paragraph boundaries; overlap 2-3 sentences to keep semantic continuity. |
 
 ---
 
 ## 2. Hybrid Search: Dense Vector + Sparse BM25
 
-Pencarian vektor murni sering gagal pada nama variabel persis, kode error, UUID, atau istilah teknis spesifik. Gunakan hybrid search:
+Pure vector search often fails on exact variable names, error codes, UUIDs, and specific technical terms. Use hybrid search:
 
 ```text
 Query
@@ -36,9 +36,9 @@ Query
 
 ---
 
-## 3. Mitigasi "Lost-in-the-Middle" & Konteks Ramping
+## 3. "Lost-in-the-Middle" Mitigation & Lean Context
 
-LLM memiliki atensi tertinggi pada awal dan akhir jendela prompt (U-shaped attention curve):
-1. **Posisi Konteks**: Tempatkan chunk dengan relevansi tertinggi di awal atau di paling akhir dekat instruksi user, bukan tertimbun di tengah dokumen panjang.
-2. **Context Window Hygiene**: Pangkas token yang tidak informatif (whitespace berlebih, format HTML berulang, metadata internal database).
-3. **Prompt Prefix Caching**: Pastikan sistem prompt statis dan dokumen referensi besar berada di urutan awal pesan agar memanfaatkan fitur context caching (Anthropic Prompt Caching / OpenAI prefix caching), memangkas latensi hingga 80% dan biaya token hingga 50%.
+An LLM attends most strongly to the start and end of the prompt window (U-shaped attention curve):
+1. **Context Position**: Place the most relevant chunks at the start, or at the very end next to the user instruction. Do not bury them in the middle of a long document.
+2. **Context Window Hygiene**: Strip uninformative tokens (excess whitespace, repeated HTML formatting, internal database metadata).
+3. **Prompt Prefix Caching**: Put the static system prompt and large reference documents first in the message order so context caching applies (Anthropic Prompt Caching / OpenAI prefix caching). This cuts latency by up to 80% and token cost by up to 50%.

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="1.1.0"
+VERSION="1.3.0"
 PROJECT_MODE=false
 for arg in "$@"; do
     case "$arg" in
@@ -11,7 +11,7 @@ for arg in "$@"; do
     esac
 done
 
-echo "🌑 Installing Maxilun ${VERSION} (25 skills + 13 autonomous agents)"
+echo "🌑 Installing Maxilun ${VERSION} (25 skills + 15 autonomous agents)"
 echo ""
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -110,6 +110,8 @@ install_target() {
             rm -rf -- "$d"
         done
         installed_backups+=("$platform_name: $backup_root")
+        # Keep at most 2 most recent backups to prevent disk bloat
+        ls -dt "$(dirname "$target_dir")"/_maxilun_backup_* 2>/dev/null | tail -n +3 | xargs rm -rf 2>/dev/null || true
     fi
 
     clean_legacy_skills "$target_dir"

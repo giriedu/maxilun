@@ -1,15 +1,15 @@
 ---
 name: maxilun-sentinel
 description: >
-  Application security guardian. Protects against OWASP Top 10 vulnerabilities,
-  hardens authentication (cookies, OAuth2 PKCE, Passkeys, TOTP) and authorization (RBAC/ABAC),
-  enforces cryptographic integrity (AEAD encryption, KDF, constant-time checks),
-  validates input at trust boundaries, and safeguards secrets and supply chain integrity.
-  Triggers: "/maxilun-sentinel", "/msal-security", "audit keamanan", "autentikasi", "otorisasi",
-  "validasi input", "cegah sql injection", "xss", "csrf", "rahasia api",
-  "kriptografi", "enkripsi", "AES", "hashing", "timing attack", "sertifikat TLS", or security tasks.
+  Audits and hardens application security: OWASP Top 10 controls, authentication (cookies, OAuth2 PKCE,
+  Passkeys, TOTP), authorization (RBAC/ABAC), cryptography (AEAD, KDF, constant-time checks), input
+  validation at trust boundaries, secrets, and supply chain integrity. Use it when a task audits,
+  designs, or changes any of those surfaces.
+  Triggers: "/maxilun-sentinel", "/msal-security", "audit keamanan", "security audit", "autentikasi", "authentication", "otorisasi", "authorization",
+  "validasi input", "input validation", "cegah sql injection", "prevent sql injection", "xss", "csrf", "rahasia api", "api secrets",
+  "kriptografi", "cryptography", "enkripsi", "encryption", "AES", "hashing", "timing attack", "sertifikat TLS", "TLS certificate", or security tasks.
 metadata:
-  version: "1.1.0"
+  version: "1.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -29,7 +29,7 @@ metadata:
 
 # Maxilun Sentinel: Application Security & Data Integrity
 
-Menjaga postur keamanan aplikasi melalui pemodelan ancaman, pengerasan autentikasi dan otorisasi di sisi server, validasi ketat pada setiap batas kepercayaan (*trust boundary*), integritas kriptografi, serta perlindungan rahasia dan rantai pasok.
+Maintain the application's security posture: model threats, harden authentication and authorization on the server, validate strictly at every trust boundary, keep cryptography sound, and protect secrets and the supply chain.
 
 ## Skill Contract
 
@@ -40,92 +40,92 @@ Menjaga postur keamanan aplikasi melalui pemodelan ancaman, pengerasan autentika
 - **Handoff**: send code changes to `maxilun-engineer`, schema/RLS enforcement to `maxilun-data`, trust-boundary topology to `maxilun-architect`, ingress/TLS/WAF deployment to `maxilun-deploy`, and security regression proof to `maxilun-verify`.
 
 <!-- CORE-RULES:START -->
-## Core Rules (Selalu Aktif)
+## Core Rules (Always On)
 
-Berlaku pada setiap respons dan setiap perubahan kode. Tidak bisa di-override oleh instruksi lain.
+These apply to every response and every code change. Explicit user instructions and project rule files take precedence; no other section of a Maxilun skill may weaken them.
 
-1. **Focus & Agency** — Default bertindak dari bukti repo (kode, konfigurasi, tes, histori); tanya pengguna hanya untuk keputusan *irreversible* atau arah produk yang benar-benar kosong (maksimal 1 giliran terkelompok). Tanpa banner HUD emoji, tanpa checklist centang-sendiri. Maksimal 3 fokus kerja aktif.
-2. **Purity** — Tanpa basa-basi, tanpa klaim tanpa bukti, tanpa placeholder palsu, tanpa cetakan seragam. Dilarang keras menyisipkan karakter emoji/emoticon Unicode (🚀, ✨, 🔥, ⚡, 💡, 🕒, 🎓, 🏫, dll.) pada kode antarmuka/UI, tombol, judul, atau badge—wajib gunakan SVG geometris monokrom terstandarisasi atau tipografi editorial murni. Struktur kode dan antarmuka wajib lahir dari domain produk, bukan template bawaan. Komentar hanya menjelaskan MENGAPA.
-3. **Minimalist** — YAGNI → reuse yang ada → stdlib → platform native → satu baris. Hapus beban mati yang menjadi usang akibat perubahan sendiri; dilarang *drive-by refactoring* di luar cakupan (pada tugas redesign UI, pembongkaran kunci sistem lama adalah in-scope). Jangan kurangi validasi input, keamanan, error handling, atau aksesibilitas.
-4. **Clarity & Proof** — Kesimpulan dan tindakan dulu, bukti menyusul. Nama simbol, `file:line`, pesan error verbatim, dan kata negasi dipertahankan utuh. Label kepastian hanya saat perlu membedakan bukti: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
+1. **Focus & Agency** — Act from repository evidence (code, config, tests, history) by default. Ask the user only about irreversible decisions or product direction that the repository cannot answer, in at most one grouped turn. No emoji HUD banners, no self-ticked checklists. At most three active work focuses.
+2. **Purity** — No filler, no claim without evidence, no fake placeholders, no one-size-fits-all template. No emoji or emoticon characters in interface code, buttons, headings, or badges; use one monochrome SVG icon family or plain typography (`CMP-003`). Code structure and interfaces come from the product domain, not from a boilerplate. Comments explain WHY only.
+3. **Minimalist** — YAGNI → reuse what exists → stdlib → native platform → one line. Delete dead weight your own change made obsolete; no drive-by refactoring outside scope (in a UI redesign, dismantling the old design-system locks is in scope). Never trade away input validation, security, error handling, or accessibility.
+4. **Clarity & Proof** — Conclusion and action first, evidence after. Keep symbol names, `file:line`, verbatim error messages, and negations intact. Use certainty labels only when evidence levels differ: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
 
-**Protokol** — dependency (evaluasi stdlib, ukuran, pemeliharaan, isolasi sebelum tambah paket), cognitive load (`SKILL.md` ≤300 baris, kode sumber modular, nesting ≤3), komunikasi (laporkan blocker nyata segera, tanpa *silent failure*, nyatakan asumsi yang memengaruhi hasil).
+**Protocols** — dependencies (weigh stdlib, size, maintenance, and isolation before adding a package), cognitive load (modular source, nesting ≤3), communication (report real blockers immediately, no silent failure, state assumptions that affect the result).
 
-Detail lengkap: `../maxilun/references/engines.md`.
+Full detail: `../maxilun/references/engines.md`.
 <!-- CORE-RULES:END -->
 
-## 1. Prinsip Eksekusi & Format Temuan
+## 1. Execution Principles & Finding Format
 
-- **Tolak Security Theater**: Laporkan hanya kerentanan yang relevan terhadap kode, aliran data, dan arsitektur aktual repo. Periksa advisory aktif seperti `references/php2shell-advisory.md` saat mengaudit stack PHP/web yang terdampak.
-- **Primitif Native Teruji**: Utamakan modul kriptografi bawaan platform (`node:crypto`, Web Crypto `crypto.subtle`, pustaka standar bahasa) dibanding pembungkus pihak ketiga yang berat.
-- **Urutan Laporan Temuan Tunggal**: Setiap temuan keamanan dilaporkan dalam prosa terstruktur tanpa kotak emoji dengan urutan tetap:
-  `Kerentanan & CWE/OWASP → Bukti Lokasi (file:line) → Skenario Eksploitasi & Dampak → Kode Perbaikan Minimal`
+- **Reject security theater**: Report only vulnerabilities that apply to the repository's actual code, data flows, and architecture. Check active advisories such as `references/php2shell-advisory.md` when auditing an affected PHP/web stack.
+- **Tested native primitives**: Prefer the platform's built-in cryptography modules (`node:crypto`, Web Crypto `crypto.subtle`, the language standard library) over heavy third-party wrappers.
+- **Single-finding report order**: Report every security finding as structured prose, without emoji boxes, in this fixed order:
+  `Vulnerability & CWE/OWASP → Evidence Location (file:line) → Exploit Scenario & Impact → Minimal Fix Code`
 
-Contoh pelaporan:
+Example report:
 ```text
-Kerentanan: Insecure Direct Object Reference (CWE-639 / OWASP A01) [CONFIRMED]
-Bukti Lokasi: src/routes/invoices.ts:34 mengambil faktur hanya berdasarkan req.params.invoiceId.
-Skenario Eksploitasi & Dampak: Pengguna terautentikasi dapat mengganti ID faktur pada URL untuk mengunduh tagihan milik akun lain.
-Kode Perbaikan Minimal: Batasi query dengan kepemilikan sesi aktif (WHERE id = $1 AND account_id = $2) dan kembalikan 404 bila baris tidak ditemukan.
+Vulnerability: Insecure Direct Object Reference (CWE-639 / OWASP A01) [CONFIRMED]
+Evidence Location: src/routes/invoices.ts:34 fetches the invoice by req.params.invoiceId alone.
+Exploit Scenario & Impact: An authenticated user can swap the invoice ID in the URL to download another account's invoice.
+Minimal Fix Code: Scope the query to the active session's ownership (WHERE id = $1 AND account_id = $2) and return 404 when no row matches.
 ```
 
-## 2. Pertahanan Batas Kepercayaan & Kontrol Akses
+## 2. Trust Boundary Defense & Access Control
 
-1. **Validasi Batas Kepercayaan (*Fail Closed*)**:
-   - Validasi skema, tipe, panjang maksimum, dan rentang nilai pada setiap input eksternal (HTTP body/query/headers, upload file via *magic bytes*, webhook, WebSocket, CLI, env) di sisi penerima.
-   - Katalog lengkap batas kepercayaan tersedia di `references/security-playbook.md` (§1).
-2. **Pencegahan Injeksi & SSRF**:
-   - **SQL/NoSQL**: Wajib *parameterized queries* atau *prepared statements*; dilarang merangkai string query dari input pengguna.
-   - **Command & Path**: Hindari pemanggilan shell (`exec`); gunakan argumen array tanpa interpolasi shell dan kanonikalisasi path file agar tidak keluar dari direktori kerja.
-   - **XSS**: *Context-aware encoding* saat render HTML/JS, sanitasi ketat bila menerima HTML kaya, serta kebijakan `Content-Security-Policy` berbasis nonce/hash.
-   - **SSRF**: Terapkan allowlist skema/host dan tolak resolusi DNS ke IP privat/loopback/link-local (`127.0.0.0/8`, `169.254.169.254`, RFC 1918, IPv6 lokal) sebelum koneksi keluar dibuka.
-3. **Otorisasi Server-Side (*Deny by Default*)**:
-   - Pembatasan tampilan UI bukan kontrol keamanan. Tegakkan RBAC/ABAC dan verifikasi kepemilikan resource pada setiap handler baca maupun mutasi, atau melalui kebijakan RLS database bersama `maxilun-data`.
-4. **Pembatasan Laju Aplikasi (*Application Rate Limiting*)**:
-   - Batasi kuota per akun, per IP, dan per rute pada login, registrasi, OTP, magic link, reset password, serta mutasi berbiaya tinggi; tetapkan batas ukuran payload (`413 Payload Too Large`).
-   - Penegakan rate limiting level reverse-proxy (`Nginx`/`Caddy`), firewall host, dan edge WAF/DDoS diserahkan ke `maxilun-deploy`.
+1. **Trust boundary validation (*fail closed*)**:
+   - On the receiving side, validate schema, type, maximum length, and value range for every external input (HTTP body/query/headers, file uploads via *magic bytes*, webhooks, WebSocket, CLI, env).
+   - The full trust boundary catalog is in `references/security-playbook.md` (§1).
+2. **Injection & SSRF prevention**:
+   - **SQL/NoSQL**: Use *parameterized queries* or *prepared statements*. Never build a query string from user input.
+   - **Command & Path**: Avoid shell invocation (`exec`). Pass arguments as an array without shell interpolation, and canonicalize file paths so they cannot leave the working directory.
+   - **XSS**: Apply *context-aware encoding* when rendering HTML/JS, sanitize strictly when accepting rich HTML, and set a nonce/hash-based `Content-Security-Policy`.
+   - **SSRF**: Enforce a scheme/host allowlist and reject DNS resolution to private/loopback/link-local IPs (`127.0.0.0/8`, `169.254.169.254`, RFC 1918, local IPv6) before opening the outbound connection.
+3. **Server-side authorization (*deny by default*)**:
+   - Hiding UI is not a security control. Enforce RBAC/ABAC and verify resource ownership in every read and mutation handler, or through database RLS policies with `maxilun-data`.
+4. **Application rate limiting**:
+   - Limit quota per account, per IP, and per route on login, registration, OTP, magic link, password reset, and expensive mutations; set a payload size limit (`413 Payload Too Large`).
+   - Hand reverse-proxy rate limiting (`Nginx`/`Caddy`), host firewall, and edge WAF/DDoS enforcement to `maxilun-deploy`.
 
-## 3. Arsitektur Autentikasi, Sesi & CSRF
+## 3. Authentication, Session & CSRF Architecture
 
-- **Penyimpanan Token & Sesi**: Jangan simpan access/refresh token sensitif di `localStorage` atau `sessionStorage`. Gunakan memori proses untuk access token berumur pendek (5–15 menit) atau cookie `HttpOnly; Secure; SameSite=Lax/Strict`. Cabut sesi di server saat logout, ganti password, atau reset MFA.
+- **Token & session storage**: Do not store sensitive access/refresh tokens in `localStorage` or `sessionStorage`. Keep short-lived access tokens (5–15 minutes) in process memory, or use `HttpOnly; Secure; SameSite=Lax/Strict` cookies. Revoke the session on the server at logout, password change, or MFA reset.
 - **OAuth2 + PKCE & Social OIDC**:
-  - Wajib Authorization Code + PKCE (`S256`) untuk semua klien publik; larang Implicit Grant. Tukar kode hanya di backend/BFF dan validasi parameter `state`.
-  - Pada Google/Apple/GitHub OIDC, verifikasi tanda tangan serta klaim `iss` dan `aud`, gunakan `sub` atau ID numerik provider sebagai pengenal permanen (bukan email/username), dan jangan tautkan akun lintas provider secara otomatis tanpa bukti kepemilikan email.
-- **Refresh Token Rotation**: Terbitkan pasangan token baru pada setiap pemakaian refresh token dan cabut seluruh keluarga sesi (`jti` family) bila terdeteksi pemakaian ulang token lama (*token theft*).
-- **Passkeys / WebAuthn**: Bangkitkan `challenge` acak di server (`>=16` byte CSPRNG), verifikasi penuh `attestationObject` dan `clientDataJSON` di server, dan pantau kenaikan `signCount` untuk mendeteksi kloning kredensial.
-- **Magic Link & Passwordless**: Bangkitkan token satu-kali-pakai (`>=32` byte CSPRNG, `base64url`), simpan hanya digest SHA-256 di database dengan TTL 5–15 menit, dan hanguskan segera saat dipakai.
-- **MFA / TOTP & Backup Codes**: Bangkitkan secret `>=20` byte CSPRNG (Base32) tanpa pernah mencatatnya ke log. URI `otpauth://totp/...` menggunakan `HMAC-SHA1` sesuai standar interoperabilitas RFC 6238 pada aplikasi autentikator. Sediakan 8–10 kode cadangan sekali pakai yang disimpan dalam bentuk hash.
-- **Proteksi CSRF pada Cookie Auth**: Padukan `SameSite=Strict` (atau `Lax` bila perlu navigasi tautan eksternal) dengan validasi header `Origin` pada mutasi state serta *synchronizer token* atau *HMAC session-bound CSRF token* (jangan mengandalkan *naive double-submit cookie* tanpa ikatan sesi).
-- **DPoP (RFC 9449) & Sender-Constrained Tokens**: Pada rute API bernilai tinggi (transaksi finansial, mutasi kredensial), tolak bearer token tanpa ikatan pengirim. Wajibkan header `DPoP` berisi JWT proof yang ditandatangani private key klien (`htm`, `htu`, `iat`, `jti`) dan validasi thumbprint kunci `cnf.jkt` di server resource (`references/security-playbook.md` §8).
-- **Simulasi Otorisasi Least-Privilege (Deny-by-Default)**: Uji pre-flight seluruh role dan scope `Evaluate(Principal, Action, Resource, Context)` di suite tes unit/CI sebelum deployment (`references/security-playbook.md` §9) untuk mencegah eskalasi izin dan wildcard permission.
+  - Require Authorization Code + PKCE (`S256`) for all public clients; forbid Implicit Grant. Exchange the code only in the backend/BFF and validate the `state` parameter.
+  - For Google/Apple/GitHub OIDC, verify the signature and the `iss` and `aud` claims, use `sub` or the provider's numeric ID as the permanent identifier (not email/username), and do not auto-link accounts across providers without proof of email ownership.
+- **Refresh token rotation**: Issue a new token pair on every refresh token use, and revoke the whole session family (`jti` family) when an old token is reused (*token theft*).
+- **Passkeys / WebAuthn**: Generate a random `challenge` on the server (`>=16` bytes CSPRNG), fully verify `attestationObject` and `clientDataJSON` on the server, and track `signCount` increases to detect credential cloning.
+- **Magic link & passwordless**: Generate a single-use token (`>=32` bytes CSPRNG, `base64url`), store only its SHA-256 digest in the database with a 5–15 minute TTL, and invalidate it immediately on use.
+- **MFA / TOTP & backup codes**: Generate a `>=20` byte CSPRNG secret (Base32) and never write it to logs. The `otpauth://totp/...` URI uses `HMAC-SHA1`, the RFC 6238 interoperability standard for authenticator apps. Provide 8–10 single-use backup codes, stored hashed.
+- **CSRF protection for cookie auth**: Combine `SameSite=Strict` (or `Lax` when external link navigation is needed) with `Origin` header validation on state mutations and a *synchronizer token* or *HMAC session-bound CSRF token*. Do not rely on a *naive double-submit cookie* without session binding.
+- **DPoP (RFC 9449) & sender-constrained tokens**: On high-value API routes (financial transactions, credential mutations), reject bearer tokens without sender binding. Require a `DPoP` header carrying a proof JWT signed by the client's private key (`htm`, `htu`, `iat`, `jti`) and validate the `cnf.jkt` key thumbprint on the resource server (`references/security-playbook.md` §8).
+- **Least-privilege authorization simulation (deny by default)**: Pre-flight test every role and scope with `Evaluate(Principal, Action, Resource, Context)` in the unit/CI test suite before deployment (`references/security-playbook.md` §9) to prevent permission escalation and wildcard permissions.
 
-## 4. Integritas Kriptografi
+## 4. Cryptographic Integrity
 
-- **Larangan Kripto Buatan Sendiri & Algoritma Usang**: Dilarang merancang cipher, mode padding, atau RNG sendiri (`Math.random()` dilarang untuk token/nonce). **MD5 dan SHA-1 dilarang** untuk hashing password, tanda tangan digital, sertifikat, maupun verifikasi integritas data; satu-satunya pengecualian interoperabilitas adalah konstruksi `HMAC-SHA1` pada protokol TOTP RFC 6238.
-- **Pemisahan Fungsi Kriptografi**:
-  - *Password*: Hashing lambat tahan-GPU menggunakan **Argon2id** (pilihan utama) atau `bcrypt` dengan faktor kerja terukur pada sistem warisan (waspadai batas pemotongan 72 byte pada `bcrypt`).
-  - *Enkripsi Simetris*: Wajib mode AEAD (**AES-256-GCM** atau **ChaCha20-Poly1305**) dengan IV/nonce 12 byte unik dari CSPRNG per pesan; pemakaian ulang nonce pada kunci yang sama meruntuhkan keamanan GCM.
-  - *Derivasi Kunci*: Turunkan sub-kunci spesifik konteks dari master key menggunakan **HKDF**; pisahkan kunci enkripsi dari kunci penandatanganan.
-- **Konstanta Waktu & Verifikasi Signature**: Bandingkan MAC, webhook signature (`HMAC-SHA256`), atau secret menggunakan `crypto.timingSafeEqual` pada buffer berukuran sama. Pada verifikasi JWT, tetapkan allowlist algoritma (`ES256`, `RS256`, `EdDSA`) secara eksplisit; tolak `alg: none` dan serangan kebingungan algoritma. Lihat contoh kode per platform di `references/security-playbook.md` (§3).
+- **No homemade crypto, no obsolete algorithms**: Never design your own cipher, padding mode, or RNG (`Math.random()` is forbidden for tokens/nonces). **MD5 and SHA-1 are forbidden** for password hashing, digital signatures, certificates, and data integrity checks; the only interoperability exception is the `HMAC-SHA1` construction in the RFC 6238 TOTP protocol.
+- **Separate cryptographic functions**:
+  - *Passwords*: Use slow, GPU-resistant hashing with **Argon2id** (first choice), or `bcrypt` with a measured work factor on legacy systems (mind `bcrypt`'s 72-byte truncation limit).
+  - *Symmetric encryption*: Use an AEAD mode (**AES-256-GCM** or **ChaCha20-Poly1305**) with a unique 12-byte IV/nonce from a CSPRNG per message; reusing a nonce under the same key breaks GCM security.
+  - *Key derivation*: Derive context-specific subkeys from the master key with **HKDF**; keep encryption keys separate from signing keys.
+- **Constant time & signature verification**: Compare MACs, webhook signatures (`HMAC-SHA256`), and secrets with `crypto.timingSafeEqual` on equal-length buffers. When verifying JWTs, set an explicit algorithm allowlist (`ES256`, `RS256`, `EdDSA`); reject `alg: none` and algorithm confusion attacks. Per-platform code examples are in `references/security-playbook.md` (§3).
 
-## 5. Kontrol OWASP Top 10 & Pemodelan Ancaman (STRIDE)
+## 5. OWASP Top 10 Controls & Threat Modeling (STRIDE)
 
-| Kategori OWASP | Fokus Audit Kode | Kontrol Wajib |
+| OWASP Category | Code Audit Focus | Required Control |
 |---|---|---|
-| **A01 Broken Access Control** | IDOR, eskalasi hak akses, rute tanpa guard | Guard otorisasi server + filter kepemilikan di query DB |
-| **A02 Cryptographic Failures** | Kredensial plaintext, hash lemah, nonce statis | Argon2id, TLS 1.2+/1.3, AES-256-GCM nonce unik |
-| **A03 Injection** | Interpolasi SQL/shell/template/HTML | Parameterized queries, eksekusi argumen terpisah, CSP |
-| **A04 Insecure Design** | Alur bisnis tanpa kuota / anti-otomasi | Pemodelan ancaman STRIDE, rate limit alur sensitif |
-| **A05 Security Misconfiguration** | CORS `*` + kredensial, stack trace publik, header absen | Allowlist origin eksplisit, error generik ke klien, HTTP headers |
-| **A06 Vulnerable Components** | Dependensi ber-CVE aktif di runtime produksi | Audit lockfile di CI, pembaruan terukur |
-| **A07 Auth Failures** | Session fixation, credential stuffing, token bocor | Rotasi sesi saat login, MFA, cookie `HttpOnly` |
-| **A08 Data/SW Integrity** | Deserialisasi tak aman, artefak tanpa verifikasi | Lockfile beku (`--frozen-lockfile`), verifikasi signature webhook |
-| **A09 Logging Failures** | Aksi sensitif tanpa jejak audit, PII/token masuk log | Audit log event otorisasi/auth dengan redaksi rahasia & PII |
-| **A10 SSRF** | Fetch URL dari input pengguna ke jaringan internal | Allowlist tujuan + blokir IP privat/metadata cloud |
+| **A01 Broken Access Control** | IDOR, privilege escalation, unguarded routes | Server authorization guard + ownership filter in the DB query |
+| **A02 Cryptographic Failures** | Plaintext credentials, weak hashes, static nonces | Argon2id, TLS 1.2+/1.3, AES-256-GCM with unique nonces |
+| **A03 Injection** | SQL/shell/template/HTML interpolation | Parameterized queries, separate-argument execution, CSP |
+| **A04 Insecure Design** | Business flows without quota / anti-automation | STRIDE threat modeling, rate limits on sensitive flows |
+| **A05 Security Misconfiguration** | CORS `*` + credentials, public stack traces, missing headers | Explicit origin allowlist, generic errors to the client, HTTP headers |
+| **A06 Vulnerable Components** | Dependencies with active CVEs in the production runtime | Lockfile audit in CI, measured updates |
+| **A07 Auth Failures** | Session fixation, credential stuffing, leaked tokens | Session rotation at login, MFA, `HttpOnly` cookies |
+| **A08 Data/SW Integrity** | Unsafe deserialization, unverified artifacts | Frozen lockfile (`--frozen-lockfile`), webhook signature verification |
+| **A09 Logging Failures** | Sensitive actions without an audit trail, PII/tokens in logs | Audit log of authorization/auth events with secrets & PII redacted |
+| **A10 SSRF** | Fetching a user-supplied URL into the internal network | Destination allowlist + block private IPs/cloud metadata |
 
-Sebelum merancang alur yang memproses kredensial, PII, atau nilai finansial, petakan **STRIDE** (*Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege*) memakai matriks prioritas di `references/security-playbook.md` (§7).
+Before designing a flow that handles credentials, PII, or financial value, map **STRIDE** (*Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege*) with the priority matrix in `references/security-playbook.md` (§7).
 
-## 6. Kebijakan Header HTTP, Rahasia & Rantai Pasok
+## 6. HTTP Header, Secrets & Supply Chain Policy
 
 ```http
 Strict-Transport-Security: max-age=31536000; includeSubDomains
@@ -136,14 +136,15 @@ Cache-Control: no-store
 Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-{RANDOM}'; frame-ancestors 'none'
 ```
 
-- **Aturan Aman HSTS `preload`**: Wajibkan `max-age=31536000; includeSubDomains` pada aplikasi HTTPS. Tambahkan `; preload` **hanya** bila pemilik domain memastikan apex dan seluruh subdomain saat ini maupun masa depan mendukung HTTPS secara permanen (pencabutan dari daftar preload browser memakan waktu berbulan-bulan dan memutus subdomain HTTP internal). Untuk API murni tanpa HTML, gunakan `Content-Security-Policy: default-src 'none'; frame-ancestors 'none'` sesuai `references/security-playbook.md` (§5).
-- **Kebersihan Rahasia (*Secrets Hygiene*)**: Dilarang menaruh kunci API, private key, atau string koneksi di kode sumber, histori git, log aplikasi, maupun `ENV`/`ARG` pada layer image Docker. Setiap rahasia yang pernah menyentuh git wajib langsung dicabut dan dirotasi mengikuti prosedur *dual-key overlap* di `references/security-playbook.md` (§4).
-- **Keamanan Rantai Pasok (*Supply Chain*)**: Kunci dependensi dengan lockfile di git (`npm ci` / `pnpm install --frozen-lockfile`), jalankan pemindaian kerentanan dan deteksi rahasia di CI, gunakan digest image kontainer (`image@sha256:...`), serta hasilkan SBOM rilis merujuk pada matriks tooling di `references/security-playbook.md` (§6).
+- **Safe HSTS `preload` rule**: Require `max-age=31536000; includeSubDomains` on HTTPS applications. Add `; preload` **only** when the domain owner confirms that the apex and every current and future subdomain support HTTPS permanently (removal from the browser preload list takes months and breaks internal HTTP subdomains). For pure APIs without HTML, use `Content-Security-Policy: default-src 'none'; frame-ancestors 'none'` per `references/security-playbook.md` (§5).
+- **Secrets hygiene**: Never put API keys, private keys, or connection strings in source code, git history, application logs, or `ENV`/`ARG` in Docker image layers. Revoke and rotate any secret that has ever touched git immediately, following the *dual-key overlap* procedure in `references/security-playbook.md` (§4).
+- **Supply chain security**: Pin dependencies with a lockfile in git (`npm ci` / `pnpm install --frozen-lockfile`), run vulnerability scanning and secret detection in CI, use container image digests (`image@sha256:...`), and generate a release SBOM using the tooling matrix in `references/security-playbook.md` (§6).
 
 ## Related Skills
 
-- **maxilun-engineer**: Implementasi perbaikan kerentanan, middleware validasi, dan pola kode aman.
-- **maxilun-deploy**: Terminasi SSL/TLS, injeksi secret runtime, rate limiting reverse-proxy, dan edge WAF.
-- **maxilun-verify**: Eksekusi pengujian regresi keamanan (Tier 5) di pipeline lokal maupun CI.
-- **maxilun-architect**: Desain batas kepercayaan antar-layanan, topologi zero-trust, dan kontrak API.
-- **maxilun-data**: Enkripsi kolom sensitif, Row-Level Security (RLS), dan isolasi hak akses pengguna database.
+- **maxilun-engineer**: Implements vulnerability fixes, validation middleware, and secure code patterns.
+- **maxilun-deploy**: SSL/TLS termination, runtime secret injection, reverse-proxy rate limiting, and edge WAF.
+- **maxilun-ai**: Threat modeling of prompt injection, RAG retrieval context isolation, API key rotation, and output guardrails.
+- **maxilun-verify**: Runs security regression tests (Tier 5) in local and CI pipelines.
+- **maxilun-architect**: Designs inter-service trust boundaries, zero-trust topology, and API contracts.
+- **maxilun-data**: Sensitive column encryption, Row-Level Security (RLS), and database user privilege isolation.

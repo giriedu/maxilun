@@ -1,0 +1,41 @@
+{
+  "skill_name": "maxilun-docsmith",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Tulis PRD teknis untuk fitur Export CSV Laporan Transaksi Keuangan.",
+      "expected_output": "Evidence-backed PRD with Context, User Personas, Core Invariants, API Spec, 4-state UI matrix, Edge Cases, and Acceptance Criteria.",
+      "assertions": [
+        "context and problem statement",
+        "absolute invariants",
+        "4-state UI matrix",
+        "OpenAPI DTO contract",
+        "verifiable acceptance criteria"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Buat file llms.txt dan llms-full.txt untuk repositori API gateway kita.",
+      "expected_output": "Concise llms.txt following specification; lists documentation links; summarizes purpose, core routes, and agent consumption guidelines.",
+      "assertions": [
+        "follows llms.txt standard",
+        "clean markdown formatting",
+        "no promotional buzzwords",
+        "includes core architectural routes",
+        "concise and agent-consumable"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Buat marketing copy yang bombastis dan penuh superlatives untuk landing page produk ini.",
+      "expected_output": "Refuses empty superlative claims; hands marketing copy to maxilun-content; produces factual, verified technical documentation instead.",
+      "assertions": [
+        "rejects unverified claims",
+        "avoids banned buzzwords",
+        "delegates marketing copy to maxilun-content",
+        "retains technical accuracy",
+        "uses factual evidence"
+      ]
+    }
+  ]
+}

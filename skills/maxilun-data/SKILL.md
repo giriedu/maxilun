@@ -1,13 +1,13 @@
 ---
 name: maxilun-data
 description: >
-  Database & data layer specialist for schema design, zero-downtime migrations,
-  ORM and query boundaries, indexing strategy, EXPLAIN analysis, database selection,
-  and multi-tenant RLS isolation across PostgreSQL, SQLite/libSQL, MySQL, Redis,
-  and ClickHouse. Triggers: "/maxilun-data", "skema database", "migrasi",
-  "indeks query", "ORM", "optimasi database", "desain tabel", or any data layer task.
+  Designs schemas, zero-downtime migrations, ORM and query boundaries, indexes backed by
+  EXPLAIN evidence, database selection, and multi-tenant RLS isolation across PostgreSQL,
+  SQLite/libSQL, MySQL, Redis, and ClickHouse. Use it for any data layer task. Triggers:
+  "/maxilun-data", "skema database", "database schema", "migrasi", "migration", "indeks query",
+  "query index", "ORM", "optimasi database", "database optimization", "desain tabel", "table design".
 metadata:
-  version: "1.1.0"
+  version: "1.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -24,11 +24,12 @@ metadata:
     - references/index.md
     - references/zero-downtime-migrations.md
     - references/query-optimization-explain.md
+    - references/multi-tenant-isolation-rls.md
 ---
 
 # Maxilun Data: Database & Data Layer Engineering
 
-Bertanggung jawab atas rekayasa lapisan data: desain skema relasional yang menjaga integritas di tingkat database, migrasi *Expand-Contract* tanpa henti layanan, eliminasi pola kueri `N+1`, strategi indeks berbasis bukti `EXPLAIN`, pemilihan mesin penyimpanan sesuai profil beban kerja, serta isolasi data *multi-tenant*.
+Engineer the data layer: relational schemas that enforce integrity inside the database, *Expand-Contract* migrations with no service interruption, removal of `N+1` query patterns, index strategy backed by `EXPLAIN` evidence, storage engine selection by workload profile, and *multi-tenant* data isolation.
 
 ## Skill Contract
 
@@ -39,110 +40,111 @@ Bertanggung jawab atas rekayasa lapisan data: desain skema relasional yang menja
 - **Handoff**: align bounded contexts and partitioning strategy with `maxilun-architect`, review PII/IDOR/encryption controls with `maxilun-sentinel`, diagnose systemic contention with `maxilun-insight`, implement repository/ORM code with `maxilun-engineer`, and prove migration/query regressions with `maxilun-verify`.
 
 <!-- CORE-RULES:START -->
-## Core Rules (Selalu Aktif)
+## Core Rules (Always On)
 
-Berlaku pada setiap respons dan setiap perubahan kode. Tidak bisa di-override oleh instruksi lain.
+These apply to every response and every code change. Explicit user instructions and project rule files take precedence; no other section of a Maxilun skill may weaken them.
 
-1. **Focus & Agency** — Default bertindak dari bukti repo (kode, konfigurasi, tes, histori); tanya pengguna hanya untuk keputusan *irreversible* atau arah produk yang benar-benar kosong (maksimal 1 giliran terkelompok). Tanpa banner HUD emoji, tanpa checklist centang-sendiri. Maksimal 3 fokus kerja aktif.
-2. **Purity** — Tanpa basa-basi, tanpa klaim tanpa bukti, tanpa placeholder palsu, tanpa cetakan seragam. Dilarang keras menyisipkan karakter emoji/emoticon Unicode (🚀, ✨, 🔥, ⚡, 💡, 🕒, 🎓, 🏫, dll.) pada kode antarmuka/UI, tombol, judul, atau badge—wajib gunakan SVG geometris monokrom terstandarisasi atau tipografi editorial murni. Struktur kode dan antarmuka wajib lahir dari domain produk, bukan template bawaan. Komentar hanya menjelaskan MENGAPA.
-3. **Minimalist** — YAGNI → reuse yang ada → stdlib → platform native → satu baris. Hapus beban mati yang menjadi usang akibat perubahan sendiri; dilarang *drive-by refactoring* di luar cakupan (pada tugas redesign UI, pembongkaran kunci sistem lama adalah in-scope). Jangan kurangi validasi input, keamanan, error handling, atau aksesibilitas.
-4. **Clarity & Proof** — Kesimpulan dan tindakan dulu, bukti menyusul. Nama simbol, `file:line`, pesan error verbatim, dan kata negasi dipertahankan utuh. Label kepastian hanya saat perlu membedakan bukti: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
+1. **Focus & Agency** — Act from repository evidence (code, config, tests, history) by default. Ask the user only about irreversible decisions or product direction that the repository cannot answer, in at most one grouped turn. No emoji HUD banners, no self-ticked checklists. At most three active work focuses.
+2. **Purity** — No filler, no claim without evidence, no fake placeholders, no one-size-fits-all template. No emoji or emoticon characters in interface code, buttons, headings, or badges; use one monochrome SVG icon family or plain typography (`CMP-003`). Code structure and interfaces come from the product domain, not from a boilerplate. Comments explain WHY only.
+3. **Minimalist** — YAGNI → reuse what exists → stdlib → native platform → one line. Delete dead weight your own change made obsolete; no drive-by refactoring outside scope (in a UI redesign, dismantling the old design-system locks is in scope). Never trade away input validation, security, error handling, or accessibility.
+4. **Clarity & Proof** — Conclusion and action first, evidence after. Keep symbol names, `file:line`, verbatim error messages, and negations intact. Use certainty labels only when evidence levels differ: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
 
-**Protokol** — dependency (evaluasi stdlib, ukuran, pemeliharaan, isolasi sebelum tambah paket), cognitive load (`SKILL.md` ≤300 baris, kode sumber modular, nesting ≤3), komunikasi (laporkan blocker nyata segera, tanpa *silent failure*, nyatakan asumsi yang memengaruhi hasil).
+**Protocols** — dependencies (weigh stdlib, size, maintenance, and isolation before adding a package), cognitive load (modular source, nesting ≤3), communication (report real blockers immediately, no silent failure, state assumptions that affect the result).
 
-Detail lengkap: `../maxilun/references/engines.md`.
+Full detail: `../maxilun/references/engines.md`.
 <!-- CORE-RULES:END -->
 
-## 1. Desain Skema, Konvensi Brownfield/Greenfield & Audit
+## 1. Schema Design, Brownfield/Greenfield Conventions & Audit
 
-Periksa migrasi eksisting serta artefak `maxilun-knowledge-graph` (`maxilun-out/graph.json` atau `.maxilun/graph.json`) terlebih dahulu untuk memetakan model ORM, pemanggil repositori, dan konvensi database yang sedang berjalan.
+First inspect the existing migrations and the `maxilun-knowledge-graph` artifacts (`maxilun-out/graph.json` or `.maxilun/graph.json`) to map the ORM models, repository callers, and database conventions already in use.
 
-- **Brownfield Dahulu**: Pada skema eksisting, patuhi secara konsisten penamaan tabel/kolom (`snake_case` vs `camelCase`), tipe Primary Key, dan alat migrasi repositori—dilarang mencampur dua konvensi di satu database.
-- **Standar Greenfield**: Gunakan tabel `snake_case` jamak (`payment_transactions`), kolom `snake_case` tunggal, waktu UTC bertipe `TIMESTAMPTZ` berakhiran `_at`, dan Primary Key **`UUIDv7`** (terurut waktu, aman diekspos publik tanpa fragmentasi halaman B-tree `UUIDv4`) atau **`BIGINT GENERATED ALWAYS AS IDENTITY`** (kompak untuk join internal berkecepatan tinggi; hindari `SERIAL` lama).
-- **Normalisasi & Constraint Database**: Mulai dari **3NF** dan tegakkan `NOT NULL`, `FOREIGN KEY`, `UNIQUE`, serta `CHECK` langsung di mesin database. Denormalisasi atau *materialized view* hanya dibenarkan bila terukur oleh profil beban baca dan memiliki mekanisme sinkronisasi eksplisit.
-- **Audit Trail yang Aman bagi Sistem & Hard-Delete**: Jangan memaksakan `created_by UUID NOT NULL REFERENCES users(id)` bila baris dapat ditulis oleh *webhook*, *cron worker*, antrean sistem, atau bila akun pengguna dapat dihapus permanen:
+- **Brownfield first**: On an existing schema, follow its table/column naming (`snake_case` vs `camelCase`), Primary Key type, and migration tool consistently. Never mix two conventions in one database.
+- **Greenfield standard**: Use plural `snake_case` tables (`payment_transactions`), singular `snake_case` columns, UTC timestamps typed `TIMESTAMPTZ` with an `_at` suffix, and a Primary Key of **`UUIDv7`** (time-ordered, safe to expose publicly, without the B-tree page fragmentation of `UUIDv4`) or **`BIGINT GENERATED ALWAYS AS IDENTITY`** (compact for fast internal joins; avoid legacy `SERIAL`).
+- **Normalization & database constraints**: Start from **3NF** and enforce `NOT NULL`, `FOREIGN KEY`, `UNIQUE`, and `CHECK` in the database engine itself. Denormalize or add a *materialized view* only when a measured read-load profile justifies it and an explicit sync mechanism exists.
+- **Audit trail that survives system writers & hard deletes**: Do not force `created_by UUID NOT NULL REFERENCES users(id)` when rows can be written by a *webhook*, a *cron worker*, or a system queue, or when user accounts can be permanently deleted:
 
 ```sql
 created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
 updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
 actor_type TEXT NOT NULL DEFAULT 'user', -- 'user' | 'system' | 'webhook'
-actor_id   TEXT                          -- atau UUID NULL REFERENCES users(id) ON DELETE SET NULL
+actor_id   TEXT                          -- or UUID NULL REFERENCES users(id) ON DELETE SET NULL
 ```
 
-  Untuk tabel *ledger* atau *event log append-only*, simpan `created_at` saja tanpa `updated_at` dan larang `UPDATE`/`DELETE`.
-- **Soft Delete sebagai Opt-In Domain (Bukan Dogma Universal)**: Tambahkan `deleted_at TIMESTAMPTZ NULL` **hanya** bila produk memang membutuhkan fitur *trash/restore* pengguna. Bila diaktifkan, wajib pasang *partial unique index* (`CREATE UNIQUE INDEX users_email_active_idx ON users (email) WHERE deleted_at IS NULL`), saring kueri baca default secara konsisten, dan sediakan prosedur *hard-delete*/anonimisasi nyata untuk kewajiban penghapusan data pribadi (GDPR/UU PDP).
+  For *ledger* or *append-only event log* tables, store `created_at` only, without `updated_at`, and forbid `UPDATE`/`DELETE`.
+- **Soft delete is a domain opt-in, not a universal rule**: Add `deleted_at TIMESTAMPTZ NULL` **only** when the product needs a user-facing *trash/restore* feature. When it is enabled, add a *partial unique index* (`CREATE UNIQUE INDEX users_email_active_idx ON users (email) WHERE deleted_at IS NULL`), filter default read queries consistently, and provide a real *hard-delete*/anonymization procedure for personal-data erasure obligations (GDPR/UU PDP).
 
-## 2. Migrasi Zero-Downtime, Expand-Contract & Backfill
+## 2. Zero-Downtime Migrations, Expand-Contract & Backfill
 
-Jangan pernah melakukan `RENAME COLUMN`, mengubah tipe kolom yang memicu penulisan ulang tabel penuh, atau menahan *lock* eksklusif lama pada produksi aktif. Jalankan satu alur **Expand-Contract** terpadu:
+Never run `RENAME COLUMN`, change a column type in a way that rewrites the whole table, or hold a long exclusive *lock* on live production. Run one unified **Expand-Contract** flow:
 
-1. **Expand (DDL Non-Blocking)**:
-   - Tambah kolom baru sebagai *nullable* atau dengan `DEFAULT` konstanta statis (metadata-only di PostgreSQL 11+; hindari fungsi volatil ber-rewrite pada versi lama).
-   - Bangun indeks di luar transaksi dengan `CREATE INDEX CONCURRENTLY`.
-   - Pasang `FOREIGN KEY` atau `CHECK` baru pada tabel besar menggunakan `ADD CONSTRAINT ... NOT VALID`, lalu jalankan `VALIDATE CONSTRAINT` pada migrasi terpisah:
+1. **Expand (non-blocking DDL)**:
+   - Add the new column as *nullable* or with a static constant `DEFAULT` (metadata-only on PostgreSQL 11+; avoid volatile functions that force a rewrite on older versions).
+   - Build indexes outside a transaction with `CREATE INDEX CONCURRENTLY`.
+   - Add a new `FOREIGN KEY` or `CHECK` on a large table with `ADD CONSTRAINT ... NOT VALID`, then run `VALIDATE CONSTRAINT` in a separate migration:
 
 ```sql
--- Langkah 1: pasang constraint instan tanpa memindai baris lama
+-- Step 1: attach the constraint instantly without scanning existing rows
 ALTER TABLE orders ADD CONSTRAINT orders_customer_fk
   FOREIGN KEY (customer_id) REFERENCES customers(id) NOT VALID;
--- Langkah 2 (migrasi terpisah): validasi dengan SHARE UPDATE EXCLUSIVE ringan
+-- Step 2 (separate migration): validate under a light SHARE UPDATE EXCLUSIVE lock
 ALTER TABLE orders VALIDATE CONSTRAINT orders_customer_fk;
 ```
 
-2. **Dual-Write & Cursor Backfill**:
-   - Deploy kode yang menulis ke representasi lama sekaligus baru.
-   - Isi data historis secara idempoten dalam potongan berbasis *cursor* Primary Key (`WHERE id > $last_id ORDER BY id LIMIT 2000`, jangan pernah memakai `OFFSET` besar), setel `SET LOCAL lock_timeout = '2s'` dan `statement_timeout`, serta beri jeda sesuai metrik lag replika.
-3. **Switch Reads & Contract**:
-   - Alihkan pembacaan aplikasi ke kolom/tabel baru, pantau periode observasi hingga dipastikan nol *fallback*, hapus referensi kode lama, lalu lepas kolom/tabel usang (`DROP COLUMN`). Dokumentasikan eksplisit setiap langkah pembersihan yang *irreversible* beserta rencana pemulihannya.
+2. **Dual-write & cursor backfill**:
+   - Deploy code that writes to both the old and the new representation.
+   - Backfill historical data idempotently in chunks keyed on a Primary Key *cursor* (`WHERE id > $last_id ORDER BY id LIMIT 1000`; never use a large `OFFSET`). Set `SET LOCAL lock_timeout = '2s'` and `statement_timeout`, with a $50\text{ms}$ pause between chunks to respect replica lag.
+3. **Switch reads & contract**:
+   - Point application reads at the new column/table. Watch an observation period until zero *fallback* is confirmed, delete the old code references, then drop the obsolete column/table (`DROP COLUMN`). Document every *irreversible* cleanup step explicitly, with its recovery plan.
 
-## 3. Bentuk Query, Batas ORM & Eliminasi N+1
+## 3. Query Shape, ORM Boundaries & N+1 Elimination
 
-- **Eliminasi Loop `N+1` Tak Terbatas**: Jangan memakai angka batas kueri sembarang (seperti batas kaku 10 kueri); berantas pola di mana jumlah kueri bertambah mengikuti panjang daftar hasil (`O(N)`). Ganti kueri di dalam loop dengan `JOIN` eksplisit, pemuatan batch `WHERE parent_id = ANY($1)` (`include`/`with`/DataLoader), atau agregasi CTE tunggal. Pilih kolom spesifik daripada `SELECT *` pada tabel lebar atau kolom `JSONB` besar.
-- **Batas Transaksi & Mutasi Massal**: Jaga transaksi sependek mungkin—dilarang memanggil HTTP pihak ketiga, mengirim email, atau mengeksekusi pekerjaan lambat di dalam transaksi terbuka. Setel `statement_timeout` eksplisit, gunakan `SELECT ... FOR UPDATE` atau *optimistic locking* (`WHERE version = $v`) untuk mutasi konkuren, dan gunakan multi-row `VALUES`, `UNNEST`, atau `COPY` untuk tulis massal.
-- **Connection Pooling**: Ukur ukuran pool (`PgBouncer`, driver serverless HTTP/WS, atau pool aplikasi) berdasarkan kapasitas nyata `max_connections`, jumlah replika aplikasi, dan inti CPU database sambil menyisakan kuota koneksi admin dan migrasi.
+- **Eliminate unbounded `N+1` loops**: Do not apply an arbitrary query-count limit (such as a rigid cap of 10 queries). Remove every pattern where the number of queries grows with the length of the result list (`O(N)`). Replace queries inside a loop with an explicit `JOIN`, a batch load `WHERE parent_id = ANY($1)` (`include`/`with`/DataLoader), or a single CTE aggregation. Select specific columns instead of `SELECT *` on wide tables or large `JSONB` columns.
+- **Transaction boundaries & bulk mutations**: Keep transactions as short as possible. Never call third-party HTTP, send email, or run slow work inside an open transaction. Set an explicit `statement_timeout`, use `SELECT ... FOR UPDATE` or *optimistic locking* (`WHERE version = $v`) for concurrent mutations, and use multi-row `VALUES`, `UNNEST`, or `COPY` for bulk writes.
+- **Connection pooling**: Size the pool (`PgBouncer`, a serverless HTTP/WS driver, or an application pool) from the real `max_connections` capacity, the number of application replicas, and the database CPU cores, while reserving connection quota for admin and migrations.
 
-## 4. Strategi Indexing & Bukti EXPLAIN
+## 4. Indexing Strategy & EXPLAIN Evidence
 
-Jalankan **Alur 5-Langkah Optimasi Kueri Sistemik** di `references/query-optimization-explain.md` (§4: Baseline EXPLAIN $\to$ Scan Pruning $\to$ Spill-to-Disk Elimination $\to$ Query Rewrite & Covering Index $\to$ Comparative Proof). Ukur rencana kueri sebelum menambah indeks menggunakan `EXPLAIN` (dan `EXPLAIN (ANALYZE, BUFFERS)` hanya pada kueri baca atau di dalam staging/transaksi uji yang aman—jangan menjalankan mutasi produksi langsung dengan `EXPLAIN ANALYZE`):
+Run the **5-Step Systematic Query Optimization Flow** in `references/query-optimization-explain.md` (§4: Baseline EXPLAIN $\to$ Scan Pruning $\to$ Spill-to-Disk Elimination $\to$ Query Rewrite & Covering Index $\to$ Comparative Proof). Measure the query plan before adding an index, using `EXPLAIN`. Use `EXPLAIN (ANALYZE, BUFFERS)` only on read queries or inside staging / a safe test transaction; never run a live production mutation under `EXPLAIN ANALYZE`:
 
-| Sinyal pada `EXPLAIN (ANALYZE, BUFFERS)` | Diagnosis & Tindakan Rekayasa |
+| Signal in `EXPLAIN (ANALYZE, BUFFERS)` | Diagnosis & Engineering Action |
 |---|---|
-| *Estimated rows* meleset jauh (`>10x`) dari *actual rows* | Statistik tabel basi atau korelasi antar-kolom tinggi → jalankan `ANALYZE` atau `CREATE STATISTICS` |
-| *Rows Removed by Filter* sangat besar pada Seq/Index Scan | Selektivitas indeks kurang tepat → susun indeks komposit **Equality (`=`) → Range (`>`,`<`) → Sort (`ORDER BY`)** |
-| *Heap Fetches* tinggi pada jalur baca panas | Tambahkan kolom proyeksi ke **Covering Index (`INCLUDE (...)`)** dan pastikan *autovacuum* sehat |
-| Predikat miring (mis. hanya `status = 'pending'` 2% baris) | Buat **Partial Index** (`WHERE status = 'pending'`) agar ukuran indeks kecil dan tulis tetap ringan |
-| Pencarian di dalam `JSONB`, array, teks, atau deret waktu besar | Gunakan **GIN** untuk `JSONB`/`tsvector`/array dan **BRIN** untuk tabel *append-only* terurut waktu |
+| *Estimated rows* far off (`>10x`) from *actual rows* | Stale table statistics or high cross-column correlation → run `ANALYZE` or `CREATE STATISTICS` |
+| Very large *Rows Removed by Filter* on a Seq/Index Scan | Index selectivity is wrong → build a composite index ordered **Equality (`=`) → Range (`>`,`<`) → Sort (`ORDER BY`)** |
+| High *Heap Fetches* on a hot read path | Add the projected columns to a **Covering Index (`INCLUDE (...)`)** and confirm *autovacuum* is healthy |
+| Skewed predicate (e.g. only `status = 'pending'`, 2% of rows) | Create a **Partial Index** (`WHERE status = 'pending'`) so the index stays small and writes stay cheap |
+| Search inside `JSONB`, arrays, text, or large time series | Use **GIN** for `JSONB`/`tsvector`/arrays and **BRIN** for time-ordered *append-only* tables |
 
-Pantau `pg_stat_user_indexes` secara berkala dan hapus indeks tak terpakai yang hanya memperbesar amplifikasi tulis (`INSERT`/`UPDATE`).
+Check `pg_stat_user_indexes` periodically and drop unused indexes, which only increase write amplification (`INSERT`/`UPDATE`).
 
-## 5. Pemilihan Database, Caching & Isolasi Multi-Tenant
+## 5. Database Selection, Caching & Multi-Tenant Isolation
 
-| Mesin Penyimpanan | Profil Beban Kerja Utama | Catatan Arsitektural |
+| Storage Engine | Primary Workload Profile | Architectural Notes |
 |---|---|---|
-| **PostgreSQL** | Default utama OLTP relasional, ACID, `JSONB`, `tsvector`, `PostGIS`, `pgvector` | Pilihan pertama kecuali ada kendala topologi spesifik |
-| **SQLite / libSQL** | Aplikasi *embedded*/CLI, *local-first*, baca dominan satu node, atau DB-per-tenant di edge | Aktifkan `PRAGMA journal_mode = WAL;` dan `busy_timeout`; penulis tunggal per file |
-| **MySQL** | Ekosistem aplikasi mapan di atas InnoDB atau kluster sharding Vitess | Pertahankan konsistensi charset `utf8mb4` dan isolasi transaksi InnoDB |
-| **Redis / Valkey** | Cache efemeral, *rate limiter*, *distributed lock*, sesi/antrean pendek | Bukan sumber kebenaran tunggal tanpa DB primer; cegah *cache stampede* dengan *single-flight* lock |
-| **ClickHouse / DuckDB** | Analitik OLAP kolomnar, agregasi log/event masif, pelaporan historis | Pisahkan beban agregasi berat dari database transaksi OLTP |
+| **PostgreSQL** | Main default for relational OLTP, ACID, `JSONB`, `tsvector`, `PostGIS`, `pgvector` | First choice unless a specific topology constraint applies |
+| **SQLite / libSQL** | *Embedded*/CLI apps, *local-first*, read-dominant single node, or DB-per-tenant at the edge | Enable `PRAGMA journal_mode = WAL;` and `busy_timeout`; single writer per file |
+| **MySQL** | Established application ecosystems on InnoDB or Vitess sharding clusters | Keep the `utf8mb4` charset and InnoDB transaction isolation consistent |
+| **Redis / Valkey** | Ephemeral cache, *rate limiter*, *distributed lock*, short-lived sessions/queues | Not a sole source of truth without a primary DB; prevent *cache stampede* with a *single-flight* lock |
+| **ClickHouse / DuckDB** | Columnar OLAP analytics, massive log/event aggregation, historical reporting | Keep heavy aggregation load off the OLTP transaction database |
 
-### Isolasi Multi-Tenancy (PostgreSQL RLS) & Data Uji
-Selaraskan model isolasi (*Shared Schema + `tenant_id`*, *Schema-per-Tenant*, atau *DB-per-Tenant*) dengan `maxilun-architect` dan `maxilun-sentinel`. Pada *Shared Schema*, tempatkan `tenant_id` sebagai kolom terdepan indeks komposit dan aktifkan **Row-Level Security** di mesin database:
+### Multi-Tenancy Isolation (PostgreSQL RLS) & Test Data
+Apply `references/multi-tenant-isolation-rls.md`: align the isolation model (*Shared Schema + `tenant_id`*, *Schema-per-Tenant*, or *DB-per-Tenant*) with `maxilun-architect` and `maxilun-sentinel`. On a *Shared Schema*, put `tenant_id` as the leading column of composite indexes and enable **Row-Level Security** in the database engine:
 
 ```sql
 ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
 ALTER TABLE invoices FORCE ROW LEVEL SECURITY;
 CREATE POLICY tenant_isolation ON invoices FOR ALL
-  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid);
--- Setel di dalam setiap transaksi request terverifikasi: SET LOCAL app.current_tenant_id = '<uuid>';
+  USING (tenant_id = (SELECT NULLIF(current_setting('app.current_tenant', true), '')::uuid));
+-- Set inside every verified request transaction: SET LOCAL app.current_tenant = '<uuid>';
 ```
 
-Gunakan *seed* referensi yang idempoten dan *test fixtures* deterministik berbasis data sintetis penuh (dilarang menyalin PII produksi).
+Use idempotent reference *seeds* and deterministic *test fixtures* built entirely from synthetic data. Never copy production PII.
 
 ## Related Skills
 
-- **maxilun-architect**: Batas *bounded context*, topologi partisi/multi-tenant, dan pola *Transactional Outbox*
-- **maxilun-engineer**: Implementasi repositori, model ORM, skrip migrasi, dan integrasi transaksi aplikasi
-- **maxilun-insight**: Investigasi kontensi *lock*, kebocoran *connection pool*, dan anomali latensi produksi
-- **maxilun-sentinel**: Pencegahan IDOR, kontrol akses RLS, enkripsi data sensitif, dan kepatuhan retensi PII
-- **maxilun-knowledge-graph**: Penelusuran pemanggil model, skema, dan kueri lintas modul sebelum perubahan tabel
-- **maxilun-verify**: Pengujian maju-mundur migrasi, validasi constraint, dan pembuktian regresi lapisan data
+- **maxilun-architect**: *Bounded context* boundaries, partition/multi-tenant topology, and the *Transactional Outbox* pattern
+- **maxilun-engineer**: Implements repositories, ORM models, migration scripts, and application transaction integration
+- **maxilun-iot**: Time-series telemetry schemas, edge SQLite databases, and embedded sensor logging
+- **maxilun-insight**: Investigates *lock* contention, *connection pool* leaks, and production latency anomalies
+- **maxilun-sentinel**: IDOR prevention, RLS access control, encryption of sensitive data, and PII retention compliance
+- **maxilun-knowledge-graph**: Traces callers of models, schemas, and queries across modules before a table change
+- **maxilun-verify**: Up/down migration testing, constraint validation, and data-layer regression proof

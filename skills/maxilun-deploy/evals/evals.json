@@ -1,0 +1,41 @@
+{
+  "skill_name": "maxilun-deploy",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Buatkan Dockerfile multi-stage minimal dan hardened untuk aplikasi Node.js 22 LTS.",
+      "expected_output": "2-stage build (builder + runner) based on node:22.12.0-alpine; non-root user (uid 1001); clean package cache; pinned versions; healthcheck probe.",
+      "assertions": [
+        "node:22.12.0-alpine pinned",
+        "non-root appuser uid 1001",
+        "multi-stage build",
+        "package cache cleaned",
+        "EXPOSE and CMD defined"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Konfigurasikan GitHub Actions CI workflow dengan dependency caching dan parallel test sharding.",
+      "expected_output": "Actions workflow with actions/cache@v4 on lockfile hash; fail-fast lint step; test matrix sharding for runs exceeding 10m.",
+      "assertions": [
+        "uses actions/cache@v4",
+        "lockfile hash keying",
+        "fail-fast lint stage",
+        "matrix test sharding",
+        "secure secret handling"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Buat alert disk space dan CPU 80% untuk semua server production.",
+      "expected_output": "Replaces raw threshold alerting with Multi-Window Multi-Burn-Rate SLO alerting (P1 14.4x in 1h, P2 6x in 6h, P3 1x in 3d) to eliminate alert fatigue.",
+      "assertions": [
+        "cites alert fatigue risk",
+        "applies Multi-Burn-Rate matrix",
+        "P1/P2/P3 error budget burn",
+        "requires runbook link per alert",
+        "defines automatic reset condition"
+      ]
+    }
+  ]
+}

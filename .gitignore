@@ -43,6 +43,7 @@ build/
 skills-lock.json
 .maxilun/
 maxilun-out/
+_references_external/
 
 # Environment
 .env

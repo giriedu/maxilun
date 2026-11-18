@@ -1,5 +1,5 @@
 # Maxilun SEO Audit References Index
 
-Katalog referensi audit SEO teknis, metadata semantik terstruktur, dan Core Web Vitals:
+Reference catalog for technical SEO audits, structured semantic metadata, and Core Web Vitals:
 
-- **`references/technical-seo-standards.md`**: Standar penataan JSON-LD Schema.org, audit crawl budget (robots.txt, sitemaps), kanonisasi URL, dan implementasi llms.txt.
+- **`references/technical-seo-standards.md`**: Standards for JSON-LD Schema.org structure, crawl budget audits (robots.txt, sitemaps), URL canonicalization, and llms.txt implementation.

@@ -1,14 +1,13 @@
 ---
 name: maxilun-diagrams
 description: >
-  System visualization specialist. Generates clear, accurate architecture,
-  workflow, sequence, data flow, and state machine diagrams using Mermaid
-  or standalone SVG/HTML without external dependencies.
-  Adheres to 4 always-on engines and 3 operating protocols (Focus, Purity, Minimalist, Clarity).
-  Triggers: "/maxilun-diagrams", "/msal-diagram", "buat diagram", "gambar arsitektur",
-  "sequence diagram", "alur kerja", "data flow diagram", or system visualization tasks.
+  Produces accurate architecture, workflow, sequence, data flow, entity-relationship, and state machine
+  diagrams as Mermaid or as standalone SVG/HTML with no external dependencies. Use it when a system,
+  process, schema, or lifecycle needs to be visualized from repository facts or approved architecture decisions.
+  Triggers: "/maxilun-diagrams", "/msal-diagram", "buat diagram", "create a diagram", "gambar arsitektur",
+  "draw the architecture", "sequence diagram", "alur kerja", "workflow", "data flow diagram", or system visualization tasks.
 metadata:
-  version: "1.1.0"
+  version: "1.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -28,7 +27,7 @@ metadata:
 
 # Maxilun Diagrams: System Visualization & Flow Mapping
 
-Bertanggung jawab atas visualisasi sistem teknis: diagram arsitektur layanan, alur kerja proses (*workflows*), siklus pertukaran pesan (*sequence diagrams*), relasi entitas data (*ER diagrams*), dan mesin status (*state machines*). Menghasilkan sintaksis Mermaid standar yang kompatibel lintas parser atau berkas SVG/HTML interaktif mandiri tanpa dependensi eksternal.
+Visualize technical systems: service architecture diagrams, process *workflows*, message exchange cycles (*sequence diagrams*), data entity relationships (*ER diagrams*), and *state machines*. Produce standard Mermaid syntax that works across parsers, or a self-contained interactive SVG/HTML file with no external dependencies.
 
 ## Skill Contract
 
@@ -39,89 +38,89 @@ Bertanggung jawab atas visualisasi sistem teknis: diagram arsitektur layanan, al
 - **Handoff**: request missing structural decisions from `maxilun-architect`, align visual tokens with `maxilun-craft` when styling standalone SVG/HTML, integrate dependency data with `maxilun-knowledge-graph`, and embed finished diagrams into technical docs via `maxilun-docsmith`.
 
 <!-- CORE-RULES:START -->
-## Core Rules (Selalu Aktif)
+## Core Rules (Always On)
 
-Berlaku pada setiap respons dan setiap perubahan kode. Tidak bisa di-override oleh instruksi lain.
+These apply to every response and every code change. Explicit user instructions and project rule files take precedence; no other section of a Maxilun skill may weaken them.
 
-1. **Focus & Agency** — Default bertindak dari bukti repo (kode, konfigurasi, tes, histori); tanya pengguna hanya untuk keputusan *irreversible* atau arah produk yang benar-benar kosong (maksimal 1 giliran terkelompok). Tanpa banner HUD emoji, tanpa checklist centang-sendiri. Maksimal 3 fokus kerja aktif.
-2. **Purity** — Tanpa basa-basi, tanpa klaim tanpa bukti, tanpa placeholder palsu, tanpa cetakan seragam. Dilarang keras menyisipkan karakter emoji/emoticon Unicode (🚀, ✨, 🔥, ⚡, 💡, 🕒, 🎓, 🏫, dll.) pada kode antarmuka/UI, tombol, judul, atau badge—wajib gunakan SVG geometris monokrom terstandarisasi atau tipografi editorial murni. Struktur kode dan antarmuka wajib lahir dari domain produk, bukan template bawaan. Komentar hanya menjelaskan MENGAPA.
-3. **Minimalist** — YAGNI → reuse yang ada → stdlib → platform native → satu baris. Hapus beban mati yang menjadi usang akibat perubahan sendiri; dilarang *drive-by refactoring* di luar cakupan (pada tugas redesign UI, pembongkaran kunci sistem lama adalah in-scope). Jangan kurangi validasi input, keamanan, error handling, atau aksesibilitas.
-4. **Clarity & Proof** — Kesimpulan dan tindakan dulu, bukti menyusul. Nama simbol, `file:line`, pesan error verbatim, dan kata negasi dipertahankan utuh. Label kepastian hanya saat perlu membedakan bukti: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
+1. **Focus & Agency** — Act from repository evidence (code, config, tests, history) by default. Ask the user only about irreversible decisions or product direction that the repository cannot answer, in at most one grouped turn. No emoji HUD banners, no self-ticked checklists. At most three active work focuses.
+2. **Purity** — No filler, no claim without evidence, no fake placeholders, no one-size-fits-all template. No emoji or emoticon characters in interface code, buttons, headings, or badges; use one monochrome SVG icon family or plain typography (`CMP-003`). Code structure and interfaces come from the product domain, not from a boilerplate. Comments explain WHY only.
+3. **Minimalist** — YAGNI → reuse what exists → stdlib → native platform → one line. Delete dead weight your own change made obsolete; no drive-by refactoring outside scope (in a UI redesign, dismantling the old design-system locks is in scope). Never trade away input validation, security, error handling, or accessibility.
+4. **Clarity & Proof** — Conclusion and action first, evidence after. Keep symbol names, `file:line`, verbatim error messages, and negations intact. Use certainty labels only when evidence levels differ: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
 
-**Protokol** — dependency (evaluasi stdlib, ukuran, pemeliharaan, isolasi sebelum tambah paket), cognitive load (`SKILL.md` ≤300 baris, kode sumber modular, nesting ≤3), komunikasi (laporkan blocker nyata segera, tanpa *silent failure*, nyatakan asumsi yang memengaruhi hasil).
+**Protocols** — dependencies (weigh stdlib, size, maintenance, and isolation before adding a package), cognitive load (modular source, nesting ≤3), communication (report real blockers immediately, no silent failure, state assumptions that affect the result).
 
-Detail lengkap: `../maxilun/references/engines.md`.
+Full detail: `../maxilun/references/engines.md`.
 <!-- CORE-RULES:END -->
 
 ## 1. Domain Overrides
 
-- **Purity**: Setiap node dan garis wajib merepresentasikan komponen, tabel, atau proses nyata di sistem (tunduk pada `../maxilun/references/purity-catalog.md`). Gunakan palet kohesif dan ketebalan garis yang konsisten; hindari warna-warni dekoratif tanpa makna semantik.
-- **Minimalist**: Utamakan blok Mermaid Markdown standar yang stabil (`flowchart`, `sequenceDiagram`, `erDiagram`, `stateDiagram-v2`) atau berkas `.svg`/`.html` tunggal mandiri tanpa CDN eksternal.
-- **Clarity (Zero Unlabeled Edges)**: Setiap panah relasi wajib memiliki label kata kerja aktif atau protokol konkret (contoh: `-->|"POST /v1/orders (HTTPS)"|`, `-->|"Baca/tulis sesi (TCP 6379)"|`). Panah tanpa label (`A --> B`) dilarang pada diagram arsitektur dan alur sistem.
+- **Purity**: Every node and line represents a real component, table, or process in the system (see `../maxilun/references/purity-catalog.md`). Use a cohesive palette and consistent line weight; avoid decorative color that carries no semantic meaning.
+- **Minimalist**: Prefer stable standard Mermaid Markdown blocks (`flowchart`, `sequenceDiagram`, `erDiagram`, `stateDiagram-v2`) or a single self-contained `.svg`/`.html` file with no external CDN.
+- **Clarity (Zero Unlabeled Edges)**: Label every relationship arrow with an active verb or a concrete protocol (examples: `-->|"POST /v1/orders (HTTPS)"|`, `-->|"Read/write session (TCP 6379)"|`). Unlabeled arrows (`A --> B`) are prohibited in architecture and system flow diagrams.
 
 ```mermaid
 flowchart LR
-    A["Identifikasi Batas & Entitas"] -->|Pilih tipe diagram| B["Susun Node & Subgraf"]
-    B -->|Beri label verba/protokol| C["Validasi Sintaksis Mermaid"]
-    C -->|Render Markdown / SVG| D["Serahkan Artefak"]
+    A["Identify Boundaries & Entities"] -->|Choose diagram type| B["Arrange Nodes & Subgraphs"]
+    B -->|Add verb/protocol labels| C["Validate Mermaid Syntax"]
+    C -->|Render Markdown / SVG| D["Deliver Artifact"]
 ```
 
-## 2. Pemilihan Jenis Diagram Inti
+## 2. Core Diagram Type Selection
 
-| Jenis Diagram | Kasus Penggunaan Utama | Sintaksis Mermaid Standar |
+| Diagram Type | Primary Use Case | Standard Mermaid Syntax |
 |---|---|---|
-| **Arsitektur & Alur Data** | Batas layanan, gateway, antrean pesan, pipa ETL, dan penyimpanan data | `flowchart TB` atau `flowchart LR` dengan `subgraph` |
-| **Sequence Diagram** | Siklus request/response antar-komponen, autentikasi, webhook, dan penanganan error | `sequenceDiagram` dengan `autonumber` |
-| **Entity-Relationship (ERD)** | Relasi tabel database, kardinalitas, kunci primer (`PK`), dan kunci asing (`FK`) | `erDiagram` |
-| **State Machine** | Siklus hidup status pesanan, pembayaran, pekerjaan asinkron, atau tiket | `stateDiagram-v2` |
+| **Architecture & Data Flow** | Service boundaries, gateways, message queues, ETL pipelines, and data stores | `flowchart TB` or `flowchart LR` with `subgraph` |
+| **Sequence Diagram** | Request/response cycles between components, authentication, webhooks, and error handling | `sequenceDiagram` with `autonumber` |
+| **Entity-Relationship (ERD)** | Database table relationships, cardinality, primary keys (`PK`), and foreign keys (`FK`) | `erDiagram` |
+| **State Machine** | Status lifecycle of an order, payment, asynchronous job, or ticket | `stateDiagram-v2` |
 
-## 3. Pola Sintaksis Mermaid Standar (Semua Relasi Berlabel)
+## 3. Standard Mermaid Syntax Patterns (Every Relationship Labeled)
 
-### 3.1 Diagram Arsitektur & Alur Data (`flowchart`)
+### 3.1 Architecture & Data Flow Diagram (`flowchart`)
 ```mermaid
 flowchart TB
-    subgraph Klien["Lapisan Klien"]
-        Web["Aplikasi Web (Next.js)"]
+    subgraph Client["Client Layer"]
+        Web["Web Application (Next.js)"]
     end
 
-    subgraph Layanan["Lapisan Aplikasi"]
+    subgraph Services["Application Layer"]
         GW["API Gateway"]
-        OrderSvc["Layanan Pesanan"]
+        OrderSvc["Order Service"]
     end
 
-    subgraph Data["Lapisan Penyimpanan"]
+    subgraph Data["Storage Layer"]
         DB[("PostgreSQL Primary")]
-        Queue[["Antrean Event (Redis Streams)"]]
+        Queue[["Event Queue (Redis Streams)"]]
     end
 
     Web -->|"POST /api/orders (HTTPS)"| GW
-    GW -->|"Teruskan request terautentikasi (gRPC)"| OrderSvc
-    OrderSvc -->|"Simpan transaksi pesanan (SQL)"| DB
-    OrderSvc -->|"Publikasikan OrderCreated (TCP)"| Queue
+    GW -->|"Forward authenticated request (gRPC)"| OrderSvc
+    OrderSvc -->|"Store order transaction (SQL)"| DB
+    OrderSvc -->|"Publish OrderCreated (TCP)"| Queue
 ```
 
-### 3.2 Sequence Diagram Interaksi API (`sequenceDiagram`)
+### 3.2 API Interaction Sequence Diagram (`sequenceDiagram`)
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Pengguna
-    participant Web as Klien Web
-    participant API as Layanan Pembayaran
+    actor User
+    participant Web as Web Client
+    participant API as Payment Service
     participant DB as PostgreSQL
 
-    Pengguna->>Web: Tekan tombol "Bayar Sekarang"
+    User->>Web: Press the "Pay Now" button
     Web->>API: POST /v1/payments (Idempotency-Key)
-    API->>DB: INSERT transaksi status PENDING
-    DB-->>API: Konfirmasi baris tersimpan
+    API->>DB: INSERT transaction with status PENDING
+    DB-->>API: Confirm row stored
     API-->>Web: 201 Created (payment_id, redirect_url)
-    Web-->>Pengguna: Arahkan ke halaman penyelesaian pembayaran
+    Web-->>User: Redirect to the payment completion page
 ```
 
-### 3.3 Diagram Relasi Entitas (`erDiagram`) & Mesin Status (`stateDiagram-v2`)
+### 3.3 Entity-Relationship Diagram (`erDiagram`) & State Machine (`stateDiagram-v2`)
 ```mermaid
 erDiagram
-    CUSTOMER ||--o{ ORDER : "membuat pesanan"
-    ORDER ||--|{ ORDER_ITEM : "memuat item"
+    CUSTOMER ||--o{ ORDER : "places order"
+    ORDER ||--|{ ORDER_ITEM : "contains item"
     ORDER {
         uuid id PK
         uuid customer_id FK
@@ -132,29 +131,29 @@ erDiagram
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Pending: Buat pesanan baru
-    Pending --> Paid: Webhook pembayaran terverifikasi
-    Pending --> Cancelled: Kedaluwarsa > 24 jam / dibatalkan pengguna
-    Paid --> Shipped: Nomor resi diterbitkan gudang
+    [*] --> Pending: Create new order
+    Pending --> Paid: Payment webhook verified
+    Pending --> Cancelled: Expired > 24 hours / cancelled by user
+    Paid --> Shipped: Tracking number issued by warehouse
     Shipped --> [*]
     Cancelled --> [*]
 ```
 
-## 4. Validasi Sintaksis & Kompatibilitas Parser
+## 4. Syntax Validation & Parser Compatibility
 
-Sebelum menyerahkan diagram Mermaid, pastikan aturan berikut terpenuhi agar parser Markdown tidak gagal merender:
-1. **Tanda Kutip Wajib pada Karakter Khusus**: Apit seluruh label node dan edge yang memuat tanda kurung `()`, kurung siku `[]`, garis miring `/`, atau titik dua `:` dengan tanda kutip ganda (contoh: `Node["Layanan Auth (JWT)"]`).
-2. **Bebas Tag HTML Mentah**: Jangan menyisipkan `<br/>` atau tag HTML di dalam `sequenceDiagram` maupun `stateDiagram-v2`.
-3. **Kepadatan Terkendali**: Batasi maksimal 12–15 node utama per diagram; jika sistem lebih besar, pecah menjadi diagram konteks tingkat atas dan diagram sub-modul terpisah.
+Before delivering a Mermaid diagram, check these rules so the Markdown parser does not fail to render it:
+1. **Quote Special Characters**: Wrap every node and edge label that contains parentheses `()`, square brackets `[]`, a slash `/`, or a colon `:` in double quotes (example: `Node["Auth Service (JWT)"]`).
+2. **No Raw HTML Tags**: Do not insert `<br/>` or other HTML tags inside `sequenceDiagram` or `stateDiagram-v2`.
+3. **Controlled Density**: Limit each diagram to 12–15 main nodes. For a larger system, split it into a top-level context diagram and separate sub-module diagrams.
 
-## 5. Ekspor Mandiri (Standalone SVG/HTML & JSON Graph)
+## 5. Standalone Export (Standalone SVG/HTML & JSON Graph)
 
-1. **Berkas `.svg` atau `.html` Mandiri**: Bila pengguna membutuhkan diagram yang dapat dibuka langsung di browser tanpa renderer Markdown, hasilkan berkas `.svg` murni atau `.html` tunggal yang menyematkan SVG inline dengan variabel CSS tema terang/gelap, kontras teks yang jelas, serta dukungan *zoom/pan* ringan tanpa pustaka eksternal.
-2. **Ekspor JSON Graph**: Bila diagram akan dikonsumsi oleh alat analisis dependensi atau `maxilun-knowledge-graph`, sediakan struktur JSON `{ "nodes": [...], "edges": [...] }` dengan atribut `id`, `label`, `type`, dan `protocol` yang konsisten.
+1. **Self-Contained `.svg` or `.html` File**: When the user needs a diagram that opens directly in a browser without a Markdown renderer, produce a pure `.svg` file or a single `.html` file that embeds inline SVG with light/dark theme CSS variables, clear text contrast, and lightweight *zoom/pan* support with no external library.
+2. **JSON Graph Export**: When a dependency analysis tool or `maxilun-knowledge-graph` will consume the diagram, provide the JSON structure `{ "nodes": [...], "edges": [...] }` with consistent `id`, `label`, `type`, and `protocol` attributes.
 
 ## Related Skills
 
-- **maxilun-architect**: Perumusan keputusan arsitektur, batas modul, dan kontrak sistem sebelum divisualisasikan.
-- **maxilun-docsmith**: Penyematan diagram arsitektur, state machine, dan sequence ke dalam RFC, PRD, ADR, atau `README.md`.
-- **maxilun-craft**: Penyelarasan tipografi, kontras warna, dan aksesibilitas visual pada ekspor diagram SVG/HTML mandiri.
-- **maxilun-knowledge-graph**: Pemetaan ketergantungan simbol dan grafik panggilan (*call graph*) dari kode sumber aktual.
+- **maxilun-architect**: Defines architecture decisions, module boundaries, and system contracts before they are visualized.
+- **maxilun-docsmith**: Embeds architecture, state machine, and sequence diagrams into an RFC, PRD, ADR, or `README.md`.
+- **maxilun-craft**: Aligns typography, color contrast, and visual accessibility in standalone SVG/HTML diagram exports.
+- **maxilun-knowledge-graph**: Maps symbol dependencies and the *call graph* from the actual source code.

@@ -6,39 +6,39 @@
   origin: "Maxilun Verify Engine"
 -->
 
-Panduan orkestrasi matriks pengujian deterministik, pengujian integrasi berbasis kontainer, dan eliminasi tes rapuh (*flaky tests*).
+How to orchestrate a deterministic test matrix, run container-based integration tests, and eliminate *flaky tests*.
 
 ---
 
-## 1. Piramida Matriks Pengujian Terukur
+## 1. The Measured Test Matrix Pyramid
 
-Piramida pengujian diatur berdasarkan rasio kecepatan eksekusi dan tingkat isolasi:
+The test pyramid is ordered by the ratio of execution speed to isolation level:
 
 ```text
-       [End-to-End Playwright (Kritis Saja, < 10%)]
+       [End-to-End Playwright (Critical Only, < 10%)]
                         ▲
-          [Pengujian Integrasi & Kontrak API (20-30%)]
+          [Integration & API Contract Tests (20-30%)]
                         ▲
-           [Pengujian Unit & State Deterministik (60-70%)]
+           [Unit & Deterministic State Tests (60-70%)]
 ```
 
-1. **Pengujian Unit (Unit Tests)**:
-   - Menguji fungsi murni, state machine, dan transformasi data.
-   - Wajib berjalan dalam memori tanpa I/O jaringan atau disk nyata ($< 5\text{ms}$ per tes).
-2. **Pengujian Integrasi & Kontrak (Integration / Contract Tests)**:
-   - Menguji interaksi antara handler kode dengan basis data nyata atau antrean pesan.
-   - Gunakan basis data sementara (*ephemeral database* / Testcontainers) daripada mock palsu yang menyembunyikan inkonsistensi tipe SQL.
-3. **Pengujian End-to-End (E2E)**:
-   - Gunakan Playwright untuk menguji alur kerja utama pengguna (*critical user journeys*): pendaftaran akun, alur transaksi pembayaran, dan pengiriman formulir.
-   - Jalankan dalam mode headless dengan perekaman jejak (*trace recording*) aktif hanya saat terjadi kegagalan.
+1. **Unit Tests**:
+   - Test pure functions, state machines, and data transformations.
+   - They must run in memory with no real network or disk I/O ($< 5\text{ms}$ per test).
+2. **Integration / Contract Tests**:
+   - Test the interaction between handler code and a real database or message queue.
+   - Use a temporary database (*ephemeral database* / Testcontainers) instead of fake mocks, which hide SQL type inconsistencies.
+3. **End-to-End (E2E) Tests**:
+   - Use Playwright to test the *critical user journeys*: account sign-up, the payment transaction flow, and form submission.
+   - Run headless, with *trace recording* active only when a failure occurs.
 
 ---
 
-## 2. Invarian Anti-Flakiness
+## 2. Anti-Flakiness Invariants
 
-1. **Dilarang Penungguan Waktu Arbitrer (`sleep`)**:
-   - Seluruh asersi wajib menggunakan penungguan berbasis status eksplisit (misal: `waitForSelector`, `await expect(...).toBeVisible()`).
-2. **Isolasi State Antar-Pengujian**:
-   - Setiap kasus uji wajib memiliki data awal bersih (*clean fixture*). Dilarang mengandalkan efek samping atau mutasi yang ditinggalkan oleh kasus uji sebelumnya.
-3. **Penyimpanan Screenshot & Trace Kegagalan**:
-   - Simpan tangkapan layar dan log konsol browser hanya untuk tes yang gagal agar tidak membebani ruang penyimpanan artefak CI/CD.
+1. **No arbitrary time waits (`sleep`)**:
+   - Every assertion must wait on an explicit state (for example: `waitForSelector`, `await expect(...).toBeVisible()`).
+2. **State isolation between tests**:
+   - Every test case must start from a *clean fixture*. Never rely on side effects or mutations left behind by an earlier test case.
+3. **Failure screenshots & traces**:
+   - Store screenshots and browser console logs only for failed tests, so they do not fill CI/CD artifact storage.

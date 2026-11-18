@@ -1,15 +1,15 @@
 # Android Native Engineering Playbook (Kotlin, Jetpack Compose, Gradle)
 
-Panduan rekayasa aplikasi Android native modern berbasis Kotlin, deklaratif Jetpack Compose, arsitektur teruji, dan build packaging produksi.
+Engineering guide for modern native Android apps: Kotlin, declarative Jetpack Compose, tested architecture, and production build packaging.
 
-## 1. Arsitektur Antarmuka Jetpack Compose
+## 1. Jetpack Compose UI Architecture
 
-### 1.1 Kestabilan Rekomposisi & State
-- **Rekomposisi Terukur**: Hindari pembuatan objek instan di dalam body composable tanpa `remember`.
-- **`derivedStateOf`**: Gunakan `derivedStateOf` saat state turunan berubah lebih sering daripada kebutuhan render antarmuka (misalnya pemantauan scroll position list).
-- **State Hoisting**: Buat composable tanpa state (*stateless*) untuk kemudahan pengujian dan penggunaan ulang. Kirim event ke atas via lambda callback.
+### 1.1 Recomposition Stability & State
+- **Bounded recomposition**: Do not instantiate objects inside a composable body without `remember`.
+- **`derivedStateOf`**: Use `derivedStateOf` when a derived state changes more often than the UI needs to render (for example, tracking a list's scroll position).
+- **State hoisting**: Write stateless composables so they are easy to test and reuse. Send events upward through lambda callbacks.
 
-### 1.2 Pola ViewModel & Coroutine Lifecycle
+### 1.2 ViewModel Pattern & Coroutine Lifecycle
 ```kotlin
 @HiltViewModel
 class OrderViewModel @Inject constructor(
@@ -31,10 +31,10 @@ class OrderViewModel @Inject constructor(
 
 ---
 
-## 2. Persistensi Offline & Sinkronisasi (Room)
+## 2. Offline Persistence & Sync (Room)
 
-- **Indeks Kolom**: Setiap foreign key atau kolom yang sering di-filter wajib memiliki `@Index` eksplisit di entitas Room.
-- **Migrasi Skema**: Jangan gunakan `fallbackToDestructiveMigration()` di lingkungan produksi. Wajib sediakan `Migration(from, to)` teruji:
+- **Column indexes**: Give every foreign key and every frequently filtered column an explicit `@Index` in the Room entity.
+- **Schema migrations**: Do not use `fallbackToDestructiveMigration()` in production. Provide a tested `Migration(from, to)`:
   ```kotlin
   val MIGRATION_1_2 = object : Migration(1, 2) {
       override fun migrate(db: SupportSQLiteDatabase) {
@@ -45,25 +45,25 @@ class OrderViewModel @Inject constructor(
 
 ---
 
-## 3. Background Work & Izin Sistem
+## 3. Background Work & System Permissions
 
-- **WorkManager**: Gunakan untuk tugas background persisten yang wajib selesai meskipun aplikasi ditutup. Pasang constraint baterai dan jaringan:
+- **WorkManager**: Use it for persistent background work that must finish even if the app is closed. Set battery and network constraints:
   ```kotlin
   val constraints = Constraints.Builder()
       .setRequiredNetworkType(NetworkType.CONNECTED)
       .setRequiresBatteryNotLow(true)
       .build()
   ```
-- **Izin Runtime (Android 13+)**: Tangani izin `POST_NOTIFICATIONS` dan izin lokasi (`ACCESS_FINE_LOCATION`) dengan alur penjelasan kontekstual sebelum menampilkan dialog sistem.
+- **Runtime permissions (Android 13+)**: Handle `POST_NOTIFICATIONS` and location permission (`ACCESS_FINE_LOCATION`) with a contextual explanation flow before showing the system dialog.
 
 ---
 
-## 4. Keamanan & Optimasi Ukuran (R8 / ProGuard)
+## 4. Security & Size Optimization (R8 / ProGuard)
 
-- **Aturan R8**: Pertahankan model serialisasi JSON (Kotlinx Serialization, Moshi, Gson) agar tidak terhapus (*stripped*) atau rusak saat obfuscation:
+- **R8 rules**: Keep JSON serialization models (Kotlinx Serialization, Moshi, Gson) so they are not stripped or broken by obfuscation:
   ```proguard
   -keepclassmembers class * {
       @com.google.gson.annotations.SerializedName <fields>;
   }
   ```
-- **Penyimpanan Kunci**: Gunakan `MasterKey` dan `EncryptedSharedPreferences` atau Android KeyStore untuk menyimpan token autentikasi. Dilarang menyimpan token di plain SharedPreferences.
+- **Key storage**: Use `MasterKey` with `EncryptedSharedPreferences`, or the Android KeyStore, to store authentication tokens. Never store a token in plain SharedPreferences.

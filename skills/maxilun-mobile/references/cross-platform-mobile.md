@@ -1,31 +1,31 @@
 # Cross-Platform Mobile Engineering (Flutter, React Native, KMP)
 
-Panduan rekayasa aplikasi mobile lintas platform dengan penekanan pada performa native, arsitektur state yang deterministik, dan komunikasi jembatan sistem.
+Engineering guide for cross-platform mobile apps, focused on native performance, deterministic state architecture, and platform bridge communication.
 
 ## 1. Flutter & Dart Engineering
 
-### 1.1 Optimasi Pohon Widget & State
-- **Konstruktor `const`**: Sematkan `const` pada setiap widget yang tidak bergantung pada variabel dinamis untuk memangkas alokasi siklus rebuild.
-- **Isolate untuk Komputasi & JSON Parsing**:
-  Gunakan `compute()` atau `Isolate.run()` saat mem-parsing JSON berukuran besar atau melakukan kompresi gambar agar frame rate tetap terjaga di 60/120 FPS:
+### 1.1 Widget Tree & State Optimization
+- **`const` constructors**: Mark every widget that does not depend on dynamic variables as `const` to cut allocations during rebuilds.
+- **Isolates for computation & JSON parsing**:
+  Use `compute()` or `Isolate.run()` when parsing large JSON or compressing images, so the frame rate holds at 60/120 FPS:
   ```dart
   Future<List<Item>> parseItems(String rawJson) async {
     return await Isolate.run(() => parseJsonInBackground(rawJson));
   }
   ```
-- **Platform Channels**: Validasi tipe data pada `MethodChannel`. Kembalikan error terstruktur melalui `PlatformException` saat integrasi native gagal.
+- **Platform channels**: Validate data types on every `MethodChannel`. Return a structured error through `PlatformException` when a native integration fails.
 
 ---
 
 ## 2. React Native (New Architecture & Hermes)
 
-- **Fabric & TurboModules**: Migrasikan modul native ke C++ JSI / TurboModules untuk menghilangkan overhead serialisasi JSON asynchronous pada jembatan legacy.
-- **Animasi di UI Thread**: Gunakan `react-native-reanimated` dan `react-native-gesture-handler`. Jalankan transisi gestur langsung di thread UI tanpa melewati JS thread.
-- **Manajemen List**: Gunakan `@shopify/flash-list` alih-alih `FlatList` konvensional untuk daftaran data berulang guna memastikan daur ulang view yang instan.
+- **Fabric & TurboModules**: Migrate native modules to C++ JSI / TurboModules to remove the asynchronous JSON serialization overhead of the legacy bridge.
+- **Animations on the UI thread**: Use `react-native-reanimated` and `react-native-gesture-handler`. Run gesture transitions directly on the UI thread without going through the JS thread.
+- **List management**: Use `@shopify/flash-list` instead of the conventional `FlatList` for repeating data lists, so views are recycled immediately.
 
 ---
 
 ## 3. Kotlin Multiplatform (KMP)
 
-- **Batas Logika Bersama**: Bagikan domain logic, repository, validasi, dan klien jaringan (`Ktor`) serta database (`SQLDelight`). Biarkan layer presentasi tetap native (Compose di Android, SwiftUI di iOS).
-- **Deklarasi `expect` / `actual`**: Batasi penggunaan `expect`/`actual` hanya pada titik yang benar-benar membutuhkan API platform unik (UUID generator, secure storage, sensor).
+- **Shared logic boundary**: Share domain logic, repositories, validation, the network client (`Ktor`), and the database (`SQLDelight`). Keep the presentation layer native (Compose on Android, SwiftUI on iOS).
+- **`expect` / `actual` declarations**: Limit `expect`/`actual` to points that truly need a platform-specific API (UUID generator, secure storage, sensors).

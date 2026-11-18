@@ -1,49 +1,49 @@
 # Visual Asset Workflow
 
-Panduan ini mengatur pembuatan dan pemilihan gambar diam serta footage untuk video Maxilun. Asset generator adalah sumber bahan visual; storyboard tetap menjadi sumber keputusan editorial, sedangkan komposisi dan motion graphics diselesaikan di CineCode.
+This guide governs how still images and footage are created and selected for Maxilun video. An asset generator is a source of visual material. The storyboard remains the source of editorial decisions, and composition and motion graphics are finished in CineCode.
 
-## Pilih kebutuhan shot
+## Choose what the shot needs
 
-| Kebutuhan | Bentuk bahan visual |
+| Need | Form of visual material |
 |---|---|
-| Style frame, latar, objek produk, atau keyframe | Gambar diam dengan framing dan palet yang sesuai storyboard |
-| Aksi realistis atau gerak kamera fisikal | Footage yang disediakan pengguna atau klip dari alat generasi yang tersedia |
-| Grafik, UI produk, teks presisi, data, atau logo | Elemen komposisi yang dibuat dari sumber terverifikasi; jangan mengandalkan piksel hasil generasi |
-| Subjek berulang lintas-shot | Referensi visual yang disetujui dan catatan ciri identitas yang harus dipertahankan |
+| Style frame, background, product object, or keyframe | Still image with framing and palette that match the storyboard |
+| Realistic action or physical camera movement | User-supplied footage or a clip from an available generation tool |
+| Charts, product UI, precise text, data, or logos | Composition elements built from verified sources; do not rely on generated pixels |
+| Recurring subject across shots | Approved visual reference plus notes on the identity traits to preserve |
 
-Gunakan alat yang tersedia di lingkungan pengguna. Jangan mengasumsikan model, akun, kemampuan, atau akses tertentu; jangan memasang layanan atau mengirim aset privat ke layanan luar tanpa instruksi pengguna. Tanyakan terlebih dahulu bila generasi memakai kredit/biaya dan permintaan belum jelas mengizinkannya.
+Use the tools available in the user's environment. Do not assume a specific model, account, capability, or access level. Do not install a service or send private assets to an external service without the user's instruction. Ask first when generation spends credits/money and the request does not clearly authorize it.
 
-## Brief gambar
+## Image brief
 
-Untuk setiap aset, catat:
+For each asset, record:
 
-- tujuan aset di shot dan hal utama yang harus diperhatikan penonton;
-- subjek, komposisi, sudut pandang, lingkungan, pencahayaan, palet, material, dan crop target;
-- ciri kesinambungan yang harus dijaga dari referensi yang disetujui;
-- pengecualian yang mencegah artefak, seperti tulisan, logo, objek tambahan, atau subjek duplikat;
-- rasio gambar dan kebutuhan transparansi, pengeditan lokal, atau peningkatan resolusi.
+- the asset's purpose in the shot and the main thing the viewer must notice;
+- subject, composition, point of view, environment, lighting, palette, materials, and target crop;
+- the continuity traits to keep from the approved reference;
+- exclusions that prevent artifacts, such as lettering, logos, extra objects, or duplicated subjects;
+- image aspect ratio and any need for transparency, local editing, or upscaling.
 
-Buat hanya aset yang dibutuhkan shot list. Tinjau frame acuan sebelum membuat variasi turunan. Gunakan aset acuan yang sama untuk menjaga bentuk dan identitas. Style frame membantu memilih arah visual; ia belum tentu layak menjadi shot final.
+Create only the assets the shot list requires. Review the reference frame before producing derived variations. Reuse the same reference asset to preserve shape and identity. A style frame helps choose the visual direction; it is not necessarily fit to be a final shot.
 
-## Brief footage per shot
+## Footage brief per shot
 
-Tulis brief untuk satu aksi yang bisa diamati dalam satu shot. Sertakan:
+Write the brief for one observable action in one shot. Include:
 
-1. **Subjek dan aksi tunggal** — apa yang dilakukan dan keadaan awal/akhirnya.
-2. **Adegan dan framing** — lingkungan, ukuran shot, sudut pandang, dan komposisi untuk crop akhir.
-3. **Gerak kamera** — satu gerak yang disengaja beserta arah dan kecepatannya, atau nyatakan kamera terkunci.
-4. **Cahaya dan material** — kualitas visual yang konsisten dengan art direction.
-5. **Anchor kesinambungan** — identitas subjek, pakaian/material, posisi benda, palet, dan arah gerak.
-6. **Titik sambung edit** — posisi masuk/keluar atau frame acuan jika alat mendukungnya dan edit membutuhkannya.
+1. **Subject and single action** — what it does and its start/end state.
+2. **Scene and framing** — environment, shot size, point of view, and composition for the final crop.
+3. **Camera move** — one deliberate move with its direction and speed, or state that the camera is locked.
+4. **Light and materials** — visual qualities consistent with the art direction.
+5. **Continuity anchors** — subject identity, clothing/materials, object positions, palette, and motion direction.
+6. **Edit join points** — in/out position or reference frame, when the tool supports it and the edit needs it.
 
-Hindari tumpukan kata sifat, arahan kabur seperti “buat sinematik”, instruksi kamera yang saling bertentangan, dan beberapa aksi bersamaan. Jangan meminta generator menulis judul, label UI, caption, grafik, atau informasi presisi.
+Avoid stacked adjectives, vague directions such as "make it cinematic", conflicting camera instructions, and several simultaneous actions. Do not ask the generator to write titles, UI labels, captions, charts, or precise information.
 
-## Pemeriksaan dan perakitan
+## Review and assembly
 
-- Siapkan paket acuan ringkas untuk produksi multi-shot: style frame, referensi subjek, catatan warna/material, dan framing/aksi tiap shot.
-- Tinjau hasil pada ukuran tayang: perubahan identitas, geometri rusak, flicker, teks tak disengaja, objek cacat, lompatan kamera, serta frame awal/akhir yang tidak bisa diedit.
-- Tolak atau revisi shot bila cacatnya terlihat pada ukuran hasil akhir. Jangan biarkan satu klip bermasalah menurunkan kualitas seluruh edit.
-- Pilih plate yang stabil saat motion graphics perlu presisi. Buat tipografi, logo, diagram, UI, caption, dan data sebagai layer terpisah di komposisi.
-- Sambungkan shot lewat aksi, bentuk, arah, atau perubahan gagasan. Ritme akhir ditentukan storyboard dan timeline, bukan durasi bawaan klip.
-- Catat nama dan sumber aset di proyek. Jangan menyatakan aset selesai sebelum hasilnya benar-benar tersedia dan ditinjau.
-- Jangan otomatis mengirim ulang generasi berbayar dengan prompt atau pengaturan berbeda setelah hasil gagal. Jelaskan hasilnya dan minta persetujuan untuk percobaan berbayar berikutnya, kecuali pengguna telah menyetujui iterasi terbatas.
+- Prepare a compact reference pack for multi-shot production: style frame, subject reference, color/material notes, and the framing/action of each shot.
+- Review results at display size for identity drift, broken geometry, flicker, unintended text, defective objects, camera jumps, and start/end frames that cannot be edited.
+- Reject or revise a shot when its defect is visible at the final output size. Do not let one faulty clip lower the quality of the whole edit.
+- Choose a stable plate when motion graphics need precision. Build typography, logos, diagrams, UI, captions, and data as separate layers in the composition.
+- Connect shots through action, shape, direction, or a change of idea. The storyboard and timeline set the final rhythm, not a clip's default duration.
+- Record asset names and sources in the project. Do not declare an asset done before the result actually exists and has been reviewed.
+- Do not automatically resubmit a paid generation with a different prompt or settings after a failed result. Explain the result and ask for approval before the next paid attempt, unless the user has already approved a limited number of iterations.

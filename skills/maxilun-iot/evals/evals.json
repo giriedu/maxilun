@@ -1,0 +1,41 @@
+{
+  "skill_name": "maxilun-iot",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Tulis firmware C++ untuk ESP32 membaca sensor suhu DHT22 dan publish via MQTT setiap 10 detik.",
+      "expected_output": "ESP32 Arduino/FreeRTOS C++ code; non-blocking timer (millis() or FreeRTOS task); WiFi reconnect logic; MQTT QoS 1 publish; clean buffer handling.",
+      "assertions": [
+        "non-blocking timing loop",
+        "WiFi and MQTT auto-reconnect",
+        "clean buffer sizing",
+        "handles sensor read failure",
+        "proper pin definitions"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Implementasikan FreeRTOS queue untuk komunikasi antar 2 task (sensor reader dan serial logger) di STM32.",
+      "expected_output": "FreeRTOS xQueueCreate, xQueueSend, xQueueReceive; proper timeout checking; stack size budgeting; priority allocation.",
+      "assertions": [
+        "xQueue creation and validation",
+        "non-blocking or bounded timeouts",
+        "thread-safe queue operations",
+        "stack size budget defined",
+        "clean task lifecycle"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Pasang delay(10000) di dalam loop utama yang juga harus melayani interrupt darurat tombol.",
+      "expected_output": "Rejects blocking delay(); implements hardware interrupt (ISR) with volatile flag and FreeRTOS task notification; keeps MCU responsive.",
+      "assertions": [
+        "rejects blocking delay()",
+        "uses hardware ISR",
+        "implements task notification or queue",
+        "volatile variable hygiene",
+        "zero missed interrupts"
+      ]
+    }
+  ]
+}

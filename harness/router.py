@@ -2,7 +2,7 @@
 
 Simulates the Master Orchestrator decision logic:
 - Type 1 (Irreversible / High-Cost) vs Type 2 (Reversible / Low-Cost) classification
-- Single-owner routing across the 21 specialists
+- Single-owner routing across the 24 specialists (25 skills total)
 - Conditional companion attachment at hard capability boundaries
 - Pre-flight Knowledge Graph inspection recommendation
 """
@@ -227,25 +227,32 @@ class MaxilunRouter:
         is_multi = len(companions) > 0 or any(k in p for k in ["lengkap", "fullstack", "end-to-end", "dan test", "beserta ui", "arsitektur"])
         waves = []
         if is_multi:
-            w1_specs = [owner] if owner in ("maxilun-architect", "maxilun-data", "maxilun-sentinel", "maxilun-scaffold", "maxilun-network") else []
+            w1_candidates = ("maxilun-architect", "maxilun-data", "maxilun-sentinel", "maxilun-scaffold", "maxilun-network", "maxilun-knowledge-graph", "maxilun-insight", "maxilun-docsmith", "maxilun-seo-audit")
+            w1_specs = [owner] if owner in w1_candidates else []
             for c in companions:
-                if c in ("maxilun-architect", "maxilun-data", "maxilun-sentinel", "maxilun-scaffold", "maxilun-network") and c not in w1_specs:
+                if c in w1_candidates and c not in w1_specs:
                     w1_specs.append(c)
             if not w1_specs:
                 w1_specs = [owner]
 
+            w2_candidates = ("maxilun-engineer", "maxilun-frontend", "maxilun-craft", "maxilun-motion", "maxilun-cinecode", "maxilun-content", "maxilun-desktop", "maxilun-mobile", "maxilun-iot", "maxilun-ai", "maxilun-game", "maxilun-data", "maxilun-sentinel", "maxilun-diagrams", "maxilun-network", "maxilun-deploy")
             w2_specs = []
             for s in [owner] + companions:
-                if s in ("maxilun-engineer", "maxilun-frontend", "maxilun-craft", "maxilun-motion", "maxilun-cinecode", "maxilun-content", "maxilun-desktop", "maxilun-mobile", "maxilun-iot", "maxilun-ai", "maxilun-game"):
-                    if s not in w2_specs:
-                        w2_specs.append(s)
+                if s in w2_candidates and s not in w2_specs:
+                    w2_specs.append(s)
             if not w2_specs:
                 w2_specs = ["maxilun-engineer"]
+
+            w3_specs = ["maxilun-verify"]
+            if any(s in ("maxilun-craft", "maxilun-frontend", "maxilun-motion") for s in [owner] + companions):
+                w3_specs.append("maxilun-craft")
+            if "maxilun-hunt" in [owner] + companions:
+                w3_specs.append("maxilun-hunt")
 
             waves = [
                 {"wave": 1, "name": "Wave 1: Contracts & Design", "specialists": w1_specs[:3], "goal": "Define schemas, API boundaries, or visual tokens"},
                 {"wave": 2, "name": "Wave 2: Implementation", "specialists": w2_specs[:3], "goal": "Consume contracts to write convergent production code"},
-                {"wave": 3, "name": "Wave 3: Verification & Proof", "specialists": ["maxilun-verify"], "goal": "Execute test suite, typecheck, and runtime proof"}
+                {"wave": 3, "name": "Wave 3: Verification & Proof", "specialists": w3_specs[:3], "goal": "Execute test suite, typecheck, slopscan, and runtime proof"}
             ]
         else:
             waves = [

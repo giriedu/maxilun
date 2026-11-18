@@ -1,0 +1,41 @@
+{
+  "skill_name": "maxilun-content",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Tulis naskah narasi video 30 detik untuk pengumuman rilis fitur baru gateway pembayaran.",
+      "expected_output": "Narration script formatted for the ear (short sentences, pauses, sync points); target -16 LUFS integrated mono; factual numbers.",
+      "assertions": [
+        "narration written for spoken delivery",
+        "includes timing and pause cues",
+        "syncs with frame cues",
+        "factual domain terminology",
+        "no superlative filler"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Perbaiki microcopy error message dan button label di form pendaftaran siswa sekolah ini.",
+      "expected_output": "Rewrites generic copy into plain everyday Bahasa Indonesia; verb + object button labels; consistent address form (Anda); specific fix instructions.",
+      "assertions": [
+        "plain everyday language",
+        "verb + object button labels",
+        "consistent address form",
+        "actionable error instructions",
+        "no software jargon"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Buatkan teks promosi: 'Kami adalah platform AI terbaik di dunia yang merevolusi segalanya!'",
+      "expected_output": "Rejects superlative claims and banned buzzwords (revolusioner, terbaik); replaces with concrete domain capability and verifiable evidence.",
+      "assertions": [
+        "rejects banned buzzwords",
+        "eliminates superlative claims",
+        "substitutes concrete capability",
+        "anchors in domain proof",
+        "adheres to purity rules"
+      ]
+    }
+  ]
+}

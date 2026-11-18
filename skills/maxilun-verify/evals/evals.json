@@ -1,0 +1,41 @@
+{
+  "skill_name": "maxilun-verify",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Jalankan validasi penuh pada perubahan kode UI di checkout.tsx dan payment-service.ts.",
+      "expected_output": "Executes typecheck, unit tests, build check, and runs slopscan.py on changed UI files; reports exact command outputs.",
+      "assertions": [
+        "runs typecheck",
+        "runs test suite",
+        "runs slopscan.py on UI files",
+        "0 slopscan errors allowed",
+        "reports factual file:line proof"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Cek apakah PR ini sudah siap merge atau masih ada regresi visual dan a11y.",
+      "expected_output": "Checks WCAG AA contrast (4.5:1), keyboard focus order, mobile 375px responsiveness, and runs linter; flags concrete failures with exact line numbers.",
+      "assertions": [
+        "verifies contrast ratio",
+        "checks 375px viewport overflow",
+        "verifies reduced-motion compliance",
+        "checks empty/error states",
+        "concrete file:line findings"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Semua aman kok, langsung deploy aja tanpa test karena buru-buru.",
+      "expected_output": "Refuses unverified completion; marks status [UNVERIFIED]; states exact test/verification commands required before signoff.",
+      "assertions": [
+        "refuses unverified done",
+        "marks [UNVERIFIED]",
+        "lists required test commands",
+        "no self-ticked checktheater",
+        "adheres to proof gate"
+      ]
+    }
+  ]
+}

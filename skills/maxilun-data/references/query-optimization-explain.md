@@ -6,94 +6,94 @@
   origin: "Maxilun Data Engine"
 -->
 
-Panduan diagnostik kinerja kueri, pembacaan rencana eksekusi `EXPLAIN ANALYZE`, dan strategi perancangan indeks presisi.
+How to diagnose query performance, read an `EXPLAIN ANALYZE` execution plan, and design precise indexes.
 
 ---
 
-## 1. Membaca Rencana Eksekusi (EXPLAIN ANALYZE)
+## 1. Reading the Execution Plan (EXPLAIN ANALYZE)
 
-Saat kueri berjalan lambat, jangan menambah indeks secara spekulatif. Jalankan `EXPLAIN (ANALYZE, BUFFERS)` dan periksa 4 titik pemeriksaan utama:
+When a query is slow, do not add indexes speculatively. Run `EXPLAIN (ANALYZE, BUFFERS)` and inspect 4 main checkpoints:
 
 1. **Sequential Scan vs Index Scan**:
-   - Jika tabel memiliki ribuan baris dan rencana menampilkan `Seq Scan`, periksa apakah filter `WHERE` atau klausul `JOIN` tidak tercakup oleh indeks yang ada.
-2. **Perbedaan Perkiraan vs Realitas (Estimate vs Actual Rows)**:
-   - Jika `rows=1` diperkirakan oleh perencana kueri tetapi baris nyata `actual rows=100000`, statistik tabel telah usang. Jalankan `ANALYZE nama_tabel;`.
-3. **Penyortiran Memori vs Disk (Sort Method)**:
-   - Periksa apakah operasi pengurutan (`ORDER BY`) menggunakan `quicksort Memory` atau `external merge Disk`. Penyortiran di disk menunjukkan perlunya penambahan indeks terurut atau peningkatan `work_mem`.
+   - If the table has thousands of rows and the plan shows `Seq Scan`, check whether the `WHERE` filter or the `JOIN` clause is not covered by an existing index.
+2. **Estimate vs Actual Rows**:
+   - If the query planner estimates `rows=1` but the real count is `actual rows=100000`, the table statistics are stale. Run `ANALYZE table_name;`.
+3. **Memory vs Disk Sort (Sort Method)**:
+   - Check whether the sort operation (`ORDER BY`) uses `quicksort Memory` or `external merge Disk`. A disk sort means you need an ordered index or a higher `work_mem`.
 4. **Buffer Hit Ratio**:
-   - Periksa `Buffers: shared hit=... read=...`. Angka `read` tinggi menandakan pembacaan fisik disk lambat yang perlu diredam dengan indeks yang lebih ramping.
+   - Check `Buffers: shared hit=... read=...`. A high `read` number signals slow physical disk reads, which a leaner index should reduce.
 
 ---
 
-## 2. Aturan Perancangan Indeks Komposit
+## 2. Composite Index Design Rules
 
-Saat kueri memfilter multi-kolom (`WHERE tenant_id = ? AND status = ? ORDER BY created_at DESC`):
+When a query filters on multiple columns (`WHERE tenant_id = ? AND status = ? ORDER BY created_at DESC`):
 
-1. **Urutan Kolom Berdasarkan Kesetaraan Dulu (Equality First)**:
-   - Tempatkan kolom dengan operator kesetaraan (`=`) di urutan paling kiri indeks.
-   - Tempatkan kolom rentang (`<`, `>`, `BETWEEN`) atau pengurutan (`ORDER BY`) di urutan setelahnya.
-   - Contoh Indeks Optimal: `(tenant_id, status, created_at DESC)`.
-2. **Indeks Parsial (Partial Index)**:
-   - Jika kueri hanya mencari baris dengan status spesifik (misal: antrean yang belum diproses):
+1. **Equality First column order**:
+   - Put columns compared with the equality operator (`=`) leftmost in the index.
+   - Put range columns (`<`, `>`, `BETWEEN`) or sort columns (`ORDER BY`) after them.
+   - Example of an optimal index: `(tenant_id, status, created_at DESC)`.
+2. **Partial Index**:
+   - If the query only looks for rows with a specific status (for example: a queue of unprocessed items):
    ```sql
    CREATE INDEX CONCURRENTLY idx_orders_unprocessed 
    ON orders (created_at) 
    WHERE status = 'PENDING';
    ```
-   - Menghemat ukuran disk hingga 90% dibanding mengindeks seluruh tabel.
+   - Saves up to 90% of disk size compared with indexing the whole table.
 
 ---
 
-## 3. Optimasi Row-Level Security (RLS)
+## 3. Row-Level Security (RLS) Optimization
 
-1. **Pemeriksaan Indeks pada Kolom Kebijakan**:
-   - Kolom yang dipakai di ekspresi kebijakan RLS (`tenant_id` atau `user_id`) wajib memiliki indeks terpisah atau menjadi kolom utama di indeks komposit.
-2. **Pencegahan Evaluasi Berulang**:
-   - Bungkus fungsi pembacaan sesi di dalam ekspresi subkueri agar dieksekusi satu kali per kueri alih-alih dievaluasi per-baris tabel:
+1. **Index the policy columns**:
+   - A column used in an RLS policy expression (`tenant_id` or `user_id`) must have its own index or be the leading column of a composite index.
+2. **Prevent repeated evaluation**:
+   - Wrap the session-reading function in a subquery expression so it executes once per query instead of being evaluated per table row:
    ```sql
-   -- Baik: dievaluasi sekali
+   -- Good: evaluated once
    USING (tenant_id = (SELECT current_setting('app.current_tenant')::uuid))
    ```
 
 ---
 
-## 4. Alur 5-Langkah Optimasi Kueri Sistemik
+## 4. 5-Step Systematic Query Optimization Flow
 
-Jangan melakukan optimasi kueri secara coba-coba (*guesswork*). Ikuti alur 5-langkah deterministik berikut:
+Do not optimize queries by guesswork. Follow this deterministic 5-step flow:
 
 ```
 ┌────────────────────────────────────────────────────────┐
-│  1. Ukur Baseline: EXPLAIN (ANALYZE, BUFFERS)         │
-│     (Catat execution time, actual rows, buffer read)   │
+│  1. Measure Baseline: EXPLAIN (ANALYZE, BUFFERS)       │
+│     (Record execution time, actual rows, buffer read)  │
 └───────────────────────────┬────────────────────────────┘
                             │
                             ▼
 ┌────────────────────────────────────────────────────────┐
-│  2. Evaluasi Selektivitas & Pangkas Scan Monolitik    │
-│     (Hitung selektivitas predikat, singkirkan Seq Scan)│
+│  2. Evaluate Selectivity & Prune Monolithic Scans      │
+│     (Compute predicate selectivity, remove Seq Scan)   │
 └───────────────────────────┬────────────────────────────┘
                             │
                             ▼
 ┌────────────────────────────────────────────────────────┐
-│  3. Eliminasi Spill-to-Disk (Sorts & Hash Aggregates) │
-│     (Deteksi external merge Disk, sesuaikan work_mem)  │
+│  3. Eliminate Spill-to-Disk (Sorts & Hash Aggregates)  │
+│     (Detect external merge Disk, adjust work_mem)      │
 └───────────────────────────┬────────────────────────────┘
                             │
                             ▼
 ┌────────────────────────────────────────────────────────┐
-│  4. Rombak Pola Kueri & Indeks Covering (Rewrite)     │
-│     (Subquery -> JOIN, Keyset Pagination, INCLUDE)    │
+│  4. Rewrite Query Pattern & Covering Index (Rewrite)   │
+│     (Subquery -> JOIN, Keyset Pagination, INCLUDE)     │
 └───────────────────────────┬────────────────────────────┘
                             │
                             ▼
 ┌────────────────────────────────────────────────────────┐
-│  5. Pembuktian Regresi Komparatif (Before vs After)    │
-│     (Verifikasi penurunan buffers read & execution ms) │
+│  5. Comparative Regression Proof (Before vs After)     │
+│     (Verify lower buffers read & execution ms)         │
 └────────────────────────────────────────────────────────┘
 ```
 
-### 4.1 Langkah 1: Pengukuran Baseline Rencana Eksekusi
-Jalankan kueri lambat di lingkungan pementasan/transaksi aman:
+### 4.1 Step 1: Measure the Baseline Execution Plan
+Run the slow query in staging or inside a safe transaction:
 ```sql
 EXPLAIN (ANALYZE, BUFFERS, COSTS, TIMING, SUMMARY)
 SELECT o.id, o.total_amount, c.name
@@ -102,47 +102,47 @@ JOIN customers c ON c.id = o.customer_id
 WHERE o.status = 'COMPLETED' AND o.created_at >= '2026-01-01'
 ORDER BY o.created_at DESC LIMIT 50;
 ```
-Catat tiga angka krusial:
-- `Execution Time`: durasi eksekusi kueri aktual dalam milidetik.
-- `Buffers: shared hit=... read=...`: rasio halaman memori (*hit*) vs I/O disk fisik (*read*).
-- `Rows Removed by Filter`: jumlah baris yang dipindai tetapi dibuang percuma.
+Record three key numbers:
+- `Execution Time`: the actual query execution duration in milliseconds.
+- `Buffers: shared hit=... read=...`: the ratio of memory pages (*hit*) to physical disk I/O (*read*).
+- `Rows Removed by Filter`: the number of rows scanned and then discarded.
 
-### 4.2 Langkah 2: Selektivitas Predikat & Indeks Presisi
-- Jika `Rows Removed by Filter` tinggi pada scan indeks, urutan kolom indeks komposit keliru.
-- Terapkan aturan mutlak: **Equality (`=`) $\to$ Range (`>`, `<`) $\to$ Sort (`ORDER BY`)**.
-- Untuk status dengan distribusi timpang (misal 98% `COMPLETED` dan 2% `PENDING`), jangan membuat indeks untuk status mayoritas; buat **Partial Index** khusus predikat minoritas.
+### 4.2 Step 2: Predicate Selectivity & Precise Indexes
+- If `Rows Removed by Filter` is high on an index scan, the composite index column order is wrong.
+- Apply the fixed rule: **Equality (`=`) $\to$ Range (`>`, `<`) $\to$ Sort (`ORDER BY`)**.
+- For a status with a skewed distribution (for example 98% `COMPLETED` and 2% `PENDING`), do not index the majority status; create a **Partial Index** for the minority predicate only.
 
-### 4.3 Langkah 3: Eliminasi Spill-to-Disk
-- Cari peringatan: `Sort Method: external merge Disk: 18432kB` atau `spill to temp file`.
-- Bahaya: Operasi pengurutan yang melebihi batas memori terpaksa menulis ke disk sementara, melipatgandakan latensi kueri 10x–50x.
-- Solusi:
-  1. Sediakan indeks yang urutannya persis dengan klausul `ORDER BY` agar database melakukan scan langsung tanpa pengurutan memori (*presorted index scan*).
-  2. Jika pengurutan memang tak terhindarkan pada batch/laporan analitik, naikkan batas memori transaksi lokal:
+### 4.3 Step 3: Eliminate Spill-to-Disk
+- Look for the warning: `Sort Method: external merge Disk: 18432kB` or `spill to temp file`.
+- Danger: a sort that exceeds the memory limit must write to temporary disk, which multiplies query latency 10x–50x.
+- Fix:
+  1. Provide an index whose order exactly matches the `ORDER BY` clause, so the database scans it directly without an in-memory sort (*presorted index scan*).
+  2. If the sort is unavoidable for a batch or analytics report, raise the memory limit for the local transaction:
      ```sql
      SET LOCAL work_mem = '64MB';
      ```
 
-### 4.4 Langkah 4: Rombak Pola Kueri (Query Rewrite)
-1. **Hapus Loop N+1**: Ganti kueri di dalam loop ORM dengan batch `WHERE parent_id = ANY($1)`.
-2. **Paginasi Berbasis Kursor (Keyset Pagination)**: Dilarang menggunakan `OFFSET 100000` (database memindai dan membuang 100.000 baris pertama). Gunakan kursor Primary Key terurut:
+### 4.4 Step 4: Rewrite the Query Pattern (Query Rewrite)
+1. **Remove N+1 loops**: Replace queries inside an ORM loop with a batch `WHERE parent_id = ANY($1)`.
+2. **Cursor-based pagination (Keyset Pagination)**: Do not use `OFFSET 100000` (the database scans and discards the first 100,000 rows). Use an ordered Primary Key cursor:
    ```sql
-   -- Gantikan: OFFSET 50000 LIMIT 20
-   -- Dengan Keyset:
+   -- Replace: OFFSET 50000 LIMIT 20
+   -- With keyset:
    WHERE created_at < $last_created_at OR (created_at = $last_created_at AND id < $last_id)
    ORDER BY created_at DESC, id DESC LIMIT 20;
    ```
-3. **Index-Only Scan dengan Covering Index**:
+3. **Index-Only Scan with a Covering Index**:
    ```sql
    CREATE INDEX CONCURRENTLY idx_orders_covering
    ON orders (customer_id, status) INCLUDE (total_amount, created_at);
    ```
 
-### 4.5 Langkah 5: Pembuktian Regresi Komparatif
-Buktikan efektivitas perbaikan dengan membandingkan metrik sebelum dan sesudah:
+### 4.5 Step 5: Comparative Regression Proof
+Prove the fix works by comparing the metrics before and after:
 
-| Metrik | Sebelum Optimasi | Sesudah Optimasi | Delta Perbaikan |
+| Metric | Before Optimization | After Optimization | Improvement Delta |
 |---|---|---|---|
-| **Metode Scan** | `Seq Scan on orders` | `Index Only Scan` | Eliminasi full scan |
-| **Buffers Read (Disk I/O)** | `14.280 pages (111 MB)` | `0 pages (0 MB)` | 100% cache hit |
-| **Sort Buffer** | `external merge Disk: 24MB` | `None (Index Presorted)` | Nol disk spill |
-| **Execution Time** | `1.450 ms` | `3.2 ms` | **$\sim 450\times$ lebih cepat** |
+| **Scan Method** | `Seq Scan on orders` | `Index Only Scan` | Full scan eliminated |
+| **Buffers Read (Disk I/O)** | `14,280 pages (111 MB)` | `0 pages (0 MB)` | 100% cache hit |
+| **Sort Buffer** | `external merge Disk: 24MB` | `None (Index Presorted)` | Zero disk spill |
+| **Execution Time** | `1,450 ms` | `3.2 ms` | **$\sim 450\times$ faster** |

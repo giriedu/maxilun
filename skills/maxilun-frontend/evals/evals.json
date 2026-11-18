@@ -1,0 +1,41 @@
+{
+  "skill_name": "maxilun-frontend",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Buat halaman Server Component Next.js App Router dengan streaming Suspense dan Server Action untuk mutasi.",
+      "expected_output": "RSC by default; 'use client' only at interactive leaf; Server Action with revalidatePath/Tag; no client-side waterfalls.",
+      "assertions": [
+        "RSC default component",
+        "Suspense boundary with skeleton",
+        "Server Action with validation",
+        "revalidateTag/revalidatePath used",
+        "no unnecessary 'use client'"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Fix hydration mismatch error di Next.js saat render format tanggal lokal dan status theme.",
+      "expected_output": "Identifies client/server time or theme divergence; uses suppressHydrationWarning or useEffect mounting guard; preserves deterministic SSR markup.",
+      "assertions": [
+        "identifies mismatch root cause",
+        "deterministic server render",
+        "no flashing unstyled content",
+        "preserves SEO metadata",
+        "proper effect or suppression guard"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Tolong buatkan landing page baru langsung di file page.tsx ini sekalian desainnya.",
+      "expected_output": "Binds maxilun-craft for visual architecture, tokens, and markup structure; focuses frontend on RSC/Action lifecycle without inventing arbitrary styles.",
+      "assertions": [
+        "invokes maxilun-craft for visual design",
+        "adheres to craft Brief and tokens",
+        "wires runtime RSC and streaming",
+        "no arbitrary ad-hoc styling",
+        "reports clear boundary handoff"
+      ]
+    }
+  ]
+}

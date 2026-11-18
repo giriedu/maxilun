@@ -1,15 +1,7 @@
 # Maxilun Desktop References Index
 
-Indeks pustaka rekayasa desktop, arsitektur native, sistem warisan enterprise, dan integrasi GUI.
+Reference catalog for native desktop software engineering, enterprise systems, and cross-platform UI toolkits:
 
-## Berkas Referensi Domain
-
-1. **`powerbuilder-playbook.md`**:
-   Arsitektur PowerScript, siklus hidup transaksi `SQLCA`, manajemen 4 buffer DataWindow (`Primary!`, `Filter!`, `Delete!`, `Original!`), event data, sintaks `.srd`, dan modernisasi REST/C++ interop.
-2. **`native-desktop-patterns.md`**:
-   Pola native Windows (Win32 message loop, Per-Monitor V2 DPI, GDI handle lifecycle, WinUI 3/WPF MVVM), macOS Cocoa/AppKit & Swift (`NSWindowController`, notarisasi), dan lintas platform C++ Qt (parent-child ownership, queued connections, modern CMake).
-
-## Panduan Pemuatan
-Muat dokumen spesifik hanya saat domain tugas menyentuh arsitektur terkait:
-- Tugas PowerBuilder atau DataWindow → baca `references/powerbuilder-playbook.md`.
-- Tugas Windows Win32/WPF, macOS Cocoa, atau C++ Qt → baca `references/native-desktop-patterns.md`.
+- **`references/powerbuilder-playbook.md`**: PowerBuilder / Appeon PB DataWindow engineering, 4-buffer management, SQLCA transaction handling, and legacy modernization.
+- **`references/native-desktop-patterns.md`**: Native Windows (Win32 message loops, WPF/WinUI MVVM, DPI awareness) and macOS (AppKit, Swift concurrency, hardened runtime).
+- **`references/cross-platform-qt-tauri.md`**: Cross-platform desktop architecture (C++ Qt6 signals/slots, Tauri 2.0 Rust-to-Webview IPC), High-DPI scaling, and native installer packaging (MSI, DMG, AppImage).

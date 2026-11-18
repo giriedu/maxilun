@@ -1,12 +1,32 @@
-"""Maxilun Native Skills Loader & Indexer.
-Discovers, parses, and indexes the 21 Maxilun specialist skills from disk.
+"""Maxilun Native Skills & Agents Loader & Indexer.
+Discovers, parses, and indexes the 25 Maxilun skills (1 orchestrator + 24 specialists)
+and 13 autonomous agents from disk.
 Zero external dependencies.
 """
 
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Set
+
+
+AGENT_TOOL_MAP = {
+    "Read": "read_file",
+    "Write": "write_file",
+    "Edit": "edit_file",
+    "Glob": "glob_files",
+    "Grep": "grep_files",
+    "Bash": "execute_bash",
+}
+
+
+@dataclass
+class AgentDefinition:
+    name: str
+    path: Path
+    tools: List[str] = field(default_factory=list)
+    allowed_harness_tools: Set[str] = field(default_factory=set)
+    full_content: str = ""
 
 
 @dataclass
@@ -29,12 +49,64 @@ class SkillDefinition:
 
 
 class SkillsLoader:
-    """Discovers, parses, and provides runtime system prompts for the 21 Maxilun skills (22 skills total)."""
+    """Discovers, parses, and provides runtime system prompts for the 25 Maxilun skills and 13 agents."""
     def __init__(self, root_dir: Optional[Path] = None):
         self.root = root_dir or Path.cwd()
         self.skills_dir = self._find_skills_dir()
+        self.agents_dir = self._find_agents_dir()
         self.skills: Dict[str, SkillDefinition] = {}
+        self.agents: Dict[str, AgentDefinition] = {}
         self.load_all()
+        self.load_agents()
+
+    def _find_agents_dir(self) -> Path:
+        candidates = [
+            self.root / "agents",
+            self.root / ".agents" / "agents",
+            self.root / ".claude" / "agents",
+        ]
+        for c in candidates:
+            if c.exists() and (c / "maxilun-orchestrator.md").exists():
+                return c
+        return self.root / "agents"
+
+    def load_agents(self) -> Dict[str, AgentDefinition]:
+        if not self.agents_dir.exists():
+            return {}
+        for agent_md in self.agents_dir.glob("*.md"):
+            text = agent_md.read_text(encoding="utf-8", errors="replace")
+            fm_match = re.search(r"^---\s*\n(.*?)\n---", text, re.DOTALL)
+            name = agent_md.stem
+            tools: List[str] = []
+            if fm_match:
+                fm = fm_match.group(1)
+                n_match = re.search(r"^name:\s*([^\s]+)", fm, re.MULTILINE)
+                if n_match:
+                    name = n_match.group(1).strip()
+                in_tools = False
+                for line in fm.splitlines():
+                    if re.match(r"^tools:\s*$", line):
+                        in_tools = True
+                        continue
+                    if in_tools:
+                        m_item = re.match(r"^\s*-\s*([A-Za-z0-9_-]+)", line)
+                        if m_item:
+                            tools.append(m_item.group(1))
+                        elif line.strip() and not line.startswith(" "):
+                            in_tools = False
+            allowed = {AGENT_TOOL_MAP[t] for t in tools if t in AGENT_TOOL_MAP}
+            allowed.update({"kg_query", "kg_scan", "kg_locate", "send_handoff", "read_handoffs"})
+            self.agents[name] = AgentDefinition(
+                name=name,
+                path=agent_md,
+                tools=tools,
+                allowed_harness_tools=allowed,
+                full_content=text,
+            )
+        return self.agents
+
+    def get_agent(self, name: str) -> Optional[AgentDefinition]:
+        return self.agents.get(name)
 
     def _find_skills_dir(self) -> Path:
         candidates = [
@@ -78,7 +150,7 @@ class SkillsLoader:
                         frontmatter[k] = v
 
         name = frontmatter.get("name", skill_md.parent.name)
-        version = frontmatter.get("version", "1.1.0")
+        version = frontmatter.get("version", "1.3.0")
         ecosystem = frontmatter.get("ecosystem", "maxilun")
 
         # Triggers
@@ -150,17 +222,30 @@ class SkillsLoader:
 
         return self.skills.get("maxilun-engineer") or self.skills.get("maxilun")
 
-    def build_system_prompt(self, skill_name: str) -> str:
+    def build_system_prompt(self, skill_name: str, agent_name: Optional[str] = None) -> str:
         """Constructs an active system prompt for an agent executing as this specialist."""
         skill = self.get_skill(skill_name)
         if not skill:
             skill = self.get_skill("maxilun") or list(self.skills.values())[0]
 
         parts = [
-            f"# Role: {skill.name} (Maxilun Ecosystem v{skill.version})",
+            f"# Role: {agent_name or skill.name} (Maxilun Ecosystem v{skill.version})",
+        ]
+
+        agent_def = self.get_agent(agent_name) if agent_name else None
+        if agent_def:
+            parts.extend([
+                "",
+                "## Autonomous Agent Contract",
+                agent_def.full_content,
+                "",
+                "## Primary Skill Reference",
+            ])
+
+        parts.extend([
             "",
             skill.full_content,
-        ]
+        ])
 
         # Summarize available on-demand references
         if skill.references:

@@ -1,7 +1,7 @@
 # Maxilun Hunt Reference Corpus
 
-Indeks navigasi cepat untuk playbooks, matriks verifikasi, dan standar pelaporan temuan kerentanan adversarial:
+Quick navigation index for the playbooks, verification matrices, and reporting standards for adversarial vulnerability findings:
 
-- **[Vulnerability Hunt Playbook](vulnerability-hunt-playbook.md)**: Metodologi adversarial, pemetaan attack surface, pengujian sibling endpoints, varian IDOR multi-session, bypass auth, blind SSRF, race condition, dan tata kelola keamanan non-destruktif.
-- **[Triage & Verification Gate](triage-verification-gate.md)**: 7-Question Gate, tabel eliminasi false-positive (never-submit list), pohon keputusan keparahan CVSS 3.1, dan mesin status deterministik (`PROVEN`, `REFUTED`, `UNPROVEN`, `INCONCLUSIVE`).
-- **[Evidence & Reporting Standard](evidence-reporting-standard.md)**: Struktur paket bukti reproducible (`request.http`, `response.http`, `repro.sh`, manifest SHA-256), standar redaksi rahasia (`$AUTHORIZATION`, `$COOKIE`), dan format pelaporan berdampak bisnis.
+- **[Vulnerability Hunt Playbook](vulnerability-hunt-playbook.md)**: Adversarial methodology, attack surface mapping, sibling endpoint testing, multi-session IDOR variants, auth bypass, blind SSRF, race conditions, and non-destructive safety governance.
+- **[Triage & Verification Gate](triage-verification-gate.md)**: The 7-Question Gate, the false-positive elimination table (never-submit list), the CVSS 3.1 severity decision tree, and the deterministic status engine (`PROVEN`, `REFUTED`, `UNPROVEN`, `INCONCLUSIVE`).
+- **[Evidence & Reporting Standard](evidence-reporting-standard.md)**: Reproducible evidence bundle structure (`request.http`, `response.http`, `repro.sh`, SHA-256 manifest), the secret redaction standard (`$AUTHORIZATION`, `$COOKIE`), and the business-impact report format.

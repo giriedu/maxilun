@@ -1,17 +1,17 @@
 # Security Playbook
 
-Referensi eksekusi untuk `maxilun-sentinel`. Dokumen ini berisi template, katalog, dan pola yang bisa dieksekusi langsung — bukan prinsip umum.
+Execution reference for `maxilun-sentinel`. It contains templates, catalogs, and patterns to apply directly, not general principles.
 
 ---
 
 ## 1. Trust Boundary Catalog
 
-Trust boundary adalah titik di mana data berpindah dari zona terpercaya ke zona tidak terpercaya (atau sebaliknya). Setiap boundary wajib memiliki validasi eksplisit.
+A trust boundary is a point where data moves from a trusted zone to an untrusted zone, or the reverse. Give every boundary explicit validation.
 
-| Trust Boundary | Input Source | Validasi Wajib | Contoh Serangan Jika Dilewati |
+| Trust Boundary | Input Source | Required Validation | Example Attack If Skipped |
 |---|---|---|---|
 | **HTTP API Endpoint** | Request body, query params, headers | Schema validation (Zod/Joi), type coercion, length limits | SQL injection, parameter tampering, mass assignment |
-| **Form Submission** | Form fields, file uploads | Server-side validation (bukan hanya client), CSRF token, file type whitelist | XSS stored, path traversal, CSRF |
+| **Form Submission** | Form fields, file uploads | Server-side validation (not client-only), CSRF token, file type whitelist | XSS stored, path traversal, CSRF |
 | **File Upload** | Binary content, filename, MIME type | Magic byte verification, size limit, sandboxed storage, no execution permission | Remote code execution, directory traversal |
 | **Environment Variable** | Process env, .env files | Type parsing, secret detection, no logging | Secret leakage, type confusion |
 | **Database Query** | User-supplied filter/sort/search | Parameterized queries only, no string concatenation | SQL injection, data exfiltration |
@@ -21,64 +21,64 @@ Trust boundary adalah titik di mana data berpindah dari zona terpercaya ke zona 
 | **Config File** | YAML/JSON/TOML from disk | Schema validation, no code execution in config parser | Config injection, arbitrary code execution |
 | **Inter-Service Call** | gRPC/REST between microservices | mTLS or service mesh auth, request signing, zero trust network | Lateral movement, service impersonation |
 
-### Aturan Penerapan
+### Application Rules
 
-1. **Identifikasi semua trust boundary** sebelum menulis kode. Gunakan tabel di atas sebagai checklist.
-2. **Validasi di sisi penerima**, bukan pengirim. Client-side validation adalah UX enhancement, bukan security control.
-3. **Fail closed**: jika validasi gagal, tolak request. Jangan fallback ke perilaku default yang lebih permisif.
-4. **Log rejection**: setiap validasi yang gagal harus di-log dengan konteks (tanpa log data sensitif).
-5. **Review saat perubahan**: setiap kali menambah endpoint, field, atau integrasi baru, cek apakah trust boundary baru tercipta.
+1. **Identify every trust boundary** before writing code. Use the table above as the checklist.
+2. **Validate on the receiving side**, not the sending side. Client-side validation is a UX enhancement, not a security control.
+3. **Fail closed**: when validation fails, reject the request. Do not fall back to a more permissive default behavior.
+4. **Log rejections**: log every failed validation with context, without logging sensitive data.
+5. **Review on change**: whenever you add an endpoint, field, or integration, check whether it creates a new trust boundary.
 
 ---
 
-## 2. Security Test Patterns (untuk maxilun-verify)
+## 2. Security Test Patterns (for maxilun-verify)
 
-Pola tes keamanan yang bisa diintegrasikan ke CI/CD. Setiap pola memiliki: trigger condition, test method, pass criteria.
+Security test patterns that integrate into CI/CD. Each pattern has a trigger condition, a test method, and pass criteria.
 
 ### 2.1 Authentication & Authorization Tests
 
 | Pattern | Method | Pass Criteria |
 |---|---|---|
-| **Auth bypass** | Kirim request ke protected endpoint tanpa token | 401/403, bukan 200 atau 500 |
-| **Expired token** | Gunakan JWT dengan exp di masa lalu | 401 dengan pesan "token expired" |
-| **Privilege escalation** | User biasa akses admin endpoint | 403, bukan 200 |
-| **IDOR** | Ganti resource ID di URL/body dengan milik user lain | 403/404, bukan 200 dengan data orang lain |
-| **Session fixation** | Cek session ID berubah setelah login | Session ID baru, bukan reuse |
-| **Brute force protection** | Kirim 10+ login gagal berturut-turut | Account locked atau rate limited setelah N attempt |
+| **Auth bypass** | Send a request to a protected endpoint without a token | 401/403, not 200 or 500 |
+| **Expired token** | Use a JWT with `exp` in the past | 401 with the message "token expired" |
+| **Privilege escalation** | A regular user accesses an admin endpoint | 403, not 200 |
+| **IDOR** | Replace the resource ID in the URL/body with another user's | 403/404, not 200 with someone else's data |
+| **Session fixation** | Check that the session ID changes after login | New session ID, not a reused one |
+| **Brute force protection** | Send 10+ consecutive failed logins | Account locked or rate limited after N attempts |
 
 ### 2.2 Injection Tests
 
 | Pattern | Method | Pass Criteria |
 |---|---|---|
-| **SQL injection** | Input `' OR 1=1 --` di search/filter field | Tidak ada error DB, hasil kosong atau filtered |
-| **XSS reflected** | Input `<script>alert(1)</script>` di query param | Output di-escape atau diblokir, script tidak execute |
-| **XSS stored** | Submit payload XSS via form, reload halaman | Payload tidak render sebagai HTML |
-| **Command injection** | Input `; ls /etc/passwd` di field yang diproses shell | Command tidak tereksekusi, input ditolak |
-| **Path traversal** | Input `../../etc/passwd` di file path param | Path canonicalized, akses ditolak |
-| **Template injection** | Input `{{7*7}}` atau `${7*7}` di user input | Tidak ada evaluasi ekspresi server-side |
+| **SQL injection** | Input `' OR 1=1 --` in a search/filter field | No DB error, result empty or filtered |
+| **XSS reflected** | Input `<script>alert(1)</script>` in a query param | Output escaped or blocked, script does not execute |
+| **XSS stored** | Submit an XSS payload through a form, reload the page | Payload does not render as HTML |
+| **Command injection** | Input `; ls /etc/passwd` in a field processed by a shell | Command does not execute, input rejected |
+| **Path traversal** | Input `../../etc/passwd` in a file path param | Path canonicalized, access denied |
+| **Template injection** | Input `{{7*7}}` or `${7*7}` in user input | No server-side expression evaluation |
 
 ### 2.3 Data Protection Tests
 
 | Pattern | Method | Pass Criteria |
 |---|---|---|
-| **Sensitive data in logs** | Trigger operasi dengan PII/token, cek log output | Tidak ada plaintext password, token, atau PII di log |
-| **Sensitive data in error** | Trigger error dengan input sensitif | Error message generic, tidak leak stack trace atau data |
-| **Encryption at rest** | Cek database/storage untuk field sensitif | Terenkripsi atau hashed, bukan plaintext |
-| **TLS enforcement** | Akses via HTTP (non-TLS) | Redirect ke HTTPS atau connection refused |
-| **Data minimization** | Cek API response untuk field yang tidak diminta | Hanya field yang diperlukan yang dikembalikan |
+| **Sensitive data in logs** | Trigger an operation with PII/tokens, check log output | No plaintext password, token, or PII in logs |
+| **Sensitive data in error** | Trigger an error with sensitive input | Generic error message, no leaked stack trace or data |
+| **Encryption at rest** | Check the database/storage for sensitive fields | Encrypted or hashed, not plaintext |
+| **TLS enforcement** | Access over HTTP (non-TLS) | Redirect to HTTPS or connection refused |
+| **Data minimization** | Check the API response for fields that were not requested | Only the required fields are returned |
 
 ### 2.4 Rate Limiting & DoS Tests
 
 | Pattern | Method | Pass Criteria |
 |---|---|---|
-| **API rate limit** | Kirim >limit request dalam window | 429 setelah threshold, dengan Retry-After header |
-| **Login rate limit** | >N failed login attempts | Lockout atau CAPTCHA challenge |
-| **Large payload** | Kirim request body >size limit | 413 Payload Too Large |
-| **Slowloris** | Buka koneksi, kirim partial request perlahan | Connection timeout setelah N detik |
+| **API rate limit** | Send >limit requests within the window | 429 after the threshold, with a Retry-After header |
+| **Login rate limit** | >N failed login attempts | Lockout or CAPTCHA challenge |
+| **Large payload** | Send a request body >size limit | 413 Payload Too Large |
+| **Slowloris** | Open a connection, send a partial request slowly | Connection timeout after N seconds |
 
-### 2.5 Integration dengan maxilun-verify
+### 2.5 Integration with maxilun-verify
 
-Tambahkan tier keamanan setelah Tier 4 (Regression):
+Add a security tier after Tier 4 (Regression):
 
 ```
 Tier 5: Security Validation
@@ -88,13 +88,13 @@ Tier 5: Security Validation
 └── Rate limiting tests (2.4)
 ```
 
-Setiap PR yang mengubah authentication, authorization, input handling, atau data storage **wajib** menjalankan Tier 5. PR yang hanya mengubah UI/copy boleh skip Tier 5.
+Every PR that changes authentication, authorization, input handling, or data storage **must** run Tier 5. A PR that changes only UI/copy may skip Tier 5.
 
 ---
 
 ## 3. Cryptographic Implementation Reference
 
-Template kode per platform. Jangan implement crypto dari nol — gunakan library yang sudah diaudit.
+Code templates per platform. Do not implement crypto from scratch; use an audited library.
 
 ### 3.1 Password Hashing
 
@@ -106,7 +106,7 @@ Template kode per platform. Jangan implement crypto dari nol — gunakan library
 | Rust | `argon2` crate | `Argon2::default().hash_password()` | Argon2id default |
 | Java | `spring-security-crypto` | `Argon2PasswordEncoder` | Spring Boot standard |
 
-**Jangan gunakan**: MD5, SHA-1/256 untuk password, custom hashing, XOR cipher.
+**Do not use**: MD5, SHA-1/256 for passwords, custom hashing, XOR cipher.
 
 ### 3.2 Symmetric Encryption (Data at Rest)
 
@@ -117,57 +117,57 @@ Template kode per platform. Jangan implement crypto dari nol — gunakan library
 | Go | `crypto/aes` + `crypto/cipher` | AES-256-GCM | `cipher.NewGCM(block)` |
 | Rust | `aes-gcm` crate | AES-256-GCM | `Aes256Gcm::new(&key)` |
 
-**Wajib**: unique nonce per encryption, authenticated encryption (GCM/ChaCha20-Poly1305), key dari KMS bukan hardcoded.
+**Required**: unique nonce per encryption, authenticated encryption (GCM/ChaCha20-Poly1305), key from a KMS, not hardcoded.
 
 ### 3.3 Token Signing (JWT)
 
 | Platform | Library | Algorithm | Notes |
 |---|---|---|---|
-| Node.js | `jose` | ES256 atau RS256 | Hindari HS256 kecuali single-service |
+| Node.js | `jose` | ES256 or RS256 | Avoid HS256 except for a single service |
 | Python | `PyJWT` | RS256 | `jwt.encode(payload, private_key, algorithm="RS256")` |
 | Go | `golang-jwt/jwt/v5` | RS256 | `jwt.NewWithClaims(jwt.SigningMethodRS256, claims)` |
 | Rust | `jsonwebtoken` | RS256 | `encode(&Header::new(Algorithm::RS256), &claims, &key)` |
 
-**Jangan**: alg:none, HS256 dengan shared secret di multi-service, store sensitive data di JWT payload (base64 ≠ encrypted).
+**Do not**: use alg:none, use HS256 with a shared secret across multiple services, or store sensitive data in the JWT payload (base64 ≠ encrypted).
 
 ### 3.4 Secure Random
 
 | Platform | Function | Notes |
 |---|---|---|
-| Node.js | `crypto.randomBytes(n)` | Bukan Math.random() |
-| Python | `secrets.token_bytes(n)` | Bukan random module |
-| Go | `crypto/rand.Read(buf)` | Bukan math/rand |
-| Rust | `rand::rngs::OsRng` | Bukan rand::thread_rng() untuk crypto |
-| Browser | `crypto.getRandomValues(buf)` | Bukan Math.random() |
+| Node.js | `crypto.randomBytes(n)` | Not Math.random() |
+| Python | `secrets.token_bytes(n)` | Not the random module |
+| Go | `crypto/rand.Read(buf)` | Not math/rand |
+| Rust | `rand::rngs::OsRng` | Not rand::thread_rng() for crypto |
+| Browser | `crypto.getRandomValues(buf)` | Not Math.random() |
 
 ---
 
 ## 4. Secrets Rotation Protocol
 
-Prosedur rotasi secret yang terstruktur. Jangan ad-hoc.
+A structured secret rotation procedure. Do not rotate ad hoc.
 
 ### 4.1 Rotation Schedule
 
 | Secret Type | Rotation Frequency | Trigger |
 |---|---|---|
-| Database credentials | 90 hari | Scheduled + on compromise |
+| Database credentials | 90 days | Scheduled + on compromise |
 | API keys (third-party) | Per provider policy | Check provider docs |
-| JWT signing keys | 30 hari | Scheduled, overlap period 7 hari |
-| TLS certificates | Sebelum expiry | Automated via cert-manager/Let's Encrypt |
-| SSH keys | 1 tahun | Scheduled + on personnel change |
-| Encryption keys (data at rest) | 1 tahun | Scheduled, re-encrypt data |
-| OAuth client secrets | 90 hari | Scheduled |
+| JWT signing keys | 30 days | Scheduled, overlap period 7 days |
+| TLS certificates | Before expiry | Automated via cert-manager/Let's Encrypt |
+| SSH keys | 1 year | Scheduled + on personnel change |
+| Encryption keys (data at rest) | 1 year | Scheduled, re-encrypt data |
+| OAuth client secrets | 90 days | Scheduled |
 
 ### 4.2 Rotation Procedure
 
 ```
-1. Generate credential baru
-2. Deploy credential baru alongside lama (dual-write/dual-read)
-3. Verifikasi credential baru berfungsi di staging
-4. Switch production ke credential baru
-5. Monitor error rate selama overlap period (min 24 jam)
-6. Revoke credential lama
-7. Audit log: catat siapa, kapan, kenapa rotasi dilakukan
+1. Generate the new credential
+2. Deploy the new credential alongside the old one (dual-write/dual-read)
+3. Verify the new credential works in staging
+4. Switch production to the new credential
+5. Monitor the error rate during the overlap period (min 24 hours)
+6. Revoke the old credential
+7. Audit log: record who rotated, when, and why
 ```
 
 ### 4.3 Leakage Detection
@@ -177,38 +177,38 @@ Prosedur rotasi secret yang terstruktur. Jangan ad-hoc.
 | `gitleaks` | Git history + staged files | Pre-commit hook + CI |
 | `trufflehog` | Git history + filesystem | CI pipeline |
 | `detect-secrets` | Codebase | Pre-commit + IDE plugin |
-| GitHub Secret Scanning | Repository | Enable di repo settings |
+| GitHub Secret Scanning | Repository | Enable in repo settings |
 | AWS GuardDuty / CloudTrail | Cloud credentials | Continuous monitoring |
 
-**Response saat leak terdeteksi**:
-1. Revoke credential segera (jangan investigasi dulu)
-2. Generate credential baru
-3. Assess blast radius: apa yang bisa diakses dengan credential tersebut?
-4. Notify affected parties jika PII/data sensitif terekspos
-5. Post-incident review: bagaimana leak terjadi, bagaimana mencegahnya lagi
+**Response when a leak is detected**:
+1. Revoke the credential immediately (do not investigate first)
+2. Generate a new credential
+3. Assess the blast radius: what can that credential access?
+4. Notify affected parties if PII/sensitive data was exposed
+5. Post-incident review: how the leak happened, how to prevent it again
 
 ---
 
 ## 5. Security Headers Baseline (Extended)
 
-Melengkapi kebijakan HTTP security headers di `SKILL.md`. Header ini wajib untuk layanan production.
+Extends the HTTP security header policy in `SKILL.md`. These headers are required for production services.
 
 ### 5.1 Mandatory Headers
 
 ```http
 Strict-Transport-Security: max-age=31536000; includeSubDomains
-# Catatan: tambahkan '; preload' hanya jika apex & seluruh subdomain permanen mendukung HTTPS
+# Note: add '; preload' only if the apex & every subdomain permanently support HTTPS
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
 Referrer-Policy: strict-origin-when-cross-origin
 Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
 X-DNS-Prefetch-Control: off
-Cache-Control: no-store (untuk response dengan data sensitif)
+Cache-Control: no-store (for responses with sensitive data)
 ```
 
 ### 5.2 Content-Security-Policy Templates
 
-**SPA dengan CDN:**
+**SPA with CDN:**
 ```
 default-src 'self'; 
 script-src 'self' 'nonce-{RANDOM}' https://cdn.example.com; 
@@ -238,15 +238,15 @@ frame-ancestors 'none'
 
 ### 5.3 Validation
 
-- Scan otomatis: [securityheaders.com](https://securityheaders.com) atau `curl -I` + parse
-- CI integration: `testssl.sh` atau `observatory.mozilla.org` API
-- Pre-deploy gate: block deployment jika mandatory headers missing
+- Automated scan: [securityheaders.com](https://securityheaders.com) or `curl -I` + parse
+- CI integration: `testssl.sh` or the `observatory.mozilla.org` API
+- Pre-deploy gate: block the deployment if mandatory headers are missing
 
 ---
 
 ## 6. Supply Chain Security Tooling
 
-Melengkapi kebijakan supply chain di `SKILL.md`. Tools spesifik per ekosistem.
+Extends the supply chain policy in `SKILL.md`. Specific tools per ecosystem.
 
 | Ecosystem | Dependency Audit | Signature Verification | SBOM |
 |---|---|---|---|
@@ -279,22 +279,22 @@ Melengkapi kebijakan supply chain di `SKILL.md`. Tools spesifik per ekosistem.
 
 ## 7. Threat Model Output Template
 
-Format standar untuk output STRIDE analysis. Gunakan ini agar hasil konsisten dan bisa direview.
+Standard format for STRIDE analysis output. Use it so results stay consistent and reviewable.
 
 ```markdown
-# Threat Model: [Nama Fitur/Sistem]
+# Threat Model: [Feature/System Name]
 
 ## Scope
-- **Boundary**: [apa yang termasuk, apa yang tidak]
+- **Boundary**: [what is included, what is not]
 - **Data classification**: [PII, financial, public, internal]
 - **Actors**: [user types, services, external systems]
 
 ## STRIDE Analysis
 
-| # | Ancaman | Skenario Spesifik | Likelihood | Impact | Mitigasi | Status | Sisa Risiko |
+| # | Threat | Specific Scenario | Likelihood | Impact | Mitigation | Status | Residual Risk |
 |---|---------|-------------------|------------|--------|----------|--------|-------------|
-| 1 | Spoofing | Attacker mencuri JWT dari log | Medium | High | Jangan log token, short expiry | ✅ Implemented | Low |
-| 2 | Tampering | Modifikasi price di cart sebelum checkout | High | Critical | Server-side price recalculation | ⚠️ Planned | Medium |
+| 1 | Spoofing | Attacker steals a JWT from the logs | Medium | High | Do not log tokens, short expiry | ✅ Implemented | Low |
+| 2 | Tampering | Price modified in the cart before checkout | High | Critical | Server-side price recalculation | ⚠️ Planned | Medium |
 | ... | ... | ... | ... | ... | ... | ... | ... |
 
 ## Mitigations Priority Matrix
@@ -305,13 +305,13 @@ Format standar untuk output STRIDE analysis. Gunakan ini agar hasil konsisten da
 | P1 | 1 | Add token redaction to logger | DevOps | Sprint 2 |
 
 ## Assumptions & Constraints
-- [asumsi yang dibuat selama modeling]
-- [constraint yang membatasi mitigasi]
+- [assumptions made during modeling]
+- [constraints that limit mitigation]
 
 ## Review
-- **Reviewed by**: [nama]
+- **Reviewed by**: [name]
 - **Date**: [YYYY-MM-DD]
-- **Next review**: [date atau trigger condition]
+- **Next review**: [date or trigger condition]
 ```
 
 Status values: `✅ Implemented`, `⚠️ Planned`, `❌ Not addressed`, `🔄 In progress`.
@@ -320,12 +320,12 @@ Status values: `✅ Implemented`, `⚠️ Planned`, `❌ Not addressed`, `🔄 I
 
 ## 8. DPoP (RFC 9449) & Sender-Constrained Tokens
 
-Gunakan **Demonstrating Proof-of-Possession at the Application Layer (DPoP)** untuk mengikat token akses ke pasangan kunci kriptografis milik klien, sehingga token yang dicuri dari log server, cache proxy, atau kebocoran jaringan tidak dapat disalahgunakan oleh penyerang (*Anti-Token-Replay*).
+Use **Demonstrating Proof-of-Possession at the Application Layer (DPoP)** to bind an access token to the client's cryptographic key pair. A token stolen from server logs, a proxy cache, or a network leak then cannot be replayed by an attacker (*Anti-Token-Replay*).
 
-### 8.1 Mekanisme Verifikasi DPoP
+### 8.1 DPoP Verification Mechanism
 
-1. **Pembuatan Proof JWT oleh Klien**:
-   Pada setiap request ke API yang dilindungi DPoP, klien menandatangani JWT efemeral dengan private key lokalnya:
+1. **The client creates the proof JWT**:
+   On every request to a DPoP-protected API, the client signs an ephemeral JWT with its local private key:
    ```http
    POST /api/v1/transfers HTTP/1.1
    Host: api.example.com
@@ -333,43 +333,43 @@ Gunakan **Demonstrating Proof-of-Possession at the Application Layer (DPoP)** un
    DPoP: eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7...}}... (proof_jwt)
    ```
 
-2. **Header & Klaim Proof JWT**:
+2. **Proof JWT header & claims**:
    - Header: `typ: "dpop+jwt"`, `alg: "ES256"`, `jwk: { kty: "EC", crv: "P-256", x: "...", y: "..." }`
    - Payload:
-     - `htm`: HTTP Method verbatim (`POST`, `GET`, dll.)
-     - `htu`: HTTP Target URI tanpa query string (`https://api.example.com/api/v1/transfers`)
-     - `iat`: Timestamp penerbitan (wajib dalam toleransi clock drift $\le 300\text{s}$)
-     - `jti`: Nonce/ID unik untuk mencegah replay proof yang sama
+     - `htm`: HTTP method verbatim (`POST`, `GET`, etc.)
+     - `htu`: HTTP target URI without the query string (`https://api.example.com/api/v1/transfers`)
+     - `iat`: Issued-at timestamp (must fall within a clock drift tolerance of $\le 300\text{s}$)
+     - `jti`: Unique nonce/ID that prevents replay of the same proof
 
-3. **Pemeriksaan di Sisi Resource Server**:
-   - Verifikasi bahwa `typ` bernilai `dpop+jwt` dan tanda tangan valid menggunakan JWK yang disertakan di header proof.
-   - Hitung SHA-256 thumbprint dari JWK klien (`jkt`).
-   - Cocokkan `jkt` tersebut dengan klaim konfirmasi `cnf.jkt` yang tertanam di dalam payload `access_token`. Jika tidak cocok, tolak dengan HTTP `401 Unauthorized`.
-   - Validasi kecocokan `htm` dan `htu` terhadap request aktif untuk mencegah penyalahgunaan proof lintas-endpoint.
+3. **Checks on the resource server**:
+   - Verify that `typ` equals `dpop+jwt` and that the signature is valid under the JWK included in the proof header.
+   - Compute the SHA-256 thumbprint of the client JWK (`jkt`).
+   - Match that `jkt` against the `cnf.jkt` confirmation claim embedded in the `access_token` payload. On mismatch, reject with HTTP `401 Unauthorized`.
+   - Validate that `htm` and `htu` match the active request to prevent cross-endpoint proof misuse.
 
 ---
 
-## 9. Simulasi Kebijakan Otorisasi Least-Privilege
+## 9. Least-Privilege Authorization Policy Simulation
 
-Cegah eskalasi hak akses (*privilege escalation*) dan izin berlebih (*over-privileged roles*) dengan validasi kebijakan pre-flight sebelum mutasi data dijalankan:
+Prevent *privilege escalation* and *over-privileged roles* by validating policy pre-flight, before a data mutation runs:
 
-### 9.1 Matriks Evaluasi Kebijakan Otorisasi
-Setiap request dievaluasi menggunakan kuartet eksplisit:
+### 9.1 Authorization Policy Evaluation Matrix
+Evaluate every request with an explicit quartet:
 `Evaluate(Principal, Action, Resource, Context) -> ALLOW | DENY (Deny by default)`
 
-| Komponen | Nilai Evaluasi | Validasi Keamanan |
+| Component | Evaluated Values | Security Validation |
 |---|---|---|
-| **Principal** | `userId`, `tenantId`, `roles`, `scopes` | Diambil semata-mata dari token/sesi terverifikasi server, bukan input klien |
-| **Action** | Operasi domain (`invoice:create`, `user:delete`) | Allowlist tindakan eksplisit; tolak wildcard `*` di lingkungan produksi |
-| **Resource** | Target entitas (`invoice:1042`) | Verifikasi kepemilikan tenant via PostgreSQL RLS atau guard server |
-| **Context** | Waktu, IP allowlist, MFA level, auth freshness | Evaluasi apakah operasi sensitif memerlukan step-up re-authentication |
+| **Principal** | `userId`, `tenantId`, `roles`, `scopes` | Taken solely from the server-verified token/session, never from client input |
+| **Action** | Domain operation (`invoice:create`, `user:delete`) | Explicit action allowlist; reject wildcard `*` in production |
+| **Resource** | Target entity (`invoice:1042`) | Verify tenant ownership via PostgreSQL RLS or a server guard |
+| **Context** | Time, IP allowlist, MFA level, auth freshness | Evaluate whether a sensitive operation needs step-up re-authentication |
 
-### 9.2 Pre-Flight Policy Simulator di CI & Unit Test
-Tulis tes kebijakan deterministik untuk setiap role sebelum rilis:
+### 9.2 Pre-Flight Policy Simulator in CI & Unit Tests
+Write deterministic policy tests for every role before release:
 ```typescript
-// Contoh simulasi kebijakan otorisasi (Deny by default)
+// Example authorization policy simulation (Deny by default)
 describe("Authorization Policy Simulator", () => {
-  it("menolak akses member biasa ke endpoint administrasi tenant", () => {
+  it("denies a regular member access to the tenant administration endpoint", () => {
     const decision = evaluateAccess({
       principal: { userId: "u-1", tenantId: "t-1", role: "member" },
       action: "tenant:billing:update",

@@ -2,14 +2,16 @@
 
 <div align="center">
 
-<img src="assets/banner.jpg" alt="Maxilun — 25 Skills: 1 Orchestrator + 24 Specialists · Purity Engine · Four Always-On Engines" width="100%">
+<img src="assets/banner.svg" alt="Maxilun — 25 Skills · 15 Autonomous Agents · Shared Agent Bus · Knowledge Graph MCP · Purity Gate" width="100%">
 
 <br/>
 
 [![CI](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml/badge.svg)](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml)
-[![Version](https://img.shields.io/badge/version-1.1.0-7c3aed?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.3.0-7c3aed?style=flat-square)](CHANGELOG.md)
 [![Skills](https://img.shields.io/badge/skills-25_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
+[![Agents](https://img.shields.io/badge/agents-15_autonomous-3b82f6?style=flat-square)](docs/AGENTS.md)
 [![License](https://img.shields.io/badge/license-Free_to_Use-22c55e?style=flat-square)](LICENSE)
+[![Sponsor](https://img.shields.io/badge/Sponsor-GitHub_Sponsors-ea4aaa?style=flat-square)](https://github.com/sponsors/giriedu)
 [![Platform](https://img.shields.io/badge/runs_on-Claude_·_Cursor_·_Codex_·_Antigravity_·_Zed_·_Termul-white?style=flat-square)](#platform-support)
 [![skills.sh](https://skills.sh/b/giriedu/maxilun?style=flat-square)](https://skills.sh/giriedu/maxilun)
 
@@ -69,7 +71,7 @@ Most AI skill repositories are thin text wrappers that repeat generic advice (*"
 | **Blind Multi-File Edits** (reading 20 whole files into context and breaking callers) | **Executable AST Knowledge Graph & 3D WebGL Lens** in [`skills/maxilun-knowledge-graph/`](skills/maxilun-knowledge-graph/SKILL.md) (`cli.py` + Python/TS/Polyglot AST scanners returning exact `file:line` `defOf:` / `callsIn:` in `< 1s`) |
 | **Vulnerable Auth & Webhooks** (`!==` timing leaks, float currency drift, ad-hoc error JSON) | **Cryptographic & API Contract Playbooks** in [`maxilun-sentinel`](skills/maxilun-sentinel/references/security-playbook.md) & [`maxilun-docsmith`](skills/maxilun-docsmith/references/openapi-contracts.md) (`timingSafeEqual`, Argon2id, `BIGINT` minor units, OpenAPI 3.1 + RFC 9457 `application/problem+json`) |
 | **Stiff, Unreadable AI Videos** (CSS transition drift, tiny 14px fonts, 30-word paragraphs) | **5-Skill Programmatic Video Studio** in [`maxilun-cinecode`](skills/maxilun-cinecode/references/video-production-pipeline.md) + [`maxilun-motion`](skills/maxilun-motion/references/choreography-styles.md) (React frame compiler, analytical damped springs, 14 style signatures, 22 hooks, FFmpeg `yuv420p`) |
-| **Context Window Bloat & Prompt Ceremony** (2,000-line prompt files, emoji status banners, and single-template SaaS clones) | **Strict `≤ 300 Line` Cognitive Ceiling** on all 23 `SKILL.md` files with on-demand `references/`, domain-authentic UI grounding, and zero self-checked HUD theater — verified on every commit by [`scripts/test-suite.py`](scripts/test-suite.py) |
+| **Context Window Bloat & Prompt Ceremony** (2,000-line prompt files, emoji status banners, and single-template SaaS clones) | **Strict `≤ 250 Line` Cognitive Ceiling** across all 25 `SKILL.md` files, `/maxilun terse` ultra-compact mode, `OutputCompressor`, and zero self-checked HUD theater — verified on every commit by [`scripts/test-suite.py`](scripts/test-suite.py) |
 
 ---
 
@@ -84,15 +86,16 @@ Most AI skill repositories are thin text wrappers that repeat generic advice (*"
 ```mermaid
 flowchart LR
     Prompt["User Request"] --> KG{"Touches Code?"}
-    KG -->|"Yes (Structural)"| Graph["maxilun-knowledge-graph<br/>AST defOf: / callsIn: file:line"]
-    KG -->|"New Project"| Scaf["maxilun-scaffold<br/>10 Context Docs + UI Seeding"]
-    Graph --> Route["/maxilun Orchestrator<br/>1-Primary + Conditional Companions"]
+    KG -->|"Yes (Structural)"| Graph["maxilun-kg MCP / CLI<br/>kg_locate · kg_query · kg_diff_impact"]
+    KG -->|"New Project"| Scaf["maxilun-planner<br/>Disjoint Workstreams + docs/"]
+    Graph --> Route["maxilun-orchestrator<br/>lite · full · ultra · terse"]
     Scaf --> Route
 
-    Route --> W1["Wave 1: Design & Contracts<br/>architect · craft · data · sentinel"]
-    W1 --> W2["Wave 2: Implementation<br/>engineer · frontend · motion · cinecode"]
-    W2 --> W3["Wave 3: 5-Tier Verification<br/>verify · docsmith · deploy"]
-    W3 --> Ship(["Verified Deliverable<br/>Exit Code 0 + Evidence"])
+    Route --> W1["Wave 1: Discovery & Contracts<br/>scout · planner · architect"]
+    W1 -->|"send_handoff()"| W2["Wave 2: Implementation<br/>ui-designer · ui-motion · coder-* · studio"]
+    W2 -->|"send_handoff()"| W3["Wave 3: Independent Gates<br/>verifier · ui-reviewer · security-auditor"]
+    W3 -->|"Fail -> Loopback"| W2
+    W3 -->|"Exit Code 0"| Ship(["Verified Deliverable<br/>agent_bus.json + Proof"])
 ```
 
 ### 5-Specialist Studio Pipeline for Programmatic Motion Video
@@ -127,7 +130,7 @@ Structured by real-world software engineering lifecycle — from foundational ar
 | 10 | `maxilun-insight` | Performance Diagnostics — CPU/memory/DB profiling, distributed tracing, leak detection | `/maxilun-insight`, `/msal-audit` |
 | 11 | `maxilun-deploy` | Cloud & Operations — CI/CD pipelines, multi-stage Docker, zero-downtime rollouts | `/maxilun-deploy` |
 | 12 | `maxilun-docsmith` | Technical Specs & Documentation — Feature PRDs/RFCs, OpenAPI 3.1/AsyncAPI contracts, ADRs, runbooks, `llms.txt` | `/maxilun-docsmith`, `/msal-docs` |
-| 13 | `maxilun-craft` | Design Systems & UI/UX — OKLCH color palettes, WCAG AAA accessibility, 4px grid, 100 brand references | `/maxilun-craft`, `/msal-ui` |
+| 13 | `maxilun-craft` | UI/UX Craft & Brand Identity — seven-line Brief, token lock, eight ordered layers, `slopscan.py` proof gate, OKLCH ramps, WCAG contrast, 100 design references, SVG logo suite | `/maxilun-craft`, `/msal-ui` |
 | 14 | `maxilun-motion` | Motion Design — interactive browser animation, complete WebGL 3D scenes, camera choreography, reference-led art direction, motion storyboards, preview review, and accessible fallbacks | `/maxilun-motion`, `3D scene`, `immersive website`, `Three.js`, `WebGL`, `motion-led website` |
 | 15 | `maxilun-cinecode` | Programmatic Video — code-driven MP4/WebM/GIF, React frame compiler, data-driven batch pipelines | `/maxilun-cinecode` |
 | 16 | `maxilun-diagrams` | System Visualization — C4, sequence, Event Storming, data-flow diagrams via Mermaid | `/maxilun-diagram`, `/maxilun-diagrams` |
@@ -165,7 +168,7 @@ Three operating protocols support these engines:
 
 ## Knowledge Graph Code Discovery
 
-Use `maxilun-knowledge-graph` for structural or multi-file code changes when its tooling is available. Trivial isolated edits can use the fast path; if graph tooling is unavailable, use direct repository search and state that fallback:
+Use `maxilun-knowledge-graph` for structural or multi-file code changes when its tooling is available. When the location of the code is unknown, `python skills/maxilun-knowledge-graph/cli.py locate "<question or stack trace>"` returns ranked `file:start-end` ranges with verbatim excerpts, so the agent reads those ranges instead of opening files one by one. Trivial isolated edits can use the fast path; if graph tooling is unavailable, use direct repository search and state that fallback:
 
 - **Python AST Scanner** — semantic AST parsing for classes, methods, and relative imports (not brittle regex)
 - **TypeScript Scanner** — line-accurate CALLS and IMPORT relationship attribution
@@ -184,7 +187,7 @@ Use `maxilun-knowledge-graph` for structural or multi-file code changes when its
 Maxilun ships with a complete built-in autonomous agent runtime, AST security inspector, and empirical benchmark suite in `harness/` (100% zero-dependency Python stdlib):
 
 ```bash
-# Inspect all 23 ecosystem skills (1 orchestrator + 22 specialists), line budgets (<=300), and triggers:
+# Inspect all 25 ecosystem skills (1 orchestrator + 24 specialists) and 15 autonomous agents:
 python harness/cli.py skills
 # Run empirical benchmark suite (+55% quality improvement over Raw AI):
 python harness/cli.py bench --view
@@ -229,6 +232,24 @@ Full runtime architecture, provider configurations, and tool schemas are documen
 | [docs/RELEASE.md](docs/RELEASE.md) | Automated GitHub Releases, tag dispatch, and versioning protocols |
 | [CHANGELOG.md](CHANGELOG.md) | Semantic version release history |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution standards, test-suite validation, and code hygiene |
+
+---
+
+## About Releases
+
+Maxilun follows [Semantic Versioning](https://semver.org/) and [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Every release is validated against all 25 skills, 15 autonomous agents, Knowledge Graph scanners, UI Purity Linter, and harness integration tests via `python scripts/test-suite.py`.
+
+- **Latest Stable**: `v1.3.0` — see [CHANGELOG.md](CHANGELOG.md) for full release notes and `[Unreleased]` additions (`15` agents, Shared Agent Bus, `maxilun-kg` MCP, `OutputCompressor`, `/maxilun terse`, `icon_lookup.py`, and anti-slop prose/tactile UI playbooks).
+- **Release Pipeline**: See [docs/RELEASE.md](docs/RELEASE.md) and [GitHub Releases](https://github.com/giriedu/maxilun/releases).
+
+---
+
+## Sponsor & Support
+
+Maxilun is built as open-access, zero-dependency engineering infrastructure. If Maxilun saves your team hours of review, prevents UI slop, or catches security regressions before production, you can support ongoing development:
+
+- **GitHub Sponsors**: [github.com/sponsors/giriedu](https://github.com/sponsors/giriedu)
+- **Star & Share**: Star [`giriedu/maxilun`](https://github.com/giriedu/maxilun) or install via `npx skills add giriedu/maxilun`
 
 ---
 

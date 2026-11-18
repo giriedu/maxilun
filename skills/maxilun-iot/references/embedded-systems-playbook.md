@@ -1,27 +1,27 @@
 # Embedded Systems & Microcontroller Engineering Playbook
 
-Panduan rekayasa sistem embedded tingkat produksi untuk mikrokontroler (ESP32, STM32, Arduino, Raspberry Pi Pico), FreeRTOS, dan protokol bus perangkat keras.
+Production embedded engineering guide for microcontrollers (ESP32, STM32, Arduino, Raspberry Pi Pico), FreeRTOS, and hardware bus protocols.
 
-## 1. Arsitektur Memori & Aturan ISR (Interrupt Service Routine)
+## 1. Memory Architecture & ISR (Interrupt Service Routine) Rules
 
-### 1.1 Invarian Penanganan Interupsi (ISR)
-- **Zero Heap Allocation**: Dilarang menggunakan alokasi dinamis (`malloc`, `free`, `new`, `delete`) di dalam ISR.
-- **Variabel Bersama (`volatile`)**: Setiap variabel yang dibaca di main loop dan dimodifikasi di ISR wajib dideklarasikan `volatile` (atau gunakan atomic C11/C++20).
-- **Penundaan Eksekusi (Deferred Processing)**:
-  ISR hanya bertugas mencatat flag atau mengirim pesan ke antrean FreeRTOS (`xQueueSendFromISR`), kemudian memberikan sinyal yield (`portYIELD_FROM_ISR`). Logika komputasi panjang dijalankan di task worker biasa.
+### 1.1 Interrupt Handling (ISR) Invariant
+- **Zero heap allocation**: Never use dynamic allocation (`malloc`, `free`, `new`, `delete`) inside an ISR.
+- **Shared variables (`volatile`)**: Declare every variable that is read in the main loop and modified in an ISR as `volatile` (or use C11/C++20 atomics).
+- **Deferred processing**:
+  An ISR only records a flag or sends a message to a FreeRTOS queue (`xQueueSendFromISR`), then signals a yield (`portYIELD_FROM_ISR`). Run long computation in a regular worker task.
 
-### 1.2 FreeRTOS Task & Anggaran Stack
-- Tentukan ukuran stack task secara cermat (misalnya 2048 s/d 4096 words).
-- Pantau water mark memori dengan `uxTaskGetStackHighWaterMark()`. Stack overflow langsung memicu crash fatal.
-- Berikan prioritas task yang tepat: task I/O berkecepatan tinggi mendapat prioritas lebih tinggi daripada logging telemetri latar belakang.
+### 1.2 FreeRTOS Tasks & Stack Budget
+- Size each task stack deliberately (for example 2048 to 4096 words).
+- Monitor the memory high-water mark with `uxTaskGetStackHighWaterMark()`. A stack overflow causes an immediate fatal crash.
+- Assign task priorities correctly: high-speed I/O tasks get higher priority than background telemetry logging.
 
 ---
 
-## 2. Driver Bus Perangkat Keras (I2C, SPI, UART, GPIO)
+## 2. Hardware Bus Drivers (I2C, SPI, UART, GPIO)
 
-### 2.1 Bus I2C
-- Pasang resistor pull-up fisik (umumnya 2.2kΩ s/d 4.7kΩ) pada jalur SDA dan SCL.
-- Setiap pembacaan register sensor wajib memiliki batas waktu (*timeout*). Jangan gunakan loop `while(!flag)` tanpa batas yang dapat menyebabkan mikroprosesor freeze permanen saat kabel sensor terlepas:
+### 2.1 I2C Bus
+- Fit physical pull-up resistors (typically 2.2kΩ to 4.7kΩ) on the SDA and SCL lines.
+- Give every sensor register read a timeout. Do not use an unbounded `while(!flag)` loop; it freezes the microprocessor permanently when a sensor cable comes loose:
   ```c
   esp_err_t err = i2c_master_cmd_begin(I2C_NUM_0, cmd, pdMS_TO_TICKS(50));
   if (err != ESP_OK) {
@@ -32,24 +32,24 @@ Panduan rekayasa sistem embedded tingkat produksi untuk mikrokontroler (ESP32, S
   }
   ```
 
-### 2.2 Bus SPI & DMA
-- Gunakan transfer Direct Memory Access (DMA) untuk payload berukuran besar (misalnya display TFT atau pembacaan flash SPI eksternal) guna membebaskan siklus inti CPU.
-- Pastikan pin Chip Select (CS) dinonaktifkan kembali saat transfer selesai.
+### 2.2 SPI Bus & DMA
+- Use Direct Memory Access (DMA) transfers for large payloads (for example a TFT display or external SPI flash reads) to free CPU core cycles.
+- Deassert the Chip Select (CS) pin when the transfer completes.
 
 ### 2.3 GPIO & Debouncing
-- Terapkan debouncing tombol secara perangkat keras (kapasitor RC) atau perangkat lunak (timer minimal 20–50ms) sebelum memicu event aksi.
+- Debounce buttons in hardware (RC capacitor) or software (timer of at least 20–50ms) before triggering an action event.
 
 ---
 
-## 3. Watchdog Timer (WDT) & Mode Daya Rendah
+## 3. Watchdog Timer (WDT) & Low-Power Modes
 
 1. **Task Watchdog Timer (TWDT)**:
-   Daftarkan setiap task berkelanjutan ke Watchdog Timer. Beri makan watchdog (`esp_task_wdt_reset()`) di setiap iterasi loop utama.
-2. **Deep Sleep & Profil Konsumsi Daya**:
-   Matikan periferal yang tidak digunakan, putuskan koneksi Wi-Fi/Bluetooth dengan rapi, dan konfigurasi pin wake-up sebelum memasuki deep sleep:
+   Register every continuous task with the Watchdog Timer. Feed the watchdog (`esp_task_wdt_reset()`) on every iteration of the main loop.
+2. **Deep sleep & power consumption profile**:
+   Turn off unused peripherals, disconnect Wi-Fi/Bluetooth cleanly, and configure the wake-up pin before entering deep sleep:
    ```c
-   esp_sleep_enable_ext0_wakeup(GPIO_NUM_33, 0); // Bangun saat level LOW
+   esp_sleep_enable_ext0_wakeup(GPIO_NUM_33, 0); // Wake on LOW level
    esp_deep_sleep_start();
    ```
-3. **Ketahanan NVS / Flash Storage**:
-   Gunakan partisi NVS dengan mekanisme *wear leveling* untuk penyimpanan konfigurasi. Hindari penulisan berkala per detik ke flash internal.
+3. **NVS / flash storage endurance**:
+   Use an NVS partition with wear leveling for configuration storage. Avoid periodic per-second writes to internal flash.

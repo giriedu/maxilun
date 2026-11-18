@@ -1,0 +1,41 @@
+{
+  "skill_name": "maxilun-architect",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Rancang arsitektur event-driven outbox pattern untuk payment gateway dengan volume 2.000 TPS.",
+      "expected_output": "Produces architecture spec with invariants, failure modes, bounded contexts, Transactional Outbox schema, and quantitative revisit triggers.",
+      "assertions": [
+        "defines absolute invariants",
+        "includes failure modes and partial outage stress test",
+        "avoids pseudo-numeric scoring matrices",
+        "specifies quantitative revisit triggers",
+        "uses text status labels"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Pecah service order dan inventory yang saling join query di shared database.",
+      "expected_output": "Evaluates Strangler Fig and Expand-Contract patterns; maps blast radius; establishes asynchronous Saga or event contract; eliminates dual-write lock.",
+      "assertions": [
+        "maps caller blast radius",
+        "specifies expand-contract phases",
+        "removes cross-service table joins",
+        "sets lock timeouts and timeouts",
+        "defines ADR structure"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Pilih teknologi database graf baru untuk fitur rekomendasi e-commerce kita.",
+      "expected_output": "Evaluates PostgreSQL recursive queries (stdlib/reuse baseline) against dedicated graph DB using unweighted technology checklist; requires spike.",
+      "assertions": [
+        "evaluates existing DB baseline first",
+        "uses unweighted checklist",
+        "requires time-boxed benchmark spike",
+        "defines exit and rollback strategy",
+        "no strawman candidates"
+      ]
+    }
+  ]
+}

@@ -73,6 +73,8 @@ EXPECTED_AGENTS = [
     "maxilun-ui-designer",
     "maxilun-ui-motion",
     "maxilun-ui-reviewer",
+    "maxilun-planner",
+    "maxilun-security-auditor",
 ]
 REQUIRED_REFERENCES = [
     "engines.md",
@@ -400,7 +402,7 @@ def test_foundation_integration():
     print("\n🧪 Testing knowledge-graph foundation integration...")
     passed = True
     kg_content = read_skill("maxilun-knowledge-graph")
-    for marker in ["Kontrak Fondasi", "Tangga Pencarian", "Symbol Query Grammar", "callsIn:"]:
+    for marker in ["Foundation Contract", "Search Ladder", "Locate Protocol", "Symbol Query Grammar", "callsIn:"]:
         if marker not in kg_content:
             print(f"  ❌ maxilun-knowledge-graph: missing marker '{marker}'")
             passed = False
@@ -452,6 +454,14 @@ def test_referenced_paths():
         SKILLS_DIR / "maxilun-scaffold" / "references" / "index.md",
         SKILLS_DIR / "maxilun-scaffold" / "references" / "doc-templates.md",
         SKILLS_DIR / "maxilun-scaffold" / "references" / "prd-archetypes.md",
+        SKILLS_DIR / "maxilun-scaffold" / "references" / "context-maintenance-update.md",
+        SKILLS_DIR / "maxilun-data" / "references" / "multi-tenant-isolation-rls.md",
+        SKILLS_DIR / "maxilun-desktop" / "references" / "cross-platform-qt-tauri.md",
+        SKILLS_DIR / "maxilun-engineer" / "references" / "refactoring-cutover-discipline.md",
+        SKILLS_DIR / "maxilun-frontend" / "references" / "server-actions-state-hierarchy.md",
+        SKILLS_DIR / "maxilun-iot" / "references" / "power-management-watchdog.md",
+        SKILLS_DIR / "maxilun-network" / "references" / "vpn-routing-redundancy.md",
+        SKILLS_DIR / "maxilun-ai" / "references" / "structured-tool-guardrails.md",
         SKILLS_DIR / "maxilun-motion" / "references" / "index.md",
         SKILLS_DIR / "maxilun-motion" / "references" / "motion-components.md",
         SKILLS_DIR / "maxilun-motion" / "references" / "choreography-styles.md",
@@ -643,27 +653,94 @@ def test_kg_scanner_functional():
         return False
 
 
+def test_kg_locate_functional():
+    print("\n🧪 Running functional Knowledge Graph locate test...")
+    try:
+        import importlib
+        GraphBuilder = importlib.import_module("graph_builder").GraphBuilder
+        locate_mod = importlib.import_module("locate")
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / "shop"
+            (root / "src").mkdir(parents=True)
+            filler = "".join(f"def helper_{i}(value):\n    return value + {i}\n\n" for i in range(12))
+            (root / "src" / "billing.py").write_text(
+                filler
+                + "def calculate_invoice_total(items, discount):\n"
+                "    subtotal = sum(item.price for item in items)\n"
+                "    return subtotal - discount\n",
+                encoding="utf-8",
+            )
+            (root / "src" / "checkout.py").write_text(
+                "from .billing import calculate_invoice_total\n\n"
+                "def submit_order(cart):\n"
+                "    return calculate_invoice_total(cart.items, cart.discount)\n",
+                encoding="utf-8",
+            )
+            (root / "src" / "mailer.py").write_text(
+                "def send_welcome_email(user):\n    return user.email\n", encoding="utf-8")
+            (root / ".env").write_text("API_SECRET=invoice-total-secret\n", encoding="utf-8")
+
+            graph = GraphBuilder().scan_project(str(root), use_cache=False)
+            result = locate_mod.locate("di mana total tagihan dihitung", root=str(root), graph=graph,
+                                       also=["invoice", "total"])
+            hits = result["hits"]
+            if not hits or hits[0]["file"] != "src/billing.py" or hits[0]["symbol"] != "calculate_invoice_total":
+                print(f"  ❌ locate ranked the wrong range first: {hits[:1]}")
+                return False
+            if not any("subtotal" in line for line in hits[0]["excerpt"]):
+                print("  ❌ locate excerpt is not the verbatim symbol body")
+                return False
+            if not any("checkout.py" in c for c in hits[0]["callers"]):
+                print("  ❌ locate did not surface the graph caller lead")
+                return False
+            if any(h["file"].startswith(".env") for h in hits):
+                print("  ❌ locate indexed a secret file")
+                return False
+
+            trace = locate_mod.locate('File "src/checkout.py", line 4, in submit_order', root=str(root), graph=graph)
+            if not trace["hits"] or trace["hits"][0]["file"] != "src/checkout.py" or trace["confidence"] != "strong":
+                print("  ❌ locate failed to pin a stack-trace frame")
+                return False
+
+            miss = locate_mod.locate("kubernetes ingress controller", root=str(root), graph=graph)
+            if miss["confidence"] not in ("none", "weak"):
+                print(f"  ❌ locate reported '{miss['confidence']}' confidence for an unrelated question")
+                return False
+            if "Read plan" not in locate_mod.render(result):
+                print("  ❌ locate render lacks the Read plan block")
+                return False
+            print(f"  ✅ Functional KG locate passed ({result['indexed_chunks']} chunks, top hit {hits[0]['file']}:{hits[0]['range'][0]})")
+            return True
+    except Exception as e:
+        print(f"  ❌ KG locate test error: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+
 def test_cross_references():
     print("\n🧪 Checking cross-references between skills...")
     checks = [
         ("maxilun-engineer", ["maxilun-data", "maxilun-frontend"]),
-        ("maxilun-craft", ["maxilun-motion"]),
+        ("maxilun-craft", ["maxilun-motion", "maxilun-desktop"]),
         ("maxilun-architect", ["maxilun-data"]),
-        ("maxilun-sentinel", ["maxilun-deploy"]),
-        ("maxilun-data", ["maxilun-architect"]),
+        ("maxilun-sentinel", ["maxilun-deploy", "maxilun-ai"]),
+        ("maxilun-data", ["maxilun-architect", "maxilun-iot"]),
         ("maxilun-docsmith", ["maxilun-engineer", "maxilun-architect", "maxilun-craft"]),
         ("maxilun-scaffold", ["maxilun-craft", "maxilun-docsmith"]),
         ("maxilun-motion", ["maxilun-cinecode", "maxilun-craft"]),
         ("maxilun-cinecode", ["maxilun-motion", "maxilun-craft", "maxilun-content"]),
         ("maxilun-content", ["maxilun-cinecode", "maxilun-motion"]),
         ("maxilun", ["maxilun-scaffold"]),
-        ("maxilun-desktop", ["maxilun-data", "maxilun-verify"]),
+        ("maxilun-desktop", ["maxilun-data", "maxilun-verify", "maxilun-craft"]),
         ("maxilun-mobile", ["maxilun-sentinel", "maxilun-verify"]),
-        ("maxilun-iot", ["maxilun-network", "maxilun-sentinel"]),
+        ("maxilun-iot", ["maxilun-network", "maxilun-sentinel", "maxilun-data"]),
         ("maxilun-network", ["maxilun-iot", "maxilun-deploy"]),
-        ("maxilun-ai", ["maxilun-data", "maxilun-engineer"]),
+        ("maxilun-ai", ["maxilun-data", "maxilun-engineer", "maxilun-sentinel"]),
         ("maxilun-game", ["maxilun-craft", "maxilun-motion", "maxilun-verify"]),
-        ("maxilun-hunt", ["maxilun-sentinel", "maxilun-verify"]),
+        ("maxilun-hunt", ["maxilun-sentinel", "maxilun-verify", "maxilun-deploy"]),
+        ("maxilun-deploy", ["maxilun-hunt"]),
     ]
     passed = True
     for skill, targets in checks:
@@ -841,6 +918,10 @@ def test_agents_validity():
             print(f"  ❌ {agent}: Missing 'tools:' whitelist")
             passed = False
 
+        if "model:" not in fm:
+            print(f"  ❌ {agent}: Missing 'model' field in frontmatter")
+            passed = False
+
         # Invariant 1: maxilun-scout MUST be strictly read-only
         if agent == "maxilun-scout":
             if any(t in fm for t in ["Write", "Edit"]):
@@ -854,9 +935,9 @@ def test_agents_validity():
                 passed = False
 
         # Invariant 3: maxilun-ui-reviewer MUST NOT modify code (objective evaluation)
-        if agent == "maxilun-ui-reviewer":
+        if agent in ("maxilun-ui-reviewer", "maxilun-security-auditor"):
             if any(t in fm for t in ["Write", "Edit"]):
-                print(f"  ❌ {agent}: Security invariant broken! UI Reviewer MUST NOT have code modification tools.")
+                print(f"  ❌ {agent}: Security invariant broken! {agent} MUST NOT have code modification tools.")
                 passed = False
         lines = len(content.splitlines())
         if lines > 200:
@@ -865,6 +946,86 @@ def test_agents_validity():
 
         print(f"  ✅ {agent}: Verified valid frontmatter & security invariants ({lines} lines)")
 
+    # Collaboration Invariant 4: Orchestrator must know all 12 specialist agents
+    orch_text = (agents_dir / "maxilun-orchestrator.md").read_text(encoding="utf-8")
+    for agent in EXPECTED_AGENTS:
+        if agent == "maxilun-orchestrator":
+            continue
+        if agent not in orch_text:
+            print(f"  ❌ maxilun-orchestrator.md does not reference specialist '{agent}'")
+            passed = False
+
+    # Collaboration Invariant 5: Every specialist skill (24) must be covered by at least one agent
+    all_agents_text = "\n".join((agents_dir / f"{a}.md").read_text(encoding="utf-8") for a in EXPECTED_AGENTS)
+    for skill in EXPECTED_SKILLS:
+        if skill == "maxilun":
+            continue
+        if skill not in all_agents_text:
+            print(f"  ❌ Skill '{skill}' is not referenced by any agent in agents/")
+            passed = False
+
+    # Collaboration Invariant 6: Harness SkillsLoader loads all 13 agents & enforces read-only tools
+    from harness.engine.skills_loader import SkillsLoader
+    from harness.tools.registry import ToolRegistry
+    loader = SkillsLoader(REPO_ROOT)
+    for agent in EXPECTED_AGENTS:
+        if not loader.get_agent(agent):
+            print(f"  ❌ Harness SkillsLoader failed to load agent '{agent}'")
+            passed = False
+    scout_def = loader.get_agent("maxilun-scout")
+    reg = ToolRegistry(REPO_ROOT)
+    if scout_def:
+        res = reg.execute("write_file", {"path": "x", "content": "y"}, allowed_tools=scout_def.allowed_harness_tools)
+        if "Permission denied" not in res.get("error", ""):
+            print("  ❌ ToolRegistry failed to block write_file for read-only maxilun-scout")
+            passed = False
+
+    # Collaboration Invariant 7: Inter-agent bus & output compressor functional
+    from harness.engine.context import SessionContext
+    from harness.engine.compressor import OutputCompressor
+    ctx = SessionContext()
+    ctx.post_handoff("maxilun-scout", "maxilun-coder-backend", "Found bug at api.ts:42", ["api.ts"])
+    msgs = ctx.read_handoffs("maxilun-coder-backend")
+    if len(msgs) != 1 or msgs[0]["from"] != "maxilun-scout":
+        print("  ❌ SessionContext inter-agent handoff bus failed")
+        passed = False
+    noisy = "\n".join([f"PASS test_{i}" for i in range(150)] + ["FAIL assertion at app.py:12"])
+    compressed = OutputCompressor.compress_bash_output(noisy, max_lines=80)
+    if "FAIL assertion at app.py:12" not in compressed or len(compressed.splitlines()) >= 150:
+        print("  ❌ OutputCompressor failed to compress noise while keeping failure line")
+        passed = False
+
+    return passed
+
+def test_evals_suites():
+    print(f"\n🧪 Validating evals test suites across all {len(EXPECTED_SKILLS)} skills...")
+    import json
+    passed = True
+    for skill in EXPECTED_SKILLS:
+        eval_file = SKILLS_DIR / skill / "evals" / "evals.json"
+        if not eval_file.exists():
+            print(f"  ❌ {skill}: Missing evals/evals.json")
+            passed = False
+            continue
+        try:
+            data = json.loads(eval_file.read_text(encoding="utf-8"))
+            if data.get("skill_name") != skill:
+                print(f"  ❌ {skill}: skill_name mismatch in evals.json ('{data.get('skill_name')}')")
+                passed = False
+            evals = data.get("evals", [])
+            if len(evals) < 3:
+                print(f"  ❌ {skill}: Insufficient evals ({len(evals)} < 3)")
+                passed = False
+            for ev in evals:
+                if not all(k in ev for k in ("id", "prompt", "expected_output", "assertions")):
+                    print(f"  ❌ {skill}: Malformed eval entry missing required keys")
+                    passed = False
+                    break
+        except Exception as e:
+            print(f"  ❌ {skill}: Failed to parse evals.json: {e}")
+            passed = False
+    if passed:
+        print(f"  ✅ All {len(EXPECTED_SKILLS)} skills bundle valid evals suites (>= 3 evals each)")
     return passed
 
 
@@ -885,12 +1046,14 @@ def main():
         test_referenced_paths(),
         test_skill_contracts(),
         test_kg_scanner_functional(),
+        test_kg_locate_functional(),
         test_cross_references(),
         test_no_pipe_to_interpreter(),
         test_no_ceremony_or_self_check_gates(),
         test_harness_functional(),
         test_ui_purity_linter(),
         test_agents_validity(),
+        test_evals_suites(),
     ]
 
     print("\n" + "=" * 48)

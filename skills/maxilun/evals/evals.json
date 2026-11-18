@@ -1,0 +1,65 @@
+{
+  "skill_name": "maxilun",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Tolong koordinasikan implementasi fitur multi-tenant checkout di sistem Next.js + PostgreSQL ini.",
+      "expected_output": "Orchestrator triages decisions, sequences Wave 1 (architect + data schema), Wave 2 (frontend + craft visual lead), Wave 3 (verify + slopscan gate), and produces execution plan.",
+      "assertions": [
+        "sequences wave coordination",
+        "identifies primary domain owners",
+        "includes craft for visual UI",
+        "specifies verify gate",
+        "no ceremonial HUD banners"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Halaman dashboard admin ini tampilannya jelek banget kayak template AI, tolong benerin dong.",
+      "expected_output": "Routes immediately to maxilun-craft with companion maxilun-verify; instructs craft to measure before rebuilding; bans emoji and floating pills.",
+      "assertions": [
+        "routes to maxilun-craft",
+        "pairs with maxilun-verify",
+        "mandates slopscan execution",
+        "rejects cosmetic patch over locked shell",
+        "states verifiable criteria"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Kita harus pecah monolit ini ke microservices sekarang juga atau tetap monolit modular?",
+      "expected_output": "Classifies as Type 1 irreversible decision; asks at most one grouped turn with 2-3 contrasting options, trade-offs, and one firm recommendation; defaults to modular monolith baseline.",
+      "assertions": [
+        "classifies as Type 1 decision",
+        "at most one grouped question",
+        "provides 2-3 contrasting options",
+        "recommends modular monolith baseline",
+        "requires quantitative proof for split"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Knowledge graph sudah ada. Tambahkan fitur export CSV di tabel pesanan (tombol di UI + endpoint API).",
+      "expected_output": "Locates the orders list code once via locate; sizes the work as cross-domain; cuts two units with disjoint write sets (craft UI, engineer endpoint); sends handoff packets containing the Read plan and a done gate; verifies before reporting.",
+      "assertions": [
+        "runs locate instead of reading files one by one",
+        "sizes the work from evidence",
+        "units have disjoint write sets",
+        "handoff packet includes READ PLAN and DONE GATE",
+        "accepts results only with done-gate output"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Perbaiki typo label 'Simpn' jadi 'Simpan' di tombol form profil.",
+      "expected_output": "Sizes as Direct; one owner edits inline with no subagent fan-out and no wave; still verifies.",
+      "assertions": [
+        "classifies as Direct",
+        "no multi-agent fan-out",
+        "no wave orchestration",
+        "single owner executes",
+        "verification still runs"
+      ]
+    }
+  ]
+}

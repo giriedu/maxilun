@@ -7,7 +7,7 @@ Use this matrix to assign **one cohesive primary owner** per deliverable and pre
 | Add a login / auth / webhook endpoint | `maxilun-sentinel` | `maxilun-data` (if schema changes), `maxilun-verify` | `maxilun-content`, `maxilun-craft` |
 | Add, build, or refactor a web page / landing page / UI | `maxilun-craft` (visual lead) | `maxilun-frontend` (Next.js RSC/Actions runtime), `maxilun-verify` | `maxilun-engineer` as sole UI designer |
 | Create a landing page or product UI | `maxilun-craft` | `maxilun-content` (only for dedicated campaign copy), `maxilun-frontend` (if Next.js RSC wiring needed) | `maxilun-docsmith`, `maxilun-engineer` |
-| Redesign generic UI/UX ("ganti UI/UX") | `maxilun-craft` | `maxilun-verify` (3-viewport & a11y proof) | `maxilun-engineer` as design owner |
+| Redesign generic UI/UX ("ganti UI/UX") | `maxilun-craft` | `maxilun-verify` (`slopscan.py` gate, 3-viewport & a11y proof) | `maxilun-engineer` as design owner |
 | Define visual identity, SVG logo, or Brand PDF | `maxilun-craft` | `maxilun-motion` (animated SVG), `maxilun-cinecode` (`<LogoReveal>` MP4/WebM) | `maxilun-frontend` |
 | Investigate a slow page, leak, or outage | `maxilun-insight` | `maxilun-knowledge-graph` (caller radius), then `maxilun-engineer` or `maxilun-data` for the fix | `maxilun-verify` as diagnosis owner |
 | Design system boundaries or migration plan | `maxilun-architect` | `maxilun-knowledge-graph` (blast radius), `maxilun-data` (expand-contract), `maxilun-sentinel` (STRIDE) | `maxilun-diagrams` as decision owner |

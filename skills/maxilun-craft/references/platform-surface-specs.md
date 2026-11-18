@@ -6,60 +6,60 @@
   origin: "Maxilun Craft Engine"
 -->
 
-Panduan spesifikasi rekayasa antarmuka native untuk platform seluler iOS dan Android. Memastikan aplikasi dibangun mengikuti konvensi platform sesungguhnya dan menolak mentalitas membungkus tampilan web mentah ke dalam layar ponsel.
+Native interface engineering specifications for the iOS and Android mobile platforms. Build apps on the real conventions of each platform. Do not wrap a raw web view inside a phone screen.
 
 ---
 
-## 1. Prinsip Utama: The Interface IS the Object
+## 1. Core Principle: The Interface IS the Object
 
-Alih-alih menyusun aplikasi sebagai deretan ubin statistik (*dashboard stat tiles*) yang monoton:
+Do not compose the app as a monotonous row of statistic tiles (*dashboard stat tiles*). Instead:
 
-1. **Satu Objek Pengendali Inti**:
-   - Pusatkan setiap layar pada satu representasi fisik interaktif yang mewakili fungsi utama aplikasi:
-     - Aplikasi pelacak tidur: Jam malam melingkar yang dapat digeser untuk mengatur target tidur.
-     - Aplikasi keuangan: Satu grafik aliran dana berkesinambungan yang merespons usapan jari.
-     - Aplikasi penginapan butik: Bingkai arsitektur lengkung (*arch mask*) yang membingkai suasana tempat sebelum angka harga.
-2. **Elemen Sekunder Mengorbit**:
-   - Seluruh filter, tombol tindakan, dan data rincian disusun secara tenang di sekitar objek inti tersebut tanpa berebut hierarki pandang.
-
----
-
-## 2. Spesifikasi Native iOS (SwiftUI & UIKit)
-
-1. **Disiplin Safe Area**:
-   - Konten interaktif, tombol, dan formulir wajib berada di dalam batas Safe Area (`safeAreaPadding()`).
-   - Hanya gambar latar belakang dekoratif dan media visual yang diizinkan melintasi batas Safe Area (`ignoresSafeArea()`).
-2. **Material Translusen (Liquid Glass)**:
-   - Gunakan material sistem bawaan (`.ultraThinMaterial`, `.regularMaterial`) untuk bilah navigasi atas dan bilah tab bawah, sehingga konten di balik bilah tetap memberikan kedalaman spasial saat digulir.
-3. **Kepatuhan Dynamic Type**:
-   - Dilarang mengunci ukuran teks dengan angka mutlak tanpa skala. Gunakan gaya teks semantik (`.title`, `.headline`, `.body`, `.caption`) agar ukuran huruf otomatis beradaptasi saat pengguna mengubah preferensi ukuran teks di pengaturan iOS.
-4. **Target Sentuh Minimum $44\text{pt}$**:
-   - Setiap kontrol klik wajib memiliki ukuran kotak sentuh minimal $44 \times 44\text{pt}$.
-5. **Navigasi Sistem Native**:
-   - Utamakan penggunaan `NavigationStack` native agar gestur usap untuk kembali (*interactive swipe-back gesture*) bekerja secara alami tanpa glitch visual.
+1. **One Core Control Object**:
+   - Center every screen on one interactive physical representation of the app's main function:
+     - Sleep tracker app: a circular night clock the user drags to set the sleep target.
+     - Finance app: one continuous cash-flow chart that responds to finger swipes.
+     - Boutique lodging app: an arched architectural frame (*arch mask*) that frames the atmosphere of the place before the price figure.
+2. **Secondary Elements Orbit**:
+   - Arrange all filters, action buttons, and detail data quietly around that core object. They must not compete with it for visual hierarchy.
 
 ---
 
-## 3. Spesifikasi Native Android (Jetpack Compose & Material 3 Expressive)
+## 2. Native iOS Specifications (SwiftUI & UIKit)
 
-1. **Tonal Elevation (Bukan Drop Shadow Tebal)**:
-   - Material 3 mengekspresikan kedalaman spasial menggunakan tingkatan warna permukaan tonal (`surfaceContainerLowest`, `surfaceContainerLow`, `surfaceContainer`, `surfaceContainerHigh`), bukan bayangan gelap hitam pekat yang kotor.
-2. **Target Sentuh Minimum $48\text{dp}$**:
-   - Setiap elemen tombol atau area interaksi sentuh wajib memenuhi standar minimal $48 \times 48\text{dp}$ untuk mengakomodasi berbagai ukuran ujung jari pengguna.
-3. **Dukungan Gestur Predictive Back**:
-   - Integrasikan API navigasi Android modern yang mendukung pratinjau animasi kembali (*predictive back animation*) sebelum pengguna melepas jari dari tepi layar.
-4. **Penanganan Keyboard Virtual Otomatis**:
-   - Seluruh formulir input wajib menerapkan penyesuaian bantalan keyboard (`WindowInsets.ime` atau `imePadding()`) agar kolom yang sedang diketik tidak tertutup oleh keyboard virtual perangkat.
+1. **Safe Area Discipline**:
+   - Keep interactive content, buttons, and forms inside the Safe Area bounds (`safeAreaPadding()`).
+   - Only decorative background images and visual media may cross the Safe Area bounds (`ignoresSafeArea()`).
+2. **Translucent Material (Liquid Glass)**:
+   - Use built-in system materials (`.ultraThinMaterial`, `.regularMaterial`) for the top navigation bar and the bottom tab bar, so content behind the bars keeps spatial depth while scrolling.
+3. **Dynamic Type Compliance**:
+   - Do not lock text size to an absolute number without scaling. Use semantic text styles (`.title`, `.headline`, `.body`, `.caption`) so type adapts automatically when the user changes the text-size preference in iOS settings.
+4. **Minimum Touch Target $44\text{pt}$**:
+   - Give every tappable control a touch box of at least $44 \times 44\text{pt}$.
+5. **Native System Navigation**:
+   - Prefer the native `NavigationStack` so the *interactive swipe-back gesture* works naturally without visual glitches.
 
 ---
 
-## 4. Matriks Ringkas Komparasi Platform
+## 3. Native Android Specifications (Jetpack Compose & Material 3 Expressive)
 
-| Parameter Desain | Standar iOS (SwiftUI) | Standar Android (Material 3) |
+1. **Tonal Elevation (Not Heavy Drop Shadows)**:
+   - Material 3 expresses spatial depth through tonal surface color levels (`surfaceContainerLowest`, `surfaceContainerLow`, `surfaceContainer`, `surfaceContainerHigh`), not through dirty, pitch-black shadows.
+2. **Minimum Touch Target $48\text{dp}$**:
+   - Give every button or touch interaction area at least $48 \times 48\text{dp}$ to accommodate different fingertip sizes.
+3. **Predictive Back Gesture Support**:
+   - Integrate the modern Android navigation API that supports the *predictive back animation* preview before the user lifts the finger from the screen edge.
+4. **Automatic Virtual Keyboard Handling**:
+   - Apply keyboard inset padding (`WindowInsets.ime` or `imePadding()`) to every input form so the device's virtual keyboard never covers the field being typed in.
+
+---
+
+## 4. Platform Comparison Quick Matrix
+
+| Design Parameter | iOS Standard (SwiftUI) | Android Standard (Material 3) |
 |---|---|---|
-| **Target Sentuh Minimum** | $44 \times 44\text{pt}$ | $48 \times 48\text{dp}$ |
-| **Material Navigasi** | `.ultraThinMaterial` translusen | Tonal surface tint (warna aksen beropasitas halus) |
-| **Pemisah Kedalaman** | Garis batas hairline $1\text{px}$ / blur latar | Perbedaan saturasi/luminansi level kontainer |
-| **Ukuran Teks Input** | Minimal $16\text{pt}$ (mencegah auto-zoom) | Minimal $16\text{sp}$ |
-| **Gestur Navigasi Utama** | Usap tepi kiri (*edge swipe-back*) | Gestur tepi adaptif (*Predictive Back*) |
-| **Aksi Mengambang** | Bilah bawah mengambang atau bar toolbar | Floating Action Button (FAB) terstandarisasi |
+| **Minimum Touch Target** | $44 \times 44\text{pt}$ | $48 \times 48\text{dp}$ |
+| **Navigation Material** | Translucent `.ultraThinMaterial` | Tonal surface tint (accent color at subtle opacity) |
+| **Depth Separator** | $1\text{px}$ hairline border / background blur | Saturation/luminance difference between container levels |
+| **Input Text Size** | At least $16\text{pt}$ (prevents auto-zoom) | At least $16\text{sp}$ |
+| **Primary Navigation Gesture** | Left edge swipe (*edge swipe-back*) | Adaptive edge gesture (*Predictive Back*) |
+| **Floating Action** | Floating bottom bar or toolbar | Standardized Floating Action Button (FAB) |

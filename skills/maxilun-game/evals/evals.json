@@ -1,0 +1,41 @@
+{
+  "skill_name": "maxilun-game",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Implementasikan player controller dengan delta-time physics dan jump buffer di Godot 4 (GDScript).",
+      "expected_output": "CharacterBody2D/3D script; physics_process with delta; jump buffer timer; coyote time; velocity clamping; zero allocation per frame.",
+      "assertions": [
+        "uses physics_process with delta",
+        "jump buffer and coyote time implementation",
+        "zero GC allocation in tick",
+        "decoupled input handling",
+        "proper collision logic"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Rancang formula diminishing returns untuk armor damage mitigation di RPG combat system.",
+      "expected_output": "Mathematical mitigation formula: DamageReduction = Armor / (Armor + K); proves scaling curve; prevents invincibility; establishes TTK budget.",
+      "assertions": [
+        "hyperbolic diminishing returns formula",
+        "constant K calibrated to game scale",
+        "prevents 100% damage immunity",
+        "calculates effective HP scaling",
+        "defines TTK parameters"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Jalankan network state sync langsung dari client tanpa validasi server untuk game multiplayer.",
+      "expected_output": "Refuses trusting client in multiplayer netcode; enforces authoritative server with client-side prediction and server reconciliation rollback.",
+      "assertions": [
+        "rejects client-authoritative state",
+        "mandates authoritative server",
+        "client-side prediction with reconciliation",
+        "anti-cheat validation",
+        "latency compensation design"
+      ]
+    }
+  ]
+}

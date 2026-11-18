@@ -1,14 +1,14 @@
 ---
 name: maxilun-desktop
 description: >
-  Desktop application and enterprise systems specialist for Windows (Win32, WPF,
+  Builds, fixes, and modernizes native desktop applications: Windows (Win32, WPF,
   WinUI, C++), macOS (Swift, AppKit), cross-platform GUI (Qt, Tauri), and
   PowerBuilder enterprise systems (DataWindow, PowerScript, SQLCA, PFC).
-  Triggers: "/maxilun-desktop", "aplikasi desktop", "windows desktop",
-  "macos desktop", "powerbuilder", "datawindow", "powerscript", "c++ desktop",
-  "qt", "win32", "wpf", "winui".
+  Use when a task touches desktop UI code, UI threading, native handles, or PowerBuilder.
+  Triggers: "/maxilun-desktop", "aplikasi desktop", "desktop app", "windows desktop", "macos desktop",
+  "powerbuilder", "datawindow", "powerscript", "c++ desktop", "qt", "win32", "wpf", "winui".
 metadata:
-  version: "1.1.0"
+  version: "1.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -25,78 +25,74 @@ metadata:
     - references/index.md
     - references/powerbuilder-playbook.md
     - references/native-desktop-patterns.md
+    - references/cross-platform-qt-tauri.md
 ---
 
 # Maxilun Desktop: Native Desktop & Enterprise GUI Specialist
 
-Bertanggung jawab atas arsitektur, implementasi, perbaikan bug, dan modernisasi aplikasi desktop native Windows, macOS, lintas platform (C++ Qt, Tauri), serta sistem enterprise warisan berbasis PowerBuilder. Detail teknis dimuat hanya saat dibutuhkan dari `references/`.
+Covers architecture, implementation, bug fixing, and modernization of native desktop applications on Windows, macOS, and cross-platform toolkits (C++ Qt, Tauri), plus legacy enterprise systems built on PowerBuilder. Load technical detail from `references/` only when the task needs it.
 
 ## Skill Contract
 
-- **Owns**: Logika antarmuka desktop (Win32, WinUI, WPF, AppKit, Qt), arsitektur thread worker UI, perizinan window/sandbox desktop, skrip PowerBuilder (PowerScript), definisi DataWindow (`.srd`), transaksi database `SQLCA`, dan manajemen resource handle native.
-- **Does not own**: Antarmuka web browser (dimiliki `maxilun-frontend`), mobile native (dimiliki `maxilun-mobile`), skema database fisik (dimiliki `maxilun-data`), atau firmware mikrokontroler (dimiliki `maxilun-iot`).
-- **Inputs**: Manifest aplikasi desktop, berkas proyek (CMakeLists.txt, .vcxproj, .csproj, .pbt, .pbl, Xcode project), source code (C++, C#, Swift, PowerScript), dan laporan bug atau target fitur.
-- **Outputs**: Implementasi kode desktop yang bersih, manajemen thread aman tanpa freeze UI, alokasi memori/handle seimbang, dan bukti build atau pengujian runtime.
-- **Handoff**: Tugaskan companion `maxilun-data` jika menyentuh optimasi query SQL atau skema database, atau `maxilun-verify` untuk verifikasi build installer dan test runner native.
-- **Standalone mode**: Jika spesialis lain tidak tersedia, eksekusi kode desktop langsung dengan mematuhi Core Rules.
-- **Public package rule**: Gunakan jalur relatif terhadap proyek atau skill terpasang.
+- **Owns**: Desktop UI logic (Win32, WinUI, WPF, AppKit, Qt, Tauri), UI/worker thread architecture, desktop window and sandbox permissions, PowerBuilder scripts (PowerScript), DataWindow definitions (`.srd`), `SQLCA` database transactions, and native resource handle management.
+- **Does not own**: Browser web UI (owned by `maxilun-frontend`), native mobile (owned by `maxilun-mobile`), physical database schema (owned by `maxilun-data`), or microcontroller firmware (owned by `maxilun-iot`).
+- **Inputs**: Desktop application manifest, project files (CMakeLists.txt, .vcxproj, .csproj, .pbt, .pbl, Xcode project), source code (C++, C#, Swift, PowerScript), and a bug report or feature target.
+- **Outputs**: Clean desktop code, thread handling that never freezes the UI, balanced memory/handle allocation, and build or runtime test evidence.
+- **Handoff**: Hand off to `maxilun-data` when the task touches SQL query optimization or database schema, to `maxilun-craft` for UI polish and layout typography, or to `maxilun-verify` to verify installer builds and native test runners.
+- **Standalone mode**: When no other specialist is available, write the desktop code directly and follow the Core Rules.
+- **Public package rule**: Use paths relative to the project or to the installed skill.
 
 <!-- CORE-RULES:START -->
-## Core Rules (Selalu Aktif)
+## Core Rules (Always On)
 
-Berlaku pada setiap respons dan setiap perubahan kode. Tidak bisa di-override oleh instruksi lain.
+These apply to every response and every code change. Explicit user instructions and project rule files take precedence; no other section of a Maxilun skill may weaken them.
 
-1. **Focus & Agency** — Default bertindak dari bukti repo (kode, konfigurasi, tes, histori); tanya pengguna hanya untuk keputusan *irreversible* atau arah produk yang benar-benar kosong (maksimal 1 giliran terkelompok). Tanpa banner HUD emoji, tanpa checklist centang-sendiri. Maksimal 3 fokus kerja aktif.
-2. **Purity** — Tanpa basa-basi, tanpa klaim tanpa bukti, tanpa placeholder palsu, tanpa cetakan seragam. Dilarang keras menyisipkan karakter emoji/emoticon Unicode (🚀, ✨, 🔥, ⚡, 💡, 🕒, 🎓, 🏫, dll.) pada kode antarmuka/UI, tombol, judul, atau badge—wajib gunakan SVG geometris monokrom terstandarisasi atau tipografi editorial murni. Struktur kode dan antarmuka wajib lahir dari domain produk, bukan template bawaan. Komentar hanya menjelaskan MENGAPA.
-3. **Minimalist** — YAGNI → reuse yang ada → stdlib → platform native → satu baris. Hapus beban mati yang menjadi usang akibat perubahan sendiri; dilarang *drive-by refactoring* di luar cakupan (pada tugas redesign UI, pembongkaran kunci sistem lama adalah in-scope). Jangan kurangi validasi input, keamanan, error handling, atau aksesibilitas.
-4. **Clarity & Proof** — Kesimpulan dan tindakan dulu, bukti menyusul. Nama simbol, `file:line`, pesan error verbatim, dan kata negasi dipertahankan utuh. Label kepastian hanya saat perlu membedakan bukti: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
+1. **Focus & Agency** — Act from repository evidence (code, config, tests, history) by default. Ask the user only about irreversible decisions or product direction that the repository cannot answer, in at most one grouped turn. No emoji HUD banners, no self-ticked checklists. At most three active work focuses.
+2. **Purity** — No filler, no claim without evidence, no fake placeholders, no one-size-fits-all template. No emoji or emoticon characters in interface code, buttons, headings, or badges; use one monochrome SVG icon family or plain typography (`CMP-003`). Code structure and interfaces come from the product domain, not from a boilerplate. Comments explain WHY only.
+3. **Minimalist** — YAGNI → reuse what exists → stdlib → native platform → one line. Delete dead weight your own change made obsolete; no drive-by refactoring outside scope (in a UI redesign, dismantling the old design-system locks is in scope). Never trade away input validation, security, error handling, or accessibility.
+4. **Clarity & Proof** — Conclusion and action first, evidence after. Keep symbol names, `file:line`, verbatim error messages, and negations intact. Use certainty labels only when evidence levels differ: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
 
-**Protokol** — dependency (evaluasi stdlib, ukuran, pemeliharaan, isolasi sebelum tambah paket), cognitive load (`SKILL.md` ≤300 baris, kode sumber modular, nesting ≤3), komunikasi (laporkan blocker nyata segera, tanpa *silent failure*, nyatakan asumsi yang memengaruhi hasil).
+**Protocols** — dependencies (weigh stdlib, size, maintenance, and isolation before adding a package), cognitive load (modular source, nesting ≤3), communication (report real blockers immediately, no silent failure, state assumptions that affect the result).
 
-Detail lengkap: `../maxilun/references/engines.md`.
+Full detail: `../maxilun/references/engines.md`.
 <!-- CORE-RULES:END -->
 
-## 1. Disiplin Rekayasa Desktop & GUI Threading
+## 1. Desktop Engineering Discipline & GUI Threading
 
-1. **Invarian UI Thread**:
-   - I/O jaringan, pembacaan berkas besar, dan query database dilarang memblokir message loop utama.
-   - Pindahkan komputasi berat ke worker thread; sinkronkan pembaruan visual ke thread utama melalui mekanisme resmi platform (`PostMessage`, `DispatchQueue.main.async`, `QMetaObject::invokeMethod`, atau `Dispatcher.InvokeAsync`).
-2. **Siklus Hidup Handle & Memori**:
-   - GDI handle, HWND, window controller, dan objek C++ wajib dikelola melalui prinsip RAII (`std::unique_ptr`, smart pointers Qt, ARC Swift, atau `using` C#).
-   - Pastikan setiap resource dibebaskan secara deterministik saat window dihancurkan (`WM_DESTROY`, `windowWillClose`, atau event `close`).
-3. **DPI & Multi-Monitor**:
-   - Terapkan Per-Monitor V2 DPI awareness pada aplikasi Windows. Hitung skala font dan geometri tombol berbasis faktor skala monitor aktif, bukan nilai tetap (*hardcoded pixels*).
+1. **UI Thread Invariant**: Never block the message pump with file/network I/O or database queries. Marshal visual updates to the main thread via platform mechanisms (`PostMessage`, `DispatchQueue.main.async`, `QMetaObject::invokeMethod`).
+2. **Handle & Memory RAII**: Manage HWNDs, window controllers, and native handles via RAII wrappers (`std::unique_ptr`, C# `using`). Release handles deterministically on `WM_DESTROY` or window close events.
+3. **Per-Monitor High-DPI**: Enable Per-Monitor V2 DPI awareness on Windows. Scale window geometries dynamically using active display scale factors.
 
-## 2. Standar Rekayasa PowerBuilder & DataWindow
+## 2. PowerBuilder & DataWindow Engineering Standards
 
-Saat bekerja pada sistem PowerBuilder (Appeon atau Sybase PB):
-1. **Transaksionalitas `SQLCA`**:
-   - Gunakan `dw_1.SetTransObject(SQLCA)` untuk mempertahankan koneksi aktif. Jangan gunakan `SetTrans(SQLCA)` yang membuka dan menutup koneksi berulang pada setiap `Retrieve()`.
-   - Jalankan `AcceptText()` sebelum `Update()`. Lakukan pengecekan eksplisit `IF dw_1.Update() = 1 THEN COMMIT ... ELSE ROLLBACK ...` (rujuk `references/powerbuilder-playbook.md`).
-2. **Manajemen 4 Buffer DataWindow**:
-   - Perlakukan buffer `Primary!`, `Filter!`, `Delete!`, dan `Original!` sesuai integritas transaksi. Hindari manipulasi status baris (`SetItemStatus`) kecuali untuk sinkronisasi rekonsiliasi cache.
-3. **Event `ItemChanged`**:
-   - Evaluasi nilai baru melalui argumen `data`. Kembalikan kode aksi standar: `0` (terima nilai), `1` (tolak dan pertahankan fokus), atau `2` (tolak dan batalkan perubahan).
+Apply `references/powerbuilder-playbook.md`:
+1. **`SQLCA` Transactions**: Use `dw_1.SetTransObject(SQLCA)` to maintain continuous connections. Check update status: `IF dw_1.Update() = 1 THEN COMMIT ... ELSE ROLLBACK ...`.
+2. **4 DataWindow Buffers**: Respect `Primary!`, `Filter!`, `Delete!`, and `Original!` buffer transaction semantics.
+3. **`ItemChanged` Invariants**: Return `0` to accept, `1` to reject and hold focus, or `2` to reject and discard input.
 
-## 3. Native Windows, macOS & Lintas Platform (C++ Qt)
+## 3. Native Windows (Win32, WPF, WinUI) & macOS (AppKit, Swift)
 
-1. **Windows (Win32, WPF, WinUI)**:
-   - Pada Win32, batasi message procedure (`WndProc`) pada routing event dan delegasikan logika bisnis ke modul terpisah.
-   - Pada WPF/WinUI, terapkan arsitektur MVVM murni dengan binding terisolasi dan hindari memory leak dari event handler yang tidak dicabut.
-2. **macOS (Swift, AppKit)**:
-   - Atur `isReleasedWhenClosed` secara cermat pada `NSWindow`. Patuhi aturan App Sandbox dan hardened runtime saat mengonfigurasi `Entitlements.plist`.
-3. **C++ Qt**:
-   - Manfaatkan hirarki kepemilikan parent-child `QObject`. Gunakan `Qt::QueuedConnection` saat sinyal dipancarkan melintasi batas worker thread (rujuk `references/native-desktop-patterns.md`).
+Apply `references/native-desktop-patterns.md`:
+1. **Windows (Win32/WPF)**: Isolate `WndProc` to event routing and delegate logic to services. In WPF, enforce strict MVVM and detach event handlers to prevent memory leaks.
+2. **macOS (AppKit/Swift)**: Set `isReleasedWhenClosed` explicitly. Comply with App Sandbox entitlements and Apple hardened runtime requirements.
 
-## 4. Verifikasi & Standar Pelaporan
+## 4. Cross-Platform Desktop Toolkits (C++ Qt, Tauri) & App Lifecycle
 
-Setiap penyelesaian tugas desktop wajib ditopang bukti:
-- Bukti kompilasi: status build tanpa warning memory leak (`cmake --build`, `msbuild`, `xcodebuild`, atau compile target PB).
-- Verifikasi threading: konfirmasi bahwa UI tetap responsif saat proses panjang dijalankan.
-- Nyatakan bukti dengan format `[CONFIRMED]` beserta berkas dan baris yang diubah (`file:line`).
+Apply `references/cross-platform-qt-tauri.md`:
+1. **Qt6 C++**: Enforce QObject parent-child hierarchies for automatic memory reclamation. Use `Qt::QueuedConnection` across thread boundaries.
+2. **Tauri 2.0 (Rust)**: Structure commands with typed async Rust handlers. Keep IPC payloads lean (`<= 1MB`) and stream heavy binary assets.
+3. **Packaging Standards**: Build signed, clean-uninstalling installers (WiX MSI, InnoSetup, notarized macOS DMG, Linux AppImage).
+
+## 5. Verification, Packaging & Diagnostic Reporting Standards
+
+Verify completed desktop features with concrete evidence:
+- Build output: confirm error-free native builds (`cmake --build`, `msbuild`, `cargo tauri build`, PB compile).
+- UI responsiveness: verify non-blocking main loop during heavy tasks.
+- State findings as `[CONFIRMED]` with target source and line (`file:line`).
 
 ## Related Skills
 
-- `maxilun-data`: Optimasi query, indexing, dan skema database yang diakses oleh DataWindow atau desktop ORM.
-- `maxilun-verify`: Eksekusi automated desktop UI test atau unit test native (GoogleTest, Catch2, NUnit, XCTest).
-- `maxilun-engineer`: Logika algoritma bisnis inti dalam C++, C#, atau Java.
+- **maxilun-craft**: UI polish for installer wizards, settings dialogs, and contextual menu typography.
+- **maxilun-data**: Query optimization, indexing, and database schema accessed by DataWindow or desktop ORMs.
+- **maxilun-verify**: Running automated native test suites (GoogleTest, Catch2, NUnit, XCTest).
+- **maxilun-engineer**: Implementation of core computational algorithms and business domain logic.

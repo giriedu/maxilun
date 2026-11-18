@@ -1,56 +1,56 @@
 # AI-Ready Documentation (`llms.txt`, `llms-full.txt`) & High-Density README Reference
 
-Gunakan referensi ini saat menyusun `README.md`, `/llms.txt`, dan `/llms-full.txt` agar dapat dikonsumsi manusia dalam `< 60 detik` sekaligus hemat token bagi agen AI/LLM.
+Use this reference when writing `README.md`, `/llms.txt`, and `/llms-full.txt` so a human can absorb them in `< 60 seconds` and an AI/LLM agent spends few tokens reading them.
 
 ---
 
-## 1. Arsitektur `llms.txt` & `llms-full.txt`
+## 1. `llms.txt` & `llms-full.txt` Architecture
 
-Mengikuti spesifikasi standar `llms.txt` (dan terintegrasi dengan audit `maxilun-seo-audit`):
-- **`/llms.txt` (Indeks Peta Konteks)**: Berisi H1 nama proyek, blockquote 1 kalimat fungsi sistem, diikuti daftar tautan markdown yang dikelompokkan berdasarkan prioritas. Setiap tautan wajib memiliki deskripsi 1 kalimat tentang **kapan agen harus membaca file tersebut**.
-- **`/llms-full.txt` (Bundel Konteks Tunggal)**: Menggabungkan isi dokumen inti (`PRD.md`, `ARCHITECTURE.md`, `TECHSTACK.md`, kontrak API utama) tanpa duplikasi navigasi, tanpa badge dekoratif, dan tanpa HTML yang tidak perlu.
+These files follow the standard `llms.txt` specification (and are checked by the `maxilun-seo-audit` audit):
+- **`/llms.txt` (Context Map Index)**: Contains an H1 with the project name, a one-sentence blockquote stating what the system does, then a list of markdown links grouped by priority. Every link must carry a one-sentence description of **when an agent should read that file**.
+- **`/llms-full.txt` (Single Context Bundle)**: Combines the content of the core documents (`PRD.md`, `ARCHITECTURE.md`, `TECHSTACK.md`, the main API contracts) with no duplicated navigation, no decorative badges, and no unnecessary HTML.
 
-### Template `/llms.txt` Produksi
+### Production `/llms.txt` Template
 
 ```markdown
-# [Nama Proyek]
+# [Project Name]
 
-> [Satu kalimat padat: apa yang dilakukan sistem ini, stack utamanya, dan batas domainnya.]
+> [One dense sentence: what this system does, its main stack, and its domain boundary.]
 
-## Quick Context Rules (Baca Sebelum Edit Kode)
-- Stack: [Contoh: Next.js 15 App Router, TypeScript strict, PostgreSQL 16 + Drizzle ORM]
-- Moneter & Angka: Semua nominal uang disimpan dalam satuan terkecil (`BIGINT` IDR), jangan gunakan `float`.
-- Validasi & Auth: Semua mutasi melewati validasi Zod di server dan pemeriksaan kepemilikan tenant (`tenant_id`).
+## Quick Context Rules (Read Before Editing Code)
+- Stack: [Example: Next.js 15 App Router, TypeScript strict, PostgreSQL 16 + Drizzle ORM]
+- Money & Numbers: Store every monetary amount in the smallest unit (`BIGINT` IDR); never use `float`.
+- Validation & Auth: Every mutation passes server-side Zod validation and a tenant ownership check (`tenant_id`).
 
 ## Core Project Documents (`docs/`)
-- [Product Requirements (PRD)](docs/PRD.md): Tujuan produk, persona pengguna, fitur MVP, non-goals, dan metrik keberhasilan.
-- [System Architecture](docs/ARCHITECTURE.md): Diagram C4, batas modul (module boundaries), alur data, dan daftar ADR.
-- [Tech Stack & Env](docs/TECHSTACK.md): Versi runtime, kebijakan dependensi, dan tabel environment variables wajib.
-- [Design System & Tokens](docs/DESIGN.md): Token warna OKLCH, skala tipografi, grid 4px, dan aturan 4 state UI (`maxilun-craft`).
-- [Security & Threat Model](docs/SECURITY.md): Matriks STRIDE, kebijakan sesi/JWT, RBAC, dan perlindungan PII (`maxilun-sentinel`).
-- [Coding Styleguide](docs/STYLEGUIDE.md): Konvensi penamaan, struktur import, pola error handling, dan daftar larangan keras.
+- [Product Requirements (PRD)](docs/PRD.md): Product goals, user personas, MVP features, non-goals, and success metrics.
+- [System Architecture](docs/ARCHITECTURE.md): C4 diagrams, module boundaries, data flow, and the ADR list.
+- [Tech Stack & Env](docs/TECHSTACK.md): Runtime versions, dependency policy, and the table of required environment variables.
+- [Design System & Tokens](docs/DESIGN.md): OKLCH color tokens, type scale, 4px grid, and the 4 UI state rules (`maxilun-craft`).
+- [Security & Threat Model](docs/SECURITY.md): STRIDE matrix, session/JWT policy, RBAC, and PII protection (`maxilun-sentinel`).
+- [Coding Styleguide](docs/STYLEGUIDE.md): Naming conventions, import structure, error handling patterns, and the list of hard prohibitions.
 
 ## API & Operations
-- [OpenAPI Specification](docs/openapi.yaml): Kontrak endpoint REST, skema payload, dan struktur error RFC 9457.
-- [Operational Runbook](docs/runbooks/core-service.md): Prosedur healthcheck, triase alert produksi, dan langkah rollback aman.
-- [Onboarding Guide](docs/ONBOARDING.md): Urutan setup lokal, migrasi database, dan verifikasi test suite.
+- [OpenAPI Specification](docs/openapi.yaml): REST endpoint contracts, payload schemas, and the RFC 9457 error structure.
+- [Operational Runbook](docs/runbooks/core-service.md): Healthcheck procedure, production alert triage, and safe rollback steps.
+- [Onboarding Guide](docs/ONBOARDING.md): Local setup order, database migration, and test suite verification.
 ```
 
 ---
 
-## 2. Standar High-Density `README.md`
+## 2. High-Density `README.md` Standard
 
-`README.md` di root repositori harus bebas dari basa-basi pemasaran. Struktur wajib:
+The `README.md` at the repository root contains no marketing filler. Required structure:
 
-1. **Judul + Satu Kalimat Fungsional**: Apa yang dilakukan repositori ini dan untuk siapa.
-2. **Arsitektur & Peta Direktori Ringkas**: Pohon folder yang menjelaskan tanggung jawab tiap direktori utama.
-3. **Quickstart (Copy-Paste Ready)**: Perintah berurutan dari clone, install, setup `.env`, migrasi DB, hingga server menyala di bawah 60 detik.
-4. **Tabel Environment Variables**: Nama variabel, wajib/opsional, contoh nilai aman, dan fungsinya.
-5. **Perintah Verifikasi & Build**: Perintah eksak untuk `typecheck`, `lint`, `test`, dan `build`.
-6. **Tautan ke `docs/`**: Mengarahkan pembaca dan agen AI ke `docs/PRD.md`, `docs/ARCHITECTURE.md`, dan `/llms.txt`.
+1. **Title + One Functional Sentence**: What this repository does and for whom.
+2. **Architecture & Short Directory Map**: A folder tree that states the responsibility of each main directory.
+3. **Quickstart (Copy-Paste Ready)**: Commands in order from clone, install, `.env` setup, and DB migration to a running server in under 60 seconds.
+4. **Environment Variables Table**: Variable name, required/optional, a safe example value, and its purpose.
+5. **Verification & Build Commands**: The exact commands for `typecheck`, `lint`, `test`, and `build`.
+6. **Links to `docs/`**: Point readers and AI agents to `docs/PRD.md`, `docs/ARCHITECTURE.md`, and `/llms.txt`.
 
-### Checklist Kualitas Dokumentasi (Delivery Gate `maxilun-docsmith`)
-- [ ] Semua perintah CLI di dalam dokumen telah dicocokkan dengan `package.json` / `Makefile` / `pyproject.toml` aktual di repositori (`[CONFIRMED]`).
-- [ ] Semua nama environment variable di tabel dokumentasi cocok dengan `.env.example` dan pembacaan `process.env` / `os.environ` di kode.
-- [ ] Tidak ada klaim performa atau keamanan tanpa angka/mekanisme nyata.
-- [ ] Jika dokumen memuat spesifikasi fitur/PRD dengan komponen UI, matriks 4 state UI dan catatan referensi desain (`../maxilun-craft/references/design-md/index.md`) sudah disertakan.
+### Documentation Quality Checklist (`maxilun-docsmith` Delivery Gate)
+- Every CLI command in the document has been matched against the actual `package.json` / `Makefile` / `pyproject.toml` in the repository (`[CONFIRMED]`).
+- Every environment variable name in the documentation table matches `.env.example` and the `process.env` / `os.environ` reads in the code.
+- No performance or security claim appears without a real number or mechanism.
+- When the document contains a feature specification/PRD with UI components, the 4-state UI matrix and the design reference note (`../maxilun-craft/references/design-md/index.md`) are included.

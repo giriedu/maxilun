@@ -1,19 +1,19 @@
 ---
 name: maxilun-scaffold
 description: >
-  Project context scaffolder. Generates a complete set of AI-readable
-  project documents (PRD, TECHSTACK, DESIGN, SECURITY, STYLEGUIDE, TASK,
-  ARCHITECTURE, SKILLS, GLOSSARY, ONBOARDING) into a single `docs/` folder
-  before coding begins. Grounds PRD invariants in domain archetypes and seeds
-  DESIGN.md from the 100 production UI/UX references in maxilun-craft.
-  Ensures every AI assistant — Claude, Antigravity, Codex, Cursor, Grok, or any
-  other — has instant shared context without re-reading the codebase.
-  Triggers: "/maxilun-scaffold", "/msal-init", "scaffold dokumen", "buat docs project",
-  "init konteks project", "generate project docs", "siapkan dokumen awal",
-  "bikin PRD", "setup dokumentasi project", or any request to bootstrap
+  Generates a set of AI-readable project context documents (PRD, TECHSTACK, DESIGN,
+  SECURITY, STYLEGUIDE, TASK, ARCHITECTURE, SKILLS, GLOSSARY, ONBOARDING) in a single
+  `docs/` folder, grounding PRD invariants in domain archetypes and seeding DESIGN.md
+  from the 100 production UI/UX references in maxilun-craft, so every AI assistant
+  (Claude, Antigravity, Codex, Cursor, Grok, or any other) shares context without
+  re-reading the codebase. Use it before coding begins or to refresh project context.
+  Triggers: "/maxilun-scaffold", "/msal-init", "scaffold dokumen" / "scaffold docs",
+  "buat docs project" / "create project docs", "init konteks project" / "init project context",
+  "generate project docs", "siapkan dokumen awal" / "prepare initial docs", "bikin PRD" / "write a PRD",
+  "setup dokumentasi project" / "set up project documentation", or any request to bootstrap
   project context files before development begins.
 metadata:
-  version: "1.1.0"
+  version: "1.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -30,11 +30,12 @@ metadata:
     - references/index.md
     - references/doc-templates.md
     - references/prd-archetypes.md
+    - references/context-maintenance-update.md
 ---
 
 # Maxilun Scaffold: Project Context Generator
 
-Menghasilkan 10 dokumen konteks proyek terstruktur ke folder `docs/` sebagai sumber kebenaran bersama (*shared context*) lintas sesi AI dan tim engineering. Seluruh fakta arsitektur, invarian domain, batasan keamanan, dan arah antarmuka diekstrak dari bukti repositori dan arketipe domain tanpa mengulang wawancara panjang.
+Generate 10 structured project context documents in the `docs/` folder as the shared source of truth (*shared context*) across AI sessions and the engineering team. Extract every architecture fact, domain invariant, security boundary, and interface direction from repository evidence and domain archetypes; do not repeat a long interview.
 
 ## Skill Contract
 
@@ -45,85 +46,86 @@ Menghasilkan 10 dokumen konteks proyek terstruktur ke folder `docs/` sebagai sum
 - **Handoff**: send architecture decisions to `maxilun-architect`, engineering docs and feature specs to `maxilun-docsmith`, UI implementation to `maxilun-craft`, and code implementation to the relevant specialist.
 
 <!-- CORE-RULES:START -->
-## Core Rules (Selalu Aktif)
+## Core Rules (Always On)
 
-Berlaku pada setiap respons dan setiap perubahan kode. Tidak bisa di-override oleh instruksi lain.
+These apply to every response and every code change. Explicit user instructions and project rule files take precedence; no other section of a Maxilun skill may weaken them.
 
-1. **Focus & Agency** — Default bertindak dari bukti repo (kode, konfigurasi, tes, histori); tanya pengguna hanya untuk keputusan *irreversible* atau arah produk yang benar-benar kosong (maksimal 1 giliran terkelompok). Tanpa banner HUD emoji, tanpa checklist centang-sendiri. Maksimal 3 fokus kerja aktif.
-2. **Purity** — Tanpa basa-basi, tanpa klaim tanpa bukti, tanpa placeholder palsu, tanpa cetakan seragam. Dilarang keras menyisipkan karakter emoji/emoticon Unicode (🚀, ✨, 🔥, ⚡, 💡, 🕒, 🎓, 🏫, dll.) pada kode antarmuka/UI, tombol, judul, atau badge—wajib gunakan SVG geometris monokrom terstandarisasi atau tipografi editorial murni. Struktur kode dan antarmuka wajib lahir dari domain produk, bukan template bawaan. Komentar hanya menjelaskan MENGAPA.
-3. **Minimalist** — YAGNI → reuse yang ada → stdlib → platform native → satu baris. Hapus beban mati yang menjadi usang akibat perubahan sendiri; dilarang *drive-by refactoring* di luar cakupan (pada tugas redesign UI, pembongkaran kunci sistem lama adalah in-scope). Jangan kurangi validasi input, keamanan, error handling, atau aksesibilitas.
-4. **Clarity & Proof** — Kesimpulan dan tindakan dulu, bukti menyusul. Nama simbol, `file:line`, pesan error verbatim, dan kata negasi dipertahankan utuh. Label kepastian hanya saat perlu membedakan bukti: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
+1. **Focus & Agency** — Act from repository evidence (code, config, tests, history) by default. Ask the user only about irreversible decisions or product direction that the repository cannot answer, in at most one grouped turn. No emoji HUD banners, no self-ticked checklists. At most three active work focuses.
+2. **Purity** — No filler, no claim without evidence, no fake placeholders, no one-size-fits-all template. No emoji or emoticon characters in interface code, buttons, headings, or badges; use one monochrome SVG icon family or plain typography (`CMP-003`). Code structure and interfaces come from the product domain, not from a boilerplate. Comments explain WHY only.
+3. **Minimalist** — YAGNI → reuse what exists → stdlib → native platform → one line. Delete dead weight your own change made obsolete; no drive-by refactoring outside scope (in a UI redesign, dismantling the old design-system locks is in scope). Never trade away input validation, security, error handling, or accessibility.
+4. **Clarity & Proof** — Conclusion and action first, evidence after. Keep symbol names, `file:line`, verbatim error messages, and negations intact. Use certainty labels only when evidence levels differ: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
 
-**Protokol** — dependency (evaluasi stdlib, ukuran, pemeliharaan, isolasi sebelum tambah paket), cognitive load (`SKILL.md` ≤300 baris, kode sumber modular, nesting ≤3), komunikasi (laporkan blocker nyata segera, tanpa *silent failure*, nyatakan asumsi yang memengaruhi hasil).
+**Protocols** — dependencies (weigh stdlib, size, maintenance, and isolation before adding a package), cognitive load (modular source, nesting ≤3), communication (report real blockers immediately, no silent failure, state assumptions that affect the result).
 
-Detail lengkap: `../maxilun/references/engines.md`.
+Full detail: `../maxilun/references/engines.md`.
 <!-- CORE-RULES:END -->
 
 ## 1. Domain Overrides & Evidence-First Generation
 
-- **Evidence-First**: Dilarang mengajukan interogasi 5 pertanyaan sebelum bekerja. Pindai repositori dan langsung hasilkan ke-10 dokumen. Gunakan `[CONFIRMED]` untuk fakta dari repo/brief, `[INFERRED]` untuk deduksi logis dari stack/skema, dan `[UNCERTAIN: perlu konfirmasi pengguna]` untuk keputusan yang masih terbuka.
-- **Batched Question Limit**: Ajukan **maksimal 1 pertanyaan terkelompok** HANYA jika repositori kosong sekaligus brief pengguna belum menyebutkan tujuan produk inti.
-- **Purity**: Dokumen harus memuat fakta spesifik proyek ini (tunduk pada `../maxilun/references/purity-catalog.md`). PRD 1 halaman yang padat invarian lebih bernilai daripada dokumen panjang berisi teks generik.
+- **Evidence-First**: Do not run a 5-question interrogation before working. Scan the repository and generate all 10 documents directly. Use `[CONFIRMED]` for facts from the repo/brief, `[INFERRED]` for logical deductions from the stack/schema, and `[UNCERTAIN: needs user confirmation]` for decisions still open.
+- **Batched Question Limit**: Ask **at most 1 grouped question**, and ONLY when the repository is empty and the user's brief does not state the core product goal.
+- **Purity**: Documents must contain facts specific to this project (subject to `../maxilun/references/purity-catalog.md`). A 1-page PRD dense with invariants is worth more than a long document of generic text.
 
 ```mermaid
 flowchart LR
-    A["Scan Repo & Config"] -->|Ekstrak fakta| B["Cocokkan Archetype & Design Ref"]
-    B -->| Isi template kanonik| C["Generate 10 Dokumen docs/"]
-    C -->|Verifikasi konsistensi| D["Sinkronisasi per Milestone"]
+    A["Scan Repo & Config"] -->|Extract facts| B["Match Archetype & Design Ref"]
+    B -->| Fill canonical templates| C["Generate 10 docs/ Documents"]
+    C -->|Verify consistency| D["Sync per Milestone"]
 ```
 
-## 2. Fase Discovery & Pemetaan Referensi
+## 2. Discovery Phase & Reference Mapping
 
-1. **Scan Otomatis Repositori**:
-   - Manifes paket (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `pom.xml`) untuk deteksi stack dan script (`[CONFIRMED]`).
-   - Dokumentasi & konfigurasi (`README.md`, `.env.example`, `docker-compose.yml`, `Dockerfile`).
-   - Struktur direktori & skema (`src/`, `app/`, `lib/`, `prisma/`, `drizzle/`, `migrations/`) serta 5 commit terakhir di `git log`.
-2. **Pemetaan Archetype Domain**:
-   - Baca `references/index.md` dan `references/prd-archetypes.md`, lalu petakan proyek ke kategori domain (**Fintech/Payment**, **B2B SaaS/Workflow**, **DevTools/AI**, **E-Commerce/Booking**, atau **Media/EdTech**).
-3. **Pencocokan Referensi Desain / Ergonomi**:
-   - **Produk dengan UI (Web/Mobile/Desktop)**: Baca `../maxilun-craft/references/design-md/index.md` dan `../maxilun-craft/references/design-md/README.md`. Pilih maksimal 2 referensi produk yang sebanding secara domain dan catat `References`, `Applied`, `Rejected`, serta `Reason` di `docs/DESIGN.md`.
-   - **Produk Headless (API/CLI/Library/Worker)**: Jangan memaksakan token warna OKLCH atau matriks layar web. Gunakan `docs/DESIGN.md` untuk mendokumentasikan ergonomi CLI (flag, kode keluar, format stdout/stderr) atau konvensi desain kontrak API/SDK.
+1. **Automatic Repository Scan**:
+   - Package manifests (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `pom.xml`) to detect the stack and scripts (`[CONFIRMED]`).
+   - Documentation & configuration (`README.md`, `.env.example`, `docker-compose.yml`, `Dockerfile`).
+   - Directory structure & schemas (`src/`, `app/`, `lib/`, `prisma/`, `drizzle/`, `migrations/`) and the last 5 commits in `git log`.
+2. **Domain Archetype Mapping**:
+   - Read `references/index.md` and `references/prd-archetypes.md`, then map the project to a domain category (**Fintech/Payment**, **B2B SaaS/Workflow**, **DevTools/AI**, **E-Commerce/Booking**, or **Media/EdTech**).
+3. **Design / Ergonomics Reference Matching**:
+   - **Products with a UI (Web/Mobile/Desktop)**: Read `../maxilun-craft/references/design-md/index.md` and `../maxilun-craft/references/design-md/README.md`. Pick at most 2 product references comparable by domain and record `References`, `Applied`, `Rejected`, and `Reason` in `docs/DESIGN.md`.
+   - **Headless products (API/CLI/Library/Worker)**: Do not force OKLCH color tokens or a web screen matrix. Use `docs/DESIGN.md` to document CLI ergonomics (flags, exit codes, stdout/stderr format) or API/SDK contract design conventions.
 
-## 3. Struktur Output: 10 Dokumen di `docs/`
+## 3. Output Structure: 10 Documents in `docs/`
 
-Gunakan struktur kanonik di `references/doc-templates.md` untuk menghasilkan ke-10 berkas berikut di folder `docs/`:
+Use the canonical structure in `references/doc-templates.md` to generate these 10 files in the `docs/` folder:
 
 ```text
 docs/
-├── PRD.md            # Problem statement terukur, Gherkin acceptance criteria, non-goals, KPI
-├── TECHSTACK.md      # Stack, versi, alasan pemilihan, alternatif ditolak, environment variables
-├── DESIGN.md         # Arah visual + Design Reference Record (UI) atau ergonomi CLI/API (headless)
-├── SECURITY.md       # Threat model STRIDE spesifik domain, auth/authz, kriptografi, kebijakan PII
-├── STYLEGUIDE.md     # Konvensi penamaan, batas modularitas, penanganan error, aturan git
-├── TASK.md           # Target milestone saat ini, maksimal 3 fokus aktif, backlog berprioritas
-├── ARCHITECTURE.md   # Diagram alur/komponen (Mermaid), batas modul nyata, ringkasan ADR
-├── SKILLS.md         # Peta spesialis Maxilun yang relevan untuk proyek ini
-├── GLOSSARY.md       # Ubiquitous language (istilah domain kanonik & sinonim yang dilarang)
-└── ONBOARDING.md     # Urutan baca untuk AI assistant & langkah setup lokal terverifikasi
+├── PRD.md            # Measurable problem statement, Gherkin acceptance criteria, non-goals, KPIs
+├── TECHSTACK.md      # Stack, versions, selection reasons, rejected alternatives, environment variables
+├── DESIGN.md         # Visual direction + Design Reference Record (UI) or CLI/API ergonomics (headless)
+├── SECURITY.md       # Domain-specific STRIDE threat model, auth/authz, cryptography, PII policy
+├── STYLEGUIDE.md     # Naming conventions, modularity limits, error handling, git rules
+├── TASK.md           # Current milestone target, at most 3 active focuses, prioritized backlog
+├── ARCHITECTURE.md   # Flow/component diagram (Mermaid), real module boundaries, ADR summary
+├── SKILLS.md         # Map of the Maxilun specialists relevant to this project
+├── GLOSSARY.md       # Ubiquitous language (canonical domain terms & prohibited synonyms)
+└── ONBOARDING.md     # Reading order for AI assistants & verified local setup steps
 ```
 
-## 4. Aturan Penyusunan Dokumen Inti
+## 4. Core Document Authoring Rules
 
-- **`PRD.md`**: Wajib merumuskan masalah terukur (waktu terbuang, risiko finansial, atau laju error), kriteria penerimaan deterministik (*Given/When/Then*), dan minimal 2 *Out of Scope (Non-Goals)*. Untuk produk ber-UI, sertakan matriks 4 state UI (*Loading*, *Empty*, *Populated*, *Error*). Untuk spesifikasi fitur/RFC mendalam pada proyek berjalan, kolaborasikan dengan `maxilun-docsmith` (`../maxilun-docsmith/references/prd-rfc-specs.md`).
-- **`DESIGN.md`**: Untuk produk ber-UI, wajib menyertakan blok **Design Reference Record** dari `../maxilun-craft/references/design-md/index.md` beserta token semantik `oklch()`, skala tipografi, dan `tabular-nums` yang lahir dari kebutuhan domain. Untuk produk headless, dokumentasikan struktur perintah, format output (`--json` vs tabel manusia), dan pesan error terstruktur.
-- **`ARCHITECTURE.md`, `TECHSTACK.md`, & `SECURITY.md`**: Selaraskan batas modul dengan folder nyata di repo; cantumkan kolom **Alternatif Ditolak** di `TECHSTACK.md`; turunkan ancaman STRIDE di `SECURITY.md` sesuai arketipe di `references/prd-archetypes.md`.
+- **`PRD.md`**: State a measurable problem (time wasted, financial risk, or error rate), deterministic acceptance criteria (*Given/When/Then*), and at least 2 *Out of Scope (Non-Goals)*. For products with a UI, include the 4 UI state matrix (*Loading*, *Empty*, *Populated*, *Error*). For in-depth feature specs/RFCs on a running project, collaborate with `maxilun-docsmith` (`../maxilun-docsmith/references/prd-rfc-specs.md`).
+- **`DESIGN.md`**: For products with a UI, include the **Design Reference Record** block from `../maxilun-craft/references/design-md/index.md` together with semantic `oklch()` tokens, a typography scale, and `tabular-nums` derived from domain needs. For headless products, document the command structure, the output format (`--json` vs human table), and structured error messages.
+- **`ARCHITECTURE.md`, `TECHSTACK.md`, & `SECURITY.md`**: Align module boundaries with the real folders in the repo; include the **Rejected Alternatives** column in `TECHSTACK.md`; derive the STRIDE threats in `SECURITY.md` from the archetype in `references/prd-archetypes.md`.
 
-## 5. Mode Pembaruan (`--update`) & Mode Cepat (`--quick`)
+## 5. Update Mode (`--update`) & Quick Mode (`--quick`)
 
-- **Mode `--quick`**: Hasilkan ke-10 dokumen secara langsung dari arketipe terdekat di `references/prd-archetypes.md` dan `references/doc-templates.md`, tandai keputusan yang belum dikunci dengan `[INFERRED]` atau `[UNCERTAIN: alasan]`, lalu rangkum asumsi utama di akhir respons.
-- **Mode `--update`**: Bandingkan isi `docs/` saat ini terhadap perubahan terbaru di `package.json`, skema database, route, dan `git log`. Perbarui fakta yang telah berubah (`[CONFIRMED]`), pertahankan keputusan yang masih berlaku, dan tandai bagian yang kontradiktif dengan `[UNCERTAIN: perlu sinkronisasi]`.
+Apply `references/context-maintenance-update.md`:
+- **`--quick` mode**: Generate all 10 documents directly from the nearest archetype in `references/prd-archetypes.md` and `references/doc-templates.md`, mark decisions not yet locked with `[INFERRED]` or `[UNCERTAIN: reason]`, then summarize the main assumptions at the end of the response.
+- **`--update` mode**: Compare the current `docs/` content against the latest changes in `package.json`, the database schema, routes, and `git log`. Update facts that changed (`[CONFIRMED]`), keep decisions that still hold, and mark contradictory sections with `[UNCERTAIN: needs sync]`.
 
-## 6. Kriteria Kelayakan Serah Terima
+## 6. Handoff Readiness Criteria
 
-Sebelum menyerahkan hasil `docs/`, pastikan ke-10 berkas telah terbuat lengkap sesuai `references/doc-templates.md`, bebas dari klaim sifat tanpa metrik, setiap ketidakpastian memiliki alasan eksplisit pada label `[UNCERTAIN: alasan]`, serta seluruh nama script dan variabel lingkungan di `TECHSTACK.md` dan `ONBOARDING.md` cocok dengan berkas konfigurasi repositori.
+Before handing over `docs/`, confirm that: all 10 files exist and follow `references/doc-templates.md`; no quality claim lacks a metric; every uncertainty states its reason in an `[UNCERTAIN: reason]` label; and every script name and environment variable in `TECHSTACK.md` and `ONBOARDING.md` matches the repository's configuration files.
 
 ## Related Skills
 
-- **maxilun-docsmith**: Spesifikasi fitur/RFC mendalam (`../maxilun-docsmith/references/prd-rfc-specs.md`), kontrak OpenAPI/AsyncAPI, runbook, ADR, `README.md`, dan `llms.txt`.
-- **maxilun-craft**: Pemilik utama sistem desain UI/UX dan penyedia 100 referensi produk di `../maxilun-craft/references/design-md/index.md`.
-- **maxilun-architect**: Keputusan arsitektur struktural, batas modul, dan ADR di `ARCHITECTURE.md`.
-- **maxilun-sentinel**: Threat modeling STRIDE mendalam dan audit keamanan aplikasi untuk `SECURITY.md`.
-- **maxilun-content**: Penyuntingan proposisi nilai produk dan microcopy antarmuka di `PRD.md`.
-- **maxilun-diagrams**: Visualisasi diagram arsitektur dan alur data di `ARCHITECTURE.md`.
-- **maxilun-engineer**: Penegakan konvensi kode dan implementasi fitur berdasarkan `STYLEGUIDE.md`.
-- **maxilun-deploy**: Konfigurasi CI/CD, kontainer, dan kesiapan infrastruktur untuk `ONBOARDING.md`.
+- **maxilun-docsmith**: In-depth feature specs/RFCs (`../maxilun-docsmith/references/prd-rfc-specs.md`), OpenAPI/AsyncAPI contracts, runbooks, ADRs, `README.md`, and `llms.txt`.
+- **maxilun-craft**: Primary owner of the UI/UX design system and provider of the 100 product references in `../maxilun-craft/references/design-md/index.md`.
+- **maxilun-architect**: Structural architecture decisions, module boundaries, and ADRs in `ARCHITECTURE.md`.
+- **maxilun-sentinel**: In-depth STRIDE threat modeling and application security audits for `SECURITY.md`.
+- **maxilun-content**: Editing of the product value proposition and interface microcopy in `PRD.md`.
+- **maxilun-diagrams**: Architecture and data-flow diagram visualization in `ARCHITECTURE.md`.
+- **maxilun-engineer**: Enforcement of code conventions and feature implementation based on `STYLEGUIDE.md`.
+- **maxilun-deploy**: CI/CD configuration, containers, and infrastructure readiness for `ONBOARDING.md`.

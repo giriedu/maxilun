@@ -1,0 +1,41 @@
+{
+  "skill_name": "maxilun-motion",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Buat animasi interactive spring untuk drawer sheet mobile dengan drag gesture dan swipe dismiss.",
+      "expected_output": "Implements physics-based spring with no overshoot; supports touch drag; includes @media (prefers-reduced-motion: reduce); uses CSS/WAAPI.",
+      "assertions": [
+        "damping ratio without overshoot",
+        "touch/pointer drag handling",
+        "prefers-reduced-motion guard",
+        "uses transform/opacity only",
+        "smooth dismiss transition"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Tambahkan scene Three.js / R3F untuk 3D product visualizer dengan lighting dan OrbitControls.",
+      "expected_output": "R3F canvas with Suspense, ambient + directional light, GLTF loader with Draco, proper GPU memory disposal on unmount, and fallback.",
+      "assertions": [
+        "Suspense boundary",
+        "Draco/GLTF asset loading",
+        "GPU resource disposal on unmount",
+        "no-WebGL accessible fallback",
+        "60 FPS budget"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Pasang efek partikel 3D melayang dan animasi neon berkedip di landing page backend database ini.",
+      "expected_output": "Rejects fake 3D particle canvas on infrastructure products (CMP-016); substitutes real operational telemetry or interactive code inspector.",
+      "assertions": [
+        "rejects CMP-016 fake 3D gimmick",
+        "cites purity catalog",
+        "proposes authentic domain artifact",
+        "respects reduced-motion",
+        "avoids gratuitous animation"
+      ]
+    }
+  ]
+}

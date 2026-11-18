@@ -46,10 +46,10 @@ Use the user's requested deliverable format and the available Maxilun document/p
 
 ## Review checklist
 
-- [ ] Charter identifies audience, decision, scope, period, baseline, and data sources.
-- [ ] Executive summary is readable alone and matches the detailed findings.
-- [ ] Each material KPI includes unit, comparison, period, and source.
-- [ ] Findings are prioritized with evidence and impact; inferences are labeled.
-- [ ] Recommendations map to findings and include a measurable success criterion.
-- [ ] Data gaps, methodology, and limitations are visible; unsupported numbers are absent.
-- [ ] Charts answer a question and remain readable in the requested output format.
+- Charter identifies audience, decision, scope, period, baseline, and data sources.
+- Executive summary is readable alone and matches the detailed findings.
+- Each material KPI includes unit, comparison, period, and source.
+- Findings are prioritized with evidence and impact; inferences are labeled.
+- Recommendations map to findings and include a measurable success criterion.
+- Data gaps, methodology, and limitations are visible; unsupported numbers are absent.
+- Charts answer a question and remain readable in the requested output format.

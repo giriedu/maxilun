@@ -8,6 +8,71 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- **15 Autonomous Agents & Shared Agent Message Bus**:
+  - Added `agents/maxilun-planner.md` (conflict-free parallel workstream partitioning & `docs/` context bootstrap) and `agents/maxilun-security-auditor.md` (coverage-led adversarial hunting & independent `confirmed` / `needs_validation` / `rejected` validation).
+  - Added inter-agent communication bus (`SessionContext.post_handoff`, `read_handoffs`, `send_handoff`/`read_handoffs` tools, automatic upstream handoff injection, and `maxilun-out/agent_bus.json` persistence) across `harness/engine/context.py` and `harness/engine/agent_loop.py`.
+  - Enforced agent frontmatter `tools:` boundaries in `ToolRegistry` (`allowed_tools`) and `SkillsLoader.load_agents()`.
+- **Global `maxilun-kg` Stdio MCP Server & Multi-Modal Scanners**:
+  - Added `skills/maxilun-knowledge-graph/mcp_server.py` exposing `kg_locate`, `kg_query`, `kg_scan`, and `kg_diff_impact` (`git diff` blast-radius mapping) with incremental `refresh` support.
+  - Added `SchemaInfraScanner` (`.sql`, `.prisma`, `.yaml`, `.yml`, `.toml`, `.tf`, `.json`) and `AssetScanner` (`.pdf`, `.svg`, `.png`, `.jpg`, `.webp`, `.gif`) to `skills/maxilun-knowledge-graph/scanner/`.
+- **Output Compression & `/maxilun terse` Mode**:
+  - Added `harness/engine/compressor.py` (`OutputCompressor`) wired into `execute_bash` in `agent_loop.py` to deduplicate noisy passing logs while preserving errors, stack traces, and exit codes.
+  - Added `/maxilun terse` execution mode in `skills/maxilun/SKILL.md`.
+- **UI Tactile Craft, Icon Resolver & Anti-Slop Writing Playbooks**:
+  - Added `skills/maxilun-craft/scripts/icon_lookup.py` (zero-dependency Iconify SVG search & `currentColor` fetch) and `skills/maxilun-craft/references/tactile-interface-craft.md`.
+  - Added `skills/maxilun-content/references/human-prose-discipline.md` and `voice-synthesis-direction.md`.
+  - Added `skills/maxilun-hunt/references/coverage-ledger-protocol.md` and `skills/maxilun-motion/references/blender-headless-pipeline.md`.
+- **`locate` command in `maxilun-knowledge-graph`** (`skills/maxilun-knowledge-graph/locate.py`, `cli.py locate`): turns a plain-language question, a stack trace, or a symbol name into a ranked Read plan of `file:start-end` ranges with verbatim excerpts and caller/callee leads in one call. Local and stdlib-only: BM25 over symbol-bounded chunks, boosted by graph edges, with stack-frame pinning, a small Indonesian-to-English term map, `--also` for caller-supplied identifiers, an incremental chunk index at `.maxilun/cache/locate-index.json`, and secret-file exclusion.
+- **Locate Protocol** (`maxilun-knowledge-graph` §4) and `references/locate-retrieval.md`: once a graph exists, an unknown location is answered by `locate` and a known symbol by `query`; reading starts only from the returned ranges, with a two-call budget before falling back to a symbol `grep`.
+- **Work Sizing, Decomposition & Dispatch** (`maxilun` §4) and `skills/maxilun/references/dispatch.md`: Direct / Scoped / Cross-domain / Unknown-cause sizing from evidence, work units with one owner and disjoint write sets, parallel-only-when-independent, one-time discovery, an eight-field handoff packet (`GOAL`, `WRITE SET`, `OUT OF SCOPE`, `READ PLAN`, `CONTRACTS`, `INVARIANTS`, `DONE GATE`, `RETURN`), receive-by-gate synthesis, and loopback/escalation rules.
+- **Harness tool `kg_locate`** (`harness/tools/kg_tool.py`, `registry.py`), granted to every agent alongside `kg_query` and `kg_scan`.
+- **Test coverage**: `test_kg_locate_functional` in `scripts/test-suite.py` (ranking, verbatim excerpt, caller lead, trace pinning, secret exclusion, unrelated-question confidence).
+
+### Changed
+- **`maxilun-orchestrator` agent**: new Discovery, Work Sizing & Decomposition, routing tie-breakers, Escalation, the eight-field handoff packet, and Receiving & Synthesis sections.
+- **`maxilun-scout` agent**: gains `Bash`, restricted by its invariant to the knowledge-graph CLI and read-only inspection, plus a Discovery Protocol and a paste-ready output format. Previously it could not run graph queries on hosts without the harness and fell back to reading files.
+- **Executor agents** (`maxilun-maker`, `maxilun-coder-*`, `maxilun-architect`, `maxilun-verifier`): a Context Intake rule to start from the packet's Read plan and stay inside the write set.
+- `maxilun-engineer` and `maxilun-insight` reference `locate` for unknown locations and pasted stack traces.
+
+## [1.3.0] - 2026-11-14
+
+### Added
+- **Canonical 5-Section Spine Across All 25 Skills**: Standardized section structure across the remaining 8 skills (`maxilun-ai`, `maxilun-seo-audit`, `maxilun-cinecode`, `maxilun-game`, `maxilun-docsmith`, `maxilun-iot`, `maxilun-network`, `maxilun-desktop`), ensuring every skill in the ecosystem features a uniform, sequential 1..5+ section spine.
+- **3rd Reference File Across 8 Thin-Corpus Skills**:
+  - `skills/maxilun-ai/references/structured-tool-guardrails.md`: Strict JSON schemas (`strict: true`), function calling invariants, prompt injection defense at trust boundaries, and single-turn error correction loops.
+  - `skills/maxilun-data/references/multi-tenant-isolation-rls.md`: PostgreSQL Row-Level Security (RLS) architecture, PgBouncer transaction-mode pooling with `SET LOCAL`, tenant-leading composite indexes, and cross-tenant leak prevention.
+  - `skills/maxilun-desktop/references/cross-platform-qt-tauri.md`: Cross-platform desktop architecture (C++ Qt6 signals/slots, Tauri 2.0 Rust-to-Webview IPC), High-DPI scaling, and native installer packaging (MSI, DMG, AppImage).
+  - `skills/maxilun-engineer/references/refactoring-cutover-discipline.md`: The CEFR code quality matrix (Correct, Efficient, Fit, Readable), 3-step atomic cutover protocol, and dead-code purging vs forbidden drive-by refactoring.
+  - `skills/maxilun-frontend/references/server-actions-state-hierarchy.md`: Server Actions security (public POST endpoint paradigm, Zod boundary validation), React 19 optimistic updates (`useOptimistic`), and the 4-layer state hierarchy (URL $\to$ RSC $\to$ Client Island $\to$ Optimistic).
+  - `skills/maxilun-iot/references/power-management-watchdog.md`: Low-power sleep states (Modem/Light/Deep sleep), RTC slow memory retention, hardware Task Watchdog Timer (TWDT) configuration, and brownout protection.
+  - `skills/maxilun-network/references/vpn-routing-redundancy.md`: WireGuard site-to-site tunnels with MSS clamping, recursive multi-WAN failover with scope targeting, OSPF/BGP routing, and VRRP gateway redundancy.
+  - `skills/maxilun-scaffold/references/context-maintenance-update.md`: Drift detection protocol, update mode (`--update`) execution, lean 4-file root context contract, and documentation freshness gates.
+- **Agent Frontmatter Schema Hardening (`model: inherit`)**: Standardized the `model: inherit` field across all 13 autonomous macro-agent frontmatters in `agents/`, ensuring full compatibility across host AI editors (Claude Code, Antigravity, OpenCode, Codex, Gemini CLI).
+- **Reciprocal Cross-Skill Links**: Added missing bidirectional routing connections across specialist pairs:
+  - `maxilun-desktop` $\leftrightarrow$ `maxilun-craft` (desktop UI polish and native dialog ergonomics)
+  - `maxilun-iot` $\leftrightarrow$ `maxilun-data` (telemetry time-series storage and edge SQLite ingestion)
+  - `maxilun-ai` $\leftrightarrow$ `maxilun-sentinel` (LLM trust-boundary security, prompt injection defense, and output guardrails)
+  - `maxilun-hunt` $\leftrightarrow$ `maxilun-deploy` (adversarial attack surface verification and perimeter testing)
+
+### Changed
+- Bumped ecosystem version to `1.3.0` across `package.json`, installer scripts (`install.ps1`, `install.sh`), all 25 skill definitions, and macro-agent configurations.
+
+## [1.2.0] - 2026-11-14
+
+### Changed
+- **English-only skill pack**: all 25 `SKILL.md` files and their `references/` were rewritten from mixed Indonesian/English into direct imperative English. Rules, thresholds, rule IDs, paths, and section numbering are unchanged. Indonesian trigger phrases stay in frontmatter so Indonesian prompts still route.
+- **Canonical `CORE-RULES` block**: now English. "Cannot be overridden by other instructions" became an explicit precedence rule (user instructions and project rule files win; no Maxilun section may weaken the core rules). The skill-authoring limit (`SKILL.md` ≤300 lines) left the runtime block; the test suite still enforces it.
+- **`maxilun-craft` v2**: new spine (Build / Repair / Review modes → seven-line Brief → token lock → eight ordered layers → proof tests → fixed report format). The previous references (`design-md/` corpus, design locks `SYS-001`..`SYS-005`, logo and Brand PDF, platform specs) remain as on-demand depth; `references/tokens.md` and `references/patterns.md` win on conflict.
+- **Orchestrator (`maxilun`)**: Craft leads every rendered surface from its Brief instead of a mandated layout pattern; explicit multi-specialist order (Architect → Craft → Engineer/Frontend → Craft → Verify); project rule files outrank specialist defaults; the correction protocol measures before rebuilding.
+- `CMP-015` no longer recommends a tracked all-caps eyebrow as the replacement for the hero pill (it contradicted the craft tells).
+
+### Added
+- `skills/maxilun-craft/scripts/slopscan.py`: dependency-free scanner for mechanical UI tells with `--json`, `--strict`, and `--contrast <fg> <bg>`; exit code 1 on errors.
+- `skills/maxilun-craft/references/tokens.md`, `patterns.md`, `tells.md`, `motion.md`; `evals/evals.json` with a fixture; `CREDITS.md`.
+- UI scan gate in `maxilun-verify` and in the orchestrator evidence table: scan errors block "done".
+
+
 - **Purity Gate & Orchestrator Hardening: Anti-Emoji UI & Radical Redesign Mandate**:
   - **Zero-Emoji UI Invariant (`CMP-003`)**: Embedded directly into Rule 2 (`Purity`) of the canonical `CORE-RULES` block across all 25 skills and `engines.md`. Strictly forbids inserting Unicode emojis/emoticons (`✨`, `🏫`, `🎓`, `🕒`, `🚀`, `✅`, etc.) into UI code, buttons, headings, or badges; mandates standardized monochrome SVGs (`stroke="currentColor"`) or editorial typography.
   - **Orchestrator Redesign Dismantling Mandate (`SYS-001` .. `SYS-005`)**: Updated `maxilun`, `maxilun-orchestrator`, `maxilun-ui-designer`, `maxilun-coder-frontend`, and `maxilun-maker`. Redesign requests are explicitly classified as mandatory structural layout dismantling (*Clean Cutover*); strictly forbids cosmetic band-aids over old container shells ("tetap bentuknya", `SYS-004`).

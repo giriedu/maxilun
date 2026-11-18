@@ -1,119 +1,119 @@
 # Triage & Verification Gate: Proof-Driven Finding Validation
 
-Protokol validasi temuan keamanan tanpa celah spekulasi. Temuan yang tidak dapat dibuktikan secara independen wajib digugurkan sebelum diajukan ke laporan.
+Protocol for validating security findings with no room for speculation. Drop any finding that cannot be proven independently before it reaches a report.
 
 ---
 
 ## 1. The 7-Question Gate
 
-Setiap temuan wajib dievaluasi berurutan melalui 7 pertanyaan gerbang. **Satu jawaban gagal = temuan digugurkan (KILL) seketika.**
+Evaluate every finding through the 7 gate questions in order. **One failed answer = the finding is dropped (KILL) immediately.**
 
 ```text
-[Q1: Eksekusi Langsung?]  ──(Gagal)──> [GUGURKAN: Tidak dapat direproduksi]
-         │ (Lulus)
-[Q2: Dampak Nyata?]       ──(Gagal)──> [GUGURKAN: Di luar kriteria dampak]
-         │ (Lulus)
-[Q3: Aset In-Scope?]      ──(Gagal)──> [GUGURKAN: Di luar batasan target]
-         │ (Lulus)
-[Q4: Hak Akses Realistis?]──(Gagal)──> [GUGURKAN: Risiko sentralisasi / admin only]
-         │ (Lulus)
-[Q5: Bukan Perilaku Intended?] (Gagal)─> [GUGURKAN: Desain yang disengaja]
-         │ (Lulus)
-[Q6: Bukti Melampaui Teori?] (Gagal)──> [TURUNKAN DERAJAT KEPARAHAN / DOWNGRADE]
-         │ (Lulus)
-[Q7: Bebas Daftar Hitam?] ──(Gagal)──> [GUGURKAN: Masuk daftar Never-Submit]
-         │ (Lulus)
-     [TEMUAN VALID]
+[Q1: Direct Execution?]   ──(Fail)──> [DROP: Cannot be reproduced]
+         │ (Pass)
+[Q2: Real Impact?]        ──(Fail)──> [DROP: Outside the impact criteria]
+         │ (Pass)
+[Q3: In-Scope Asset?]     ──(Fail)──> [DROP: Outside the target boundary]
+         │ (Pass)
+[Q4: Realistic Privileges?]──(Fail)──> [DROP: Centralization risk / admin only]
+         │ (Pass)
+[Q5: Not Intended Behavior?] (Fail)─> [DROP: Deliberate design]
+         │ (Pass)
+[Q6: Proof Beyond Theory?] (Fail)──> [LOWER THE SEVERITY / DOWNGRADE]
+         │ (Pass)
+[Q7: Clear of the Blacklist?] ──(Fail)──> [DROP: On the Never-Submit list]
+         │ (Pass)
+     [VALID FINDING]
 ```
 
-### Rincian Gerbang Evaluasi
+### Gate Details
 
-1. **Q1: Dapatkah penyerang mengeksekusinya SEKARANG langkah-demi-langkah?**
-   - Format wajib: Request HTTP lengkap (metode, URL, headers, body) yang siap di-curl ulang.
-   - Jika tidak dapat menuliskan request yang menghasilkan pembuktian langsung -> **GUGURKAN**.
-2. **Q2: Apakah dampaknya berada dalam daftar dampak yang diakui program/organisasi?**
-   - Kerentanan harus menimbulkan kerugian nyata: pencurian data privat, perubahan data tanpa izin, pengambilalihan akun (ATO), atau eksekusi kode (RCE).
-   - Jika dampak hanya berupa informasi publik atau pengecualian yang didokumentasikan -> **GUGURKAN**.
-3. **Q3: Apakah akar penyebab berada pada aset in-scope?**
-   - Pastikan domain/host tercantum eksplisit dalam daftar cakupan.
-   - Jika domain milik pihak ketiga (SaaS, identity provider eksternal) -> **GUGURKAN**.
-4. **Q4: Apakah penyerang memerlukan hak akses tidak realistis?**
-   - Aksi yang hanya bisa dilakukan oleh administrator utama (*Admin can do X*) adalah risiko sentralisasi wewenang, bukan celah keamanan -> **GUGURKAN**.
-   - Hak akses yang sah: pengguna biasa melakukan aksi admin (*privilege escalation*), atau pengguna A mengakses data pengguna B.
-5. **Q5: Apakah perilaku ini sudah diketahui atau disengaja oleh desain sistem?**
-   - Periksa dokumentasi resmi produk, release notes, atau isu publik terdahulu.
-   - Jika perilaku tersebut merupakan fitur yang disengaja -> **GUGURKAN**.
-6. **Q6: Dapatkah Anda membuktikan dampak nyata melebihi indikasi "secara teknis memungkinkan"?**
-   - SSRF: Wajib mengembalikan payload data dari layanan internal, bukan hanya callback ping DNS.
-   - SQLi: Wajib mengekstrak data dari tabel nyata atau mendemonstrasikan delay waktu terukur, bukan sekadar memicu pesan error 500.
-   - Jika hanya bisa membuktikan kemungkinan teoritis -> **TURUNKAN DERAJAT (DOWNGRADE)**.
-7. **Q7: Apakah temuan ini masuk dalam daftar kelas yang ditolak otomatis (*Never-Submit*)?**
-   - Periksa tabel Never-Submit di bawah. Jika cocok dan berdiri sendiri tanpa rantai eksploitasi -> **GUGURKAN**.
+1. **Q1: Can an attacker execute it RIGHT NOW, step by step?**
+   - Required format: a complete HTTP request (method, URL, headers, body) ready to replay with curl.
+   - If you cannot write a request that produces direct proof -> **DROP**.
+2. **Q2: Is the impact on the list of impacts the program/organization recognizes?**
+   - The vulnerability must cause real harm: private data theft, unauthorized data modification, account takeover (ATO), or code execution (RCE).
+   - If the impact is only public information or a documented exception -> **DROP**.
+3. **Q3: Is the root cause in an in-scope asset?**
+   - Confirm the domain/host is listed explicitly in the scope.
+   - If the domain belongs to a third party (SaaS, external identity provider) -> **DROP**.
+4. **Q4: Does the attacker need unrealistic privileges?**
+   - An action only the primary administrator can perform (*Admin can do X*) is a centralization-of-authority risk, not a security flaw -> **DROP**.
+   - Valid privilege cases: a regular user performs an admin action (*privilege escalation*), or user A accesses user B's data.
+5. **Q5: Is this behavior already known or intended by the system design?**
+   - Check the official product documentation, release notes, and earlier public issues.
+   - If the behavior is a deliberate feature -> **DROP**.
+6. **Q6: Can you prove real impact beyond "technically possible"?**
+   - SSRF: Must return a data payload from an internal service, not only a DNS ping callback.
+   - SQLi: Must extract data from a real table or demonstrate a measured time delay, not merely trigger a 500 error message.
+   - If you can prove only theoretical possibility -> **DOWNGRADE**.
+7. **Q7: Is this finding in an automatically rejected class (*Never-Submit*)?**
+   - Check the Never-Submit table below. If it matches and stands alone without an exploit chain -> **DROP**.
 
 ---
 
-## 2. Tabel Never-Submit (Eliminasi False-Positive Otomatis)
+## 2. Never-Submit Table (Automatic False-Positive Elimination)
 
-Temuan pada tabel berikut dilarang dilaporkan secara mandiri karena tidak membuktikan risiko eksploitasi nyata:
+Do not report the findings in this table on their own, because they do not prove real exploitation risk:
 
-| Indikasi Awal | Alasan Pengguguran Mutlak | Syarat Pengecualian (Wajib Rantai Eksploitasi) |
+| Initial Indication | Reason for Unconditional Drop | Exception Condition (Exploit Chain Required) |
 |---|---|---|
-| **CORS Wildcard / Reflected** | Tanpa `Access-Control-Allow-Credentials: true`, data sesi korban tidak dapat diekstraksi ke domain penyerang | Terbukti berhasil mengekstrak data PII terautentikasi melalui kredensial sesi |
-| **Nuclei / Scanner Info Banner** | Deteksi versi framework atau web server bukan bukti kerentanan (*version banner disclosure*) | Terdapat CVE aktif dengan eksploit terbukti pada versi tersebut |
-| **SSRF DNS Callback Saja** | Interaksi DNS OOB seringkali dipicu oleh proxy perantara atau web filter, bukan backend target | Respon memuat data layanan metadata cloud atau port internal privat |
-| **Self-XSS** | Penyerang hanya mengeksekusi script pada browser mereka sendiri | Terangkai dengan celah CSRF pada endpoint yang menyuntikkan payload ke korban |
-| **Absen HTTP Security Headers** | Absennya CSP, HSTS, atau X-Frame-Options bukan kerentanan aktif tanpa skenario serangan | Clickjacking terbukti berhasil memicu transaksi tanpa interaksi sadar pengguna |
-| **Open Redirect Tanpa Rantai** | Pengalihan URL semata dinilai rendah oleh sebagian besar program | Terangkai dengan kebocoran token OAuth `redirect_uri` atau Account Takeover |
-| **Logout CSRF** | Memaksa korban keluar dari sesi tidak memberikan keuntungan akses kepada penyerang | Tidak ada pengecualian (selalu digugurkan) |
-| **Rate Limiting Absen** | Halaman statis atau pencarian umum tanpa batasan laju bukan kerentanan | Endpoint login/OTP rentan *credential stuffing* atau mutasi finansial ganda |
+| **CORS Wildcard / Reflected** | Without `Access-Control-Allow-Credentials: true`, the victim's session data cannot be extracted to the attacker's domain | Proven extraction of authenticated PII through session credentials |
+| **Nuclei / Scanner Info Banner** | Detecting a framework or web server version is not proof of a vulnerability (*version banner disclosure*) | An active CVE with a proven exploit exists for that version |
+| **SSRF DNS Callback Only** | OOB DNS interaction is often triggered by an intermediate proxy or web filter, not the target backend | The response contains cloud metadata service data or a private internal port |
+| **Self-XSS** | The attacker only executes script in their own browser | Chained with a CSRF flaw on an endpoint that injects the payload into the victim |
+| **Missing HTTP Security Headers** | Missing CSP, HSTS, or X-Frame-Options is not an active vulnerability without an attack scenario | Clickjacking proven to trigger a transaction without the user's conscious interaction |
+| **Open Redirect Without a Chain** | A bare URL redirect is rated low by most programs | Chained with an OAuth `redirect_uri` token leak or Account Takeover |
+| **Logout CSRF** | Forcing the victim out of their session gives the attacker no access gain | No exception (always dropped) |
+| **Missing Rate Limiting** | A static page or general search without a rate limit is not a vulnerability | A login/OTP endpoint open to *credential stuffing* or double financial mutation |
 
 ---
 
-## 3. Mesin Verifikasi Deterministik (The Verification Spine)
+## 3. Deterministic Verification Engine (The Verification Spine)
 
-Penilaian laporan dikendalikan oleh mesin status empat nilai yang menolak klaim tanpa bukti:
+A four-value status engine controls report decisions and rejects claims without evidence:
 
 ```text
                ┌───────────────────────┐
-               │    Evaluasi Temuan    │
+               │   Evaluate Finding    │
                └───────────┬───────────┘
                            │
-             Ada Paket Bukti Lengkap?
-              ├── TIDAK ──────────────────────────────> [UNPROVEN] (Ditekan)
-              └── YA
+             Complete Evidence Bundle?
+              ├── NO ─────────────────────────────────> [UNPROVEN] (Suppressed)
+              └── YES
                    │
-            Jalankan Re-Derivasi Ulang
-              ├── Gagal koneksi / Metode mutasi tidak diuji -> [INCONCLUSIVE] (Ditahan)
-              ├── Penanda kerentanan HILANG dari respon fresh -> [REFUTED] (Ditekan)
-              └── Penanda kerentanan DITEMUKAN di respon fresh -> [PROVEN] (DAPAT DILAPORKAN)
+               Run Re-Derivation
+              ├── Connection failed / Mutation method not tested -> [INCONCLUSIVE] (Held)
+              ├── Vulnerability marker MISSING from the fresh response -> [REFUTED] (Suppressed)
+              └── Vulnerability marker FOUND in the fresh response -> [PROVEN] (REPORTABLE)
 ```
 
-### Definisi Status Keputusan
+### Decision Status Definitions
 
-- **`PROVEN` (Terbukti)**:
-  - Memiliki bukti pertukaran HTTP baseline yang lengkap.
-  - Re-derivasi independen berhasil dijalankan dan penanda bukti (*confirmation marker*) muncul kembali pada respon segar.
-  - **Satu-satunya status yang diizinkan untuk dibuatkan laporan final.**
-- **`REFUTED` (Tersanggah)**:
-  - Re-derivasi berhasil mengirim request, namun penanda kerentanan tidak ditemukan pada respon segar (misal: endpoint sudah diproteksi atau mengembalikan 403).
-  - Status: Ditekan (tidak dilaporkan).
-- **`UNPROVEN` (Belum Terbukti)**:
-  - Tidak memiliki paket bukti request/response, atau penanda kerentanan tidak terdefinisi secara terukur.
-  - Status: Ditekan (tidak dilaporkan).
-- **`INCONCLUSIVE` (Tidak Konklusif)**:
-  - Re-derivasi tidak dapat diselesaikan (target tidak terjangkau, kredensial hilang, atau request mutasi berbahaya dihentikan demi keselamatan).
-  - Status: Ditahan dalam antrean evaluasi lanjutan, dilarang dilaporkan.
+- **`PROVEN`**:
+  - Has complete baseline HTTP exchange evidence.
+  - An independent re-derivation ran successfully and the *confirmation marker* reappears in the fresh response.
+  - **The only status allowed to produce a final report.**
+- **`REFUTED`**:
+  - The re-derivation sent the request, but the vulnerability marker is absent from the fresh response (for example: the endpoint is now protected or returns 403).
+  - Status: Suppressed (not reported).
+- **`UNPROVEN`**:
+  - Has no request/response evidence bundle, or the vulnerability marker is not defined measurably.
+  - Status: Suppressed (not reported).
+- **`INCONCLUSIVE`**:
+  - The re-derivation could not complete (target unreachable, credentials missing, or a dangerous mutation request was stopped for safety).
+  - Status: Held in the follow-up evaluation queue; do not report it.
 
 ---
 
-## 4. Matriks Keparahan CVSS 3.1 & Pengambilan Keputusan
+## 4. CVSS 3.1 Severity Matrix & Decision Making
 
-Gunakan standar CVSS 3.1 berbasis vektor terukur, bukan perkiraan subjektif:
+Use the CVSS 3.1 standard with a measured vector, not a subjective estimate:
 
-| Tingkat Keparahan | Nilai CVSS | Karakteristik Bukti Wajib | Contoh Kelas |
+| Severity Level | CVSS Score | Required Evidence Characteristics | Example Classes |
 |---|---|---|---|
-| **Critical** | 9.0 – 10.0 | Tanpa interaksi pengguna, akses penuh dari jarak jauh, ATO massal | RCE, SQLi exfiltrasi data penuh, Auth Bypass admin |
-| **High** | 7.0 – 8.9 | Akses baca/tulis data privat lintas tenant, eskalasi hak akses terbukti | IDOR dengan mutasi data, SSRF ke metadata cloud, Stored XSS |
-| **Medium** | 4.0 – 6.9 | Akses baca data terbatas, membutuhkan interaksi pengguna spesifik | IDOR data non-sensitif, Reflected XSS dengan klik korban |
-| **Low** | 0.1 – 3.9 | Kebutuhan prasyarat tinggi, dampak informasi terbatas | Open redirect minor, Clickjacking halaman informasi |
-| **Informational** | 0.0 | Observasi arsitektur tanpa skenario eksploitasi | Version banner, error debug tanpa kredensial |
+| **Critical** | 9.0 – 10.0 | No user interaction, full remote access, mass ATO | RCE, SQLi with full data exfiltration, admin Auth Bypass |
+| **High** | 7.0 – 8.9 | Cross-tenant read/write access to private data, proven privilege escalation | IDOR with data mutation, SSRF to cloud metadata, Stored XSS |
+| **Medium** | 4.0 – 6.9 | Limited data read access, requires specific user interaction | IDOR on non-sensitive data, Reflected XSS with a victim click |
+| **Low** | 0.1 – 3.9 | High prerequisites, limited information impact | Minor open redirect, Clickjacking on an informational page |
+| **Informational** | 0.0 | Architecture observation without an exploit scenario | Version banner, debug error without credentials |

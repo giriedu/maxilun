@@ -6,60 +6,60 @@
   origin: "Maxilun Craft Engine"
 -->
 
-Panduan rekayasa penanganan galat dan pemulihan interaksi tahan gangguan (*resilient interaction recovery*). Antarmuka produksi memperlakukan kegagalan jaringan, validasi, dan transaksi sebagai bagian normal dari siklus hidup aplikasi, bukan anomali yang ditutup dialog peringatan kosong.
+Engineering guide for error handling and fault-tolerant interaction recovery (*resilient interaction recovery*). A production interface treats network, validation, and transaction failures as a normal part of the application lifecycle. They are not anomalies to cover with an empty alert dialog.
 
 ---
 
-## 1. Prinsip Kedekatan Titik Galat (Inline Proximity)
+## 1. Inline Proximity Principle (Error Next to Its Source)
 
-1. **Dilarang Modal Peringatan Global untuk Galat Lokal**:
-   - Galat pengisian formulir, kegagalan unggah berkas tunggal, atau validasi field wajib ditampilkan langsung di bawah atau di samping kontrol bersangkutan.
-   - Dialog modal hanya diizinkan untuk kegagalan tingkat sistem fatal yang memutus seluruh sesi kerja (misal: token autentikasi kedaluwarsa permanen).
-2. **Anatomi Pesan Galat yang Lengkap**:
-   Pesan galat yang sah wajib memenuhi rumus tiga bagian:
-   - **Apa yang terjadi**: Fakta objektif (misal: *"Nomor telepon kurang 2 digit"*).
-   - **Mengapa gagal**: Batasan sistem yang tidak terpenuhi (*"Format standar memerlukan minimal 10 digit"*).
-   - **Jalur perbaikan langsung**: Aksi perbaikan konkret tanpa perlu memuat ulang halaman (*"Tambahkan kode area"* atau tombol *"Coba kirim ulang"*).
+1. **No Global Alert Modals for Local Errors**:
+   - Show form-entry errors, single-file upload failures, and field validation errors directly below or beside the affected control.
+   - Use a modal dialog only for fatal system-level failures that end the whole work session (for example: a permanently expired authentication token).
+2. **Anatomy of a Complete Error Message**:
+   A valid error message follows a three-part formula:
+   - **What happened**: The objective fact (for example: *"The phone number is 2 digits short"*).
+   - **Why it failed**: The system constraint that was not met (*"The standard format requires at least 10 digits"*).
+   - **Direct fix path**: A concrete corrective action that needs no page reload (*"Add the area code"* or a *"Try sending again"* button).
 
 ---
 
-## 2. Pola Transaksi Undo vs Kelelahan Modal Konfirmasi
+## 2. Undo Transaction Pattern vs Confirmation Modal Fatigue
 
-Dialog pop-up *"Apakah Anda yakin ingin menghapus data ini?"* menimbulkan kelelahan kognitif (*confirmation modal fatigue*) dan sering diklik otomatis tanpa dibaca.
+A pop-up dialog asking *"Are you sure you want to delete this data?"* causes cognitive fatigue (*confirmation modal fatigue*). Users often click through it without reading.
 
-Gantikan dengan pola **Reversible Mutation (Undo Toast)**:
+Replace it with the **Reversible Mutation (Undo Toast)** pattern:
 
 ```text
-[Data dihapus dari daftar seketika]
+[Data removed from the list immediately]
         │
-        ▼ (Tampilkan baris status mengambang 6 detik)
+        ▼ (Show a floating status row for 6 seconds)
 ┌────────────────────────────────────────────────────────┐
-│  1 kontak dipindahkan ke tempat sampah.   [ Batal ]    │
+│  1 contact moved to trash.                 [ Undo ]    │
 └────────────────────────────────────────────────────────┘
 ```
 
-### Invarian Undo Toast:
-1. **Durasi Terukur**: Baris notifikasi tampil selama 5 hingga 8 detik sebelum transaksi difinalisasi di server.
-2. **Aksi Batal Seketika**: Mengklik tombol *"Batal"* (*Undo*) langsung mengembalikan elemen ke posisi semula dalam daftar tanpa refetch jaringan penuh.
-3. **Pengecualian Mutasi Permanen**: Dialog konfirmasi eksplisit hanya dipakai jika aksi bersifat destruktif permanen dan tidak dapat dibatalkan (misal: menghapus repositori produksi atau menghapus akun secara permanen).
+### Undo Toast Invariants:
+1. **Measured Duration**: Show the notification row for 5 to 8 seconds before the transaction is finalized on the server.
+2. **Instant Undo Action**: Clicking the *"Undo"* button returns the element to its original position in the list immediately, without a full network refetch.
+3. **Permanent Mutation Exception**: Use an explicit confirmation dialog only when the action is permanently destructive and cannot be undone (for example: deleting a production repository or permanently deleting an account).
 
 ---
 
-## 3. Invarian Perlindungan Data Masukan (Data Preservation)
+## 3. Input Data Protection Invariants (Data Preservation)
 
-1. **Dilarang Mengosongkan Formulir Saat Pengiriman Gagal**:
-   - Jika proses `submit` gagal karena respons status non-200 atau jaringan terputus, seluruh data yang sudah diketik pengguna wajib tetap utuh di dalam field masing-masing.
-   - Tandai field yang tidak valid dengan garis tepi merah semantik dan indikator ikon, tetapi pertahankan teks input pengguna agar mereka tidak perlu mengetik ulang dari awal.
-2. **Penyimpanan Draf Lokal Otomatis**:
-   - Untuk formulir panjang (> 4 field), simpan perubahan sementara ke penyimpanan lokal (`sessionStorage` atau IndexedDB) sehingga input aman dari ketidaksengajaan menutup tab atau browser crash.
-3. **Rollback Mutasi Optimistik**:
-   - Jika antarmuka memperbarui status secara optimistik (misal: mencentang checkbox selesai), lalu server menolak permintaan, kembalikan status visual ke kondisi awal secara halus disertai notifikasi inline singkat tentang alasan penolakan.
+1. **Never Clear the Form When Submission Fails**:
+   - If `submit` fails because of a non-200 status response or a dropped network, keep everything the user typed intact in its field.
+   - Mark invalid fields with a semantic red border and an icon indicator, but keep the user's input text so they do not retype from scratch.
+2. **Automatic Local Draft Saving**:
+   - For long forms (> 4 fields), save interim changes to local storage (`sessionStorage` or IndexedDB) so input survives an accidental tab close or a browser crash.
+3. **Optimistic Mutation Rollback**:
+   - If the interface updates state optimistically (for example: ticking a done checkbox) and the server then rejects the request, return the visual state to its original condition smoothly. Add a short inline notification stating why the request was rejected.
 
 ---
 
-## 4. Penanganan Mode Terdegradasi & Partisi Jaringan
+## 4. Degraded Mode & Network Partition Handling
 
-1. **Deteksi Konektivitas Aktif**:
-   - Manfaatkan event `navigator.onLine` dan pemantauan `fetch` timeout untuk menampilkan indikator koneksi pasif di bilah status (*offline badge*), tanpa memblokir pembacaan konten yang sudah ter-cache.
-2. **Antrean Aksi Tertunda (Offline Queue)**:
-   - Tindakan pengguna saat koneksi terputus disimpan ke dalam antrean lokal dan otomatis disinkronisasi saat koneksi pulih (*automatic replay*).
+1. **Active Connectivity Detection**:
+   - Use the `navigator.onLine` event and `fetch` timeout monitoring to show a passive connection indicator in the status bar (*offline badge*). Do not block reading of content that is already cached.
+2. **Pending Action Queue (Offline Queue)**:
+   - Store user actions taken while the connection is down in a local queue, and synchronize them automatically when the connection returns (*automatic replay*).

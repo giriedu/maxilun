@@ -11,12 +11,13 @@ Zero external dependencies.
 
 import json
 from pathlib import Path
-from typing import Dict, Any, Optional, Callable
+from typing import Dict, Any, Optional, Callable, Set, List
 
 from .skills_loader import SkillsLoader, SkillDefinition
 from .context import SessionContext
 from .provider import UniversalProvider, ProviderResponse
 from .middleware import MiddlewarePipeline
+from .compressor import OutputCompressor
 from ..tools.registry import ToolRegistry
 
 
@@ -29,7 +30,10 @@ class MaxilunAgentLoop:
         provider: Optional[UniversalProvider] = None,
         max_turns: int = 10,
         verbose: bool = True,
-        is_subagent: bool = False
+        is_subagent: bool = False,
+        allowed_tools: Optional[Set[str]] = None,
+        agent_name: Optional[str] = None,
+        shared_bus: Optional[List[Dict[str, Any]]] = None,
     ):
         self.root = repo_root or Path.cwd()
         self.loader = SkillsLoader(self.root)
@@ -39,12 +43,9 @@ class MaxilunAgentLoop:
         self.max_turns = max_turns
         self.verbose = verbose
         self.is_subagent = is_subagent
-        self.loader = SkillsLoader(self.root)
-        self.registry = ToolRegistry(self.root)
-        self.provider = provider or UniversalProvider()
-        self.middleware = MiddlewarePipeline(self.root)
-        self.max_turns = max_turns
-        self.verbose = verbose
+        self.allowed_tools = allowed_tools
+        self.agent_name = agent_name
+        self.shared_bus = shared_bus
 
     def run_task(
         self,
@@ -54,6 +55,57 @@ class MaxilunAgentLoop:
     ) -> SessionContext:
         """Executes a complete task end-to-end through the Maxilun ecosystem."""
         context = SessionContext()
+        if self.shared_bus is not None:
+            context.agent_bus = self.shared_bus
+
+        # Register inter-agent communication tools (available to all agents)
+        sender_id = self.agent_name or ("maxilun-orchestrator" if not self.is_subagent else "subagent")
+
+        def handle_send_handoff(to_agent: str, summary: str, artifacts: Optional[List[str]] = None) -> Dict[str, Any]:
+            entry = context.post_handoff(sender_id, to_agent, summary, artifacts)
+            return {"status": "sent", "handoff": entry}
+
+        def handle_read_handoffs(for_agent: Optional[str] = None) -> Dict[str, Any]:
+            msgs = context.read_handoffs(for_agent or sender_id)
+            return {"count": len(msgs), "messages": msgs}
+
+        self.registry.register_tool(
+            "send_handoff",
+            handle_send_handoff,
+            {
+                "type": "function",
+                "function": {
+                    "name": "send_handoff",
+                    "description": "Send a structured handoff packet (contracts, file:line citations, defects, or verification status) to another Maxilun agent or '*' broadcast.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "to_agent": {"type": "string", "description": "Target agent name (e.g. maxilun-coder-backend, maxilun-verifier, or '*')"},
+                            "summary": {"type": "string", "description": "Compact handoff summary with file:line citations"},
+                            "artifacts": {"type": "array", "items": {"type": "string"}, "description": "Modified or referenced file paths"}
+                        },
+                        "required": ["to_agent", "summary"]
+                    }
+                }
+            }
+        )
+        self.registry.register_tool(
+            "read_handoffs",
+            handle_read_handoffs,
+            {
+                "type": "function",
+                "function": {
+                    "name": "read_handoffs",
+                    "description": "Read upstream handoff packets addressed to this agent or broadcast on the shared agent bus.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "for_agent": {"type": "string", "description": "Optional agent filter (defaults to current agent)"}
+                        }
+                    }
+                }
+            }
+        )
 
         # 1. Routing & Specialist Selection
         decision_type = self.middleware.check_reversibility(prompt)
@@ -70,24 +122,38 @@ class MaxilunAgentLoop:
         if not self.is_subagent:
             def handle_delegate(specialist: str, task: str) -> Dict[str, Any]:
                 clean = specialist.strip().lower()
+                if not clean.startswith("maxilun"):
+                    clean = f"maxilun-{clean}"
                 macro_map = {
+                    "maxilun-orchestrator": "maxilun",
                     "maxilun-scout": "maxilun-knowledge-graph",
-                    "scout": "maxilun-knowledge-graph",
                     "maxilun-architect": "maxilun-architect",
-                    "architect": "maxilun-architect",
                     "maxilun-maker": "maxilun-engineer",
-                    "maker": "maxilun-engineer",
                     "maxilun-studio": "maxilun-craft",
-                    "studio": "maxilun-craft",
                     "maxilun-verifier": "maxilun-verify",
-                    "verifier": "maxilun-verify",
+                    "maxilun-coder-frontend": "maxilun-frontend",
+                    "maxilun-coder-backend": "maxilun-data",
+                    "maxilun-coder-mobile": "maxilun-mobile",
+                    "maxilun-coder-systems": "maxilun-desktop",
+                    "maxilun-ui-designer": "maxilun-craft",
+                    "maxilun-ui-motion": "maxilun-motion",
+                    "maxilun-ui-reviewer": "maxilun-verify",
+                    "maxilun-planner": "maxilun-scaffold",
+                    "maxilun-security-auditor": "maxilun-hunt",
                 }
+                agent_def = self.loader.get_agent(clean)
                 target_skill = macro_map.get(clean, clean)
-                if not target_skill.startswith("maxilun"):
-                    target_skill = f"maxilun-{target_skill}"
+                sub_allowed_tools = agent_def.allowed_harness_tools if agent_def else None
+
+                # Auto-inject relevant upstream handoffs from the shared agent bus
+                upstream = context.read_handoffs(clean)
+                enriched_task = task
+                if upstream:
+                    bus_lines = [f"- [{m['from']} -> {m['to']}] {m['summary']}" for m in upstream[-5:]]
+                    enriched_task = f"## Upstream Agent Handoffs\n" + "\n".join(bus_lines) + f"\n\n## Assigned Task\n{task}"
 
                 if self.verbose:
-                    print(f"\n🚀 [Delegation] Spawning subagent: {target_skill}...")
+                    print(f"\n🚀 [Delegation] Spawning subagent: {clean} (skill: {target_skill})...")
                     print(f"   Subtask: {task[:80]}...")
 
                 subagent = MaxilunAgentLoop(
@@ -95,9 +161,12 @@ class MaxilunAgentLoop:
                     provider=self.provider,
                     max_turns=min(self.max_turns, 6),
                     verbose=self.verbose,
-                    is_subagent=True
+                    is_subagent=True,
+                    allowed_tools=sub_allowed_tools,
+                    agent_name=clean if agent_def else None,
+                    shared_bus=context.agent_bus,
                 )
-                sub_ctx = subagent.run_task(task, forced_skill=target_skill)
+                sub_ctx = subagent.run_task(enriched_task, forced_skill=target_skill)
 
                 handoff = "Subagent completed."
                 for m in reversed(sub_ctx.messages):
@@ -105,51 +174,33 @@ class MaxilunAgentLoop:
                         handoff = m["content"]
                         break
 
-                context.record_swarm_event(target_skill, "Subagent finished", f"{len(sub_ctx.files_modified)} file(s) modified")
+                files_mod = sorted(sub_ctx.touched_files)
+                context.post_handoff(clean, sender_id, handoff[:400], artifacts=files_mod)
+                context.record_swarm_event(clean, "Subagent finished", f"{len(files_mod)} file(s) modified")
                 return {
                     "status": "success",
+                    "agent": clean,
                     "specialist": target_skill,
                     "handoff_result": handoff,
-                    "files_modified": sub_ctx.files_modified,
-                    "commands_executed": sub_ctx.commands_executed
+                    "files_modified": files_mod,
+                    "commands_executed": sub_ctx.commands_run,
                 }
 
-                schema = {
-                    "type": "function",
-                    "function": {
-                        "name": "delegate_task",
-                        "description": "Spawn a specialized subagent to execute a bounded subtask (Wave 1: maxilun-scout/architect, Wave 2: maxilun-maker/studio, Wave 3: maxilun-verifier).",
-                        "parameters": {
-                            "type": "object",
-                            "properties": {
-                                "specialist": {
-                                    "type": "string",
-                                    "description": "Target specialist or macro agent (e.g. maxilun-scout, maxilun-architect, maxilun-maker, maxilun-studio, maxilun-verifier)"
-                                },
-                                "task": {
-                                    "type": "string",
-                                    "description": "Concrete instructions and expected deliverable for the subagent"
-                                }
-                            },
-                            "required": ["specialist", "task"]
-                        }
-                    }
-                }
             schema = {
                 "type": "function",
                 "function": {
                     "name": "delegate_task",
-                    "description": "Spawn a specialized subagent to execute a bounded subtask (Wave 1: maxilun-scout/architect, Wave 2: maxilun-maker/studio, Wave 3: maxilun-verifier).",
+                    "description": "Spawn a specialized subagent to execute a bounded subtask across Wave 1 (maxilun-scout, maxilun-planner, maxilun-architect), Wave 2 (maxilun-ui-designer, maxilun-ui-motion, maxilun-studio, maxilun-coder-frontend, maxilun-coder-backend, maxilun-coder-mobile, maxilun-coder-systems, maxilun-maker), or Wave 3 (maxilun-verifier, maxilun-ui-reviewer, maxilun-security-auditor).",
                     "parameters": {
                         "type": "object",
                         "properties": {
                             "specialist": {
                                 "type": "string",
-                                "description": "Target specialist or macro agent (e.g. maxilun-scout, maxilun-architect, maxilun-maker, maxilun-studio, maxilun-verifier)"
+                                "description": "Target specialist agent or skill (e.g. maxilun-scout, maxilun-planner, maxilun-architect, maxilun-ui-designer, maxilun-ui-motion, maxilun-studio, maxilun-coder-frontend, maxilun-coder-backend, maxilun-coder-mobile, maxilun-coder-systems, maxilun-maker, maxilun-verifier, maxilun-ui-reviewer, maxilun-security-auditor)"
                             },
                             "task": {
                                 "type": "string",
-                                "description": "Concrete instructions and expected deliverable for the subagent"
+                                "description": "Concrete instructions, upstream contracts/file:line, and expected deliverable for the subagent"
                             }
                         },
                         "required": ["specialist", "task"]
@@ -161,7 +212,7 @@ class MaxilunAgentLoop:
             print(f"\n🌑 Maxilun Harness Engine: [Active Specialist: {active_skill.name}] (Type {decision_type})")
             print(f"   Contract: Owns {active_skill.contract.get('Owns', 'implementation')[:60]}...")
         # 2. Compile Active System Prompt
-        system_prompt = self.loader.build_system_prompt(active_skill.name)
+        system_prompt = self.loader.build_system_prompt(active_skill.name, agent_name=self.agent_name)
         context.add_system_message(system_prompt)
         context.add_user_message(prompt)
 
@@ -173,7 +224,7 @@ class MaxilunAgentLoop:
                 print(f"⚡ Turn {turn}/{self.max_turns}: Requesting completion from {self.provider.model}...")
 
             messages = context.to_provider_messages()
-            tools = self.registry.get_tool_schemas()
+            tools = self.registry.get_tool_schemas(allowed_tools=self.allowed_tools)
             resp: ProviderResponse = self.provider.complete(messages, tools=tools)
 
             if resp.error:
@@ -232,7 +283,11 @@ class MaxilunAgentLoop:
                 else:
                     context.record_swarm_event(active_skill.name, f"Tool call {fn_name}", str(args)[:50])
                 # Execute tool
-                result = self.registry.execute(fn_name, args)
+                result = self.registry.execute(fn_name, args, allowed_tools=self.allowed_tools)
+                if fn_name == "execute_bash" and isinstance(result, dict):
+                    for stream_key in ("stdout", "stderr", "output"):
+                        if isinstance(result.get(stream_key), str):
+                            result[stream_key] = OutputCompressor.compress_bash_output(result[stream_key])
                 result_str = json.dumps(result, ensure_ascii=False)
 
                 context.add_tool_result(call_id, fn_name, result_str)
@@ -248,11 +303,12 @@ class MaxilunAgentLoop:
             print(f"   Duration   : {summary['duration_seconds']}s")
             print("=" * 50)
 
-        # Save swarm events artifact
+        # Save swarm events & inter-agent bus artifacts
         out_dir = self.root / "maxilun-out"
         out_dir.mkdir(exist_ok=True)
         try:
             (out_dir / "swarm_events.json").write_text(json.dumps(context.swarm_events, indent=2), encoding="utf-8")
+            (out_dir / "agent_bus.json").write_text(json.dumps(context.agent_bus, indent=2), encoding="utf-8")
         except Exception:
             pass
 

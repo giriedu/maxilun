@@ -8,7 +8,7 @@ Release dibuat otomatis saat tag `v*.*.*` di-push ke repo:
 
 ```bash
 # Ganti nilai ini untuk rilis yang sedang dibuat; CHANGELOG.md harus memiliki section yang sama.
-RELEASE_VERSION=1.1.0
+RELEASE_VERSION=1.3.0
 
 # Pastikan semua perubahan sudah di-commit dan push ke main
 git add .
@@ -54,5 +54,7 @@ GitHub "About" (deskripsi di sidebar) **tidak bisa diset via file** — harus ma
 
 | Tag | Tanggal | Highlights |
 |---|---|---|
+| v1.3.0 | 2026-11-14 | Canonical 5-section spine across all 25 skills, 3rd reference files for 8 thin-corpus skills, model: inherit on 13 agent frontmatters, reciprocal cross-skill links |
+| v1.2.0 | 2026-11-14 | All 25 skills and their references rewritten in English, `maxilun-craft` v2 (Brief → token lock → layered build → `slopscan.py` proof), UI scan gate in orchestrator and verify, core rules precedence fix |
 | v1.1.0 | 2026-11-07 | 23 skills, 13 autonomous agents (Coding & UI/UX squads), design lock cutover protocol, Asymmetric Split Hero, ScrollBlurReveal, and anti-slop hardening |
 | v1.0.0 | 2026-10-24 | Initial production release — 18 specialists, 100 brand design corpus, motion video studio pipeline, Knowledge Graph, Purity Gate & evidence-based orchestration |

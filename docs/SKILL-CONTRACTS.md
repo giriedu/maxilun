@@ -30,7 +30,7 @@ The primary skill owns the deliverable. Companion skills advise or validate; the
 | `maxilun-insight` | evidence-based diagnosis and profiling | direct implementation |
 | `maxilun-deploy` | CI/CD, containers, runtime operations and recovery | application security decisions |
 | `maxilun-docsmith` | feature PRDs/RFCs, API contracts (OpenAPI/AsyncAPI), READMEs, ADRs, runbooks, `llms.txt` | user-facing marketing copy or initial 10-file folder bootstrap |
-| `maxilun-craft` | visual system, layout, typography and interaction design | framework architecture |
+| `maxilun-craft` | everything rendered: Brief, tokens, layout, typography, states, interface words, UI micro-motion, `slopscan.py` gate | framework architecture, business logic |
 | `maxilun-motion` | browser/UI motion and complete interactive 3D scenes, including camera choreography and renderer fallback | final video rendering |
 | `maxilun-cinecode` | rendered video artifacts and video pipelines | browser UI animation |
 | `maxilun-diagrams` | diagrams derived from known decisions | architecture decisions |

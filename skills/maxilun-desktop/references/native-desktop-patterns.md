@@ -1,14 +1,14 @@
 # Native Desktop Engineering Patterns (Windows, macOS, C++, Qt)
 
-Arsitektur aplikasi desktop tingkat produksi untuk Windows (Win32, WPF, WinUI, C++), macOS (Swift, AppKit, Cocoa), dan lintas platform (C++ Qt, Tauri).
+Production desktop application architecture for Windows (Win32, WPF, WinUI, C++), macOS (Swift, AppKit, Cocoa), and cross-platform toolkits (C++ Qt, Tauri).
 
 ## 1. Windows Desktop Engineering
 
-### 1.1 Pola Win32 C++ & Manajemen Siklus Window
-- **Message Loop & Responsivitas**:
-  Pekerjaan I/O atau komputasi intensif dilarang berjalan di thread antarmuka utama (UI thread). Gunakan `std::thread` atau thread pool worker, lalu kirim hasil ke UI thread melalui `PostMessage(hWnd, WM_APP_..., wParam, lParam)` — jangan panggil komponen UI langsung dari worker thread.
-- **DPI Awareness (Per-Monitor V2)**:
-  Wajib mendeklarasikan DPI awareness pada manifest aplikasi untuk mencegah visual blur pada setup multi-monitor:
+### 1.1 Win32 C++ Patterns & Window Lifecycle
+- **Message loop & responsiveness**:
+  Never run I/O or intensive computation on the main UI thread. Use `std::thread` or a worker thread pool, then send the result to the UI thread with `PostMessage(hWnd, WM_APP_..., wParam, lParam)`. Do not call UI components directly from a worker thread.
+- **DPI awareness (Per-Monitor V2)**:
+  Declare DPI awareness in the application manifest to prevent blurry rendering on multi-monitor setups:
   ```xml
   <application xmlns="urn:schemas-microsoft-com:asm.v3">
     <windowsSettings>
@@ -16,25 +16,25 @@ Arsitektur aplikasi desktop tingkat produksi untuk Windows (Win32, WPF, WinUI, C
     </windowsSettings>
   </application>
   ```
-- **Alokasi Sumber Daya GDI & Handle**:
-  Setiap `CreateCompatibleDC`, `SelectObject`, dan `CreateFont` wajib dipasangkan dengan `DeleteDC`, pemulihan objek lama, dan `DeleteObject`. Kebocoran GDI handle melampaui limit 10.000 memicu aplikasi hang seketika.
+- **GDI resources & handles**:
+  Pair every `CreateCompatibleDC`, `SelectObject`, and `CreateFont` with `DeleteDC`, restoring the previous object, and `DeleteObject`. A GDI handle leak that passes the 10,000 limit hangs the application immediately.
 
 ### 1.2 WPF & WinUI 3 (C# / .NET)
-- Terapkan pola MVVM ketat. Gunakan `CommunityToolkit.Mvvm` (`[ObservableProperty]`, `[RelayCommand]`).
-- Bebaskan event listener saat window/view ditutup (`WeakEventManager` atau unregister eksplisit di `Unloaded`) guna mencegah retensi memori tak berujung.
-- Gunakan virtualisasi antarmuka (`VirtualizingStackPanel.IsVirtualizing="True"`) pada koleksi data besar.
+- Apply strict MVVM. Use `CommunityToolkit.Mvvm` (`[ObservableProperty]`, `[RelayCommand]`).
+- Release event listeners when the window/view closes (`WeakEventManager` or an explicit unregister in `Unloaded`) so the view is not retained indefinitely.
+- Use UI virtualization (`VirtualizingStackPanel.IsVirtualizing="True"`) for large data collections.
 
 ---
 
 ## 2. macOS Desktop Engineering (Swift, AppKit, Cocoa)
 
-### 2.1 Manajemen Window & Siklus Hidup
+### 2.1 Window Management & Lifecycle
 - **`NSWindowController` & `NSViewController`**:
-  Pisahkan kepemilikan window dengan view. Pastikan `isReleasedWhenClosed = false` jika window dikelola oleh ARC controller untuk menghindari crash akses pointer bebas (*use-after-free*).
-- **Menu Bar & Status Item**:
-  Gunakan `NSStatusItem` dengan menu dinamis. Perbarui state visual hanya di thread utama (`DispatchQueue.main.async` atau `@MainActor`).
-- **App Sandbox & Notarisasi**:
-  Konfigurasikan `Entitlements.plist` minimal. Hardened runtime wajib aktif sebelum submit notarization via `notarytool`:
+  Separate window ownership from view ownership. Set `isReleasedWhenClosed = false` when an ARC-managed controller owns the window, to avoid a use-after-free crash.
+- **Menu bar & status item**:
+  Use `NSStatusItem` with a dynamic menu. Update visual state only on the main thread (`DispatchQueue.main.async` or `@MainActor`).
+- **App Sandbox & notarization**:
+  Keep `Entitlements.plist` minimal. Enable hardened runtime before submitting for notarization with `notarytool`:
   ```bash
   xcrun notarytool submit app.zip --keychain-profile "AC_PASSWORD" --wait
   xcrun stapler staple "App.app"
@@ -44,15 +44,15 @@ Arsitektur aplikasi desktop tingkat produksi untuk Windows (Win32, WPF, WinUI, C
 
 ## 3. C++ Qt Architecture (Widgets & QML)
 
-### 3.1 Model Kepemilikan Objek (`QObject`)
-- Manfaatkan pohon kepemilikan parent-child `QObject`. Child otomatis dihapus saat parent dihancurkan.
-- Hati-hati dengan `QPointer` dan `deleteLater()` saat menghapus objek lintas event loop thread.
+### 3.1 Object Ownership Model (`QObject`)
+- Use the `QObject` parent-child ownership tree. A child is deleted automatically when its parent is destroyed.
+- Take care with `QPointer` and `deleteLater()` when deleting objects across thread event loops.
 
-### 3.2 Sinyal & Slot Lintas Thread
-- Saat menghubungkan sinyal dari worker thread ke UI thread, gunakan tipe koneksi `Qt::QueuedConnection` (default otomatis jika sinyal melintasi batas thread).
-- Parameter sinyal wajib terdaftar dalam sistem meta-tipe Qt (`qRegisterMetaType<T>()`) jika menggunakan tipe data kustom non-primitif.
+### 3.2 Cross-Thread Signals & Slots
+- When connecting a signal from a worker thread to the UI thread, use the `Qt::QueuedConnection` connection type (the automatic default when a signal crosses a thread boundary).
+- Register signal parameters with the Qt meta-type system (`qRegisterMetaType<T>()`) when they use custom non-primitive types.
 
-### 3.3 Struktur CMake Modern untuk Desktop
+### 3.3 Modern CMake Structure for Desktop
 ```cmake
 cmake_minimum_required(VERSION 3.20)
 project(DesktopApp LANGUAGES CXX)

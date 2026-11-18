@@ -1,324 +1,324 @@
 # Interface Engineering: Mathematical Precision & Production Design Rules
 
-Panduan rekayasa antarmuka tingkat lanjut yang mengadaptasi prinsip *interface engineering* presisi tinggi untuk memusnahkan estetika generik dan cetakan template AI. Rujukan operasional untuk `maxilun-craft`, `maxilun-frontend`, dan `maxilun-verify`.
+Advanced interface engineering guide. It applies high-precision *interface engineering* principles to remove generic aesthetics and AI template molds. Operational reference for `maxilun-craft`, `maxilun-frontend`, and `maxilun-verify`.
 
 ---
 
-## 1. Presisi Visual & Poles Permukaan (UI Polish)
+## 1. Visual Precision & Surface Polish (UI Polish)
 
-Nilai-nilai di bawah ini bersifat eksak, bukan rentang perkiraan.
+The values below are exact, not approximate ranges.
 
-### 1.1 Formula Radius Konsentris Eksak
-Saat container induk dan elemen anak memiliki inset (padding) merata:
+### 1.1 Exact Concentric Radius Formula
+When a parent container and its child element have an even inset (padding):
 $$\text{radius}_{\text{outer}} = \text{radius}_{\text{inner}} + \text{padding} + \text{border}$$
 $$\text{radius}_{\text{inner}} = \max(0, \text{radius}_{\text{outer}} - \text{padding} - \text{border})$$
 
-Jika kartu luar menggunakan `rounded-2xl` (16px) dengan padding 8px, tombol atau input di dalamnya **wajib** menggunakan radius 8px (`16px - 8px = 8px`), bukan 16px seragam atau 0px tajam. Di atas padding 24px atau padding asimetris yang disengaja, kedua lapisan diperlakukan sebagai permukaan independen.
+If the outer card uses `rounded-2xl` (16px) with 8px padding, the button or input inside it **must** use an 8px radius (`16px - 8px = 8px`), not a uniform 16px or a sharp 0px. Above 24px padding, or with deliberately asymmetric padding, treat the two layers as independent surfaces.
 
-### 1.2 Bayangan Berlapis untuk Elevasi, Border untuk Struktur
-- **Border**: Hanya untuk pembatas struktural (dividers, baris tabel, pemisah kolom, batas input formulir yang membutuhkan kontras non-teks 3:1 WCAG 1.4.11).
-- **Elevasi**: Gantikan border tebal pembuat ilusi kedalaman dengan bayangan berlapis transparan (*layered transparent box-shadow*):
+### 1.2 Layered Shadows for Elevation, Borders for Structure
+- **Border**: Only for structural separators (dividers, table rows, column separators, form input boundaries that need 3:1 non-text contrast per WCAG 1.4.11).
+- **Elevation**: Replace thick borders that fake depth with a *layered transparent box-shadow*:
   ```css
-  /* Elevasi kontak halus */
+  /* Subtle contact elevation */
   box-shadow: 0 1px 2px oklch(0 0 0 / 0.05), 0 1px 3px oklch(0 0 0 / 0.08);
-  /* Selalu sertakan border transparan agar mode forced-colors tetap menggambar tepi */
+  /* Always include a transparent border so forced-colors mode still draws the edge */
   border: 1px solid transparent;
   ```
 
-### 1.3 Garis Tepi Gambar Hitam/Putih Murni (1px Inset Outline)
-Beri outline `1px` inset `1px` pada media/gambar konten:
-- Mode Terang: `oklch(0 0 0 / 0.1)`
-- Mode Gelap: `oklch(1 0 0 / 0.1)`
-- **Dilarang** menggunakan warna abu-abu netral bertinting atau warna aksen brand, karena akan menimbulkan efek *fringe* berwarna yang kotor pada tepi gambar. Lewati elemen vektor transparan (logo dan ilustrasi).
+### 1.3 Pure Black/White Image Edge Line (1px Inset Outline)
+Give content media/images a `1px` outline inset by `1px`:
+- Light mode: `oklch(0 0 0 / 0.1)`
+- Dark mode: `oklch(1 0 0 / 0.1)`
+- **Do not** use a tinted neutral gray or the brand accent color. It creates a dirty colored *fringe* on the image edge. Skip transparent vector elements (logos and illustrations).
 
-### 1.4 Mikro-Interaksi Taktil & Gerak
-- **Skala Tekan Tombol**: Tombol aktif mengecil ke tepat `scale(0.96)` dalam durasi `150ms` kurva `ease-out`. Tombol disabled **tidak boleh** mengecil.
-- **Transisi State vs Keyframe**: Gunakan CSS transition atau physics spring untuk perubahan status interaktif agar dapat berbalik arah saat kursor dilepas di tengah animasi. Keyframe hanya untuk animasi sekuens satu arah yang berjalan sekali saat mount.
-- **Interaksi Frekuensi Tinggi Instan**: Pengetikan, hover baris tabel, dan perpindahan tab harus merespons instan (`<= 150ms`) pada properti `opacity` atau `background-color`. Jangan animasikan layout properties (`top`, `left`, `width`, `height`).
-- **Gating Hover pada Pointer**: Seluruh efek hover wajib berada di bawah `@media (hover: hover)`. Pada layar sentuh, hover tanpa pelindung akan terkunci (*latched*) dan terbaca sebagai status terpilih palsu.
-- **Scroll Containment**: Pasang `overscroll-behavior: contain` pada dialog modal, drawer, dan popover menu.
-- **Koreografi Scroll Reveal Progresif (Blur Fade-In & Gentle Rise)**: Untuk seksi landing page dan kartu naratif, terapkan pola `ScrollBlurReveal` (`../maxilun-motion/references/motion-components.md`): elemen di luar layar memiliki `opacity: 0; filter: blur(10px); transform: translateY(28px)`, lalu saat scroll masuk viewport bertransisi halus ke `opacity: 1; filter: blur(0); transform: translateY(0)`. Bersihkan `filter` setelah animasi selesai dan selalu hormati `@media (prefers-reduced-motion: reduce)`.
+### 1.4 Tactile Micro-Interactions & Motion
+- **Button Press Scale**: An active button shrinks to exactly `scale(0.96)` over `150ms` with an `ease-out` curve. A disabled button **must not** shrink.
+- **State Transitions vs Keyframes**: Use a CSS transition or a physics spring for interactive state changes, so the motion can reverse when the cursor leaves mid-animation. Use keyframes only for one-way sequence animations that run once on mount.
+- **Instant High-Frequency Interactions**: Typing, table row hover, and tab switching must respond instantly (`<= 150ms`) on the `opacity` or `background-color` property. Do not animate layout properties (`top`, `left`, `width`, `height`).
+- **Gate Hover on Pointer**: Put every hover effect under `@media (hover: hover)`. On touch screens an unguarded hover gets stuck (*latched*) and reads as a false selected state.
+- **Scroll Containment**: Set `overscroll-behavior: contain` on modal dialogs, drawers, and menu popovers.
+- **Progressive Scroll Reveal Choreography (Blur Fade-In & Gentle Rise)**: For landing page sections and narrative cards, apply the `ScrollBlurReveal` pattern (`../maxilun-motion/references/motion-components.md`). Off-screen elements have `opacity: 0; filter: blur(10px); transform: translateY(28px)`. When they scroll into the viewport they transition smoothly to `opacity: 1; filter: blur(0); transform: translateY(0)`. Clear `filter` after the animation ends and always respect `@media (prefers-reduced-motion: reduce)`.
 
-### 1.5 Standar Kontainer Kartu Produksi (Anti-Neon Outline & Anti-Status Theater)
-- **Neutral Hairline Border, Bukan Garis Neon**: Border kontainer kartu wajib netral 1px dengan opasitas rendah (`oklch(1 0 0 / 0.08)` pada dark mode, `oklch(0 0 0 / 0.08)` pada light mode). **Dilarang keras membungkus keliling kartu dengan border berwarna saturasi tinggi/neon** (`border-cyan-500`, `border-purple-500`). Warna aksen hanya boleh digunakan sebagai titik status atau indikator aktif kecil, bukan garis pagar keliling kartu!
-- **Tolak Radial Glow Blobs di Belakang Kartu**: Dilarang memasang lingkaran blur besar (`blur-3xl bg-cyan-500/20`) di balik kartu untuk menciptakan kesan "menyala". Kedalaman kartu harus lahir dari perbedaan nada permukaan (`Surface` vs `Elevated`) dan bayangan kontak halus.
-- **Tolak Telemetri & Status Teater Palsu**: Dilarang menempelkan label fiktif seperti `// 60 FPS`, `• ONLINE`, `• PING: 0.1ms`, `SYSTEM NORMAL` secara statis tanpa sumber data streaming nyata (`CMP-020`). Jika menampilkan status soket/koneksi, wajib mencerminkan state asli (`CONNECTED`, `CONNECTING`, `DISCONNECTED`) dengan teks + ikon semantik pendamping.
+### 1.5 Production Card Container Standard (Anti-Neon Outline & Anti-Status Theater)
+- **Neutral Hairline Border, Not a Neon Line (`CMP-018`)**: A card container border must be neutral, 1px, low opacity (`oklch(1 0 0 / 0.08)` in dark mode, `oklch(0 0 0 / 0.08)` in light mode). **Never wrap the card perimeter in a high-saturation/neon border** (`border-cyan-500`, `border-purple-500`). Use the accent color only as a status dot or a small active indicator, never as a fence line around the card.
+- **Reject Radial Glow Blobs Behind Cards (`CMP-019`)**: Do not place a large blurred circle (`blur-3xl bg-cyan-500/20`) behind a card to make it look "lit". Card depth must come from the surface tone difference (`Surface` vs `Elevated`) and a subtle contact shadow.
+- **Reject Fake Telemetry & Status Theater**: Do not attach static fictional labels such as `// 60 FPS`, `• ONLINE`, `• PING: 0.1ms`, `SYSTEM NORMAL` without a real streaming data source (`CMP-020`). When you show socket/connection status, reflect the real state (`CONNECTED`, `CONNECTING`, `DISCONNECTED`) with text + a matching semantic icon.
 
-### 1.6 Larangan Polusi Emoticon/Emoji pada Antarmuka (`CMP-003`)
-- **Dilarang Keras**: Menyusupkan karakter emoji Unicode (`🚀`, `✨`, `🔥`, `⚡`, `💡`, `🎉`, `⭐`, `✅`, `❌`, `⚠️`, `👉`, `💎`, `🌟`, `🤖`, `💬`, dll.) ke dalam:
-  1. Tombol atau tautan navigasi (`<button>⚡ Submit</button>`).
-  2. Judul heading atau subjudul (`<h3>⚡ Fast Performance</h3>`).
-  3. Badge, tag, atau chip hero (`<span>✨ New Feature</span>`).
-  4. Kartu fitur atau daftar checklist (`<li>✅ 99.9% Uptime</li>`).
-  5. Sel status tabel atau pesan toast notifikasi.
-- **Standar Vektor Wajib**:
-  - Gantikan dengan ikon vektor SVG monokrom geometris (`stroke="currentColor"` / `fill="currentColor"`) dari library standar (Lucide, Radix, Heroicons) atau SVG inline terkalibrasi.
-  - Untuk checklist: gunakan SVG path checkmark `<svg class="w-4 h-4 text-emerald-500" ...><path d="M5 13l4 4L19 7" .../></svg>`.
-  - Seluruh ikon wajib lulus *1-Bit Monochrome Test*: tetap jelas dan terbaca saat diubah menjadi hitam-putih murni 1-bit tanpa warna atau bayangan.
+### 1.6 Ban on Emoticon/Emoji Pollution in the Interface (`CMP-003`)
+- **Strictly Forbidden**: Inserting Unicode emoji characters (`🚀`, `✨`, `🔥`, `⚡`, `💡`, `🎉`, `⭐`, `✅`, `❌`, `⚠️`, `👉`, `💎`, `🌟`, `🤖`, `💬`, etc.) into:
+  1. Buttons or navigation links (`<button>⚡ Submit</button>`).
+  2. Headings or subheadings (`<h3>⚡ Fast Performance</h3>`).
+  3. Hero badges, tags, or chips (`<span>✨ New Feature</span>`).
+  4. Feature cards or checklist items (`<li>✅ 99.9% Uptime</li>`).
+  5. Table status cells or toast notification messages.
+- **Required Vector Standard**:
+  - Replace them with geometric monochrome SVG vector icons (`stroke="currentColor"` / `fill="currentColor"`) from a standard library (Lucide, Radix, Heroicons) or calibrated inline SVG.
+  - For checklists: use the SVG checkmark path `<svg class="w-4 h-4 text-emerald-500" ...><path d="M5 13l4 4L19 7" .../></svg>`.
+  - Every icon must pass the *1-Bit Monochrome Test*: it stays clear and legible when converted to pure 1-bit black and white without color or shadow.
 
-### 1.7 Invarian Simetri Tema Ganda & Sinkronisasi Canvas (`CLR-009` & `MOT-005`)
-- **Zero Dark-Trap Lock**: Setiap komponen dengan background kustom gelap (misal kartu CTA dengan radial gradient gelap `#030509` atau container terminal) **wajib mendefinisikan aturan pembalik simetris** pada `[data-theme="light"]`. Dilarang keras membiarkan teks mewarisi `var(--text)` gelap di atas latar belakang gelap.
-- **Protokol Sinkronisasi Canvas (Canvas Theme Sync)**: Elemen HTML5 `<canvas>` 2D/3D tidak mewarisi variabel CSS secara otomatis. Seluruh fungsi gambar canvas (`fillText`, `strokeText`, `strokeStyle`) **wajib mendeteksi tema aktif** secara dinamis:
+### 1.7 Dual-Theme Symmetry Invariant & Canvas Sync (`CLR-009` & `MOT-005`)
+- **Zero Dark-Trap Lock**: Every component with a custom dark background (for example a CTA card with a dark `#030509` radial gradient, or a terminal container) **must define a symmetric inverse rule** under `[data-theme="light"]`. Never let text inherit a dark `var(--text)` on top of a dark background.
+- **Canvas Theme Sync Protocol**: HTML5 2D/3D `<canvas>` elements do not inherit CSS variables automatically. Every canvas drawing call (`fillText`, `strokeText`, `strokeStyle`) **must detect the active theme** dynamically:
   ```javascript
   const isLight = document.documentElement.getAttribute('data-theme') === 'light';
   ctx.fillStyle = isLight ? '#090d16' : '#f1f5f9';
   ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.22)';
   ```
-- **Simetri Mockup Pihak Ketiga**: Mockup antarmuka nyata (seperti WhatsApp chat atau mobile frame) wajib memiliki varian terang otentik (`#efeae2` wallpaper, `#d9fdd3` outgoing bubble, teks `#111b21`) saat aplikasi beralih ke tema terang.
+- **Third-Party Mockup Symmetry**: Mockups of real interfaces (such as a WhatsApp chat or a mobile frame) must have an authentic light variant (`#efeae2` wallpaper, `#d9fdd3` outgoing bubble, `#111b21` text) when the app switches to the light theme.
 
 ---
 
-## 2. Standar Tipografi Matematis (Mathematical Typography)
+## 2. Mathematical Typography Standard
 
-### 2.1 Skala Tipografi Berbasis Peran
-Definisikan ukuran dengan pasangan line-height dan font-weight yang konsisten:
-- **Display**: `font-size: 40px–56px`, `line-height: 1.1–1.15`, `letter-spacing: -0.02em` s.d. `-0.04em`.
-- **Heading 1–2**: `font-size: 24px–32px`, `line-height: 1.2–1.25`, `letter-spacing: -0.01em` s.d. `-0.02em`.
+### 2.1 Role-Based Type Scale
+Define sizes with consistent line-height and font-weight pairs:
+- **Display**: `font-size: 40px–56px`, `line-height: 1.1–1.15`, `letter-spacing: -0.02em` to `-0.04em`.
+- **Heading 1–2**: `font-size: 24px–32px`, `line-height: 1.2–1.25`, `letter-spacing: -0.01em` to `-0.02em`.
 - **Heading 3–4**: `font-size: 18px–20px`, `line-height: 1.3–1.35`, `letter-spacing: -0.005em`.
 - **Body Text**: `font-size: 15px–16px`, `line-height: 1.5–1.6`, `letter-spacing: 0`.
-- **Technical/Micro Label**: `font-size: 11px–13px`, `line-height: 1.25`, uppercase label `letter-spacing: 0.05em`.
+- **Technical/Micro Label**: `font-size: 11px–13px`, `line-height: 1.25`, sentence case in secondary text role (no wide-tracked all-caps).
 
-### 2.2 Batas Panjang Baris & Wrapping
-- **Cap the Measure**: Batasi lebar baris teks bacaan pada **60–75 karakter** (`max-w-[65ch]`). Baris yang terlalu panjang membuat mata lelah saat kembali ke awal baris.
+### 2.2 Line Length Limit & Wrapping
+- **Cap the Measure**: Limit the line width of reading text to **60–75 characters** (`max-w-[65ch]`). Lines that are too long tire the eye on the return to the start of the next line.
 - **Text Wrapping**:
-  - Pasang `text-wrap: balance` pada judul display dan headline pendek (maksimal 4 baris).
-  - Pasang `text-wrap: pretty` pada paragraf naratif untuk mencegah kata tunggal menggantung di baris akhir (*widow*).
-- **Disiplin Angka Tabular**: Pasang `font-variant-numeric: tabular-nums` pada seluruh harga, waktu, stopwatch, metrik KPI, dan kolom numerik tabel agar angka tidak bergetar (*layout jitter*) saat berganti nilai.
-- **Batas Minimum Input Mobile 16px**: Font size pada elemen `<input>`, `<select>`, dan `<textarea>` pada perangkat layar kecil wajib minimal `16px` (`text-base sm:text-sm`) untuk mencegah iOS Safari melakukan auto-zoom paksa yang merusak layout.
+  - Set `text-wrap: balance` on display titles and short headlines (at most 4 lines).
+  - Set `text-wrap: pretty` on narrative paragraphs to prevent a single word hanging on the last line (*widow*).
+- **Tabular Number Discipline**: Set `font-variant-numeric: tabular-nums` on every price, time, stopwatch, KPI metric, and numeric table column so digits do not shake (*layout jitter*) when values change.
+- **16px Minimum for Mobile Inputs**: Font size on `<input>`, `<select>`, and `<textarea>` elements on small-screen devices must be at least `16px` (`text-base sm:text-sm`). This prevents iOS Safari from forcing an auto-zoom that breaks the layout.
 
-### 2.3 Karakter Tipografi Asli
-Simpan teks dalam karakter alami dan gunakan tanda baca tipografis nyata:
-- Kutip lengkung: `“` dan `”` (bukan kutip lurus `"` `"`).
-- Elipsis tunggal: `…` (bukan tiga titik biasa `...`).
-- Tanda pisah: En dash `–` untuk rentang angka (`10–20 MB`), Em dash `—` untuk jeda klausa kalimat.
-- Spasi non-breaking: `&nbsp;` di antara angka dan satuan (`10&nbsp;MB`, `24&nbsp;px`, `⌘&nbsp;K`).
+### 2.3 True Typographic Characters
+Store text in natural characters and use real typographic punctuation:
+- Curly quotes: `“` and `”` (not straight quotes `"` `"`).
+- Single ellipsis: `…` (not three plain dots `...`).
+- Dashes: en dash `–` for number ranges (`10–20 MB`), em dash `—` for a clause break in a sentence.
+- Non-breaking space: `&nbsp;` between a number and its unit (`10&nbsp;MB`, `24&nbsp;px`, `⌘&nbsp;K`).
 
 
-### 2.4 Anti-Gradien Teks & Pemilihan Karakter Typeface
-- **Larangan Keras Gradien Teks**: Dilarang keras menggunakan efek gradien teks pelangi (`bg-clip-text text-transparent bg-gradient-to-r ...`) pada headline hero. Judul wajib menggunakan tinta solid dengan kontras tinggi ($\ge 4.5:1$, pada tema gelap $\ge 7:1$). Gradien teks adalah tanda tangan template AI generik murahan yang menutupi kelemahan tipografi.
-- **Pemisahan 3 Lapisan Font (Font Layering)**:
-  1. *Display / Headline Face*: Typeface berkarakter struktural kuat (misal: *Geist*, *Cabinet Grotesk*, *Instrument Sans*, *Plus Jakarta Sans*, atau *Manuka* untuk editorial tegas) dengan tracking negatif rapat (`-0.02em` s.d. `-0.04em`).
-  2. *Technical / Protocol Monospace*: Monospace tajam (misal: *JetBrains Mono*, *Geist Mono*, *Fira Code*) untuk spesifikasi protokol, WebSocket state, JSON payload, token ID, dan stempel waktu.
-  3. *Functional Sans*: Sans netral untuk paragraf, navigasi, dan tombol dengan line-height proporsional (`1.5–1.6`).
-- **Eliminasi Kapsul Hero Pill (`CMP-015`)**: Dilarang mencetak kapsul pill oval (`rounded-full`) dengan peluru `•` (`• SIGNAL PROTOCOL TCP • ...`) di atas H1. Jika membutuhkan penanda kategori, gunakan teks murni tanpa kapsul (eyebrow editorial kecil, huruf kapital berjarak, tanpa border kotak) atau leburkan langsung ke dalam kalimat judul.
+### 2.4 Anti-Text-Gradient & Typeface Character Selection
+- **Hard Ban on Text Gradients**: Never use a rainbow text gradient effect (`bg-clip-text text-transparent bg-gradient-to-r ...`) on a hero headline. Titles must use solid ink with high contrast ($\ge 4.5:1$, on dark themes $\ge 7:1$). A text gradient is the signature of a cheap generic AI template and it hides weak typography.
+- **3-Layer Font Separation (Font Layering)**:
+  1. *Display / Headline Face*: A typeface with strong structural character (for example: *Geist*, *Cabinet Grotesk*, *Instrument Sans*, *Plus Jakarta Sans*, or *Manuka* for firm editorial) with tight negative tracking (`-0.02em` to `-0.04em`).
+  2. *Technical / Protocol Monospace*: A sharp monospace (for example: *JetBrains Mono*, *Geist Mono*, *Fira Code*) for protocol specifications, WebSocket state, JSON payloads, token IDs, and timestamps.
+  3. *Functional Sans*: A neutral sans for paragraphs, navigation, and buttons with proportional line-height (`1.5–1.6`).
+- **Eliminate the Hero Pill Capsule (`CMP-015`)**: Do not print an oval pill capsule (`rounded-full`) with `•` bullets (`• SIGNAL PROTOCOL TCP • ...`) above the H1. If you need a category marker, use plain text without a capsule (a small editorial eyebrow, spaced capitals, no box border) or merge it directly into the title sentence.
 
-### 2.5 Disiplin Anti-Overflow Tipografi & Skala Fluid Mobile (`TYPO-009`)
-- **Fluid Heading Scaling**: Dilarang menggunakan ukuran teks display statis besar (mis. `text-5xl` atau `text-6xl`) tanpa breakpoint mobile. Pada layar ponsel $\le 375\text{px}$, kata panjang seperti *"Infrastruktur"* atau *"Communication"* akan langsung patah kasar atau terpotong keluar melebihi canvas! Wajib gunakan skala breakpoint bertahap (`text-2xl sm:text-4xl md:text-5xl lg:text-6xl`) atau CSS clamp: `font-size: clamp(1.875rem, 1.25rem + 3.125vw, 3.75rem);`.
-- **Word Wrapping & Breakage**: Wajib pasang `break-words` atau `overflow-wrap: anywhere` pada judul hero dan heading komponen.
-- **Monospace, Token & URL Overflow**: Seluruh string panjang yang tidak memiliki spasi alami (JID WhatsApp, token hash, URL endpoint, cURL command) **wajib** diberi kelas `break-all` atau dibungkus dalam kontainer berbatas dengan scroll horizontal terisolasi `overflow-x-auto`.
-- **Flex & Grid Child Truncation Invariant**: Setiap flex/grid child yang menampung teks terpotong (`truncate` / `text-ellipsis`) **wajib menyertakan `min-w-0`** (`min-width: 0`). Tanpa `min-w-0`, spesifikasi CSS flexbox akan mempertahankan lebar konten teks asli dan mendorong kontainer melebihi canvas layar!
+### 2.5 Typographic Anti-Overflow Discipline & Fluid Mobile Scale (`TYPO-009`)
+- **Fluid Heading Scaling**: Do not use a large static display text size (e.g. `text-5xl` or `text-6xl`) without a mobile breakpoint. On phone screens $\le 375\text{px}$, long words such as *"Infrastructure"* or *"Communication"* break roughly or get cut off beyond the canvas. Use a stepped breakpoint scale (`text-2xl sm:text-4xl md:text-5xl lg:text-6xl`) or CSS clamp: `font-size: clamp(1.875rem, 1.25rem + 3.125vw, 3.75rem);`.
+- **Word Wrapping & Breakage**: Set `break-words` or `overflow-wrap: anywhere` on hero titles and component headings.
+- **Monospace, Token & URL Overflow**: Every long string without natural spaces (WhatsApp JID, token hash, endpoint URL, cURL command) **must** carry the `break-all` class or sit inside a bounded container with isolated horizontal scroll, `overflow-x-auto`.
+- **Flex & Grid Child Truncation Invariant**: Every flex/grid child that holds truncated text (`truncate` / `text-ellipsis`) **must include `min-w-0`** (`min-width: 0`). Without `min-w-0`, the CSS flexbox specification keeps the original text content width and pushes the container past the screen canvas.
 ---
 
-## 3. Sistem Palet & Warna Semantik (Systematic Color Ramps)
+## 3. Palette System & Semantic Color (Systematic Color Ramps)
 
-### 3.1 Ramps, Bukan Warna Acak
-Sistem warna dibangun atas tangga warna (*ramps*): satu tangga netral, satu tangga aksen utama, dan tangga status fungsional (success, warning, danger). Jangan membuat token untuk peran yang tidak pernah dirender di layar.
+### 3.1 Ramps, Not Random Colors
+Build the color system on *ramps*: one neutral ramp, one main accent ramp, and functional status ramps (success, warning, danger). Do not create tokens for roles that are never rendered on screen.
 
-### 3.2 Pemisahan Primitif vs Semantik
-- **Primitives** menamai nilai fisik: `--slate-900: oklch(20% 0.01 250)`. Dilarang dipanggil langsung di komponen UI.
-- **Semantic Tokens** menamai tugas: `--color-surface-base: var(--slate-900)`. Komponen UI hanya boleh memanggil token semantik ini.
+### 3.2 Primitive vs Semantic Separation
+- **Primitives** name physical values: `--slate-900: oklch(20% 0.01 250)`. Never call them directly in UI components.
+- **Semantic Tokens** name jobs: `--color-surface-base: var(--slate-900)`. UI components may call only these semantic tokens.
 
-### 3.3 Aturan Satu Aksi Primer per Tampilan (One Primary Action Rule)
-Ketika warna isi (*solid fill*) digunakan untuk menandakan aksi utama:
-- **Tepat satu aksi primer** mendapatkan perlakuan warna aksen solid pada satu layar/viewport.
-- Tombol pendamping wajib berstatus netral, outline, atau ghost.
-- **Dilarang** meletakkan dua tombol pill berwarna kontras tebal berdampingan di hero section yang saling berebut perhatian pengunjung.
+### 3.3 One Primary Action Rule (One Primary Action per View)
+When a *solid fill* color signals the main action:
+- **Exactly one primary action** gets the solid accent color treatment on a single screen/viewport.
+- Companion buttons must be neutral, outline, or ghost.
+- **Do not** place two bold, contrasting pill buttons side by side in the hero section, where they compete for the visitor's attention.
 
-### 3.4 Pengukuran Kontras Nyata
-Ukur kontras foreground terhadap warna background aktual yang dirender di belakangnya (bukan sekadar terhadap background halaman):
-- Teks biasa (<18px regular): minimal `4.5:1` (WCAG AA).
-- Teks besar (>=24px atau >=18.67px tebal): minimal `3:1`.
-- Batas komponen kontrol & icon bermakna: minimal `3:1`.
+### 3.4 Real Contrast Measurement
+Measure foreground contrast against the actual background color rendered behind it (not only against the page background):
+- Normal text (<18px regular): at least `4.5:1` (WCAG AA).
+- Large text (>=24px or >=18.67px bold): at least `3:1`.
+- Control component boundaries & meaningful icons: at least `3:1`.
 
 ---
 
-## 4. Tata Letak & Ritme Spasial (Spatial Rhythm & Layout)
+## 4. Spatial Rhythm & Layout
 
-### 4.1 Aturan Spasi 2x (Group with Space, Not Lines)
-Gunakan spasi untuk mengelompokkan elemen terlebih dahulu, kontras latar belakang kedua, dan garis pemisah hanya sebagai pilihan terakhir saat spasi tidak mencukupi:
-- Jarak antar-grup elemen minimal **2 kali lipat** dari jarak antar-elemen di dalam grup yang sama.
-- Jika elemen di dalam grup terpisah `8px`, jarak antar-kelompok adalah `16px` atau `24px`.
+### 4.1 2x Spacing Rule (Group with Space, Not Lines)
+Group elements with spacing first, background contrast second, and divider lines only as the last resort when spacing is not enough:
+- The gap between element groups is at least **2 times** the gap between elements inside the same group.
+- If elements inside a group are `8px` apart, the gap between groups is `16px` or `24px`.
 
-### 4.2 Keselarasan Tepi Bersama (Align to Shared Edges)
-- Pilih sejumlah kecil garis tepi vertikal dan sejajarkan elemen ke garis tersebut.
-- **Tolak Cetakan Senter-Total (Anti Center-Everything Cascade)**: Hindari menyusun seluruh halaman dengan tumpukan seragam yang semuanya rata tengah (Overline centered -> H2 centered -> Subtitle centered -> Card centered).
-- Pilih struktur yang mengikuti sifat konten: penyejajaran ke tepi awal (*text-align: start*), komposisi split dengan artefak produk hidup, tabel perbandingan, urutan editorial, atau grid asimetris (`2:1`, `1:2`) ketika setiap panel memiliki bobot fungsi berbeda.
+### 4.2 Align to Shared Edges
+- Choose a small number of vertical edge lines and align elements to them.
+- **Reject the Center-Everything Mold (Anti Center-Everything Cascade)**: Avoid composing the whole page as a uniform stack where everything is centered (Overline centered -> H2 centered -> Subtitle centered -> Card centered).
+- Choose a structure that follows the nature of the content: start-edge alignment (*text-align: start*), a split composition with a living product artifact, a comparison table, an editorial sequence, or an asymmetric grid (`2:1`, `1:2`) when each panel carries a different functional weight.
 
-### 4.3 Properti Logis CSS (Logical Properties)
-Gunakan properti logis untuk seluruh dimensi arah:
+### 4.3 CSS Logical Properties
+Use logical properties for every directional dimension:
 - `margin-inline-start`, `margin-inline-end`, `padding-block`, `inset-inline-start`, `text-align: start`.
-- Hindari `width: 100vw` (akan memicu scroll horizontal karena memperhitungkan scrollbar desktop; gunakan `width: 100%`).
-- Hindari `height: 100vh` pada container penuh di mobile (gunakan `height: 100dvh` agar tidak tertutup address bar browser).
+- Avoid `width: 100vw` (it triggers horizontal scroll because it counts the desktop scrollbar; use `width: 100%`).
+- Avoid `height: 100vh` on full-height containers on mobile (use `height: 100dvh` so the browser address bar does not cover content).
 
 
-### 4.4 Rekayasa Hero Section Kelas Dunia (The Living Hero vs "Biasa Saja Jadi Aneh")
-- **Diagnosa Sindrom "Biasa Saja Jadi Aneh"**: Model AI menghasilkan hero yang membosankan (*biasa saja*) karena memakai tumpukan senter malas (Pill $\to$ H1 $\to$ Subtitle $\to$ 2 Tombol). Kemudian karena merasa kosong, AI menambalnya dengan dekorasi aneh: teks gradien pelangi, glow neon, dan kanvas partikel 3D hampa (*jadi aneh*).
-- **Aturan Eksekusi Hero Produksi**:
-  1. **Asymmetric Split Hero (50/50 atau 55/45)**: Wajib untuk seluruh produk developer, alat kerja, API gateway, dan B2B. Sisi kiri penyejajaran teks awal (*text-align: start*), judul display solid, dan tepat 1 tombol aksi primer.
-  2. **The Living Engine (Bukan Gambar Kartun / Gimmick 3D)**: Sisi kanan hero menampung objek kerja nyata yang dapat berinteraksi:
-     - *Messaging Gateway*: Terminal pairing WhatsApp nyata + live WebSocket JSON event stream dengan event `messages.upsert` dan latensi p95.
-     - *Cloud / Developer Tools*: Tab switchable cURL / TypeScript SDK + output respons JSON nyata.
-     - *Fintech / Ledger*: Kartu kalkulasi biaya / transaksi interaktif.
-  3. **Eyebrow Editorial Murni**: Metadata kategori tampil sebagai teks murni tanpa kapsul rounded-full, tanpa border, tanpa peluru bullet `•` (`font-mono text-xs uppercase tracking-wider text-muted`).
-  4. **Salinan Instalasi Cepat (One-Click CLI)**: Di samping tombol aksi primer, sertakan blok salin perintah terminal kompak (`$ npx aetherlink@latest` atau `$ docker run ...`) alih-alih tombol kedua yang berebut perhatian.
+### 4.4 Production Hero Section Engineering (The Living Hero vs "Plain Turned Strange")
+- **Diagnosis of the "Plain Turned Strange" Syndrome**: An AI model produces a boring (*plain*) hero because it uses the lazy centered stack (Pill $\to$ H1 $\to$ Subtitle $\to$ 2 Buttons). The result feels empty, so the model patches it with odd decoration: rainbow gradient text, neon glow, and an empty 3D particle canvas (*turned strange*).
+- **Production Hero Execution Rules**:
+  1. **Layout derived from the craft Brief**: Do not default to one hero shape. For developer products, work tools, API gateways, and B2B, the Brief commonly resolves to an asymmetric split (50/50 or 55/45). In that case the left side has start-aligned text (*text-align: start*), a solid display title, and exactly 1 primary action button.
+  2. **The Living Engine (Not a Cartoon Image / 3D Gimmick)**: The right side of the hero holds a real working object the user can interact with:
+     - *Messaging Gateway*: A real WhatsApp pairing terminal + live WebSocket JSON event stream with the `messages.upsert` event and p95 latency.
+     - *Cloud / Developer Tools*: Switchable cURL / TypeScript SDK tabs + real JSON response output.
+     - *Fintech / Ledger*: An interactive fee / transaction calculation card.
+  3. **Pure Editorial Eyebrow**: Category metadata appears as plain text without a rounded-full capsule, without a border, without `•` bullets (`font-mono text-xs uppercase tracking-wider text-muted`).
+  4. **Quick Install Copy (One-Click CLI)**: Beside the primary action button, include a compact terminal command copy block (`$ npx aetherlink@latest` or `$ docker run ...`) instead of a second button that competes for attention.
 
-### 4.5 Standar Navbar Responsif & Ergonomi Mobile (Anti-Navbar Bloat `LAY-015` & `LAY-016`)
-- **Tinggi Navbar Mobile Ketat ($\le 64\text{px}$)**: Tinggi navbar pada viewport mobile wajib berada di rentang **56px–64px** (`h-14 sm:h-16`). Navbar mobile yang membengkak $> 64\text{px}$ memakan paruh atas layar secara rakus.
-- **Komposisi Navbar Mobile 2-Elemen**: Pada layar ponsel (`< 768px`), navbar hanya boleh menampilkan tepat 2 elemen:
-  1. *Kiri*: Logo atau nama merek ringkas.
-  2. *Kanan*: Tepat 1 pemicu menu (tombol hamburger atau 1 aksi ringkas).
-  - Tautan menu teks desktop **wajib disembunyikan** di mobile (`hidden md:flex`), dilarang dibiarkan meluap atau bertumpuk menjadi dua baris.
-  - Tombol CTA desktop ("Mulai Uji Coba", "Akses Console") disembunyikan di mobile atau disederhanakan menjadi ikon ringkas tanpa teks panjang.
-- **Drawer Mobile & Scroll Lock**: Menu drawer mobile wajib memiliki:
-  - *Scroll Containment*: `overscroll-behavior: contain` pada backdrop dan drawer agar halaman di belakangnya tidak ikut bergulir (*background scroll chaining*).
-  - *Accessibility*: `aria-expanded="true/false"`, penutupan tombol `Escape`, dan pengembalian fokus ke pemicu hamburger.
+### 4.5 Responsive Navbar Standard & Mobile Ergonomics (Anti-Navbar Bloat `LAY-015` & `LAY-016`)
+- **Strict Mobile Navbar Height ($\le 64\text{px}$)**: Navbar height on a mobile viewport must stay within **56px–64px** (`h-14 sm:h-16`). A mobile navbar swollen to $> 64\text{px}$ eats the upper half of the screen.
+- **2-Element Mobile Navbar Composition**: On phone screens (`< 768px`), the navbar may show exactly 2 elements:
+  1. *Left*: Logo or short brand name.
+  2. *Right*: Exactly 1 menu trigger (hamburger button or 1 short action).
+  - Desktop text menu links **must be hidden** on mobile (`hidden md:flex`). Never let them overflow or stack into two rows.
+  - Hide desktop CTA buttons ("Start Trial", "Open Console") on mobile or reduce them to a compact icon without long text.
+- **Mobile Drawer & Scroll Lock**: The mobile drawer menu must have:
+  - *Scroll Containment*: `overscroll-behavior: contain` on the backdrop and the drawer so the page behind does not scroll along (*background scroll chaining*).
+  - *Accessibility*: `aria-expanded="true/false"`, close on the `Escape` key, and focus return to the hamburger trigger.
 - **Zero Horizontal Scrollbar (`LAY-016`)**:
-  - Dilarang keras memakai `width: 100vw` (selalu gunakan `width: 100%` agar tidak menghitung lebar scrollbar desktop).
-  - Padding kontainer horizontal di mobile dibatasi maksimal `px-4 sm:px-6` (dilarang `px-12` atau `px-16` di mobile).
-  - Setiap kontainer kartu dan layout wajib memiliki `max-w-full`.
+  - Never use `width: 100vw` (always use `width: 100%` so the desktop scrollbar width is not counted).
+  - Horizontal container padding on mobile is capped at `px-4 sm:px-6` (`px-12` and `px-16` are forbidden on mobile).
+  - Every card and layout container must have `max-w-full`.
 ---
 
-## 5. Salinan Antarmuka & Bahasa Produk (Product Writing)
+## 5. Interface Copy & Product Language (Product Writing)
 
-### 5.1 Inventarisasi Terminologi Domain
-Sebelum menulis teks antarmuka:
-- Buat daftar istilah baku: jangan gunakan "Proyek" di menu tetapi "Workspace" di notifikasi.
-- Gunakan istilah teknis nyata sesuai domain operasional, bukan metafora fiksi ilmiah yang dibuat-buat (hindari menyebut WebSocket engine sebagai *"Arsitektur Ruang Virtual 3D"* atau *"Chamber 01"*).
+### 5.1 Domain Terminology Inventory
+Before writing interface text:
+- Make a list of standard terms: do not use "Project" in the menu but "Workspace" in notifications.
+- Use real technical terms that fit the operational domain, not invented science-fiction metaphors (avoid calling a WebSocket engine a *"3D Virtual Space Architecture"* or *"Chamber 01"*).
 
-### 5.2 Tombol Berorientasi Kata Kerja Konkret
-- Tombol wajib diawali kata kerja aksi spesifik: *"Buka Sesi"*, *"Salin Perintah"*, *"Kirim Tagihan"*, *"Simpan Perubahan"*.
-- Hindari tombol generik: *"OK"*, *"Explore"*, *"Learn More"*, *"Get Started"*, *"Click Here"*.
+### 5.2 Buttons Led by a Concrete Verb
+- Start every button with a specific action verb: *"Open Session"*, *"Copy Command"*, *"Send Invoice"*, *"Save Changes"*.
+- Avoid generic buttons: *"OK"*, *"Explore"*, *"Learn More"*, *"Get Started"*, *"Click Here"*.
 
-### 5.3 Error yang Solutif Tepat di Samping Kerusakan
-Pesan error adalah panduan perbaikan yang diletakkan di samping input yang gagal:
-- **Buruk**: *"Oops! Terjadi kesalahan."* atau *"Password tidak valid."*
-- **Benar**: *"Password minimal 8 karakter dan mengandung 1 angka."*
-- Jangan menyalahkan pengguna dan jangan gunakan tanda seru berlebihan.
+### 5.3 Errors That Solve, Right Beside the Failure
+An error message is a repair guide placed beside the input that failed:
+- **Bad**: *"Oops! Something went wrong."* or *"Invalid password."*
+- **Correct**: *"Password must be at least 8 characters and contain 1 number."*
+- Do not blame the user and do not overuse exclamation marks.
 
-### 5.4 Undo Lebih Unggul daripada Dialog Konfirmasi
-Untuk tindakan yang dapat dibatalkan (arsip data, hapus ke tempat sampah), jalankan aksi seketika dan sediakan opsi **Undo** pada toast notifikasi selama 5–8 detik. Dialog konfirmasi modal hanya untuk aksi destruktif permanen yang tidak dapat dipulihkan.
-
----
-
-## 6. Protokol Review Lintas-Disiplin & Tangga Severity
-
-### 6.1 Tangga Keparahan (Severity Ladder)
-- **HIGH**: Menghalangi tugas pengguna, memicu risiko kehilangan data, menyesatkan alur, atau melanggar salah satu dari 13 Escalation Triggers.
-- **MEDIUM**: Mengurangi efisiensi, merusak hierarki visual, atau inkonsistensi sistem desain.
-- **LOW**: Pemolesan kosmetik terisolasi.
-
-### 6.2 Tiga Belas Pemicu Eskalasi Mutlak (13 Escalation Triggers — HIGH on Sight)
-Jika salah satu dari 13 kondisi ini ditemukan, temuan otomatis berstatus **HIGH** dan **MEMBLOKIR (BLOCK)** rilis antarmuka:
-1. Kontrol interaktif tanpa nama aksesibel (`aria-label` / `<label>`).
-2. Kontrol yang dapat dijangkau keyboard tanpa cincin fokus terlihat (`:focus-visible`).
-3. Jalur aksi yang bisa dijangkau pointer mouse tetapi tidak bisa dijangkau keyboard.
-4. Animasi pergerakan, skala, atau media putar otomatis yang mengabaikan `prefers-reduced-motion`.
-5. Konten atau kontrol yang terpotong, tumpang tindih, atau tidak terjangkau pada lebar 320px atau zoom 200%.
-6. Rasio kontras teks atau kontrol interaktif gagal terhadap background rendered (<4.5:1 / <3:1).
-7. Status atau makna sistem hanya dikomunikasikan melalui warna tunggal tanpa teks/ikon pendukung.
-8. Tindakan destruktif tanpa konfirmasi jelas atau mekanisme pembatalan (*undo*).
-9. Teks terpotong (*truncated*) tanpa akses untuk melihat nilai penuhnya (tooltip/expand).
-10. Konten atau kontrol penting yang tersembunyi di luar batas scroll tanpa petunjuk visual (*peek cue*).
-11. Pesan error tanpa petunjuk tindakan pemulihan bagi pengguna.
-12. Warna semantik bahaya digunakan untuk tindakan non-destruktif.
-13. Perubahan status hanya diindikasikan oleh animasi tanpa meninggalkan jejak visual statis (warna/ikon/label) saat animasi selesai.
+### 5.4 Undo Beats a Confirmation Dialog
+For reversible actions (archive data, delete to trash), run the action immediately and offer an **Undo** option in a toast notification for 5–8 seconds. Use a modal confirmation dialog only for permanently destructive actions that cannot be recovered.
 
 ---
 
-## 7. Tabel Deteksi & Koreksi Sebelum Selesai (Before You Finish)
+## 6. Cross-Discipline Review Protocol & Severity Ladder
 
-| Pola Terdeteksi | Koreksi Wajib |
+### 6.1 Severity Ladder
+- **HIGH**: Blocks the user's task, creates a data-loss risk, misleads the flow, or violates any of the 13 Escalation Triggers.
+- **MEDIUM**: Reduces efficiency, damages the visual hierarchy, or is inconsistent with the design system.
+- **LOW**: Isolated cosmetic polish.
+
+### 6.2 Thirteen Absolute Escalation Triggers (13 Escalation Triggers — HIGH on Sight)
+If any of these 13 conditions is found, the finding is automatically **HIGH** and **BLOCKS (BLOCK)** the interface release:
+1. An interactive control without an accessible name (`aria-label` / `<label>`).
+2. A keyboard-reachable control without a visible focus ring (`:focus-visible`).
+3. An action path reachable by mouse pointer but not by keyboard.
+4. Movement or scale animation, or autoplay media, that ignores `prefers-reduced-motion`.
+5. Content or controls that are cut off, overlapping, or unreachable at 320px width or 200% zoom.
+6. Text or interactive control contrast ratio that fails against the rendered background (<4.5:1 / <3:1).
+7. System status or meaning communicated through color alone, without supporting text/icon.
+8. A destructive action without clear confirmation or an *undo* mechanism.
+9. *Truncated* text without a way to see its full value (tooltip/expand).
+10. Important content or controls hidden beyond the scroll boundary without a visual hint (*peek cue*).
+11. An error message without a recovery action hint for the user.
+12. The semantic danger color used for a non-destructive action.
+13. A state change indicated only by animation, leaving no static visual trace (color/icon/label) once the animation ends.
+
+---
+
+## 7. Detection & Correction Table Before You Finish
+
+| Detected Pattern | Required Correction |
 |---|---|
-| Card induk dan elemen anak memiliki `rounded-*` yang sama | Terapkan formula konsentris: $\text{radius}_{\text{anak}} = \text{radius}_{\text{induk}} - \text{padding}$ |
-| Badge kapsul mengambang di atas judul hero (`• BADGE •`) | Hapus badge kapsul klise; masukkan konteks ke dalam eyebrow editorial atau judul |
-| Seluruh seksi halaman tersusun senter (Overline -> H2 -> Card senter) | Ubah menjadi layout asimetris dengan penyejajaran tepi kiri atau bento grid `2:1` |
-| Dua tombol pill berdampingan di hero section berebut perhatian | Terapkan aturan 1 aksi primer; jadikan tombol kedua sebagai tombol netral/link |
-| Strip 4 kotak metrik KPI seragam dengan persentase statis | Gantikan dengan panel telemetri operasional atau antrean alur kerja nyata |
-| Istilah fiksi ilmiah palsu (*"Chamber 01"*, *"Ruang Virtual 3D"*) | Gunakan istilah teknis nyata (*"Connection Socket"*, *"Session Store"*, *"Webhook Stream"*) |
-| `transition: all` atau `transition-all` | Tuliskan properti spesifik: `transition-property: transform, opacity` |
-| `:active` tanpa pengecualian `:disabled` | Tambahkan `:not(:disabled):active` atau `enabled:active:` |
-| Kontrol interaktif dengan ukuran sentuh `< 44x44px` di mobile | Tambahkan padding atau pseudo-element target sentuh minimal 44x44px |
-| Input formulir `< 16px` di perangkat mobile | Gunakan `text-base sm:text-sm` untuk mencegah zoom paksa iOS Safari |
-| Komponen modal tanpa `overscroll-behavior: contain` | Tambahkan `overscroll-behavior: contain` |
-| Gradien teks pelangi pada judul (`bg-clip-text text-transparent`) | Ganti dengan warna tinta solid berdaya kontras tinggi ($\ge 7:1$ pada tema gelap) |
-| Kapsul pill tagline dengan peluru (`• TAG 1 • TAG 2 •`) di atas H1 | Hapus kapsul; gunakan eyebrow editorial teks murni tanpa border atau leburkan ke judul |
-| Kanvas 3D partikel/mesh palsu pada produk gateway/backend API | Ganti dengan konsol operasional hidup (live WebSocket stream, status pairing QR, inspektor JSON) |
+| Parent card and child element share the same `rounded-*` | Apply the concentric formula: $\text{radius}_{\text{child}} = \text{radius}_{\text{parent}} - \text{padding}$ |
+| Capsule badge floating above the hero title (`• BADGE •`) | Remove the cliché capsule badge; move the context into an editorial eyebrow or the title |
+| Every page section is centered (Overline -> H2 -> centered Card) | Change to a layout derived from the craft Brief, such as start-edge alignment or a `2:1` grid |
+| Two pill buttons side by side in the hero section competing for attention | Apply the 1 primary action rule; make the second button a neutral button/link |
+| Strip of 4 uniform KPI metric boxes with static percentages | Replace with an operational telemetry panel or a real workflow queue |
+| Fake science-fiction terms (*"Chamber 01"*, *"3D Virtual Space"*) | Use real technical terms (*"Connection Socket"*, *"Session Store"*, *"Webhook Stream"*) |
+| `transition: all` or `transition-all` | Write the specific properties: `transition-property: transform, opacity` |
+| `:active` without a `:disabled` exclusion | Add `:not(:disabled):active` or `enabled:active:` |
+| Interactive control with touch size `< 44x44px` on mobile | Add padding or a pseudo-element touch target of at least 44x44px |
+| Form input `< 16px` on mobile devices | Use `text-base sm:text-sm` to prevent forced zoom in iOS Safari |
+| Modal component without `overscroll-behavior: contain` | Add `overscroll-behavior: contain` |
+| Rainbow text gradient on a title (`bg-clip-text text-transparent`) | Replace with a solid high-contrast ink color ($\ge 7:1$ on dark themes) |
+| Tagline pill capsule with bullets (`• TAG 1 • TAG 2 •`) above the H1 | Remove the capsule; use a plain-text editorial eyebrow without border or merge it into the title |
+| Fake 3D particle/mesh canvas on a gateway/backend API product | Replace with a live operational console (live WebSocket stream, QR pairing status, JSON inspector) |
 
 ---
 
-## 8. Protokol Pembongkaran Kunci Sistem Desain pada Redesign (Dismantling Legacy Design System Locks)
+## 8. Protocol for Dismantling Design System Locks in a Redesign (Dismantling Legacy Design System Locks)
 
-Ketika pengguna meminta **redesign**, kegagalan terbesar model AI adalah *The Legacy Design Lock Trap*: model mendeteksi adanya variabel/layout lama yang kusam, tetapi takut menghapusnya dan hanya menambal utility lokal di file komponen. Akibatnya, UI/UX tetap "begitu-begitu saja" karena fondasi visualnya tidak pernah diganti.
+When the user asks for a **redesign**, the biggest AI model failure is *The Legacy Design Lock Trap*. The model detects dull old variables/layout but is afraid to delete them, so it only patches local utilities in component files. The UI/UX stays "the same as before" because its visual foundation is never replaced.
 
-### 8.1 Taksonomi 5 Kunci Sistem Desain (Design Locks)
+### 8.1 Taxonomy of the 5 Design System Locks (Design Locks)
 
 1. **Token & Variable Lock (`SYS-001`)**:
-   - *Bentuk*: Variabel `:root`, CSS custom properties, atau Tailwind `@theme` yang mematok warna ke palet slate generik (`#3b82f6`, `--background: #f8fafc`, `--border: #e2e8f0`).
-   - *Dampak*: Menjebak antarmuka dalam estetika dingin membosankan tanpa karakter domain.
-   - *Tindakan Wajib*: Hapus token lama di root stylesheet (`globals.css` / `theme.css`); definisikan ulang tangga warna OKLCH material fisik domain produk (`--hue-neutral`, `--hue-accent`, `color-scheme`).
+   - *Form*: `:root` variables, CSS custom properties, or a Tailwind `@theme` that pin color to a generic slate palette (`#3b82f6`, `--background: #f8fafc`, `--border: #e2e8f0`).
+   - *Impact*: Traps the interface in a cold, boring aesthetic with no domain character.
+   - *Required Action*: Delete the old tokens in the root stylesheet (`globals.css` / `theme.css`); redefine an OKLCH color ramp from the physical materials of the product domain (`--hue-neutral`, `--hue-accent`, `color-scheme`).
 
 2. **Shell & Layout Wrapper Lock (`SYS-002`)**:
-   - *Bentuk*: Pembungkus global di `layout.tsx`, `App.tsx`, atau `index.html` seperti `<div className="container mx-auto max-w-7xl px-4 py-8">` atau background hardcoded di `<body>`.
-   - *Dampak*: Mencekik komposisi tata letak baru, memaksa seluruh konten masuk ke dalam kontainer sempit yang kaku.
-   - *Tindakan Wajib*: Buka kontainer wrapper; sediakan layout kanvas yang fleksibel untuk hierarki tugas paruh atas, *split artifact*, atau *operational ledger*.
+   - *Form*: A global wrapper in `layout.tsx`, `App.tsx`, or `index.html` such as `<div className="container mx-auto max-w-7xl px-4 py-8">`, or a hardcoded background on `<body>`.
+   - *Impact*: Chokes the new layout composition and forces all content into a narrow, rigid container.
+   - *Required Action*: Open the wrapper container; provide a flexible canvas layout for an upper-half task hierarchy, a *split artifact*, or an *operational ledger*.
 
 3. **Component Primitive Lock (`SYS-003`)**:
-   - *Bentuk*: Komponen bersama lama (`<Card>`, `<Button>`, `<Input>`) yang memaksakan border pucat `1px solid #e2e8f0`, radius seragam tanpa konsentrisitas, atau padding flat.
-   - *Dampak*: Setiap elemen baru yang dirender otomatis mewarisi gaya usang lama.
-   - *Tindakan Wajib*: Mutakhirkan primitif komponen ke formula radius konsentris eksak, elevasi berlapis transparan (*layered box-shadow*), dan aturan 1 aksi primer.
+   - *Form*: Old shared components (`<Card>`, `<Button>`, `<Input>`) that force a pale `1px solid #e2e8f0` border, a uniform radius without concentricity, or flat padding.
+   - *Impact*: Every newly rendered element automatically inherits the obsolete style.
+   - *Required Action*: Update the component primitives to the exact concentric radius formula, transparent layered elevation (*layered box-shadow*), and the 1 primary action rule.
 
 4. **Typography Lock (`SYS-004`)**:
-   - *Bentuk*: Font family dipatok ke sans sistem polos atau Inter tanpa peran display berkarakter, tanpa batas measure `60–75ch`, dan angka bergetar tanpa `tabular-nums`.
-   - *Dampak*: Hierarki baca datar dan kelelahan visual bagi pengguna.
-   - *Tindakan Wajib*: Pasangkan typeface display berkarakter domain + functional sans, pasang `text-wrap: balance` pada judul, dan wajib `font-variant-numeric: tabular-nums` pada angka.
+   - *Form*: Font family pinned to a plain system sans or Inter with no display role with character, no `60–75ch` measure limit, and shaking digits without `tabular-nums`.
+   - *Impact*: Flat reading hierarchy and visual fatigue for users.
+   - *Required Action*: Pair a display typeface with domain character + a functional sans, set `text-wrap: balance` on titles, and require `font-variant-numeric: tabular-nums` on numbers.
 
-5. **Zombie Style Lock & Tabrakan Styling (`SYS-005`)**:
-   - *Bentuk*: File CSS lama, CSS modules tak terpakai, kelas utilitas lama, atau selector bertingkat yang saling menimpa secara acak.
-   - *Dampak*: Konflik visual, flicker, atau aturan baru kalah spesifisitas.
-   - *Tindakan Wajib*: Lakukan *Clean Cutover*—hapus tuntas kode styling lama yang menjadi usang akibat redesign. Dilarang meninggalkan zombie CSS shims.
+5. **Zombie Style Lock & Styling Collisions (`SYS-005`)**:
+   - *Form*: Old CSS files, unused CSS modules, old utility classes, or nested selectors that override each other at random.
+   - *Impact*: Visual conflicts, flicker, or new rules losing on specificity.
+   - *Required Action*: Do a *Clean Cutover*: fully delete the old styling code that the redesign made obsolete. Never leave zombie CSS shims behind.
 
-### 8.2 Protokol Eksekusi 4 Tahap Clean Cutover
+### 8.2 4-Stage Clean Cutover Execution Protocol
 
-| Tahap | Tindakan Konkret | File Target Khas |
+| Stage | Concrete Action | Typical Target Files |
 |---|---|---|
-| **1. Scan & Isolate** | Petakan variabel `:root`, wrapper `layout.tsx`, dan primitif komponen yang mengunci tampilan saat ini. | `globals.css`, `tailwind.config.*`, `layout.tsx` |
-| **2. Root Token Replacement** | Gantikan token warna, radius, dan tipografi di root dengan sistem OKLCH kontekstual domain produk. | `src/app/globals.css`, `src/styles/theme.css` |
-| **3. Shell Emancipation** | Buka kontainer wrapper yang kaku, hapus background hardcoded lama pada body/html, pasang arsitektur layout tugas. | `src/app/layout.tsx`, `src/App.tsx` |
-| **4. Primitive Upgrade & Purge** | Mutakhirkan komponen tombol/kartu/input dan hapus seluruh kode styling lama yang usang (*clean purge*). | `src/components/ui/*`, modul CSS lama |
+| **1. Scan & Isolate** | Map the `:root` variables, the `layout.tsx` wrapper, and the component primitives that lock the current look. | `globals.css`, `tailwind.config.*`, `layout.tsx` |
+| **2. Root Token Replacement** | Replace the color, radius, and typography tokens at the root with a contextual OKLCH system for the product domain. | `src/app/globals.css`, `src/styles/theme.css` |
+| **3. Shell Emancipation** | Open the rigid wrapper container, delete old hardcoded backgrounds on body/html, install the task layout architecture. | `src/app/layout.tsx`, `src/App.tsx` |
+| **4. Primitive Upgrade & Purge** | Update the button/card/input components and delete all obsolete old styling code (*clean purge*). | `src/components/ui/*`, old CSS modules |
 
-### 8.3 Anti-Pola Tambal Sulam (The Band-Aid Redesign Trap)
+### 8.3 Patchwork Anti-Pattern (The Band-Aid Redesign Trap)
 
-- **Dilarang**: Menambahkan `!important` atau inline style overrides (`style={{ backgroundColor: ... }}`) pada komponen anak untuk mengakali token root lama yang kusam.
-- **Dilarang**: Mendesain ulang kartu di dalam halaman tetapi membiarkan background halaman tetap abu-abu kusam `#f8fafc` dari root layout lama.
-- **Wajib**: Jika sistem desain lama membelenggu tampilan, **bongkar kuncinya di sumbernya (root & shell)**, bukan menutupinya dengan tambalan lokal.
+- **Forbidden**: Adding `!important` or inline style overrides (`style={{ backgroundColor: ... }}`) on child components to work around dull old root tokens.
+- **Forbidden**: Redesigning the cards inside a page while leaving the page background at the dull gray `#f8fafc` from the old root layout.
+- **Required**: If the old design system shackles the look, **dismantle the lock at its source (root & shell)**. Do not cover it with local patches.
 
 ---
 
-## 9. Rekayasa Dashboard Produksi & Eliminasi Slop Dashboard (Enterprise Dashboard Standards)
+## 9. Production Dashboard Engineering & Dashboard Slop Elimination (Enterprise Dashboard Standards)
 
-Dashboard adalah area yang paling rentan terhadap polusi AI slop karena generator otomatis cenderung mengulang template klise yang sama: 4 kartu metrik statis, Bento gelap salah domain, status dot tanpa teks, dan tombol penuh emoji.
+Dashboards are the area most exposed to AI slop pollution. Automatic generators tend to repeat the same cliché template: 4 static metric cards, a dark Bento from the wrong domain, status dots without text, and emoji-filled buttons.
 
-### 9.1 Eliminasi 5 Slop Dashboard Klasik
+### 9.1 Eliminating the 5 Classic Dashboard Slops
 
-1. **Pembersihan Strip 4 KPI Mengambang (`LAY-009` / `LAY-012`)**:
-   - *Slop*: 4 kotak identik di baris atas dengan angka fiktif dan badge `+12.5%` tanpa konteks rentang waktu.
-   - *Solusi Enterprise*: Gunakan **Operational Status Rail** satu baris terukur dengan pemilih rentang waktu nyata (`1h` / `24h` / `7d`), angka `tabular-nums` rata kanan, dan sparkline SVG proporsional.
+1. **Clear Out the Floating 4-KPI Strip (`LAY-009` / `LAY-012`)**:
+   - *Slop*: 4 identical boxes in the top row with fictional numbers and a `+12.5%` badge without time-range context.
+   - *Enterprise Solution*: Use a measured single-row **Operational Status Rail** with a real time-range selector (`1h` / `24h` / `7d`), right-aligned `tabular-nums` figures, and a proportional SVG sparkline.
 
-2. **Arsitektur Layout Berbasis Sifat Tugas, Bukan Bento Gelap Seragam (`LAY-013`)**:
-   - *ERP, Akuntansi, Kasir, Logistik*: Wajib gunakan **Operational Ledger** (tabel padat, baris `40px–48px`, font sans netral, kontras tinggi). Dilarang memakai tema cyberpunk/dark mode neon.
-   - *Observabilitas, Cloud, DevTools*: Gunakan **Master-Detail Inspector** (panel entitas di kiri, telemetri dan log aktif di kanan).
-   - *Klinik & Reservasi*: Gunakan **Timeline / Calendar Slot Matrix** (fokus slot waktu dan antrean pasien).
+2. **Layout Architecture Based on the Nature of the Task, Not a Uniform Dark Bento (`LAY-013`)**:
+   - *ERP, Accounting, Cashier, Logistics*: Use an **Operational Ledger** (dense table, `40px–48px` rows, neutral sans font, high contrast). Cyberpunk/neon dark mode themes are forbidden.
+   - *Observability, Cloud, DevTools*: Use a **Master-Detail Inspector** (entity panel on the left, live telemetry and logs on the right).
+   - *Clinic & Reservation*: Use a **Timeline / Calendar Slot Matrix** (focus on time slots and the patient queue).
 
-3. **Disiplin 4 State pada Setiap Panel & Tabel Dashboard**:
-   - Dilarang hanya menampilkan dashboard dalam kondisi data statis ideal.
-   - Setiap panel dan tabel wajib memiliki implementasi konkret untuk 4 status:
-     1. *Loading State*: Skeleton geometri 1:1 proporsional ($\text{CLS}=0$), dilarang spinner kosong mengambang di tengah layar.
-     2. *Empty State*: Alasan faktual mengapa belum ada data + tombol aksi pertama yang jelas (misal: *"Belum ada transaksi hari ini · [Buat Transaksi Baru]"*).
-     3. *Populated State*: Data riil dengan angka `tabular-nums` rata kanan dan teks panjang yang aman dari overflow (`truncate` + `min-w-0`).
-     4. *Error State*: Pesan kegagalan inline yang solutif + tombol *Coba Lagi* (*Retry*).
+3. **4-State Discipline on Every Dashboard Panel & Table**:
+   - Do not show the dashboard only in its ideal static-data condition.
+   - Every panel and table must have a concrete implementation of the 4 states:
+     1. *Loading State*: Proportional 1:1 geometric skeleton ($\text{CLS}=0$); an empty spinner floating mid-screen is forbidden.
+     2. *Empty State*: A factual reason why there is no data yet + a clear first-action button (for example: *"No transactions yet today · [Create New Transaction]"*).
+     3. *Populated State*: Real data with right-aligned `tabular-nums` figures and long text that is safe from overflow (`truncate` + `min-w-0`).
+     4. *Error State*: An inline failure message that offers a fix + a *Retry* button.
 
-4. **Status Indikator Aksesibel (Anti-Color-Only Dot `CLR-004`)**:
-   - Titik hijau/kuning/merah dilarang berdiri sendirian. Wajib selalu didampingi teks semantik status (`Active`, `Syncing`, `Degraded`, `Offline`) dan ikon pendukung.
+4. **Accessible Status Indicators (Anti-Color-Only Dot `CLR-004`)**:
+   - A green/yellow/red dot must never stand alone. Always pair it with semantic status text (`Active`, `Syncing`, `Degraded`, `Offline`) and a supporting icon.
 
-5. **Pembersihan Emoji pada Kontrol Dashboard (`CMP-003`)**:
-   - Dilarang keras memakai emoji (`🚀`, `✨`, `🔥`, `📊`, `💳`, `⚡`) pada tombol, tab navigasi, atau chip filter dashboard. Wajib gunakan ikon SVG monokrom geometris terstandarisasi.
+5. **Clear Emoji from Dashboard Controls (`CMP-003`)**:
+   - Never use emoji (`🚀`, `✨`, `🔥`, `📊`, `💳`, `⚡`) on dashboard buttons, navigation tabs, or filter chips. Use standardized geometric monochrome SVG icons.

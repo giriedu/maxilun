@@ -1,14 +1,7 @@
-# Maxilun IoT & Embedded References Index
+# Maxilun IoT References Index
 
-Indeks pustaka rekayasa sistem embedded, mikrokontroler, protokol telemetri, dan komunikasi nirkabel.
+Reference catalog for embedded systems, microcontroller firmware, and hardware connectivity:
 
-## Berkas Referensi Domain
-
-1. **`embedded-systems-playbook.md`**:
-   Aturan arsitektur mikrokontroler (ESP32 ESP-IDF, STM32 HAL, Arduino/PlatformIO), zero-heap ISR, FreeRTOS task & stack budgeting, driver bus I2C/SPI/UART/GPIO, hardware watchdog timer (WDT), dan manajemen mode deep sleep.
-2. **`iot-protocols-connectivity.md`**:
-   Protokol telemetri MQTT (QoS, TLS, LWT), profil BLE GATT (Notify, MTU), industri Modbus RTU / RS-485 transceiver timing, dan alur pembaruan firmware Over-The-Air (OTA) dengan dual-partition rollback.
-
-## Panduan Pemuatan
-- Tugas mikrokontroler, FreeRTOS, driver sensor, atau pin GPIO → baca `references/embedded-systems-playbook.md`.
-- Tugas jaringan IoT, MQTT, BLE, Modbus, atau firmware OTA → baca `references/iot-protocols-connectivity.md`.
+- **`references/embedded-systems-playbook.md`**: FreeRTOS task prioritization, zero-heap interrupt service routines (ISR), memory safety in C/C++, and hardware bus protocols (I2C, SPI, UART).
+- **`references/iot-protocols-connectivity.md`**: Telemetry and fieldbus protocols (MQTT with TLS 8883, CoAP, BLE GATT characteristics, Modbus RS-485), and dual-partition fail-safe OTA updates.
+- **`references/power-management-watchdog.md`**: Low-power sleep states (Modem/Light/Deep sleep), RTC slow memory retention, hardware Task Watchdog Timer (TWDT) configuration, and brownout protection.

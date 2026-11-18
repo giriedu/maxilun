@@ -1,0 +1,41 @@
+{
+  "skill_name": "maxilun-cinecode",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Buat komposisi Remotion React untuk video pengenalan produk durasi 30 detik (900 frame @ 30fps).",
+      "expected_output": "Composition definition with fps 30, durationInFrames 900, width 1920, height 1080; Sequence hierarchy; kinetic text.",
+      "assertions": [
+        "defines Remotion Composition",
+        "deterministic frame math",
+        "Sequence layout hierarchy",
+        "uses spring/interpolate for timing",
+        "clean asset paths"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Implementasikan automatic audio ducking di Remotion timeline saat narator sedang berbicara.",
+      "expected_output": "Uses computeAudioDuckingGain helper; defines speechIntervals; applies volume curve with attack and release ramps.",
+      "assertions": [
+        "uses computeAudioDuckingGain",
+        "defines speech intervals",
+        "sets attack/release frames",
+        "logarithmic/dB gain calculation",
+        "attaches to Audio component"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Bisa render langsung video 4K 60fps dengan browser client tanpa GPU?",
+      "expected_output": "Explains resource and hardware limits; recommends 1080p 30fps baseline; outlines headless Chrome rendering pipeline requirements.",
+      "assertions": [
+        "identifies hardware constraints",
+        "recommends 1080p 30fps baseline",
+        "outlines CLI render command",
+        "avoids unfeasible promises",
+        "checks memory allocation"
+      ]
+    }
+  ]
+}

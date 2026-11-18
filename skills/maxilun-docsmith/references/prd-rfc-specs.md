@@ -1,130 +1,130 @@
 # Feature PRD, Engineering RFC & Technical Specification Reference
 
-Gunakan referensi ini saat menulis **PRD (Product Requirements Document)** tingkat produk/fitur, **Engineering RFC (Request for Comments)**, atau **Technical Design Document (TDD)**. Dokumen wajib mengikat tiga lapisan secara presisi: **Kebutuhan Bisnis/Pengguna**, **Spesifikasi UI/UX & State (`maxilun-craft`)**, dan **Kontrak Teknis/API (`maxilun-architect` / `maxilun-data`)**.
+Use this reference when writing a product- or feature-level **PRD (Product Requirements Document)**, an **Engineering RFC (Request for Comments)**, or a **Technical Design Document (TDD)**. The document must bind three layers precisely: **Business/User Requirements**, **UI/UX & State Specification (`maxilun-craft`)**, and the **Technical/API Contract (`maxilun-architect` / `maxilun-data`)**.
 
 ---
 
-## 1. Prinsip Purity untuk PRD & RFC
+## 1. Purity Principles for PRDs & RFCs
 
-| DILARANG (PRD/RFC Generik) | WAJIB DIGANTI DENGAN (Presisi Produksi) |
+| NOT ALLOWED (Generic PRD/RFC) | REPLACE WITH (Production Precision) |
 |---|---|
-| "Meningkatkan pengalaman pengguna dan efisiensi operasional" | Metrik terukur: "Menurunkan waktu rekonsiliasi invoice dari rata-rata 14 menit menjadi <90 detik per transaksi" |
-| User story generik: "Sebagai user, saya ingin login agar bisa masuk" | Kriteria penerimaan deterministik (Given/When/Then) beserta batas input, rate limit, dan kode error |
-| Bagian UI hanya berisi "Tampilan bersih dan modern" | Tabel 4 State Wajib (Loading Skeleton, Empty State + CTA, Populated State, Error State + Recovery) + rujukan `../maxilun-craft/references/design-md/index.md` |
-| "Menggunakan arsitektur yang scalable dan aman" | Angka konkret: Throughput puncak (misal `250 RPS`), latensi target (`p95 < 180ms`), batas payload (`max 5MB`), dan mekanisme isolasi data (`Row-Level Security` / `tenant_id`) |
-| Tanpa Out-of-Scope / Non-Goals | Daftar eksplisit fitur yang **sengaja tidak dibangun** pada fase ini beserta alasannya |
+| "Improve the user experience and operational efficiency" | A measured metric: "Reduce invoice reconciliation time from an average of 14 minutes to <90 seconds per transaction" |
+| Generic user story: "As a user, I want to log in so I can get in" | Deterministic acceptance criteria (Given/When/Then) with input limits, rate limit, and error codes |
+| UI section that only says "Clean and modern look" | The Required 4 State table (Loading Skeleton, Empty State + CTA, Populated State, Error State + Recovery) + a reference to `../maxilun-craft/references/design-md/index.md` |
+| "Uses a scalable and secure architecture" | Concrete numbers: peak throughput (for example `250 RPS`), target latency (`p95 < 180ms`), payload limit (`max 5MB`), and the data isolation mechanism (`Row-Level Security` / `tenant_id`) |
+| No Out-of-Scope / Non-Goals | An explicit list of features **deliberately not built** in this phase, with the reason for each |
 
 ---
 
-## 2. Struktur Standar Feature PRD & Engineering Spec (`PRD.md` / `RFC-*.md`)
+## 2. Standard Structure for a Feature PRD & Engineering Spec (`PRD.md` / `RFC-*.md`)
 
 ```markdown
-# PRD / Spec: [Nama Fitur atau Produk secara Spesifik]
+# PRD / Spec: [Specific Feature or Product Name]
 
 > **Doc ID**: PRD-2026-001  
 > **Status**: [Draft | In Review | Approved | Implemented]  
 > **Last Updated**: YYYY-MM-DD  
-> **Owner**: [Role / Tim]  
-> **Target Release**: [Milestone / Versi]
+> **Owner**: [Role / Team]  
+> **Target Release**: [Milestone / Version]
 
 ## 1. Executive Summary & Problem Evidence
-- **What**: [1-2 kalimat deskripsi fungsional konkret tanpa buzzword]
-- **Who**: [Persona spesifik + konteks kerja mereka saat menggunakan fitur ini]
-- **Problem & Evidence**: [Fakta masalah saat ini: frekuensi kejadian, waktu yang terbuang, atau error rate aktual. Tandai `[CONFIRMED]` jika dari data/kode, `[ASSUMED]` jika hipotesis]
+- **What**: [1-2 sentences of concrete functional description, no buzzwords]
+- **Who**: [Specific persona + their working context when using this feature]
+- **Problem & Evidence**: [Facts about the current problem: how often it happens, time lost, or actual error rate. Mark `[CONFIRMED]` when it comes from data/code, `[ASSUMED]` when it is a hypothesis]
 
 ## 2. Goals & Non-Goals (Out of Scope)
 
 ### Goals & Success Metrics
-| Metrik | Baseline Saat Ini | Target | Metode Pengukuran / Query |
+| Metric | Current Baseline | Target | Measurement Method / Query |
 |---|---|---|---|
-| Waktu penyelesaian tugas X | 8 menit (manual CSV) | < 45 detik | Event telemetry `checkout.completed - checkout.started` |
-| Kegagalan validasi form | 18% drop-off | < 4% | Rasio HTTP 422 terhadap total submit |
+| Completion time for task X | 8 minutes (manual CSV) | < 45 seconds | Telemetry event `checkout.completed - checkout.started` |
+| Form validation failures | 18% drop-off | < 4% | Ratio of HTTP 422 to total submits |
 
-### Non-Goals (Sengaja Tidak Dibangun di Fase Ini)
-- **[Non-Goal 1]**: [Contoh: Multi-currency settlement — ditunda ke Phase 2 karena kontrak gateway domestik hanya mendukung IDR].
-- **[Non-Goal 2]**: [Contoh: Custom role builder — fase ini menggunakan 3 role statis: `owner`, `finance`, `viewer`].
+### Non-Goals (Deliberately Not Built in This Phase)
+- **[Non-Goal 1]**: [Example: Multi-currency settlement — deferred to Phase 2 because the domestic gateway contract supports IDR only].
+- **[Non-Goal 2]**: [Example: Custom role builder — this phase uses 3 static roles: `owner`, `finance`, `viewer`].
 
 ## 3. User Stories & Deterministic Acceptance Criteria
 
-### US-01: [Judul Aksi Konkret Pengguna]
-- **Actor**: [Role spesifik, misal: Staf Kasir Klinik]
-- **Preconditions**: [State sistem sebelum aksi, misal: Sesi aktif dengan role `cashier`, shift kasir berstatus `OPEN`]
+### US-01: [Concrete User Action Title]
+- **Actor**: [Specific role, for example: Clinic Cashier Staff]
+- **Preconditions**: [System state before the action, for example: Active session with role `cashier`, cashier shift in status `OPEN`]
 - **Acceptance Criteria (Gherkin / Invariants)**:
-  - **GIVEN** tagihan pasien berstatus `UNPAID` dengan total `Rp 450.000`
-  - **WHEN** kasir memilih metode `QRIS` dan menekan tombol `"Buat Kode QRIS"`
-  - **THEN** sistem memanggil `POST /api/v1/payments/qris` dengan header `Idempotency-Key`, menampilkan QR dalam `< 800ms`, dan mengunci perubahan item tagihan.
+  - **GIVEN** a patient bill in status `UNPAID` with a total of `Rp 450.000`
+  - **WHEN** the cashier selects the `QRIS` method and presses the `"Create QRIS Code"` button
+  - **THEN** the system calls `POST /api/v1/payments/qris` with an `Idempotency-Key` header, displays the QR in `< 800ms`, and locks changes to the bill items.
 - **Edge Cases & Boundary Conditions**:
-  - Klik ganda pada tombol submit → ditahan di client (button disabled selama inflight) + dijamin aman di server via `Idempotency-Key` (TTL 24 jam).
-  - Webhook pembayaran masuk saat kasir menutup tab → status tagihan tetap berubah ke `PAID` di background worker; saat tab dibuka kembali, status ter-update otomatis via SSE/polling.
+  - Double click on the submit button → held on the client (button disabled while inflight) + made safe on the server via `Idempotency-Key` (TTL 24 hours).
+  - Payment webhook arrives after the cashier closes the tab → the bill status still changes to `PAID` in the background worker; when the tab reopens, the status updates automatically via SSE/polling.
 
-## 4. UI/UX & Interaction Specification (Terintegrasi `maxilun-craft`)
+## 4. UI/UX & Interaction Specification (Integrated with `maxilun-craft`)
 
 > **Design Reference Note**:
 > - **References**: `../maxilun-craft/references/design-md/stripe.md`, `../maxilun-craft/references/design-md/linear.app.md`
-> - **Applied**: Tabular numerals (`font-variant-numeric: tabular-nums`) untuk seluruh kolom nominal uang; high-contrast hairline borders (`1px solid`) untuk pemisah tabel padat; keyboard shortcut `Cmd/Ctrl + Enter` untuk konfirmasi cepat.
-> - **Rejected**: Decorative mesh gradient di bagian atas halaman (tidak relevan untuk layar operasional kasir yang dibuka 8 jam/hari).
-> - **Reason**: Layar transaksi finansial berfrekuensi tinggi membutuhkan keterbacaan angka instan dan kelelahan visual minimal.
+> - **Applied**: Tabular numerals (`font-variant-numeric: tabular-nums`) for every monetary amount column; high-contrast hairline borders (`1px solid`) as dense table separators; keyboard shortcut `Cmd/Ctrl + Enter` for quick confirmation.
+> - **Rejected**: Decorative mesh gradient at the top of the page (not relevant to an operational cashier screen that stays open 8 hours/day).
+> - **Reason**: A high-frequency financial transaction screen needs instantly readable numbers and minimal visual fatigue.
 
-### 4.1 Matriks 4 State UI Wajib
-Setiap komponen/halaman pada spesifikasi ini wajib mengimplementasikan 4 state berikut:
+### 4.1 Required 4 UI State Matrix
+Every component/page in this specification must implement the 4 states below:
 
-| Komponen / Layar | 1. Loading State (Skeleton) | 2. Empty State (+ First Action) | 3. Populated / Active State | 4. Error State (Pesan + Recovery) |
+| Component / Screen | 1. Loading State (Skeleton) | 2. Empty State (+ First Action) | 3. Populated / Active State | 4. Error State (Message + Recovery) |
 |---|---|---|---|---|
-| **Tabel Riwayat Tagihan** | 6 baris skeleton dengan lebar kolom proporsional (`120px`, `1fr`, `140px`, `96px`), CLS = 0 | Teks: *"Belum ada tagihan hari ini."* Tombol: `"Buat Tagihan Baru"` | Tabel padat dengan `tabular-nums`, badge status faktual (`PAID`, `PENDING`, `EXPIRED`), filter instan | Pesan: *"Gagal memuat daftar tagihan (Timeout 504)."* Aksi: Tombol `"Muat Ulang"` + simpan filter di URL |
-| **Form Pembayaran QRIS** | Tombol submit menampilkan spinner inline + teks `"Membuat QR..."` + `aria-busy="true"` | N/A (form selalu terisi dari konteks tagihan) | QR Code SVG tajam + countdown timer `04:59` + tombol `"Cek Status Pembayaran"` | Pesan: *"Gateway pembayaran tidak merespons."* Aksi: `"Coba Buat Ulang QR"` atau `"Ubah ke Tunai"` |
+| **Bill History Table** | 6 skeleton rows with proportional column widths (`120px`, `1fr`, `140px`, `96px`), CLS = 0 | Text: *"No bills yet today."* Button: `"Create New Bill"` | Dense table with `tabular-nums`, factual status badges (`PAID`, `PENDING`, `EXPIRED`), instant filter | Message: *"Failed to load the bill list (Timeout 504)."* Action: `"Reload"` button + keep the filter in the URL |
+| **QRIS Payment Form** | Submit button shows an inline spinner + the text `"Creating QR..."` + `aria-busy="true"` | N/A (the form is always filled from the bill context) | Sharp SVG QR code + countdown timer `04:59` + `"Check Payment Status"` button | Message: *"The payment gateway is not responding."* Action: `"Try Creating the QR Again"` or `"Switch to Cash"` |
 
-### 4.2 Aksesibilitas & Responsivitas Spesifik
-- Target sentuh mobile minimal `44x44px`; ukuran font input minimal `16px`.
-- Navigasi keyboard: fokus otomatis ke input nominal saat modal terbuka, `Escape` menutup modal (kecuali pembayaran sedang diproses).
+### 4.2 Specific Accessibility & Responsiveness
+- Minimum mobile touch target `44x44px`; minimum input font size `16px`.
+- Keyboard navigation: focus moves automatically to the amount input when the modal opens, `Escape` closes the modal (except while a payment is processing).
 
 ## 5. System Architecture & Data Contract
 
-### 5.1 State Machine / Alur Status
+### 5.1 State Machine / Status Flow
 ```mermaid
 stateDiagram-v2
-    [*] --> DRAFT: Tagihan dibuat
-    DRAFT --> PENDING_PAYMENT: QRIS di-generate
-    PENDING_PAYMENT --> PAID: Webhook settlement valid
-    PENDING_PAYMENT --> EXPIRED: Melewati TTL 5 menit
-    EXPIRED --> PENDING_PAYMENT: Regenerate QRIS baru
-    DRAFT --> CANCELLED: Dibatalkan operator
+    [*] --> DRAFT: Bill created
+    DRAFT --> PENDING_PAYMENT: QRIS generated
+    PENDING_PAYMENT --> PAID: Valid settlement webhook
+    PENDING_PAYMENT --> EXPIRED: Past the 5-minute TTL
+    EXPIRED --> PENDING_PAYMENT: Regenerate a new QRIS
+    DRAFT --> CANCELLED: Cancelled by the operator
 ```
 
-### 5.2 Perubahan Skema Data (Ringkasan)
-- Tabel `payment_intents`:
+### 5.2 Data Schema Changes (Summary)
+- Table `payment_intents`:
   - `id` (`UUID`, PK)
-  - `invoice_id` (`UUID`, FK ke `invoices.id`, indexed)
+  - `invoice_id` (`UUID`, FK to `invoices.id`, indexed)
   - `idempotency_key` (`VARCHAR(64)`, UNIQUE per `tenant_id`)
-  - `amount_idr` (`BIGINT`, `CHECK (amount_idr > 0)` — jangan pernah gunakan `FLOAT` untuk uang)
+  - `amount_idr` (`BIGINT`, `CHECK (amount_idr > 0)` — never use `FLOAT` for money)
   - `status` (`VARCHAR(24)`: `PENDING`, `PAID`, `EXPIRED`, `FAILED`)
   - `expires_at` (`TIMESTAMPTZ`, NOT NULL)
 
-### 5.3 Kontrak Endpoint (Ringkasan)
+### 5.3 Endpoint Contract (Summary)
 - `POST /api/v1/invoices/{invoiceId}/qris`
-  - **Auth**: Cookie session `HttpOnly` + RBAC permission `invoice:collect`
-  - **Rate Limit**: `20 req / menit / user`
-  - **Responses**: `201 Created`, `400 Bad Request`, `403 Forbidden`, `409 Conflict` (jika invoice sudah `PAID`), `422 Unprocessable Entity`
+  - **Auth**: `HttpOnly` session cookie + RBAC permission `invoice:collect`
+  - **Rate Limit**: `20 req / minute / user`
+  - **Responses**: `201 Created`, `400 Bad Request`, `403 Forbidden`, `409 Conflict` (when the invoice is already `PAID`), `422 Unprocessable Entity`
 
 ## 6. Security, Privacy & Failure Modes
-- **Trust Boundary**: Payload webhook wajib diverifikasi menggunakan `HMAC-SHA256` (`crypto.timingSafeEqual`) terhadap raw request body sebelum parsing JSON.
-- **PII Handling**: Nomor telepon dan nama pasien di-mask pada log aplikasi (`0812****890`).
-- **Rollout & Feature Flag**: Dikendalikan via env/flag `FEATURE_QRIS_DYNAMIC=true`; jika dimatikan, fallback ke pencatatan pembayaran manual.
+- **Trust Boundary**: Verify the webhook payload with `HMAC-SHA256` (`crypto.timingSafeEqual`) against the raw request body before parsing JSON.
+- **PII Handling**: Mask patient phone numbers and names in application logs (`0812****890`).
+- **Rollout & Feature Flag**: Controlled by the env/flag `FEATURE_QRIS_DYNAMIC=true`; when it is off, fall back to manual payment recording.
 
 ## 7. Open Questions & Decisions Log
-- `[CONFIRMED]` Batas kedaluwarsa QRIS ditetapkan 5 menit sesuai batas acquirer.
-- `[TBD: menunggu konfirmasi tim Finance]` Apakah refund parsial diizinkan langsung dari kasir atau harus melalui approval supervisor?
+- `[CONFIRMED]` QRIS expiry is set to 5 minutes, matching the acquirer limit.
+- `[TBD: awaiting confirmation from the Finance team]` Are partial refunds allowed directly from the cashier, or must they go through supervisor approval?
 ```
 
 ---
 
-## 3. Archetype Mapping: Produk → Fokus PRD & Referensi UI/UX `maxilun-craft`
+## 3. Archetype Mapping: Product → PRD Focus & `maxilun-craft` UI/UX References
 
-Saat menyusun PRD atau Technical Spec yang melibatkan antarmuka, pilih archetype di bawah ini agar spesifikasi otomatis tajam:
+When writing a PRD or Technical Spec that involves an interface, pick an archetype below so the specification starts from the right invariants:
 
-| Kategori Produk | Invarian Wajib di PRD | Referensi UI/UX (`../maxilun-craft/references/design-md/`) |
+| Product Category | Required Invariants in the PRD | UI/UX References (`../maxilun-craft/references/design-md/`) |
 |---|---|---|
-| **Fintech / Payment / Accounting** | Tipe data integer/decimal presisi (`BIGINT`/`NUMERIC`), idempotency key, audit trail immutable, rekonsiliasi webhook, tabular numerals | `stripe.md`, `wise.md`, `mercury.md`, `revolut.md` |
-| **B2B SaaS / Project & Issue Tracker** | Multi-tenancy (`tenant_id` / RLS), RBAC matriks per role, keyboard-first navigation, optimistic UI update, bulk action | `linear.app.md`, `notion.md`, `airtable.md`, `cal.md` |
+| **Fintech / Payment / Accounting** | Precise integer/decimal data types (`BIGINT`/`NUMERIC`), idempotency key, immutable audit trail, webhook reconciliation, tabular numerals | `stripe.md`, `wise.md`, `mercury.md`, `revolut.md` |
+| **B2B SaaS / Project & Issue Tracker** | Multi-tenancy (`tenant_id` / RLS), RBAC matrix per role, keyboard-first navigation, optimistic UI update, bulk action | `linear.app.md`, `notion.md`, `airtable.md`, `cal.md` |
 | **Developer Tools / Observability / AI Platform** | API key lifecycle (prefix, hash storage, scoped permissions), streaming response / SSE, log retention, CLI + Web parity, dark-first high contrast | `vercel.md`, `sentry.md`, `posthog.md`, `supabase.md`, `cursor.md` |
-| **E-Commerce / Marketplace / Booking** | Inventory reservation lock (mencegah overselling), cart-to-order state machine, guest vs authenticated checkout, SEO structured data | `shopify.md`, `airbnb.md`, `nike.md` |
-| **Media / Publishing / Documentation** | Tipografi baca panjang (`60ch-75ch`), hierarki heading ketat, kecepatan muat statis (CWV LCP < 2.5s), indeks `llms.txt` | `wired.md`, `theverge.md`, `mintlify.md`, `sanity.md` |
+| **E-Commerce / Marketplace / Booking** | Inventory reservation lock (prevents overselling), cart-to-order state machine, guest vs authenticated checkout, SEO structured data | `shopify.md`, `airbnb.md`, `nike.md` |
+| **Media / Publishing / Documentation** | Long-form reading typography (`60ch-75ch`), strict heading hierarchy, static load speed (CWV LCP < 2.5s), `llms.txt` index | `wired.md`, `theverge.md`, `mintlify.md`, `sanity.md` |

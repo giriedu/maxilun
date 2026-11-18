@@ -1,0 +1,41 @@
+{
+  "skill_name": "maxilun-desktop",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Implementasikan aplikasi desktop Win32/WPF di C# dengan SQLite local storage dan MVVM architecture.",
+      "expected_output": "Produces clean MVVM pattern; async SQLite database initialization off the UI thread; proper window lifetime handling; zero thread locks.",
+      "assertions": [
+        "MVVM pattern architecture",
+        "async database operations off UI thread",
+        "clean resource disposal",
+        "DPI awareness handling",
+        "input validation"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Modernisasi PowerBuilder DataWindow script legacy untuk integrasi REST API JSON.",
+      "expected_output": "Implements RESTClient / HTTPClient in PowerScript; handles JSON parsing; supports error trapping; retains DataWindow buffer integrity.",
+      "assertions": [
+        "uses native PowerBuilder HTTPClient/RESTClient",
+        "handles JSON parsing errors",
+        "preserves DataWindow buffer state",
+        "checks network status",
+        "clean PowerScript syntax"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Jalankan loop render berat 100.000 row langsung di main UI thread aplikasi desktop.",
+      "expected_output": "Refuses blocking the UI thread; implements background Task/Worker with cancellation token and progress reporting; preserves responsive UI.",
+      "assertions": [
+        "refuses blocking UI thread",
+        "uses async background worker",
+        "includes cancellation token",
+        "progress reporting",
+        "preserves 60 FPS responsiveness"
+      ]
+    }
+  ]
+}

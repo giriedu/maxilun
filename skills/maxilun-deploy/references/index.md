@@ -1,5 +1,5 @@
 # Maxilun Deploy References Index
 
-Katalog referensi rekayasa deployment, pengerasan kontainer Docker, dan otomatisasi CI/CD:
+Reference catalog for deployment engineering, Docker container hardening, and CI/CD automation:
 
-- **`references/container-pipeline-hardening.md`**: Pola multi-stage build Docker minimalis, pengerasan keamanan kontainer (non-root user), cache GitHub Actions, konfigurasi Nginx reverse proxy, dan SRE SLO Multi-Window Multi-Burn-Rate Alerting (P1/P2/P3 error budget burn rates).
+- **`references/container-pipeline-hardening.md`**: Minimal Docker multi-stage build pattern, container security hardening (non-root user), GitHub Actions caching, Nginx reverse proxy configuration, and SRE SLO Multi-Window Multi-Burn-Rate Alerting (P1/P2/P3 error budget burn rates).

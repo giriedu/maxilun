@@ -1,44 +1,44 @@
 # Cinematic Scriptwriting, Spoken Pacing & Google Cloud TTS Integration
 
-Gunakan referensi ini saat menulis naskah narasi video, mengarahkan intonasi suara, menyusun anotasi SSML, atau memproduksi voice-over menggunakan Google Cloud Text-to-Speech untuk video `maxilun-cinecode`.
+Use this reference when writing a video narration script, directing vocal intonation, writing SSML annotations, or producing voice-over with Google Cloud Text-to-Speech for a `maxilun-cinecode` video.
 
 ---
 
-## 1. Filosofi Narasi Spoken: Tulisan untuk Telinga, Bukan untuk Mata
+## 1. Spoken Narration Philosophy: Write for the Ear, Not the Eye
 
-Web copy dibaca dengan mata (scannable, non-linear). Narasi video didengar dengan telinga (sekuensial, temporal, berirama):
+Web copy is read with the eyes (scannable, non-linear). Video narration is heard with the ears (sequential, temporal, rhythmic):
 
-| Aspek | Web Copy (`maxilun-content`) | Narasi Video Spoken |
+| Aspect | Web Copy (`maxilun-content`) | Spoken Video Narration |
 |---|---|---|
-| **Medium** | Mata membaca teks di layar | Telinga mendengar gelombang suara |
-| **Kontrol Kecepatan** | Pembaca menentukan scroll | Narator menentukan jeda dan emosi |
-| **Kepadatan** | Paragraf ringkas terstruktur | Kalimat pendek berjarak (1 ide per napas) |
-| **Keheningan** | Spasi putih visual | Jeda audio (`0.4s - 1.2s`) untuk pencernaan ide |
-| **Keluaran** | Elemen tipografi DOM | Berkas audio sinkron + metadata cue |
+| **Medium** | Eyes read text on a screen | Ears hear sound waves |
+| **Pace control** | The reader sets the scroll | The narrator sets pauses and emotion |
+| **Density** | Compact, structured paragraphs | Short, spaced sentences (1 idea per breath) |
+| **Silence** | Visual white space | Audio pause (`0.4s - 1.2s`) to let an idea land |
+| **Output** | DOM typography elements | Synced audio file + cue metadata |
 
-### 5 Prinsip Narasi Sinematik
-1. **Tes Baca Nyaring**: Ucapkan setiap baris dengan suara keras sebelum disahkan. Jika lidah terpeleset atau napas terputus, pecah kalimat menjadi dua.
-2. **Irama di Atas Tata Bahasa Kaku**: Fragmen kalimat diperbolehkan jika memberikan tekanan emosi yang tepat.
-3. **Konkret Menggantikan Sifat**: Hindari kata sifat kosong. Ganti dengan angka fakta atau perbandingan langsung.
-4. **Sinkronisasi Titik Temu (Sync Points)**: Setiap kalimat narasi harus memiliki pasangan momen visual yang relevan pada timeline frame video.
-5. **Keseimbangan Loudness**: Voice-over wajib di-master pada `-16 LUFS` mono, dengan musik latar yang ter-*ducking* saat suara aktif.
+### 5 Principles of Cinematic Narration
+1. **Read-aloud test**: Speak every line out loud before approving it. If the tongue trips or the breath breaks, split the sentence in two.
+2. **Rhythm over rigid grammar**: Sentence fragments are allowed when they deliver the right emotional stress.
+3. **Concrete replaces adjective**: Avoid empty adjectives. Replace them with a factual number or a direct comparison.
+4. **Sync points**: Every narration sentence must pair with a relevant visual moment on the video frame timeline.
+5. **Loudness balance**: Target voice-over at `-16 LUFS` integrated mono as a default baseline (adjusted per destination spec and measured via EBU R128), with the background music *ducked* while the voice is active.
 
 ---
 
-## 2. Struktur Data Narasi & Timeline
+## 2. Narration & Timeline Data Structure
 
 ```typescript
 export interface NarrationSegment {
   id: string;
   sceneId: string;
-  text: string;                  // Teks bersih tanpa markup
-  ssmlText: string;              // Teks teranotasi SSML untuk TTS engine
-  startFrame: number;            // Frame awal kemunculan di timeline
-  endFrame: number;              // Frame akhir durasi vokal
+  text: string;                  // Clean text without markup
+  ssmlText: string;              // SSML-annotated text for the TTS engine
+  startFrame: number;            // First frame on the timeline
+  endFrame: number;              // Last frame of the vocal duration
   durationSeconds: number;
   emotion: 'authoritative' | 'urgent' | 'confident' | 'warm';
-  pauseAfterMs: number;          // Durasi jeda hening setelah kalimat
-  visualCue: string;             // Deskripsi peristiwa visual yang dipicu
+  pauseAfterMs: number;          // Silent pause after the sentence
+  visualCue: string;             // Description of the visual event it triggers
   syncPoint?: {
     frame: number;
     event: string;
@@ -48,19 +48,21 @@ export interface NarrationSegment {
 
 ---
 
-## 3. Integrasi Google Cloud TTS & Panduan Suara
+## 3. Google Cloud TTS Integration & Voice Guide
 
-### 3.1 Pilihan Suara Direkomendasikan
+### 3.1 Recommended Voices
 
-| Voice ID | Bahasa | Gender | Engine | Karakteristik Suara |
+| Voice ID | Language | Gender | Engine | Voice Characteristics |
 |---|---|---|---|---|
-| `id-ID-Wavenet-B` | Bahasa Indonesia | Pria | WaveNet | Berwibawa, tegas, artikulasi formal |
-| `id-ID-Wavenet-A` | Bahasa Indonesia | Wanita | WaveNet | Hangat, profesional, jernih |
-| `id-ID-Neural2-A` | Bahasa Indonesia | Wanita | Neural2 | Modern, jernih untuk instruksi teknis |
-| `en-US-Journey-D` | English (US) | Pria | Journey | Sinematik, bercerita, penuh dinamika |
-| `en-US-Neural2-D` | English (US) | Pria | Neural2 | Presisi, percaya diri, tempo stabil |
+| `id-ID-Wavenet-B` | Indonesian | Male | WaveNet | Authoritative, firm, formal articulation |
+| `id-ID-Wavenet-A` | Indonesian | Female | WaveNet | Warm, professional, clear |
+| `id-ID-Neural2-A` | Indonesian | Female | Neural2 | Modern, clear for technical instructions |
+| `en-US-Journey-D` | English (US) | Male | Journey | Cinematic, storytelling, dynamic |
+| `en-US-Neural2-D` | English (US) | Male | Neural2 | Precise, confident, steady tempo |
 
-### 3.2 Format Sintaks SSML (Speech Synthesis Markup Language)
+### 3.2 SSML Syntax Format (Speech Synthesis Markup Language)
+
+Indonesian-language example (for an `id-ID` voice). The text means: "A business's first impression is now ninety-four percent decided on a digital screen."
 
 ```xml
 <speak>
@@ -73,17 +75,17 @@ export interface NarrationSegment {
 </speak>
 ```
 
-Aturan penggunaan SSML:
-- `<break time="300ms"/>` untuk jeda antar-klausa.
-- `<break time="600ms"/>` untuk pergantian scene atau penegasan poin penting.
-- `<emphasis level="strong">` untuk satu kata kunci yang membawa pesan utama.
-- `<prosody rate="slow">` saat menyebutkan data angka atau instruksi aksi.
+SSML usage rules:
+- `<break time="300ms"/>` for a pause between clauses.
+- `<break time="600ms"/>` for a scene change or to stress an important point.
+- `<emphasis level="strong">` for the one keyword that carries the main message.
+- `<prosody rate="slow">` when stating numeric data or an action instruction.
 
 ---
 
-## 4. Checklist Kualitas Narasi Sebelum Handoff ke CineCode
+## 4. Narration Quality Checklist Before Handoff to CineCode
 
-- [ ] **Word Count**: Tidak melebihi 2.2 kata per detik pada tempo normal (maksimal 65 kata untuk video 30 detik).
-- [ ] **Angka Ditulis Fonetik**: Angka seperti "94%" ditulis "sembilan puluh empat persen" dalam naskah SSML agar pembacaan TTS tidak salah intonasi.
-- [ ] **Breath Marks & Holds**: Terdapat jeda minimal 1.5 detik hening di akhir video sebelum file selesai agar CTA terbaca utuh.
-- [ ] **Sinkronisasi Beat**: Timing `startFrame` vokal selaras dengan birama musik latar.
+- **Word Count**: Stay at or below 2.2 words per second at normal tempo (at most 65 words for a 30-second video).
+- **Numbers written phonetically**: Write a number such as "94%" in words in the SSML script, in the narration language, so the TTS reading does not get the intonation wrong. Indonesian example: "sembilan puluh empat persen"; English example: "ninety-four percent".
+- **Breath Marks & Holds**: Leave at least 1.5 seconds of silence at the end of the video before the file ends, so the CTA can be read in full.
+- **Beat sync**: The vocal `startFrame` timing aligns with the bars of the background music.

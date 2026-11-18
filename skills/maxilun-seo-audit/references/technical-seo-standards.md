@@ -6,16 +6,16 @@
   origin: "Maxilun SEO Engine"
 -->
 
-Panduan pelaksanaan audit SEO teknis, struktur metadata mesin perayap (*search crawler*), dan spesifikasi `llms.txt`.
+Guide for running a technical SEO audit, structuring metadata for search crawlers, and meeting the `llms.txt` specification.
 
 ---
 
-## 1. Disiplin Kanonisasi & Crawl Budget
+## 1. Canonicalization Discipline & Crawl Budget
 
-1. **Tag Kanonikal Eksplisit**:
-   - Setiap halaman publik wajib menyertakan `<link rel="canonical" href="https://example.com/path" />` absolut untuk mencegah duplikasi konten akibat query string analitik atau paginasi.
-2. **Higienitas `robots.txt`**:
-   - Blokir jalur internal sensitif (`/admin`, `/api/`, `/_next/`) dan tunjukkan lokasi berkas indeks sitemap:
+1. **Explicit Canonical Tag**:
+   - Every public page must include an absolute `<link rel="canonical" href="https://example.com/path" />`. It prevents duplicate content caused by analytics query strings or pagination.
+2. **`robots.txt` Hygiene**:
+   - Block sensitive internal paths (`/admin`, `/api/`, `/_next/`) and point to the sitemap index file:
    ```text
    User-agent: *
    Disallow: /api/
@@ -24,14 +24,14 @@ Panduan pelaksanaan audit SEO teknis, struktur metadata mesin perayap (*search c
 
    Sitemap: https://example.com/sitemap.xml
    ```
-3. **Pemisahan Sitemap Berindeks**:
-   - Batasi setiap berkas sitemap maksimal 50.000 URL atau 50MB (uncompressed). Gunakan `sitemap_index.xml` untuk membagi rute statis, artikel, dan katalog produk.
+3. **Split Sitemaps Under an Index**:
+   - Limit each sitemap file to 50,000 URLs or 50MB (uncompressed). Use `sitemap_index.xml` to split static routes, articles, and product catalogs.
 
 ---
 
-## 2. Struktur Data JSON-LD (Schema.org)
+## 2. JSON-LD Data Structure (Schema.org)
 
-Sematkan data terstruktur di dalam tag `<script type="application/ld+json">` yang dihasilkan deterministik dari server:
+Embed structured data inside a `<script type="application/ld+json">` tag that the server generates deterministically:
 
 ```json
 {
@@ -50,8 +50,8 @@ Sematkan data terstruktur di dalam tag `<script type="application/ld+json">` yan
 
 ---
 
-## 3. Spesifikasi File `llms.txt`
+## 3. `llms.txt` File Specification
 
-Untuk memfasilitasi penemuan dan pemahaman model kecerdasan buatan terhadap produk:
-- Letakkan berkas ringkasan di `/llms.txt` (akar domain).
-- Sajikan rincian dokumentasi terstruktur dalam format Markdown bersih tanpa JavaScript atau styling visual.
+To help AI models discover and understand the product:
+- Place the summary file at `/llms.txt` (domain root).
+- Serve the detailed documentation as clean, structured Markdown without JavaScript or visual styling.

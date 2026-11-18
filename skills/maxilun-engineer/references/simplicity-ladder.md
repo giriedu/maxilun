@@ -1,48 +1,49 @@
 # The Simplicity Ladder: Operationalizing Minimalist Code
 
 <!-- metadata:
-  version: "1.0.0"
+  version: "1.3.0"
   sync_target: "skills/maxilun-engineer/SKILL.md"
   origin: "Maxilun Engineer Engine"
 -->
 
-Panduan penerapan *Simplicity Ladder* (Tangga Kesederhanaan) dalam penulisan logika produksi dan refactoring terukur.
+How to apply the *Simplicity Ladder* when writing production logic and performing measured refactors.
 
 ---
 
-## 1. Lima Tingkatan Tangga Kesederhanaan
+## 1. The Five Levels of the Simplicity Ladder
 
-Sebelum menambahkan kelas, abstraksi baru, atau pustaka pihak ketiga, evaluasi solusi mulai dari tingkatan paling bawah:
+Before adding a class, a new abstraction, or a third-party library, evaluate solutions starting from the lowest level:
 
 ```text
-[Tingkat 5: Dependensi Pihak Ketiga Baru] ── (Opsi Terakhir, wajib justifikasi)
+[Level 5: New External Dependency] ── (Last resort, evaluate maintenance & security)
       ▲
-[Tingkat 4: Abstraksi Modular / Polimorfisme]
+[Level 4: Single Pure Helper Function / Minimal Abstraction]
       ▲
-[Tingkat 3: Fungsi Bantu Murni (Pure Helper Function)]
+[Level 3: Native Platform Feature] ── (<dialog>, CSS, DB constraints)
       ▲
-[Tingkat 2: Fitur Bawaan Bahasa / Stdlib]
+[Level 2: Standard Library / Built-in Language Feature] ── (stdlib)
       ▲
-[Tingkat 1: Nol Kode Baru / Manfaatkan Kode yang Ada]
+[Level 1: YAGNI & Reuse Existing Repository Code] ── (Zero new conventions)
 ```
 
-1. **Tingkat 1 — Manfaatkan Kode Eksisting**:
-   - Periksa apakah repositori sudah memiliki fungsi pembantu (*helper*), utilitas, atau method yang menyelesaikan masalah ini. Dilarang menduplikasi utilitas serupa dengan nama berbeda.
-2. **Tingkat 2 — Manfaatkan Fitur Standar Bahasa (Stdlib)**:
-   - Gunakan fungsi bawaan bahasa (seperti `structuredClone` di JavaScript, `array_map` / `match` di PHP, `itertools` di Python, `slices` di Go).
-3. **Tingkat 3 — Fungsi Murni Tunggal**:
-   - Tulis satu fungsi lokal murni tanpa *side-effect* yang menerima input dan mengembalikan output secara deterministik.
-4. **Tingkat 4 — Pola Desain Berorientasi Objek Terbatas**:
-   - Gunakan kelas atau antarmuka hanya jika perilaku memiliki beberapa variasi polimorfik nyata.
-5. **Tingkat 5 — Dependensi Eksternal Baru**:
-   - Menambah paket di `package.json`, `composer.json`, atau `go.mod` adalah opsi paling akhir. Evaluasi ukuran paket, frekuensi rilis, dan potensi celah keamanan sebelum menambahkannya.
+1. **Level 1 — YAGNI & Reuse existing code**:
+   - Check whether the repository already has a helper function, utility, or pattern that solves this. Do not start a second convention. Reject speculative parameters.
+2. **Level 2 — Standard library first (stdlib)**:
+   - Use built-in language capabilities (such as `structuredClone`, `URLSearchParams`, Web Crypto, Python `itertools`, Go `slices`).
+3. **Level 3 — Native platform first**:
+   - Use native HTML elements (`<dialog>`, native form validation), standard CSS, or database constraints (`UNIQUE`, `CHECK`, `FOREIGN KEY`) instead of redundant application-level code.
+4. **Level 4 — One pure helper function**:
+   - Write a single, focused helper with no side effects. Reject single-consumer classes or passthrough wrappers.
+5. **Level 5 — New external dependency**:
+   - Adding a package is the last option. Evaluate package weight, licensing, and vulnerability history before adding it.
+
 
 ---
 
-## 2. Invarian Komentar Kode
+## 2. Code Comment Invariants
 
-1. **Jelaskan MENGAPA, Bukan APA**:
-   - Komentar yang menjelaskan alur kode yang jelas terbaca (*"menaikkan nilai counter"* atau *"memeriksa apakah user ada"*) wajib dihapus.
-   - Tulis komentar hanya untuk keputusan arsitektur yang tidak lazim, batasan spesifikasi eksternal, atau penanganan celah perangkat keras/browser tertentu.
-2. **Hapus Kode Usang Sendiri**:
-   - Saat Anda merefaktor fungsi, hapus seluruh impor yang tidak lagi terpakai, variabel sisa, dan jalur cabang mati yang ditinggalkan oleh perubahan Anda.
+1. **Explain WHY, not WHAT**:
+   - Delete comments that describe code flow that is already readable (*"increment the counter"* or *"check whether the user exists"*).
+   - Write comments only for unusual architectural decisions, external specification constraints, or handling of specific hardware/browser quirks.
+2. **Delete your own obsolete code**:
+   - When you refactor a function, delete every import that is no longer used, leftover variables, and dead branches left behind by your change.

@@ -6,59 +6,59 @@
   origin: "Maxilun Craft Engine"
 -->
 
-Panduan pelaksanaan audit beban kognitif dan evaluasi heuristik antarmuka berbasis bukti kode konkret (*file:line*). Menghindari audit teoretis generik dengan memeriksa 10 invarian keterpakaian empiris langsung pada struktur DOM, komponen, dan interaksi.
+Run cognitive-load audits and heuristic interface evaluations from concrete code evidence (*file:line*). Skip generic theoretical audits: check the 10 empirical usability invariants directly against the DOM structure, the components, and the interactions.
 
 ---
 
-## 1. Sepuluh Invarian Keterpakaian Empiris
+## 1. Ten Empirical Usability Invariants
 
-1. **Visibilitas Status Sistem Real-Time**:
-   - Setiap operasi yang memakan waktu $> 150\text{ms}$ wajib menampilkan umpan balik visual (status pending, indikator proses deterministik).
-   - Pengguna dilarang berada dalam kondisi menebak apakah klik tombol mereka sudah terdaftar oleh sistem atau belum.
-2. **Kesesuaian dengan Objek Dunia Nyata**:
-   - Kosakata antarmuka memakai nama benda dan alur kerja asli domain pengguna (misal: faktur, nomor resi, slot reservasi), bukan istilah teknis internal developer (*database_id*, *payload*, *record_entity*).
-3. **Kebebasan Kendali Pengguna (Jalur Batal Eksplisit)**:
-   - Setiap dialog modal, drawer geser, atau alur bertahap wajib menyediakan tombol penutup (*escape hatch*) yang jelas dan dapat diakses via tombol `Esc` keyboard.
-4. **Konsistensi Token & Pola Antarmuka**:
-   - Seluruh status sejenis (sukses, perhatian, galat) wajib menggunakan warna semantik dan ikonografi yang sama di seluruh layar tanpa variasi arbitrer.
-5. **Pencegahan Galat Sebelum Terjadi (Error Prevention)**:
-   - Matikan kemungkinan salah input sejak awal (misal: nonaktifkan tanggal masa lalu pada pemesanan masa depan, pasang masking angka pada nomor kartu, sediakan validasi langsung saat pengguna selesai mengetik).
-6. **Pengenalan Lebih Utama dari Mengingat (Recognition over Recall)**:
-   - Tampilkan informasi kontekstual penting (seperti ringkasan pesanan, harga per malam, atau ID transaksi) tetap terlihat selama alur konfirmasi tanpa mengharuskan pengguna kembali ke layar sebelumnya.
-7. **Ergonomi Akselerator Kontekstual**:
-   - Sediakan shortcut keyboard hanya pada aplikasi berbasis kerja keyboard cepat (editor, terminal, pengarsipan data), dan dilarang memaksakan shortcut palsu di halaman promosi publik.
-8. **Minimalisme Subtraktif & Kejelasan Sinyal**:
-   - Singkirkan setiap elemen dekoratif yang tidak berkontribusi pada pemahaman konten atau pengambilan keputusan pengguna.
-9. **Diagnostik Galat Dekat Titik Gagal**:
-   - Pesan kegagalan wajib memandu langkah pemulihan langsung, bukan sekadar menampilkan kode kesalahan HTTP mentah (*"500 Internal Error"*).
-10. **Bantuan Tepat Waktu Tanpa Mengganggu Alur**:
-    - Petunjuk bantuan disajikan sebagai teks tooltip mikro atau tautan kontekstual di samping label input yang membutuhkan penjelasan teknis.
-
----
-
-## 2. Ergonomi Fisik: Hukum Fitts & Zona Ibu Jari (Thumb Zone)
-
-Saat merancang antarmuka mobile atau layar sentuh tablet:
-
-1. **Aturan Area Jangkauan**:
-   - Tindakan primer paling sering dipakai (navigasi utama, tombol lanjut alur, filter cepat) wajib ditempatkan di sepertiga bawah layar (*natural thumb zone*).
-   - Tindakan destruktif atau jarang dipakai diletakkan di area atas yang membutuhkan usaha jangkauan sengaja.
-2. **Target Sentuh Minimum Terukur**:
-   - Kontrol antarmuka mobile wajib memiliki area klik efektif minimal $44 \times 44\text{pt}$ (iOS) atau $48 \times 48\text{dp}$ (Android), meskipun ikon visual di dalamnya berukuran lebih kecil (gunakan invisible hit-box padding).
-3. **Pemisahan Jarak Antar Tombol**:
-   - Kontrol yang berdampingan wajib memiliki jarak aman minimal $8\text{px}$ untuk mencegah salah sentuh (*accidental activation*).
+1. **Real-Time System Status Visibility**:
+   - Show visual feedback (pending state, deterministic progress indicator) for every operation that takes $> 150\text{ms}$.
+   - Never leave users guessing whether the system registered their button click.
+2. **Match with Real-World Objects**:
+   - Use the nouns and workflows of the user's own domain in interface vocabulary (for example: invoice, tracking number, reservation slot). Do not use internal developer terms (*database_id*, *payload*, *record_entity*).
+3. **User Control and Freedom (Explicit Cancel Path)**:
+   - Give every modal dialog, sliding drawer, or multi-step flow a clear close control (*escape hatch*) that also responds to the keyboard `Esc` key.
+4. **Token & Interface Pattern Consistency**:
+   - Use the same semantic color and iconography for every status of the same kind (success, warning, error) on every screen. Allow no arbitrary variation.
+5. **Error Prevention Before It Happens**:
+   - Remove the chance of wrong input from the start (for example: disable past dates for future bookings, apply numeric masking to card numbers, validate as soon as the user finishes typing).
+6. **Recognition over Recall**:
+   - Keep important contextual information (such as the order summary, price per night, or transaction ID) visible throughout the confirmation flow. Users must not need to return to the previous screen.
+7. **Contextual Accelerator Ergonomics**:
+   - Provide keyboard shortcuts only in applications built for fast keyboard work (editors, terminals, data filing). Do not force fake shortcuts onto public marketing pages.
+8. **Subtractive Minimalism & Signal Clarity**:
+   - Remove every decorative element that does not help users understand content or make a decision.
+9. **Error Diagnostics Near the Point of Failure**:
+   - Make every failure message guide the next recovery step. Do not show only a raw HTTP error code (*"500 Internal Error"*).
+10. **Timely Help Without Interrupting the Flow**:
+    - Present help as micro tooltip text or a contextual link next to the input label that needs a technical explanation.
 
 ---
 
-## 3. Format Pelaporan Audit Kognitif
+## 2. Physical Ergonomics: Fitts's Law & the Thumb Zone
 
-Setiap temuan audit keterpakaian dilaporkan dalam format berbasis bukti berikut:
+When designing a mobile interface or a tablet touch screen:
+
+1. **Reach Area Rule**:
+   - Place the most frequently used primary actions (main navigation, flow-advance button, quick filters) in the bottom third of the screen (*natural thumb zone*).
+   - Place destructive or rarely used actions in the upper area, where reaching them takes deliberate effort.
+2. **Measured Minimum Touch Target**:
+   - Give mobile controls an effective tap area of at least $44 \times 44\text{pt}$ (iOS) or $48 \times 48\text{dp}$ (Android), even when the visual icon inside is smaller (use invisible hit-box padding).
+3. **Spacing Between Buttons**:
+   - Keep a safe gap of at least $8\text{px}$ between adjacent controls to prevent mis-taps (*accidental activation*).
+
+---
+
+## 3. Cognitive Audit Report Format
+
+Report every usability audit finding in this evidence-based format:
 
 ```markdown
-### [AUDIT-HEURISTIK] file:line — Deskripsi Singkat Masalah
-- **Kode Invarian**: [INV-01 s/d INV-10]
-- **Tingkat Friksi**: [Tinggi / Sedang / Rendah]
-- **Bukti Kode**: `file:line` potongan kode yang melanggar
-- **Dampak Kognitif**: [1-2 kalimat menjelaskan kebingungan pengguna atau potensi salah klik]
-- **Rekomendasi Perbaikan**: [Diff atau spesifikasi penyesuaian konkret]
+### [HEURISTIC-AUDIT] file:line — Short Problem Description
+- **Invariant Code**: [INV-01 to INV-10]
+- **Friction Level**: [High / Medium / Low]
+- **Code Evidence**: `file:line` the violating code snippet
+- **Cognitive Impact**: [1-2 sentences explaining the user confusion or the mis-click risk]
+- **Recommended Fix**: [Diff or concrete adjustment specification]
 ```

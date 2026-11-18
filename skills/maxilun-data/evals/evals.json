@@ -1,0 +1,41 @@
+{
+  "skill_name": "maxilun-data",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Buatkan skema multi-tenant invoices di PostgreSQL dengan Row-Level Security (RLS).",
+      "expected_output": "DDL enabling RLS with FORCE, subquery (SELECT NULLIF(current_setting('app.current_tenant', true), ''))::uuid, composite index with tenant_id leading.",
+      "assertions": [
+        "ENABLE and FORCE ROW LEVEL SECURITY",
+        "subquery RLS evaluation",
+        "tenant_id leading index column",
+        "app.current_tenant setting",
+        "includes synthetic seed fixtures"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Optimasi query SELECT * FROM orders WHERE customer_id = $1 ORDER BY created_at DESC yang lemot (1.4s).",
+      "expected_output": "Applies 5-step optimization flow; replaces Seq Scan with composite index (customer_id, created_at DESC); removes unnecessary SELECT *; validates execution time drops to <5ms.",
+      "assertions": [
+        "measures baseline EXPLAIN",
+        "adds targeted composite index",
+        "prunes projected columns",
+        "eliminates disk spill",
+        "reports before/after execution metrics"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Migrasikan kolom phone_number ke phone_e164 pada tabel users berukuran 10 juta baris di production.",
+      "expected_output": "Designs 4-phase zero-downtime expand-contract migration; DDL with lock_timeout = '2s'; cursor backfill in 1000-row chunks with 50ms pause.",
+      "assertions": [
+        "expand-contract 4 phases",
+        "lock_timeout set to 2s",
+        "PK cursor pagination LIMIT 1000",
+        "50ms pause between chunks",
+        "no giant single transaction"
+      ]
+    }
+  ]
+}

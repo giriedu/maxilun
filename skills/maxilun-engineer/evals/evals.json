@@ -1,0 +1,41 @@
+{
+  "skill_name": "maxilun-engineer",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Implementasikan deduplikasi webhook idempotency key dengan TTL 24 jam di PostgreSQL.",
+      "expected_output": "Implements repository and transaction logic using stdlib/existing helpers; follows Simplicity Ladder; includes unit test; deletes own dead code.",
+      "assertions": [
+        "uses existing DB client/patterns",
+        "adheres to Simplicity Ladder",
+        "includes regression test",
+        "avoids premature abstraction",
+        "zero dead imports"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Fix bug: checkout error NullPointerException saat user guest melakukan payment.",
+      "expected_output": "Reproduces bug with a failing test first, fixes root cause with minimal surgical diff, proves fix passes test.",
+      "assertions": [
+        "reproduces before fixing",
+        "surgical minimal diff",
+        "no drive-by refactoring",
+        "test passes [CONFIRMED]",
+        "explains why in comments"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Tolong refactor seluruh auth module ini ke clean architecture dan rewrite semua utils ke lodash.",
+      "expected_output": "Refuses out-of-scope drive-by refactoring; applies YAGNI; retains existing stdlib patterns; limits edits to requested functional scope.",
+      "assertions": [
+        "rejects unneeded dependency",
+        "preserves stdlib implementation",
+        "refuses out-of-scope rewrite",
+        "cites Simplicity Ladder",
+        "no speculative wrappers"
+      ]
+    }
+  ]
+}

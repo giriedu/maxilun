@@ -1,12 +1,12 @@
 # Unity 6 LTS Architecture & Playbook
 
-Standar rekayasa Unity 6 LTS: C# 9+, arsitektur berorientasi data DOTS/ECS, Universal Render Pipeline (URP), Addressables, Netcode for GameObjects (NGO), dan pengujian NUnit.
+Unity 6 LTS engineering standards: C# 9+, data-oriented DOTS/ECS architecture, Universal Render Pipeline (URP), Addressables, Netcode for GameObjects (NGO), and NUnit testing.
 
 ---
 
-## 1. Standar C# Modern & Alokasi Memori Nol
+## 1. Modern C# Standards & Zero Memory Allocation
 
-Di Unity 6 LTS, runtime C# mendukung fitur C# 9+. Manfaatkan tipe data bernilai murni (*value types*) untuk meminimalkan beban Garbage Collection (GC):
+In Unity 6 LTS, the C# runtime supports C# 9+ features. Use pure *value types* to minimize Garbage Collection (GC) load:
 
 ```csharp
 public readonly record struct CombatDamageEvent(
@@ -24,16 +24,16 @@ public class UnitStatsConfig : ScriptableObject
 }
 ```
 
-### Invarian Alokasi Memori:
-- Hindari alokasi `new` di dalam `Update()` atau `FixedUpdate()`.
-- Hindari pemanggilan string formatting seperti `$"Player Health: {hp}"` setiap frame di game loop; perbarui teks UI hanya saat event perubahan nilai dipicu.
-- Gunakan `ArrayPool<T>.Shared` atau `NativeArray<T>` dengan allocator deterministik (`Allocator.TempJob`, `Allocator.Persistent`).
+### Memory Allocation Invariants:
+- Avoid `new` allocations inside `Update()` or `FixedUpdate()`.
+- Avoid string formatting calls such as `$"Player Health: {hp}"` every frame in the game loop; update UI text only when a value-change event fires.
+- Use `ArrayPool<T>.Shared` or `NativeArray<T>` with a deterministic allocator (`Allocator.TempJob`, `Allocator.Persistent`).
 
 ---
 
-## 2. Arsitektur Data-Oriented (DOTS / ECS)
+## 2. Data-Oriented Architecture (DOTS / ECS)
 
-Gunakan `ISystem` unmanaged yang kompatibel penuh dengan kompilator Burst untuk simulasi masif performa tinggi:
+Use an unmanaged `ISystem` that is fully compatible with the Burst compiler for large-scale, high-performance simulation:
 
 ```csharp
 using Unity.Burst;
@@ -71,9 +71,9 @@ public partial struct MovementSystem : ISystem
 
 ---
 
-## 3. Manajemen Aset Asinkron dengan Addressables
+## 3. Asynchronous Asset Management with Addressables
 
-Gunakan paket Addressables untuk memuat dan membongkar aset dari memori tanpa blocking frame:
+Use the Addressables package to load assets into memory and unload them without blocking a frame:
 
 ```csharp
 using System.Threading.Tasks;
@@ -104,9 +104,9 @@ public class AssetLoaderService
 
 ---
 
-## 4. Multiplayer dengan Netcode for GameObjects (NGO)
+## 4. Multiplayer with Netcode for GameObjects (NGO)
 
-Server berwenang penuh atas kalkulasi status dan inventaris pemain. Klien memprediksi pergerakan lokal dan merekonsiliasi posisi:
+The server has full authority over player state and inventory calculations. The client predicts local movement and reconciles its position:
 
 ```csharp
 using Unity.Netcode;
@@ -135,16 +135,16 @@ public class NetworkHealthSystem : NetworkBehaviour
     [ClientRpc]
     private void HandleDeathClientRpc()
     {
-        // Jalankan efek partikel dan ragdoll di klien
+        // Play particle effects and ragdoll on the client
     }
 }
 ```
 
 ---
 
-## 5. Pengujian NUnit (PlayMode & EditMode)
+## 5. NUnit Testing (PlayMode & EditMode)
 
-Pengujian logika gameplay dijalankan secara terisolasi tanpa bergantung pada rendering editor:
+Run gameplay logic tests in isolation, with no dependency on editor rendering:
 
 ```csharp
 using NUnit.Framework;
@@ -157,7 +157,7 @@ public class CombatCalculatorTests
     public void CalculateDamage_ArmorMitigation_FollowsDiminishingReturns()
     {
         float rawDamage = 100f;
-        float armor = 100f; // Konstanta K = 100
+        float armor = 100f; // Constant K = 100
         float expectedTaken = 50f;
 
         float calculated = CombatMath.CalculateMitigatedDamage(rawDamage, armor);
@@ -167,7 +167,7 @@ public class CombatCalculatorTests
 }
 ```
 
-Eksekusi CLI headless:
+Headless CLI run:
 ```pwsh
 Unity.exe -batchmode -runTests -projectPath . -testPlatform EditMode -testResults results.xml
 ```

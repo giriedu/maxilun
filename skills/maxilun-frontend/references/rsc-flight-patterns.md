@@ -6,20 +6,20 @@
   origin: "Maxilun Frontend Engine"
 -->
 
-Panduan arsitektur batas eksekusi React Server Components (RSC) dan protokol serialisasi React Flight pada Next.js 15 dan React 19.
+Architecture guide for React Server Components (RSC) execution boundaries and the React Flight serialization protocol on Next.js 15 and React 19.
 
 ---
 
-## 1. Batas Eksekusi RSC vs Client Island
+## 1. RSC vs Client Island Execution Boundaries
 
-1. **Server Component sebagai Default**:
-   - Seluruh komponen di dalam direktori `app/` berstatus Server Component secara default.
-   - Gunakan `import 'server-only'` pada modul yang membaca variabel rahasia internal atau langsung mengakses basis data agar gagal kompilasi jika tidak sengaja diimpor ke Client Component.
+1. **Server Component by default**:
+   - Every component inside the `app/` directory is a Server Component by default.
+   - Add `import 'server-only'` to modules that read internal secrets or access the database directly, so compilation fails if one is accidentally imported into a Client Component.
 2. **Client Leaf Component (`'use client'`)**:
-   - Dorong direktif `'use client'` sedalam mungkin ke daun pohon komponen (*leaf component*).
-   - Dilarang membungkus `app/layout.tsx` atau seluruh halaman dengan `'use client'`.
-3. **Komposisi Donat (Donut Pattern)**:
-   - Saat komponen interaktif (seperti modal, dropdown, atau tab) membutuhkan konten yang dirender di server, teruskan konten server sebagai `children: ReactNode` ke dalam Client Component wrapper:
+   - Push the `'use client'` directive as deep as possible, to the leaves of the component tree (*leaf component*).
+   - Never wrap `app/layout.tsx` or a whole page in `'use client'`.
+3. **Donut Composition (Donut Pattern)**:
+   - When an interactive component (such as a modal, dropdown, or tab) needs server-rendered content, pass the server content as `children: ReactNode` into the Client Component wrapper:
 
 ```tsx
 // ClientWrapper.tsx ('use client')
@@ -41,30 +41,30 @@ export default async function Page() {
 
 ---
 
-## 2. Kontrak Serialisasi React Flight
+## 2. React Flight Serialization Contract
 
-Protokol Flight mengubah tree RSC menjadi stream byte terstruktur. Hanya tipe data tertentu yang aman dikirim melintasi batas Server $\rightarrow$ Client:
+The Flight protocol turns the RSC tree into a structured byte stream. Only certain data types are safe to send across the Server $\rightarrow$ Client boundary:
 
-### Tipe yang Didukung
-- Tipe primitif: `string`, `number`, `boolean`, `null`, `undefined`, `bigint`.
-- Struktur data standar: `Array`, *plain object* (`{}`), `Map`, `Set`, `TypedArray`.
-- Kontrak asinkron: `Promise` (dibuka di Client Component menggunakan hook `use()` React 19).
-- Komponen & elemen: Node JSX (`ReactNode`), referensi Server Action berdirektif `'use server'`.
+### Supported Types
+- Primitive types: `string`, `number`, `boolean`, `null`, `undefined`, `bigint`.
+- Standard data structures: `Array`, *plain object* (`{}`), `Map`, `Set`, `TypedArray`.
+- Async contract: `Promise` (unwrapped in a Client Component with the React 19 `use()` hook).
+- Components & elements: JSX nodes (`ReactNode`), and Server Action references marked `'use server'`.
 
-### Tipe yang Gagal Serialisasi (Dilarang)
-- Fungsi atau callback biasa (misal: `onClick` yang didefinisikan di Server Component).
-- Instance class kustom dengan prototype atau method internal (misal: objek model ORM, `Decimal.js`). Wajib dipetakan menjadi objek data datar (*Plain Old JavaScript Object* / POJO) sebelum dikirim ke Client.
-- Node DOM asli, `Symbol`, dan `WeakMap`/`WeakSet`.
+### Types That Fail Serialization (Forbidden)
+- Plain functions or callbacks (for example: an `onClick` defined in a Server Component).
+- Custom class instances with a prototype or internal methods (for example: ORM model objects, `Decimal.js`). Map them to flat data objects (*Plain Old JavaScript Object* / POJO) before sending them to the Client.
+- Real DOM nodes, `Symbol`, and `WeakMap`/`WeakSet`.
 
 ---
 
-## 3. Server Actions sebagai Endpoint HTTP Publik
+## 3. Server Actions Are Public HTTP Endpoints
 
-Setiap fungsi berdirektif `'use server'` adalah endpoint HTTP POST yang dapat dipanggil langsung dari luar antarmuka:
+Every function marked `'use server'` is an HTTP POST endpoint that can be called directly from outside the UI:
 
-1. **Otorisasi di Dalam Action**:
-   - Selalu periksa sesi pengguna aktif di baris pertama setiap Server Action.
-2. **Validasi Skema Masukan**:
-   - Validasi seluruh payload masukan (`FormData` maupun objek) menggunakan Zod atau pustaka validasi serupa sebelum mengeksekusi mutasi.
-3. **Pola Pengembalian Hasil Terdiskriminasi**:
-   - Kembalikan objek status terstruktur `{ ok: true, data }` atau `{ ok: false, fieldErrors }` agar input form tetap aman dan tidak hilang saat gagal.
+1. **Authorize inside the action**:
+   - Always check the active user session on the first line of every Server Action.
+2. **Validate the input schema**:
+   - Validate the whole input payload (`FormData` or object) with Zod or a similar validation library before executing the mutation.
+3. **Discriminated result pattern**:
+   - Return a structured status object, `{ ok: true, data }` or `{ ok: false, fieldErrors }`, so form input stays intact and is not lost on failure.

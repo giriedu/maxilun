@@ -1,5 +1,5 @@
 # Maxilun Insight References Index
 
-Katalog referensi diagnosis akar masalah, profiling performa sistem, dan pelacakan anomali memori:
+Reference catalog for root cause diagnosis, system performance profiling, and memory anomaly tracing:
 
-- **`references/profiling-diagnostics-playbook.md`**: Analisis flamegraph CPU, tracing kebocoran memori (heap snapshot), contention thread basis data, isolasi deadlock, dan Matriks Triage Diagnostik Sistemik (Hang/Stall, Memory Leak/OOM, Connection Exhaustion, Disruption/Eviction).
+- **`references/profiling-diagnostics-playbook.md`**: CPU flamegraph analysis, memory leak tracing (heap snapshot), database thread contention, deadlock isolation, and the Systemic Diagnostic Triage Matrix (Hang/Stall, Memory Leak/OOM, Connection Exhaustion, Disruption/Eviction).

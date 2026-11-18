@@ -49,6 +49,19 @@ class KnowledgeGraphTool:
             "sample_edges": [f"{e.get('source')} -> {e.get('target')} ({e.get('type')})" for e in edges[:5]]
         }
 
+    def locate(self, question: str, target_path: str = ".", also: str = "", top: int = 5) -> Dict[str, Any]:
+        """Question, stack trace, or symbol -> ranked file:line ranges with verbatim excerpts."""
+        if not self._cached_graph:
+            self.scan(target_path)
+        try:
+            from locate import locate as run_locate, render
+        except ImportError:
+            return {"error": "Knowledge Graph locate module not found."}
+        target = Path(target_path) if Path(target_path).is_absolute() else self.root / target_path
+        extra = [a.strip() for a in also.split(",") if a.strip()]
+        result = run_locate(question, root=str(target), graph=self._cached_graph or {}, top=top, also=extra)
+        return {"confidence": result["confidence"], "missing_terms": result["missing_terms"], "report": render(result)}
+
     def query(self, operator: str, symbol: str, target_path: str = ".") -> Dict[str, Any]:
         if not self._cached_graph:
             self.scan(target_path)

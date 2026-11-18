@@ -1,104 +1,104 @@
 # Web3D Asset Pipeline & Texture Optimization
 
-Standar produksi untuk pemodelan, konversi, kompresi, dan pengemasan aset 3D (Blender & Substance 3D) untuk web interaktif berlatensi rendah.
+Production standard for modelling, converting, compressing, and packaging 3D assets (Blender & Substance 3D) for low-latency interactive web delivery.
 
 ---
 
-## 1. Pengepakan Tekstur ORM (Occlusion - Roughness - Metallic)
+## 1. ORM Texture Packing (Occlusion - Roughness - Metallic)
 
-Dalam alur kerja PBR standar, peramban sering memuat 3 file tekstur monokrom terpisah:
-1. Ambient Occlusion map (skala abu-abu)
-2. Roughness map (skala abu-abu)
-3. Metallic map (skala abu-abu)
+In a standard PBR workflow, the browser often loads 3 separate monochrome texture files:
+1. Ambient Occlusion map (grayscale)
+2. Roughness map (grayscale)
+3. Metallic map (grayscale)
 
-Memuat 3 tekstur terpisah ini membuang bandwidth seluler dan mengonsumsi 3x slot sampler tekstur GPU.
+Loading these 3 textures separately wastes mobile bandwidth and consumes 3x the GPU texture sampler slots.
 
-### Standar Saluran Pengepakan ORM:
-Gabungkan ketiga saluran ke dalam **satu file tekstur RGB 8-bit**:
-- **Saluran R (Red)**: Ambient Occlusion (AO)
-- **Saluran G (Green)**: Roughness
-- **Saluran B (Blue)**: Metallic
-- *(Opsional) Saluran A (Alpha)*: Opacity / Masking
+### ORM Channel Packing Standard:
+Merge the three channels into **one 8-bit RGB texture file**:
+- **R channel (Red)**: Ambient Occlusion (AO)
+- **G channel (Green)**: Roughness
+- **B channel (Blue)**: Metallic
+- *(Optional) A channel (Alpha)*: Opacity / Masking
 
 ```
-File: asset_name_orm.png (atau .webp / .ktx2)
+File: asset_name_orm.png (or .webp / .ktx2)
 ├── R: Ambient Occlusion
 ├── G: Roughness
 └── B: Metallic
 ```
 
-### Konfigurasi Material Three.js / R3F untuk Tekstur ORM:
+### Three.js / R3F Material Configuration for ORM Textures:
 ```javascript
 const textureLoader = new THREE.TextureLoader();
 const ormMap = textureLoader.load('/textures/product_orm.webp');
 
 const material = new THREE.MeshStandardMaterial({
   map: colorMap,
-  aoMap: ormMap,             // Baca dari saluran Red
+  aoMap: ormMap,             // Read from the Red channel
   aoMapIntensity: 1.0,
-  roughnessMap: ormMap,      // Baca dari saluran Green
+  roughnessMap: ormMap,      // Read from the Green channel
   roughness: 1.0,
-  metalnessMap: ormMap,      // Baca dari saluran Blue
+  metalnessMap: ormMap,      // Read from the Blue channel
   metalness: 1.0
 });
 ```
-*Hasil Kinerja: Menghemat 66% memori tekstur VRAM GPU dan memotong request HTTP dari 3 menjadi 1.*
+*Performance result: saves 66% of GPU VRAM texture memory and cuts HTTP requests from 3 to 1.*
 
 ---
 
-## 2. Alur Ekspor Blender ke Web (GLTF / GLB)
+## 2. Blender-to-Web Export Flow (GLTF / GLB)
 
-Sebelum mengekspor model dari Blender untuk web, terapkan 6 langkah pembersihan wajib:
+Before exporting a model from Blender for the web, apply these 4 mandatory cleanup steps:
 
-### Langkah 1: Normalisasi Transformasi (Apply Transforms)
-Pilih seluruh mesh dan tekan `Ctrl + A` -> `All Transforms` (Location, Rotation, Scale = 1.0). Ini mencegah distorsi matriks saat diimpor ke Three.js.
+### Step 1: Normalize Transforms (Apply Transforms)
+Select every mesh and press `Ctrl + A` -> `All Transforms` (Location, Rotation, Scale = 1.0). This prevents matrix distortion on import into Three.js.
 
-### Langkah 2: Audit Jumlah Poligon & Decimate
-- Hapus geometri tersembunyi yang tidak terlihat oleh kamera (misal: bagian dalam casing produk).
-- Terapkan modifier `Decimate` untuk mereduksi simpul hingga berada di bawah anggaran ($\le 50\text{k}$ triangles untuk mobile).
+### Step 2: Audit Polygon Count & Decimate
+- Delete hidden geometry the camera never sees (for example: the inside of a product casing).
+- Apply the `Decimate` modifier to reduce vertices until the model is under budget ($\le 50\text{k}$ triangles for mobile).
 
-### Langkah 3: Batasan Armature / Bone Rigging (Mobile WebGL Limit)
-- Batasi jumlah *bones per mesh* maksimal **64 bones** agar kompatibel dengan vertex shader mobile.
-- Pastikan bobot simpul (*bone weights*) maksimal 4 pengaruh per vertex.
+### Step 3: Armature / Bone Rigging Limits (Mobile WebGL Limit)
+- Limit *bones per mesh* to a maximum of **64 bones** for compatibility with mobile vertex shaders.
+- Keep bone weights to at most 4 influences per vertex.
 
-### Langkah 4: Pengaturan Ekspor GLTF 2.0 di Blender
-Saat mengekspor melalui `File > Export > glTF 2.0 (.glb/.gltf)`:
-- **Format**: `glTF Binary (.glb)` (mengemas geometri, animasi, dan tekstur dalam 1 file biner terkompresi).
+### Step 4: GLTF 2.0 Export Settings in Blender
+When exporting through `File > Export > glTF 2.0 (.glb/.gltf)`:
+- **Format**: `glTF Binary (.glb)` (packs geometry, animation, and textures into 1 compressed binary file).
 - **Include**: Selected Objects, Custom Properties.
-- **Transform**: `+Y Up` (standar koordinat WebGL).
+- **Transform**: `+Y Up` (the WebGL coordinate standard).
 - **Geometry**:
-  - `Apply Modifiers`: Aktif.
-  - `UVs`: Aktif.
-  - `Normals`: Aktif.
-  - `Tangents`: Aktif (bila menggunakan normal maps).
-- **Compression**: Aktifkan **Draco Mesh Compression** (Level 7 untuk geometri non-animasi) atau gunakan pipeline `meshopt`.
+  - `Apply Modifiers`: On.
+  - `UVs`: On.
+  - `Normals`: On.
+  - `Tangents`: On (when using normal maps).
+- **Compression**: Enable **Draco Mesh Compression** (Level 7 for non-animated geometry) or use the `meshopt` pipeline.
 
 ---
 
-## 3. Optimasi Pasca-Ekspor (glTF-Transform CLI)
+## 3. Post-Export Optimization (glTF-Transform CLI)
 
-Gunakan utilitas CLI `gltf-transform` untuk mengoptimalkan file `.glb` sebelum dimasukkan ke aset web produksi:
+Use the `gltf-transform` CLI to optimize the `.glb` file before adding it to production web assets:
 
 ```bash
-# 1. Pangkas simpul duplikat dan bersihkan struktur node
+# 1. Remove duplicate vertices and clean the node structure
 npx @gltf-transform/cli dedup input.glb step1.glb
 
-# 2. Kompresi tekstur ke format GPU modern (WebP / KTX2)
+# 2. Compress textures to a modern GPU format (WebP / KTX2)
 npx @gltf-transform/cli webp step1.glb step2.glb --quality 80
 
-# 3. Terapkan kompresi Meshopt untuk dekompresi instan di peramban
+# 3. Apply Meshopt compression for instant decompression in the browser
 npx @gltf-transform/cli meshopt step2.glb output-optimized.glb
 
-# 4. Validasi laporan ukuran dan draw calls
+# 4. Validate the size and draw call report
 npx @gltf-transform/cli inspect output-optimized.glb
 ```
 
 ---
 
-## 4. Checklist Kualitas Aset Web3D
+## 4. Web3D Asset Quality Checklist
 
-- [ ] Resolusi tekstur adalah *Power-of-Two* (`512x512`, `1024x1024`, atau maksimal `2048x2048`).
-- [ ] Ukuran total file `.glb` siap saji $\le 3.5\text{MB}$ untuk desktop dan $\le 1.5\text{MB}$ untuk landing page mobile.
-- [ ] Sumbu rotasi utama menghadap ke depan (`Z+` atau `Y+` sesuai orientasi kamera awal).
-- [ ] Titik tumpu (*pivot/origin*) model berada di pusat bounding box atau dasar lantai objek.
-- [ ] Tekstur warna dasar (*albedo/diffuse*) memakai ruang warna sRGB; tekstur ORM dan Normal memakai ruang warna Linear.
+- Texture resolution is *Power-of-Two* (`512x512`, `1024x1024`, or at most `2048x2048`).
+- Total size of the deliverable `.glb` file is $\le 3.5\text{MB}$ for desktop and $\le 1.5\text{MB}$ for a mobile landing page.
+- The main rotation axis faces forward (`Z+` or `Y+`, matching the initial camera orientation).
+- The model pivot/origin sits at the center of the bounding box or at the object's floor base.
+- Base color (*albedo/diffuse*) textures use the sRGB color space; ORM and Normal textures use the Linear color space.

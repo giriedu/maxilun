@@ -1,24 +1,24 @@
 # OpenAPI 3.1, AsyncAPI 3.0 & API Contract Reference
 
-Gunakan referensi ini saat menulis dokumentasi kontrak API (`docs/api.md`, `openapi.yaml`), katalog error, spesifikasi webhook, atau skema event broker.
+Use this reference when writing API contract documentation (`docs/api.md`, `openapi.yaml`), an error catalog, a webhook specification, or an event broker schema.
 
 ---
 
-## 1. Standar Kontrak REST API (OpenAPI 3.1 + RFC 9457)
+## 1. REST API Contract Standard (OpenAPI 3.1 + RFC 9457)
 
-Setiap spesifikasi API produksi wajib mendokumentasikan:
-1. **Autentikasi & Otorisasi eksplisit** per operasi (role/scope yang diizinkan dan aturan kepemilikan resource).
-2. **Idempotency** untuk operasi mutasi finansial/state kritis (`Idempotency-Key` header).
-3. **Pagination berbasis Cursor** untuk koleksi besar (menghindari performa buruk `OFFSET` pada tabel jutaan baris).
-4. **Struktur Error Terstandar (RFC 9457 Problem Details — `application/problem+json`)**, bukan format error acak per endpoint.
+Every production API specification must document:
+1. **Explicit authentication and authorization** per operation (allowed roles/scopes and resource ownership rules).
+2. **Idempotency** for financial or state-critical mutations (`Idempotency-Key` header).
+3. **Cursor-based pagination** for large collections (avoids the poor performance of `OFFSET` on tables with millions of rows).
+4. **A standardized error structure (RFC 9457 Problem Details — `application/problem+json`)**, not an ad-hoc error format per endpoint.
 
-### Template OpenAPI 3.1 Produksi (`openapi.yaml`)
+### Production OpenAPI 3.1 Template (`openapi.yaml`)
 
 ```yaml
 openapi: 3.1.0
 info:
   title: Order & Billing Service API
-  version: 1.2.0
+  version: "1.3.0"
   description: >
     Internal and partner API for invoice creation and payment settlement.
     All monetary values are represented in minor units (IDR integer) to prevent floating-point drift.
@@ -269,26 +269,26 @@ components:
 
 ---
 
-## 2. Dokumentasi Kontrak Webhook (Inbound / Outbound)
+## 2. Webhook Contract Documentation (Inbound / Outbound)
 
-Setiap dokumentasi webhook wajib menjelaskan cara verifikasi signature, pencegahan replay attack, dan aturan retry:
+Every webhook document must explain how to verify the signature, how replay attacks are prevented, and the retry rules:
 
 ```markdown
 ## Webhook: `invoice.paid`
 
 - **Delivery Method**: `POST <merchant_webhook_url>`
-- **Timeout**: `5000ms` per percobaan
-- **Retry Schedule**: Exponential backoff (`15s`, `1m`, `5m`, `30m`, `2h`, `6h` — maks 6x percobaan)
-- **Idempotency**: Konsumen wajib melakukan deduplikasi berdasarkan header `X-Webhook-Id` (UUID unik per event).
+- **Timeout**: `5000ms` per attempt
+- **Retry Schedule**: Exponential backoff (`15s`, `1m`, `5m`, `30m`, `2h`, `6h` — max 6 attempts)
+- **Idempotency**: Consumers must deduplicate on the `X-Webhook-Id` header (a unique UUID per event).
 
 ### Security Headers
-| Header | Contoh | Keterangan |
+| Header | Example | Description |
 |---|---|---|
-| `X-Webhook-Id` | `evt_01HV8Y2A9B...` | ID unik event untuk deduplikasi |
-| `X-Webhook-Timestamp` | `1730000000` | Unix epoch detik; tolak jika selisih `> 300 detik` dari waktu server |
+| `X-Webhook-Id` | `evt_01HV8Y2A9B...` | Unique event ID for deduplication |
+| `X-Webhook-Timestamp` | `1730000000` | Unix epoch seconds; reject when it differs by `> 300 seconds` from server time |
 | `X-Webhook-Signature` | `v1=8f4a2c...` | `HMAC-SHA256(secret, "${timestamp}.${raw_body}")` |
 
-### Contoh Verifikasi Signature (Node.js)
+### Signature Verification Example (Node.js)
 ```typescript
 import { createHmac, timingSafeEqual } from 'node:crypto';
 

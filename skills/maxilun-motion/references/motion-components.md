@@ -1,14 +1,14 @@
 # Maxilun Motion: Reference & Component Implementations
 
-Dokumen referensi implementasi primitif animasi native (CSS Keyframes, Web Animations API, dan GSAP/Canvas).
+Implementation reference for native animation primitives (CSS Keyframes, Web Animations API, and GSAP/Canvas).
 
-## 1. Primitif Native (Zero Dependencies)
+## 1. Native Primitives (Zero Dependencies)
 
-Untuk sebagian besar UI web, gunakan CSS Variables + CSS Transitions / Animations atau Web Animations API (WAAPI) bawaan browser.
+For most web UI, use CSS Variables + CSS Transitions / Animations or the browser's built-in Web Animations API (WAAPI).
 
 ### Spring Simulation via CSS Custom Property & Easing
 ```css
-/* Spring-like curve tanpa library pihak ketiga */
+/* Spring-like curve without a third-party library */
 :root {
   --ease-spring-snappy: cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --ease-spring-gentle: cubic-bezier(0.25, 1, 0.5, 1);
@@ -26,26 +26,26 @@ Untuk sebagian besar UI web, gunakan CSS Variables + CSS Transitions / Animation
   }
 }
 ```
-### Matriks Frekuensi Aksi & Timing (Emil Kowalski Matrix)
+### Action Frequency & Timing Matrix (Emil Kowalski Matrix)
 
-1. **Aturan Frekuensi Harian**:
-   - **Aksi Frekuensi Tinggi (≥100x/hari)**: Pintasan keyboard (`Cmd+K`), seleksi baris tabel, tab keyboard, switch akun. **Durasi: 0ms (INSTANT)**. Dilarang menganimasikan aksi ini karena menimbulkan hambatan psikologis (*interaction friction*).
-   - **Interaksi Standar**: Tooltip, popover, menu dropdown, selektor: **120ms – 180ms**.
-   - **Struktural & Sheet**: Modal dialog, bottom sheet drawer, collapsible panel: **200ms – 250ms**.
-2. **Aturan Kurva (Easing)**:
-   - **Dilarang `ease-in` untuk UI interaktif**: Animasi yang mulai lambat terasa tersendat (*sluggish*).
-   - **Gunakan High-Tension `ease-out`**: `cubic-bezier(0.23, 1, 0.32, 1)` atau `cubic-bezier(0.16, 1, 0.3, 1)`.
-   - Popover dan dropdown wajib membesar dari titik pemicunya (`transform-origin: top left/right`), bukan dari titik tengah layar.
+1. **Daily frequency rule**:
+   - **High-frequency actions (≥100x/day)**: keyboard shortcuts (`Cmd+K`), table row selection, keyboard tabbing, account switching. **Duration: 0ms (INSTANT)**. Never animate these actions, because the animation adds interaction friction.
+   - **Standard interactions**: tooltip, popover, dropdown menu, selector: **120ms – 180ms**.
+   - **Structural & sheet**: modal dialog, bottom sheet drawer, collapsible panel: **200ms – 250ms**.
+2. **Easing rule**:
+   - **No `ease-in` for interactive UI**: an animation that starts slowly feels sluggish.
+   - **Use high-tension `ease-out`**: `cubic-bezier(0.23, 1, 0.32, 1)` or `cubic-bezier(0.16, 1, 0.3, 1)`.
+   - Popovers and dropdowns must grow from their trigger point (`transform-origin: top left/right`), not from the center of the screen.
 
-### Adaptasi 12 Prinsip Animasi untuk Mikro-Interaksi Web
+### The 12 Animation Principles Adapted to Web Micro-Interactions
 
-| Prinsip Animasi | Penerapan Mikro-Interaksi Web | Spesifikasi CSS / Timing |
+| Animation Principle | Web Micro-Interaction Use | CSS / Timing Spec |
 |---|---|---|
-| **Squash & Stretch** | Kompresi tombol saat ditekan (`:active`) | `transform: scale(0.97); transition: transform 60ms ease-out;` |
-| **Anticipation** | Pengangkatan halus pada hover sebelum klik | `transform: translateY(-1px); box-shadow: 0 2px 6px rgba(0,0,0,0.08);` |
-| **Follow Through** | Centang checkbox menggambar setelah kotak terisi | `transition: stroke-dashoffset 180ms ease-out 50ms;` |
-| **Arc Motion** | Pergerakan ibu jari toggle switch melengkung | `cubic-bezier(0.34, 1.56, 0.64, 1)` durasi 180ms |
-| **Timing Bounds** | Cap durasi mikro-interaksi maksimal 300ms | 50–100ms (instan), 100–200ms (standar), 200–300ms (kompleks) |
+| **Squash & Stretch** | Button compresses while pressed (`:active`) | `transform: scale(0.97); transition: transform 60ms ease-out;` |
+| **Anticipation** | Subtle lift on hover before the click | `transform: translateY(-1px); box-shadow: 0 2px 6px rgba(0,0,0,0.08);` |
+| **Follow Through** | Checkbox tick draws after the box fills | `transition: stroke-dashoffset 180ms ease-out 50ms;` |
+| **Arc Motion** | Toggle switch thumb travels along a curve | `cubic-bezier(0.34, 1.56, 0.64, 1)` over 180ms |
+| **Timing Bounds** | Cap micro-interaction duration at 300ms | 50–100ms (instant), 100–200ms (standard), 200–300ms (complex) |
 
 
 ### Reveal Primitive (WAAPI)
@@ -82,11 +82,11 @@ export function cascade(elements: HTMLElement[], staggerMs: number = 50, duratio
 ```
 
 ### Scroll-Driven Blur-Reveal & Progressive Focus Primitive
-Pola animasi scroll modern di mana setiap seksi/kartu disembunyikan dalam kondisi blur saat di luar layar, lalu perlahan fokus tajam, memudar terang, dan terangkat halus saat masuk ke viewport.
+A scroll pattern in which each section/card stays hidden and blurred while off-screen, then sharpens, fades in, and rises slightly as it enters the viewport.
 
-#### 1. Implementasi CSS Native (Zero-JS Scroll-Timeline)
+#### 1. Native CSS Implementation (Zero-JS Scroll-Timeline)
 ```css
-/* Menggunakan CSS Scroll-Driven Animations pada browser modern */
+/* Uses CSS Scroll-Driven Animations in modern browsers */
 @keyframes scrollBlurReveal {
   from {
     opacity: 0;
@@ -107,7 +107,7 @@ Pola animasi scroll modern di mana setiap seksi/kartu disembunyikan dalam kondis
   will-change: transform, opacity, filter;
 }
 
-/* Fallback & Sanitasi Aksesibilitas Mutlak */
+/* Fallback and mandatory accessibility reset */
 @media (prefers-reduced-motion: reduce) {
   .scroll-blur-section {
     animation: none !important;
@@ -118,11 +118,11 @@ Pola animasi scroll modern di mana setiap seksi/kartu disembunyikan dalam kondis
 }
 ```
 
-#### 2. Implementasi Universal via IntersectionObserver (Ringan, Tanpa Lib Luar)
+#### 2. Universal Implementation via IntersectionObserver (Lightweight, No External Library)
 ```typescript
 /**
- * Inisialisasi scroll reveal dengan efek blur fade-in & gentle rise
- * Otomatis membersihkan filter: blur setelah selesai agar teks tetap tajam (pixel-crisp).
+ * Initialize scroll reveal with a blur fade-in and gentle rise.
+ * Clears filter: blur automatically when finished so text stays pixel-crisp.
  */
 export function initScrollBlurReveal(selector: string = '[data-scroll-reveal]') {
   if (typeof window === 'undefined') return;
@@ -139,12 +139,12 @@ export function initScrollBlurReveal(selector: string = '[data-scroll-reveal]') 
       if (entry.isIntersecting) {
         const target = entry.target as HTMLElement;
         target.classList.add('is-revealed');
-        // Bersihkan filter setelah transisi selesai untuk ketajaman teks subpixel
+        // Clear the filter after the transition ends to keep subpixel text sharp
         setTimeout(() => {
           target.style.filter = 'none';
           target.style.willChange = 'auto';
         }, 800);
-        observer.unobserve(target); // Reveal sekali (one-shot)
+        observer.unobserve(target); // Reveal once (one-shot)
       }
     });
   }, {
@@ -157,7 +157,7 @@ export function initScrollBlurReveal(selector: string = '[data-scroll-reveal]') 
 ```
 
 ```css
-/* CSS Class untuk Universal Observer */
+/* CSS class for the universal observer */
 [data-scroll-reveal] {
   opacity: 0;
   filter: blur(10px);
@@ -175,7 +175,7 @@ export function initScrollBlurReveal(selector: string = '[data-scroll-reveal]') 
   transform: translateY(0px) scale(1);
 }
 
-/* Stagger anak komponen otomatis */
+/* Automatic stagger for child components */
 [data-scroll-reveal] > *:nth-child(1) { transition-delay: 50ms; }
 [data-scroll-reveal] > *:nth-child(2) { transition-delay: 120ms; }
 [data-scroll-reveal] > *:nth-child(3) { transition-delay: 190ms; }
@@ -193,13 +193,13 @@ export function initScrollBlurReveal(selector: string = '[data-scroll-reveal]') 
 
 ## 2. Advanced Multi-Scene Motion (GSAP / Canvas)
 
-Untuk kinetic typography, video sequencing, dan audio-reactive scene:
-- Pasang via npm: `pnpm add gsap` (atau unduh `gsap.min.js` lokal ke folder `assets/` untuk eksekusi offline).
-- Hindari ketergantungan CDN runtime di lingkungan produksi atau intranet terisolasi.
+For kinetic typography, video sequencing, and audio-reactive scenes:
+- Install via the package manager: `pnpm add gsap` (or download `gsap.min.js` into the `assets/` folder for offline execution).
+- Avoid a runtime CDN dependency in production or isolated intranet environments.
 
 ## 3. Composable Primitives & CineCode Frame Helpers
 
-Saat membangun animasi yang dapat dipakai baik di browser interaktif maupun di dalam komposisi frame `maxilun-cinecode`, pisahkan **fungsi matematika kurva** dari **manipulasi DOM**:
+When an animation must work both in the interactive browser and inside `maxilun-cinecode` frame compositions, separate the **curve math function** from the **DOM manipulation**:
 
 ```typescript
 export interface SpringParams {
@@ -209,8 +209,8 @@ export interface SpringParams {
 }
 
 /**
- * Evaluasi nilai spring secara deterministik pada waktu t (detik).
- * Aman dipakai untuk requestAnimationFrame (browser) maupun frame/fps (CineCode).
+ * Evaluate the spring value deterministically at time t (seconds).
+ * Safe for requestAnimationFrame (browser) as well as frame/fps (CineCode).
  */
 export function evaluateSpring(tSeconds: number, params: SpringParams = { stiffness: 150, damping: 16, mass: 1 }): number {
   if (tSeconds <= 0) return 0;
@@ -228,63 +228,63 @@ export function evaluateSpring(tSeconds: number, params: SpringParams = { stiffn
 }
 ```
 
-## 4. Katalog 12 Komponen Motion & Batas Komposisi
+## 4. Catalog of 12 Motion Components & Composition Limits
 
-| Komponen | Fungsi Utama | Properti GPU yang Dianimasikan | Fallback `prefers-reduced-motion` |
+| Component | Primary Function | Animated GPU Properties | `prefers-reduced-motion` Fallback |
 |---|---|---|---|
-| `Reveal` | Kemunculan elemen dengan mask/arah | `opacity`, `transform: translate3d()` | Crossfade `opacity` 120ms tanpa geser |
-| `Cascade` | Aktivasi berurutan anak list/grid | `opacity`, `transform: translateY()` | Tampilkan serentak tanpa stagger delay |
-| `Spring` | Transisi posisi/skala berbasis fisika | `transform: translate3d() scale()` | Snap langsung ke posisi akhir |
-| `Trace` | Menggambar garis `stroke-dashoffset` SVG | `stroke-dashoffset`, `opacity` | Render path SVG penuh secara statis |
-| `Morph` | Interpolasi bentuk SVG path (`d`) | Atribut SVG `d` / `opacity` | Crossfade antara bentuk awal dan akhir |
-| `Scramble` | Dekode karakter teks monospace | `textContent` (dengan `aria-label` utuh) | Tampilkan teks akhir secara langsung |
-| `Orbit` | Gerak melingkar/elips mengelilingi pusat | `transform: rotate() translate3d()` | Posisi statis pada sudut akhir |
-| `Pulse` | Penekanan ritmis pada indikator aktif | `transform: scale()`, `opacity` | Warna border/badge statis kontras tinggi |
-| `Breathe` | Gerak mikro kontinu yang sangat halus | `opacity`, `transform: scale(1..1.02)` | Dinonaktifkan sepenuhnya (`none`) |
-| `Wave` | Propagasi gelombang sinus antar-elemen | `transform: translateY()` | Rata pada baseline normal |
-| `Drag` | Mengikuti pointer dengan inersia & friksi | `transform: translate3d()` | Posisi mengikuti pointer 1:1 tanpa momentum |
-| `Scatter` | Penyebaran/pengumpulan partikel | Canvas 2D / WebGL buffer | Ilustrasi statis posisi akhir |
+| `Reveal` | Element entrance with a mask/direction | `opacity`, `transform: translate3d()` | 120ms `opacity` crossfade without movement |
+| `Cascade` | Sequential activation of list/grid children | `opacity`, `transform: translateY()` | Show all at once without stagger delay |
+| `Spring` | Physics-based position/scale transition | `transform: translate3d() scale()` | Snap directly to the final position |
+| `Trace` | Draws an SVG `stroke-dashoffset` line | `stroke-dashoffset`, `opacity` | Render the full SVG path statically |
+| `Morph` | Interpolates an SVG path shape (`d`) | SVG `d` attribute / `opacity` | Crossfade between the start and end shape |
+| `Scramble` | Decodes monospace text characters | `textContent` (with intact `aria-label`) | Show the final text immediately |
+| `Orbit` | Circular/elliptical motion around a center | `transform: rotate() translate3d()` | Static position at the final angle |
+| `Pulse` | Rhythmic emphasis on an active indicator | `transform: scale()`, `opacity` | Static high-contrast border/badge color |
+| `Breathe` | Very subtle continuous micro-motion | `opacity`, `transform: scale(1..1.02)` | Fully disabled (`none`) |
+| `Wave` | Sine wave propagating across elements | `transform: translateY()` | Flat on the normal baseline |
+| `Drag` | Follows the pointer with inertia & friction | `transform: translate3d()` | Position follows the pointer 1:1 without momentum |
+| `Scatter` | Particles disperse/gather | Canvas 2D / WebGL buffer | Static illustration of the final positions |
 
-**Aturan Komposisi Purity**:
-1. Maksimal **3 primitif per elemen** dan maksimal **2 grup animasi simultan** dalam satu viewport agar fokus mata pengguna tidak pecah.
-2. Dilarang menganimasikan `top`, `left`, `width`, `height`, atau `box-shadow` secara terus-menerus pada thread utama; gunakan `transform` dan `opacity`.
-3. Untuk ekspor **Lottie JSON** dan **Animated SVG**, pastikan semua path sudah dikonversi ke kurva bezier standar tanpa filter CSS non-standar yang gagal dirender di iOS/Android.
+**Purity Composition Rules**:
+1. At most **3 primitives per element** and at most **2 simultaneous animation groups** in one viewport, so the user's attention does not split.
+2. Never animate `top`, `left`, `width`, `height`, or `box-shadow` continuously on the main thread; use `transform` and `opacity`.
+3. For **Lottie JSON** and **Animated SVG** export, convert every path to standard bezier curves and remove non-standard CSS filters that fail to render on iOS/Android.
 
-## 5. Engine Efek Visual, Text Kinetics & Filter Kompositor
+## 5. Visual Effects Engine, Text Kinetics & Compositor Filters
 
-### 5.1 Katalog 10 Efek Text Kinetics (Tipografi Bergerak)
-| Efek Teks | Mekanisme Teknis | Parameter Kontrol | Kapan Digunakan |
+### 5.1 Catalog of 10 Text Kinetics Effects
+| Text Effect | Technical Mechanism | Control Parameters | When to Use |
 |---|---|---|---|
-| `Scramble` | Dekode karakter acak monospace menuju teks target | `speed`, `charset`, `resolveOrder` | Reveal judul teknis, angka KPI, kode CLI, atau hash |
-| `Elastic` | Posisi per kata/huruf memantul halus dengan `evaluateSpring()` | `stiffness`, `damping`, `staggerMs` | Headline hero produk yang energik dan taktil |
-| `MaskReveal` | Teks naik dari balik `overflow: hidden` container per baris | `yOffsetPx`, `durationMs`, `staggerMs` | Editorial reveal bersih (gaya Stripe / Linear / Apple) |
-| `Typewriter` | Kemunculan sekuensial karakter + kursor blok berkedip | `charIntervalMs`, `cursorChar` | Simulasi input terminal, prompt AI, atau live coding |
-| `HighlightSweep` | Latar belakang aksen menyapu kata kunci (`scaleX(0 -> 1)`) | `color`, `direction`, `durationMs` | Menekankan 1–2 kata kunci nilai bisnis di dalam kalimat |
-| `Wave` | Pergeseran fase sinus (`Math.sin(t + i * phase)`) antar-karakter | `amplitudePx`, `frequencyHz`, `phase` | Indikator pemrosesan aktif atau musik/audio state |
-| `SplitReunite` | Karakter memisah pada sumbu X/Y lalu menyatu kembali | `distancePx`, `axis`, `returnDelayMs` | Transisi pergantian bab/scene dramatis |
-| `GradientFlow` | Aliran warna `background-clip: text` dengan sudut terukur | `stops`, `angleDeg`, `durationMs` | Penekanan satu kata pada judul gelap kontras tinggi |
-| `GlitchClean` | Pergeseran `clip-path` singkat (`120ms`) lalu terkunci tajam | `slices`, `offsetPx`, `durationMs` | Tema keamanan siber, anomali sistem, atau retro-tech |
-| `CounterOdometer` | Interpolasi angka dengan `font-variant-numeric: tabular-nums` | `fromValue`, `toValue`, `decimals` | Animasi metrik finansial, latensi `ms`, dan pertumbuhan |
+| `Scramble` | Random monospace characters decode into the target text | `speed`, `charset`, `resolveOrder` | Reveal of technical titles, KPI numbers, CLI code, or hashes |
+| `Elastic` | Per-word/letter position bounces gently with `evaluateSpring()` | `stiffness`, `damping`, `staggerMs` | Energetic, tactile product hero headline |
+| `MaskReveal` | Text rises from behind an `overflow: hidden` container, line by line | `yOffsetPx`, `durationMs`, `staggerMs` | Clean editorial reveal (Stripe / Linear / Apple style) |
+| `Typewriter` | Characters appear in sequence + blinking block cursor | `charIntervalMs`, `cursorChar` | Simulated terminal input, AI prompt, or live coding |
+| `HighlightSweep` | Accent background sweeps across keywords (`scaleX(0 -> 1)`) | `color`, `direction`, `durationMs` | Emphasize 1–2 business-value keywords inside a sentence |
+| `Wave` | Sine phase shift (`Math.sin(t + i * phase)`) across characters | `amplitudePx`, `frequencyHz`, `phase` | Active processing indicator or music/audio state |
+| `SplitReunite` | Characters split along the X/Y axis, then rejoin | `distancePx`, `axis`, `returnDelayMs` | Dramatic chapter/scene change transition |
+| `GradientFlow` | Flowing `background-clip: text` color at a measured angle | `stops`, `angleDeg`, `durationMs` | Emphasize one word in a dark, high-contrast title |
+| `GlitchClean` | Brief `clip-path` shift (`120ms`), then locks sharp | `slices`, `offsetPx`, `durationMs` | Cybersecurity, system anomaly, or retro-tech themes |
+| `CounterOdometer` | Number interpolation with `font-variant-numeric: tabular-nums` | `fromValue`, `toValue`, `decimals` | Animated financial metrics, `ms` latency, and growth |
 
-### 5.2 Katalog Efek Kamera, Layer & Post-Processing (Browser & Video)
-| Efek Visual | Implementasi Native (CSS / SVG / Canvas) | Aturan Purity & Performa |
+### 5.2 Catalog of Camera, Layer & Post-Processing Effects (Browser & Video)
+| Visual Effect | Native Implementation (CSS / SVG / Canvas) | Purity & Performance Rule |
 |---|---|---|
-| **Iris / Portal Wipe** | `clip-path: circle(0% at 50% 50%)` → `circle(150% at 50% 50%)` | Gunakan untuk membuka scene baru dari titik klik/fokus utama |
-| **Rack Focus Blur** | `filter: blur(0px)` ↔ `blur(6px)` + `opacity` | Fokuskan hanya 1 layer aktif; batasi elemen blur simultan `<= 2` |
-| **Film Grain / Noise** | SVG `<feTurbulence type="fractalNoise" baseFrequency="0.8">` overlay (`opacity: 0.04`) | Memberi tekstur organik pada permukaan gelap agar bebas banding warna |
-| **Light Sweep / Sheen** | Pseudo-element miring `translateX(-120% -> 220%)` di dalam `overflow: hidden` | Hanya dipicu sekali saat kartu/badge penting masuk atau di-hover |
-| **Parallax Depth Planes** | 3 layer (`--layer-bg: 0.2x`, `--layer-mid: 0.6x`, `--layer-fg: 1.0x`) via `translate3d` | Wajib dimatikan otomatis saat `prefers-reduced-motion: reduce` aktif |
-| **Chromatic Impact** | Pemisahan singkat `text-shadow` / channel RGB (`<= 150ms`) pada ketukan puncak | Hanya untuk style *High-Velocity* / *Audio-Synced*; dilarang menyala terus-menerus |
+| **Iris / Portal Wipe** | `clip-path: circle(0% at 50% 50%)` → `circle(150% at 50% 50%)` | Use to open a new scene from the click point/primary focus |
+| **Rack Focus Blur** | `filter: blur(0px)` ↔ `blur(6px)` + `opacity` | Focus only 1 active layer; limit simultaneous blurred elements to `<= 2` |
+| **Film Grain / Noise** | SVG `<feTurbulence type="fractalNoise" baseFrequency="0.8">` overlay (`opacity: 0.04`) | Adds organic texture to dark surfaces and prevents color banding |
+| **Light Sweep / Sheen** | Skewed pseudo-element `translateX(-120% -> 220%)` inside `overflow: hidden` | Trigger once only, when an important card/badge enters or is hovered |
+| **Parallax Depth Planes** | 3 layers (`--layer-bg: 0.2x`, `--layer-mid: 0.6x`, `--layer-fg: 1.0x`) via `translate3d` | Must switch off automatically when `prefers-reduced-motion: reduce` is active |
+| **Chromatic Impact** | Brief `text-shadow` / RGB channel split (`<= 150ms`) on the peak beat | Only for the *High-Velocity* / *Audio-Synced* styles; never left on continuously |
 
-### 5.3 Template Starter Interaktif Bawaan (`assets/`)
-- `assets/starter-opener.html`: Kanvas panggung `1920x1080` responsif dengan 5 layer (`bg`, `mid`, `fg`, `text`, `overlay`), rig kamera virtual, dan injeksi variabel CSS Brand DNA.
-- `assets/starter-explainer.html`: Template multi-scene narasi penjelas lengkap dengan transisi kamera dan kontrol timeline.
+### 5.3 Bundled Interactive Starter Templates (`assets/`)
+- `assets/starter-opener.html`: responsive `1920x1080` stage canvas with 5 layers (`bg`, `mid`, `fg`, `text`, `overlay`), a virtual camera rig, and Brand DNA CSS variable injection.
+- `assets/starter-explainer.html`: multi-scene explainer template with camera transitions and timeline controls.
 
 ## 6. Native CSS Scroll-Driven Animations (Zero JS Runtime)
 
-Gunakan standar modern `animation-timeline: scroll()` dan `view-timeline` untuk animasi pengguliran halaman yang berjalan 100% pada *compositor thread* tanpa beban event listener JavaScript:
+Use the modern `animation-timeline: scroll()` and `view-timeline` standards for page-scroll animation that runs 100% on the compositor thread with no JavaScript event listeners:
 
-### 6.1 Progress Bar Pengguliran Halaman
+### 6.1 Page Scroll Progress Bar
 ```css
 .scroll-progress-bar {
   position: fixed;
@@ -322,7 +322,7 @@ Gunakan standar modern `animation-timeline: scroll()` dan `view-timeline` untuk 
   }
 }
 
-/* Fallback untuk Browser Lama & Aksesibilitas */
+/* Fallback for older browsers and accessibility */
 @supports not (animation-timeline: scroll()) {
   .reveal-on-scroll { opacity: 1; transform: none; }
 }

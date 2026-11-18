@@ -1,31 +1,31 @@
 # Web3D Engine Architecture & Multi-Runtime Playbook
 
-Panduan rekayasa produksi untuk pengalaman 3D, WebGL, dan Canvas 2D performa tinggi di peramban. Mengonsolidasi pola arsitektur dari Three.js, React Three Fiber (R3F), Babylon.js, PlayCanvas, PixiJS, dan WebXR ke dalam standar rekayasa Maxilun.
+Production engineering guide for high-performance 3D, WebGL, and Canvas 2D experiences in the browser. It consolidates architecture patterns from Three.js, React Three Fiber (R3F), Babylon.js, PlayCanvas, PixiJS, and WebXR into Maxilun engineering standards.
 
 ---
 
-## 1. Anggaran Kinerja 3D Produksi (Hardware Budgets)
+## 1. Production 3D Performance Budgets (Hardware Budgets)
 
-Sebelum memulai rendering, tetapkan batas toleransi untuk target 60 FPS pada perangkat seluler dan desktop:
+Before rendering, set tolerance limits for a 60 FPS target on mobile and desktop devices:
 
-| Metrik Kinerja | Target Desktop Standar | Target Mobile / Low-Power | Tindakan Remediasi Jika Melampaui Batas |
+| Performance Metric | Standard Desktop Target | Mobile / Low-Power Target | Remediation When Over Budget |
 |---|---|---|---|
-| **Draw Calls** | $\le 100$ | $\le 50$ | Gunakan `InstancedMesh`, gabungkan geometri statis, atlas tekstur |
+| **Draw Calls** | $\le 100$ | $\le 50$ | Use `InstancedMesh`, merge static geometry, texture atlases |
 | **Triangles / Polygons** | $\le 300\text{k}$ | $\le 80\text{k}$ | Mesh decimation, Level of Detail (LOD), normal map baking |
-| **Texture VRAM** | $\le 120\text{MB}$ | $\le 45\text{MB}$ | ORM channel packing, KTX2/Basis Universal, resolusi maks 1024px |
-| **Shaders & Lights** | $\le 3$ active shadow lights | 1 directional shadow light | Ganti dynamic shadows dengan contact shadow planes |
-| **Device Pixel Ratio (DPR)** | `Math.min(window.devicePixelRatio, 2)` | `Math.min(window.devicePixelRatio, 1.5)` | Cap DPR maksimum untuk mencegah thermal throttling GPU 4K |
+| **Texture VRAM** | $\le 120\text{MB}$ | $\le 45\text{MB}$ | ORM channel packing, KTX2/Basis Universal, max resolution 1024px |
+| **Shaders & Lights** | $\le 3$ active shadow lights | 1 directional shadow light | Replace dynamic shadows with contact shadow planes |
+| **Device Pixel Ratio (DPR)** | `Math.min(window.devicePixelRatio, 2)` | `Math.min(window.devicePixelRatio, 1.5)` | Cap the maximum DPR to prevent GPU thermal throttling at 4K |
 
 ---
 
-## 2. Pola Arsitektur Tiga Lapisan (The 3-Layer Separation)
+## 2. The 3-Layer Separation Pattern
 
-Dilarang keras mencampur logika status aplikasi/DOM ke dalam render loop WebGL:
+Never mix application/DOM state logic into the WebGL render loop:
 
 ```
 ┌────────────────────────────────────────────────────────┐
 │  1. DOM UI Layer (HTML, React, CSS, Semantic A11y)     │
-│     - Navigasi, tombol aksi, dialog, pembaca layar     │
+│     - Navigation, action buttons, dialogs, screen reader │
 ├────────────────────────────────────────────────────────┤
 │  2. Animation & Interaction Layer (GSAP / Motion)      │
 │     - Timeline scroll, spring gestures, event bridge   │
@@ -35,15 +35,15 @@ Dilarang keras mencampur logika status aplikasi/DOM ke dalam render loop WebGL:
 └────────────────────────────────────────────────────────┘
 ```
 
-**Aturan Siklus Render Non-Allocating (Zero GC Pressure in RAF)**:
-- Dilarang membuat objek baru (`new THREE.Vector3()`, `new THREE.Matrix4()`) di dalam fungsi `requestAnimationFrame` atau `useFrame()`.
-- Alokasikan variabel penampung (*scratch variables*) satu kali di luar loop untuk mencegah *garbage collector stutter*.
+**Non-Allocating Render Cycle Rule (Zero GC Pressure in RAF)**:
+- Never create new objects (`new THREE.Vector3()`, `new THREE.Matrix4()`) inside `requestAnimationFrame` or `useFrame()`.
+- Allocate scratch variables once outside the loop to prevent garbage collector stutter.
 
 ---
 
-## 3. Three.js WebGL Core & Siklus Hidup Memori
+## 3. Three.js WebGL Core & Memory Lifecycle
 
-### A. Setup Kanvas & Penanganan Kehilangan Konteks (Context Loss)
+### A. Canvas Setup & Context Loss Handling
 ```javascript
 import * as THREE from 'three';
 
@@ -63,7 +63,7 @@ export function createWebGLScene(canvas) {
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-  // Tangani event context loss secara elegan
+  // Handle the context loss event gracefully
   canvas.addEventListener('webglcontextlost', (e) => {
     e.preventDefault();
     console.warn('[WebGL] Context lost. Pausing render loop.');
@@ -79,19 +79,19 @@ export function createWebGLScene(canvas) {
 }
 ```
 
-### B. Protokol Pembersihan Sumber Daya GPU (Deep Disposal Pattern)
-WebGL tidak membersihkan memori GPU secara otomatis saat elemen DOM dilepas:
+### B. GPU Resource Cleanup Protocol (Deep Disposal Pattern)
+WebGL does not free GPU memory automatically when a DOM element is removed:
 ```javascript
 export function disposeScene(scene, renderer) {
   scene.traverse((object) => {
     if (!object.isMesh) return;
 
-    // Bersihkan geometri
+    // Dispose geometry
     if (object.geometry) {
       object.geometry.dispose();
     }
 
-    // Bersihkan material dan seluruh peta tekstur
+    // Dispose materials and every texture map
     if (object.material) {
       const materials = Array.isArray(object.material) ? object.material : [object.material];
       for (const mat of materials) {
@@ -115,16 +115,16 @@ export function disposeScene(scene, renderer) {
 
 ## 4. React Three Fiber (R3F) & Drei Patterns
 
-Pada ekosistem React, R3F menyediakan abstraksi deklaratif tanpa overhead komputasi tambahan.
+In the React ecosystem, R3F provides a declarative abstraction without extra compute overhead.
 
-### Pola Produksi R3F Canvas:
+### R3F Canvas Production Pattern:
 ```tsx
 import { Suspense, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, OrbitControls, useGLTF, Html, PerformanceMonitor } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Scratch variables di luar render loop (Zero GC allocation)
+// Scratch variables outside the render loop (Zero GC allocation)
 const scratchVec = new THREE.Vector3();
 
 export function ProductViewer({ modelUrl }: { modelUrl: string }) {
@@ -139,7 +139,7 @@ export function ProductViewer({ modelUrl }: { modelUrl: string }) {
         <ambientLight intensity={0.7} />
         <directionalLight position={[5, 8, 5]} intensity={1.5} castShadow />
 
-        <Suspense fallback={<Html center><span className="text-xs font-mono text-stone-400">MEMUAT MODEL 3D...</span></Html>}>
+        <Suspense fallback={<Html center><span className="text-xs font-mono text-stone-400">LOADING 3D MODEL...</span></Html>}>
           <Float speed={2} rotationIntensity={0.5} floatIntensity={0.8}>
             <Model meshUrl={modelUrl} />
           </Float>
@@ -157,7 +157,7 @@ function Model({ meshUrl }: { meshUrl: string }) {
 
   useFrame((state, delta) => {
     if (meshRef.current) {
-      // Rotasi halus frame-rate independent
+      // Smooth frame-rate independent rotation
       meshRef.current.rotation.y += delta * 0.2;
     }
   });
@@ -170,10 +170,10 @@ function Model({ meshUrl }: { meshUrl: string }) {
 
 ## 5. Multi-Engine Runtime Decision Matrix
 
-| Kebutuhan Proyek | Runtime Direkomendasikan | Alasan & Trade-off |
+| Project Need | Recommended Runtime | Reason & Trade-off |
 |---|---|---|
-| **E-commerce, Brand Showcase, Landing Page Interaktif** | **Three.js / React Three Fiber** | Ekosistem komunitas terbesar, ukuran bundle terukur (`~150KB` gzip core), integrasi DOM mulus via Drei. |
-| **Game Browser Kompleks, Simulasi Fisika Tingkat Lanjut, CAD** | **Babylon.js** | Engine monolitik lengkap, integrasi fisika Havok kelas industri bawaan, material node editor visual. |
-| **Aplikasi Web 3D Multi-User, Scene Editor Ringan** | **PlayCanvas** | Arsitektur Entity-Component System (ECS) murni, runtime WebGL ultra-ringan, engine footprint sangat kecil. |
-| **Visualisasi Data 2D Berperforma Tinggi, Kartu Interaktif Partikel** | **PixiJS** | Renderer 2D WebGL tercepat, batching otomatis untuk ratusan ribu sprite tanpa overhead matriks 3D. |
-| **Pengalaman VR/AR Web Headset (Apple Vision Pro, Meta Quest)** | **A-Frame / WebXR API** | Deklaratif HTML-like untuk WebXR session, spatial tracking dan controller inputs bawaan. |
+| **E-commerce, Brand Showcase, Interactive Landing Page** | **Three.js / React Three Fiber** | Largest community ecosystem, measured bundle size (`~150KB` gzip core), smooth DOM integration via Drei. |
+| **Complex Browser Games, Advanced Physics Simulation, CAD** | **Babylon.js** | Complete monolithic engine, built-in industrial-grade Havok physics integration, visual node material editor. |
+| **Multi-User 3D Web Apps, Lightweight Scene Editor** | **PlayCanvas** | Pure Entity-Component System (ECS) architecture, ultra-light WebGL runtime, very small engine footprint. |
+| **High-Performance 2D Data Visualization, Interactive Particle Cards** | **PixiJS** | Fastest 2D WebGL renderer, automatic batching for hundreds of thousands of sprites without 3D matrix overhead. |
+| **Web VR/AR Headset Experiences (Apple Vision Pro, Meta Quest)** | **A-Frame / WebXR API** | Declarative HTML-like API for WebXR sessions, built-in spatial tracking and controller inputs. |

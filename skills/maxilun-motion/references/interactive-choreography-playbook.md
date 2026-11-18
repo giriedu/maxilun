@@ -1,15 +1,15 @@
 # Interactive Choreography & Advanced Motion Playbook
 
-Panduan produksi orkestrasi scroll, pegas fisika, animasi berbasis gestur, dan transisi antar-halaman (*page transitions*) di peramban web modern.
+Production guide for scroll orchestration, spring physics, gesture-driven animation, and page transitions in modern browsers.
 
 ---
 
-## 1. GSAP ScrollTrigger: Arsitektur Skala Produksi
+## 1. GSAP ScrollTrigger: Production-Scale Architecture
 
-GSAP ScrollTrigger adalah standar industri untuk animasi berbasis scroll yang membutuhkan *pinning* presisi, *scrubbing*, dan orkestrasi multi-elemen.
+Use GSAP ScrollTrigger for scroll-driven animation that needs precise pinning, scrubbing, and multi-element orchestration.
 
-### A. Pola Aman Siklus Hidup di React (`gsap.context`)
-Hindari kebocoran memori dengan selalu membungkus inisialisasi di dalam `gsap.context()`:
+### A. Lifecycle-Safe Pattern in React (`gsap.context`)
+Wrap every initialization in `gsap.context()` to prevent memory leaks:
 
 ```tsx
 import { useLayoutEffect, useRef } from 'react';
@@ -22,7 +22,7 @@ export function FeatureShowcase() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
-    // gsap.context mengisolasi selektor dan memastikan cleanup tuntas
+    // gsap.context scopes selectors and guarantees complete cleanup
     const ctx = gsap.context((self) => {
       const cards = self.selector?.('.feature-card');
 
@@ -45,24 +45,24 @@ export function FeatureShowcase() {
       });
     }, containerRef);
 
-    return () => ctx.revert(); // Bersihkan seluruh ScrollTrigger saat komponen unmount
+    return () => ctx.revert(); // Remove every ScrollTrigger when the component unmounts
   }, []);
 
   return (
     <div ref={containerRef} className="min-h-screen bg-stone-950 p-12">
-      <div className="feature-card">Fitur 1</div>
-      <div className="feature-card">Fitur 2</div>
+      <div className="feature-card">Feature 1</div>
+      <div className="feature-card">Feature 2</div>
     </div>
   );
 }
 ```
 
-### B. Isolasi Responsif Lintas Layar (`ScrollTrigger.matchMedia`)
-Dilarang memaksakan animasi pinning horizontal desktop pada layar ponsel kecil:
+### B. Responsive Isolation Across Screens (`ScrollTrigger.matchMedia`)
+Do not force desktop horizontal pinning onto small phone screens:
 
 ```javascript
 ScrollTrigger.matchMedia({
-  // Desktop: Aktifkan horizontal scrub dan pinning
+  // Desktop: enable horizontal scrub and pinning
   '(min-width: 1024px)': function() {
     gsap.to('.horizontal-track', {
       xPercent: -100 * (panels.length - 1),
@@ -76,7 +76,7 @@ ScrollTrigger.matchMedia({
     });
   },
 
-  // Mobile: Aliran vertikal native tanpa pinning
+  // Mobile: native vertical flow without pinning
   '(max-width: 1023px)': function() {
     gsap.from('.horizontal-track > div', {
       opacity: 0,
@@ -93,12 +93,12 @@ ScrollTrigger.matchMedia({
 
 ---
 
-## 2. Framer Motion (Motion): Transisi Antarmuka & Layout Semantik
+## 2. Framer Motion (Motion): Interface Transitions & Semantic Layout
 
-Framer Motion unggul dalam transisi antar-elemen (shared element transitions) dan fisika gestur.
+Use Framer Motion for shared element transitions and gesture physics.
 
 ### A. Shared Element Transition via `layoutId`
-Memindahkan elemen dari daftar ke tampilan detail tanpa reload atau lompatan visual:
+Move an element from a list to its detail view without a reload or visual jump:
 ```tsx
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -122,7 +122,7 @@ export function CardItem({ item, isSelected, onSelect }: CardItemProps) {
 }
 ```
 
-### B. Gestur Seret & Pegas Fisika Kritis (Zero Overshoot on High-Frequency)
+### B. Drag Gesture & Critically Damped Spring (Zero Overshoot on High-Frequency)
 ```tsx
 <motion.div
   drag="x"
@@ -131,41 +131,41 @@ export function CardItem({ item, isSelected, onSelect }: CardItemProps) {
   whileTap={{ scale: 0.98 }}
   transition={{
     type: 'spring',
-    stiffness: 400, // Responsif instan
-    damping: 35,    // Redaman kritis untuk mematikan osilasi berlebih
+    stiffness: 400, // Instant response
+    damping: 35,    // Critical damping suppresses excess oscillation
     mass: 1
   }}
   className="w-full bg-stone-900 p-4 rounded-lg select-none"
 >
-  Geser untuk tindakan cepat
+  Drag for quick actions
 </motion.div>
 ```
 
 ---
 
-## 3. Rive & Lottie Runtimes: Grafik Vektor State-Machine
+## 3. Rive & Lottie Runtimes: State-Machine Vector Graphics
 
-Gunakan animasi vektor berbasis state machine ketika grafik harus bereaksi langsung terhadap input kursor pengguna tanpa overhead komputasi canvas penuh:
+Use state-machine vector animation when a graphic must react directly to pointer input without the cost of a full canvas:
 
 - **Rive Runtime**:
-  - Gunakan `useRive` dengan state machine input:
-  - `Boolean` untuk toggle state (misal: Mode Malam / Siang).
-  - `Number` untuk tracking scroll/kursor kontinu (0.0 .. 100.0).
-  - `Trigger` untuk aksi satu kali (klik tombol sukses/gagal).
+  - Use `useRive` with state machine inputs:
+  - `Boolean` for toggle states (for example: Night / Day mode).
+  - `Number` for continuous scroll/cursor tracking (0.0 .. 100.0).
+  - `Trigger` for one-shot actions (success/failure button click).
 - **Lottie Optimization**:
-  - Pangkas path tersembunyi di Adobe After Effects sebelum mengekspor JSON.
-  - Prioritaskan format `.lottie` / dotLottie terkompresi (menghemat 70% ukuran JSON mentah).
-  - Hentikan pemutaran loop saat elemen keluar dari viewport via `IntersectionObserver`.
+  - Trim hidden paths in Adobe After Effects before exporting JSON.
+  - Prefer the compressed `.lottie` / dotLottie format (saves 70% of the raw JSON size).
+  - Stop loop playback when the element leaves the viewport via `IntersectionObserver`.
 
 ---
 
-## 4. Transisi Halaman Mulus (Barba.js & View Transitions API)
+## 4. Smooth Page Transitions (Barba.js & View Transitions API)
 
-Transisi antar-halaman tanpa memicu *white-flash reload*:
+Transition between pages without triggering a white-flash reload:
 
-### Pendekatan Native Modern (View Transitions API):
+### Modern Native Approach (View Transitions API):
 ```javascript
-// Navigasi dengan transisi native tanpa dependensi tambahan
+// Navigate with a native transition and no extra dependency
 export function navigateWithTransition(url) {
   if (!document.startViewTransition) {
     window.location.href = url;

@@ -1,13 +1,13 @@
 ---
 name: maxilun-verify
 description: >
-  Quality assurance and verification specialist. Executes automated testing,
-  linting, type-checking, build validation, accessibility and security regression gates,
-  and factual verification reporting backed by command output.
-  Triggers: "/maxilun-verify", "/msal-test", "jalankan tes", "cek build", "type check",
-  "lint kode", "uji regresi", "validasi perubahan", or verification before shipping.
+  Runs automated tests, linting, type checks, build validation, and accessibility and
+  security regression gates, then reports a factual verdict backed by command output.
+  Use it to verify a change before shipping.
+  Triggers: "/maxilun-verify", "/msal-test", "jalankan tes", "run tests", "cek build", "check build",
+  "type check", "lint kode", "lint code", "uji regresi", "regression test", "validasi perubahan", "validate changes".
 metadata:
-  version: "1.1.0"
+  version: "1.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -27,7 +27,7 @@ metadata:
 
 # Maxilun Verify: Quality Assurance & Build Validation
 
-Membuktikan kebenaran perubahan kode dan kesiapan rilis melalui eksekusi pemeriksaan tipe, linter, pengujian otomatis, validasi build, serta gate regresi domain dengan bukti keluaran perintah yang nyata.
+Prove that a code change is correct and ready to release. Run type checks, linters, automated tests, build validation, and domain regression gates, and back every claim with real command output.
 
 ## Skill Contract
 
@@ -38,105 +38,108 @@ Membuktikan kebenaran perubahan kode dan kesiapan rilis melalui eksekusi pemerik
 - **Handoff**: send root-cause investigation of complex failures to `maxilun-insight`, send code/test fixes to `maxilun-engineer` (or `maxilun-craft` / `maxilun-cinecode` / `maxilun-motion` for UI and media issues), and wire CI gates with `maxilun-deploy`.
 
 <!-- CORE-RULES:START -->
-## Core Rules (Selalu Aktif)
+## Core Rules (Always On)
 
-Berlaku pada setiap respons dan setiap perubahan kode. Tidak bisa di-override oleh instruksi lain.
+These apply to every response and every code change. Explicit user instructions and project rule files take precedence; no other section of a Maxilun skill may weaken them.
 
-1. **Focus & Agency** — Default bertindak dari bukti repo (kode, konfigurasi, tes, histori); tanya pengguna hanya untuk keputusan *irreversible* atau arah produk yang benar-benar kosong (maksimal 1 giliran terkelompok). Tanpa banner HUD emoji, tanpa checklist centang-sendiri. Maksimal 3 fokus kerja aktif.
-2. **Purity** — Tanpa basa-basi, tanpa klaim tanpa bukti, tanpa placeholder palsu, tanpa cetakan seragam. Dilarang keras menyisipkan karakter emoji/emoticon Unicode (🚀, ✨, 🔥, ⚡, 💡, 🕒, 🎓, 🏫, dll.) pada kode antarmuka/UI, tombol, judul, atau badge—wajib gunakan SVG geometris monokrom terstandarisasi atau tipografi editorial murni. Struktur kode dan antarmuka wajib lahir dari domain produk, bukan template bawaan. Komentar hanya menjelaskan MENGAPA.
-3. **Minimalist** — YAGNI → reuse yang ada → stdlib → platform native → satu baris. Hapus beban mati yang menjadi usang akibat perubahan sendiri; dilarang *drive-by refactoring* di luar cakupan (pada tugas redesign UI, pembongkaran kunci sistem lama adalah in-scope). Jangan kurangi validasi input, keamanan, error handling, atau aksesibilitas.
-4. **Clarity & Proof** — Kesimpulan dan tindakan dulu, bukti menyusul. Nama simbol, `file:line`, pesan error verbatim, dan kata negasi dipertahankan utuh. Label kepastian hanya saat perlu membedakan bukti: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
+1. **Focus & Agency** — Act from repository evidence (code, config, tests, history) by default. Ask the user only about irreversible decisions or product direction that the repository cannot answer, in at most one grouped turn. No emoji HUD banners, no self-ticked checklists. At most three active work focuses.
+2. **Purity** — No filler, no claim without evidence, no fake placeholders, no one-size-fits-all template. No emoji or emoticon characters in interface code, buttons, headings, or badges; use one monochrome SVG icon family or plain typography (`CMP-003`). Code structure and interfaces come from the product domain, not from a boilerplate. Comments explain WHY only.
+3. **Minimalist** — YAGNI → reuse what exists → stdlib → native platform → one line. Delete dead weight your own change made obsolete; no drive-by refactoring outside scope (in a UI redesign, dismantling the old design-system locks is in scope). Never trade away input validation, security, error handling, or accessibility.
+4. **Clarity & Proof** — Conclusion and action first, evidence after. Keep symbol names, `file:line`, verbatim error messages, and negations intact. Use certainty labels only when evidence levels differ: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
 
-**Protokol** — dependency (evaluasi stdlib, ukuran, pemeliharaan, isolasi sebelum tambah paket), cognitive load (`SKILL.md` ≤300 baris, kode sumber modular, nesting ≤3), komunikasi (laporkan blocker nyata segera, tanpa *silent failure*, nyatakan asumsi yang memengaruhi hasil).
+**Protocols** — dependencies (weigh stdlib, size, maintenance, and isolation before adding a package), cognitive load (modular source, nesting ≤3), communication (report real blockers immediately, no silent failure, state assumptions that affect the result).
 
-Detail lengkap: `../maxilun/references/engines.md`.
+Full detail: `../maxilun/references/engines.md`.
 <!-- CORE-RULES:END -->
 
-## 1. Prinsip Pembuktian & Proporsionalitas Eksekusi
+## 1. Proof Principles & Proportional Execution
 
-- **Bukti Eksekusi Nyata**: Dilarang menyatakan perubahan aman atau lulus tanpa menjalankan pemeriksaan yang relevan dan membaca exit code beserta output aktualnya. Bila perangkat uji atau layanan target tidak tersedia di lingkungan kerja, nyatakan `UNVERIFIED` beserta penyebab pastinya.
-- **Ikuti Skrip Asli Repositori**: Periksa `package.json`, `pyproject.toml`, `Makefile`, `Cargo.toml`, atau konfigurasi CI proyek terlebih dahulu sebelum memilih perintah uji agar flag, variabel environment, dan runner sesuai konvensi repo.
-- **Kualitas Asersi di Atas Kuantitas**: Tiga tes terfokus yang membuktikan jalur sukses (*happy path*), batas nilai input ekstrem (*empty/null/boundary*), dan kegagalan yang diharapkan lebih bernilai daripada puluhan tes dangkal yang hanya menyalin ulang isi fungsi.
+- **Real execution evidence**: Never state that a change is safe or passing without running the relevant check and reading its exit code and actual output. When the test tooling or the target service is unavailable in the working environment, state `UNVERIFIED` with the exact cause.
+- **Follow the repository's own scripts**: Inspect `package.json`, `pyproject.toml`, `Makefile`, `Cargo.toml`, or the project CI configuration before choosing a test command, so flags, environment variables, and the runner match repo conventions.
+- **Assertion quality over quantity**: Three focused tests that prove the *happy path*, the extreme input boundaries (*empty/null/boundary*), and the expected failure are worth more than dozens of shallow tests that only restate the function body.
 
-## 2. Verifikasi Berjenjang Proporsional (Tiers 1–5)
+## 2. Proportional Tiered Verification (Tiers 1–5)
 
-Pilih kedalaman tier secara proporsional terhadap permukaan kode yang berubah dan target rilis:
+Choose tier depth in proportion to the changed code surface and the release target:
 
-| Permukaan Perubahan | Tier Wajib | Tier yang Boleh Dilewati (dengan Alasan Eksplisit) |
+| Change Surface | Required Tiers | Tiers You May Skip (with an Explicit Reason) |
 |---|---|---|
-| Utilitas/logika murni terisolasi | Tier 1 + Tier 2 + smoke check | Tier 3–5 bila ekspor, konfigurasi, dan batas API tidak berubah |
-| Endpoint API, skema DB, atau bisnis inti | Tier 1 + Tier 2 + Tier 3 + Tier 4 | Tier 5 UI/Media bila tidak menyentuh antarmuka |
-| Autentikasi, otorisasi, input/kripto | Tier 1 + Tier 2 + Tier 3 + Tier 5 (Security) | Tier 5 Media |
-| Komponen UI, layout, state klien, video | Tier 1 + Tier 2 + Tier 3 + Tier 5 (UI/A11y/Media) | Tier 5 Security bila murni presentasi tanpa input baru |
-| Konfigurasi build, upgrade paket, rilis | Tier 1 + Tier 2 + Tier 3 + Tier 4 (+ Tier 5 relevan) | Tidak ada untuk rilis produksi |
+| Isolated utility/pure logic | Tier 1 + Tier 2 + smoke check | Tier 3–5 when exports, configuration, and API boundaries are unchanged |
+| API endpoint, DB schema, or core business logic | Tier 1 + Tier 2 + Tier 3 + Tier 4 | Tier 5 UI/Media when no interface is touched |
+| Authentication, authorization, input/crypto | Tier 1 + Tier 2 + Tier 3 + Tier 5 (Security) | Tier 5 Media |
+| UI component, layout, client state, video | Tier 1 + Tier 2 + Tier 3 + Tier 5 (UI/A11y/Media) | Tier 5 Security when purely presentational with no new input |
+| Build configuration, package upgrade, release | Tier 1 + Tier 2 + Tier 3 + Tier 4 (+ relevant Tier 5) | None for a production release |
 
 ### Tier 1: Static & Type Check
-- Jalankan pemeriksa tipe (`tsc --noEmit`, `pyright`/`mypy`, `cargo check`, `go vet`) dan linter pada workspace atau paket terdampak.
-- Untuk perubahan logika unit murni yang terisolasi tanpa perubahan kontrak ekspor/bundling, **Tier 1 + Tier 2 + smoke check terarah** sudah memadai tanpa memaksakan *full production build* yang lambat.
+- Run the type checker (`tsc --noEmit`, `pyright`/`mypy`, `cargo check`, `go vet`) and the linter on the affected workspace or package.
+- For an isolated pure unit-logic change with no change to export/bundling contracts, **Tier 1 + Tier 2 + a targeted smoke check** is enough; do not force a slow *full production build*.
 
 ### Tier 2: Targeted Automated Tests
-- Jalankan unit dan integration test yang mencakup modul yang dimodifikasi serta konsumen langsungnya.
-- Setiap perbaikan bug wajib menyertakan tes regresi spesifik yang mereproduksi bug sebelum perbaikan dan lulus setelah perbaikan.
+- Run the unit and integration tests that cover the modified module and its direct consumers.
+- Every bug fix must include a specific regression test that reproduces the bug before the fix and passes after it.
 
 ### Tier 3: Production Build & Bundle Validation
-- **Wajib** dijalankan sebelum rilis, pembaruan dependensi, perubahan konfigurasi bundler/compiler, modifikasi rute SSR/RSC, atau refactor lintas modul.
-- Pastikan kompilasi produksi, *tree-shaking*, prerendering, dan ukuran bundle tidak mengalami kegagalan atau pembengkakan terhadap baseline proyek.
+- **Required** before a release, a dependency update, a bundler/compiler configuration change, an SSR/RSC route modification, or a cross-module refactor.
+- Confirm that production compilation, *tree-shaking*, and prerendering do not fail and that bundle size does not grow against the project baseline.
 
 ### Tier 4: Contract, Integration & E2E Regression
-- **Wajib** saat mengubah skema API, migrasi data, atau alur transaksi utama pengguna.
-- Validasi respons endpoint terhadap kontrak OpenAPI/JSON Schema atau consumer contract, dan jalankan skenario E2E kritis (Playwright/setara) dengan data uji terisolasi.
+- **Required** when changing an API schema, a data migration, or a primary user transaction flow.
+- Validate endpoint responses against the OpenAPI/JSON Schema contract or consumer contract, and run the critical E2E scenarios (Playwright or equivalent) with isolated test data.
 
 ### Tier 5: Domain Gates (Security, UI/A11y, Media)
-- **Keamanan**: Wajib saat menyentuh autentikasi, otorisasi, parsing input eksternal, penyimpanan data sensitif, kriptografi, atau batas API publik. Jalankan pola uji keamanan di `../maxilun-sentinel/references/security-playbook.md` (§2: bypass auth/IDOR, injeksi SQL/XSS/command/path, kebocoran PII di log/error, dan rate limit).
-- **Antarmuka & Aksesibilitas**: Saat memvalidasi perubahan UI/frontend, periksa terhadap `../maxilun-craft/references/interface-engineering.md` dan `../maxilun/references/purity-catalog.md`: keterjangkauan penuh via keyboard, indikator fokus `:focus-visible`, kontras terukur (`>=4.5:1` teks normal / `>=3:1` komponen & teks besar), reflow bebas luapan/potongan pada viewport `320px`, `375px`, `1440px` serta zoom teks `200%`, kepatuhan `prefers-reduced-motion`, dan kelengkapan 4 state UI (*loading, empty, error, populated*).
-- **Video Programatik & Motion**: Untuk komposisi Remotion atau animasi interaktif, verifikasi keutuhan render frame sampel, determinisme matematika timeline, sinkronisasi audio, dan fallback `prefers-reduced-motion` sesuai `../maxilun-cinecode/references/index.md` serta `maxilun-motion`.
+- **Security**: Required when touching authentication, authorization, external input parsing, sensitive data storage, cryptography, or a public API boundary. Run the security test patterns in `../maxilun-sentinel/references/security-playbook.md` (§2: auth bypass/IDOR, SQL/XSS/command/path injection, PII leaks in logs/errors, and rate limits).
+- **Interface & Accessibility**: When validating a UI/frontend change, check it against `../maxilun-craft/references/interface-engineering.md` and `../maxilun/references/purity-catalog.md`: full keyboard reachability, a `:focus-visible` focus indicator, measured contrast (`>=4.5:1` normal text / `>=3:1` components & large text), reflow with no overflow/clipping at `320px`, `375px`, `1440px` viewports and at `200%` text zoom, `prefers-reduced-motion` compliance, and all 4 UI states (*loading, empty, error, populated*).
+  - **Slopscan gate**: For any task that touched UI source files, run `python ../maxilun-craft/scripts/slopscan.py <changed paths>` (path relative to the installed verify skill folder; the script has no dependencies).
+  - Exit code 1 (errors > 0) means the task is not done; return the work to `maxilun-craft`. Fix every warning or justify it in the report.
+  - `--contrast <fg> <bg>` checks one WCAG contrast pair. A clean scan is necessary, not sufficient: the manual checks above still apply.
+- **Programmatic Video & Motion**: For Remotion compositions or interactive animation, verify that sample frames render intact, timeline math is deterministic, audio is in sync, and the `prefers-reduced-motion` fallback works, per `../maxilun-cinecode/references/index.md` and `maxilun-motion`.
 
-## 3. Format Laporan Bukti & Verdict
+## 3. Evidence Report Format & Verdict
 
-Gunakan satu status akhir faktual — **`PASS`**, **`FAIL`**, atau **`UNVERIFIED`** — tanpa banner emoji atau klaim sepihak:
+Use one factual final status — **`PASS`**, **`FAIL`**, or **`UNVERIFIED`** — with no emoji banner and no unsupported claim:
 
 ```text
-Verdict: PASS (atau FAIL / UNVERIFIED)
-Cakupan: Validasi rotasi refresh token pada modul autentikasi
-Perintah & Hasil:
+Verdict: PASS (or FAIL / UNVERIFIED)
+Scope: Validate refresh token rotation in the authentication module
+Commands & Results:
 - `pnpm typecheck` -> exit 0 (0 errors)
 - `pnpm vitest run src/auth/token.test.ts` -> exit 0 (6 passed, 0 failed, 380ms)
-- `pnpm build` -> Dilewati (perubahan terisolasi pada utilitas server murni tanpa perubahan kontrak ekspor)
-Batas Belum Diuji:
-- Uji integrasi klaster Redis multi-node belum dijalankan di lingkungan lokal [UNVERIFIED]
+- `pnpm build` -> Skipped (change isolated to a pure server utility with no export contract change)
+Untested Boundaries:
+- Multi-node Redis cluster integration test not run in the local environment [UNVERIFIED]
 ```
 
-Bila verdict **`FAIL`**, lampirkan nama kasus uji yang gagal, lokasi `file:line`, exit code, dan kutipan pesan assertion/stack trace verbatim agar `maxilun-engineer` atau `maxilun-insight` dapat langsung bertindak tanpa mengulang eksekusi buta:
+When the verdict is **`FAIL`**, attach the failing test case name, the `file:line` location, the exit code, and a verbatim quote of the assertion message/stack trace, so `maxilun-engineer` or `maxilun-insight` can act immediately without re-running blindly:
 
 ```text
 Verdict: FAIL
-Cakupan: Validasi batas kepemilikan endpoint GET /api/invoices/:id
-Perintah & Hasil:
+Scope: Validate the ownership boundary of endpoint GET /api/invoices/:id
+Commands & Results:
 - `pnpm vitest run src/routes/invoices.test.ts` -> exit 1 (3 passed, 1 failed)
   FAIL src/routes/invoices.test.ts:58 > rejects cross-tenant invoice read
   AssertionError: expected 200 to be 404
-Tindak Lanjut: Kirim ke `maxilun-engineer` untuk menambahkan filter kepemilikan tenant pada query `src/routes/invoices.ts:34`.
+Follow-up: Send to `maxilun-engineer` to add a tenant ownership filter to the query at `src/routes/invoices.ts:34`.
 ```
 
-## 4. Strategi Pengujian Lanjutan
+## 4. Advanced Testing Strategy
 
-- **E2E Deterministik (Playwright)**: Susun tes per alur fitur pengguna, gunakan *web-first auto-waiting assertions* (`expect(locator).toBeVisible()`), larang penundaan waktu tetap (`waitForTimeout` / `sleep`), dan rekam artefak trace/video hanya saat gagal (`retain-on-failure`).
-- **Otomasi Aksesibilitas + Tinjauan Manual**: Gunakan `@axe-core/playwright` atau `jest-axe` pada state halaman utuh untuk menangkap pelanggaran WCAG 2.2 AA yang terukur mesin, lalu lengkapi dengan penelusuran urutan `Tab`/`Shift+Tab`/`Escape` untuk jebakan fokus dan dialog modal.
-- **Pengujian Kontrak API**: Uji bentuk request/response, kode status HTTP, header, dan skema error di batas antarmuka tanpa menduplikasi pengujian logika bisnis internal yang sudah dicakup unit test.
-- **Regresi Visual & Performa Berbasis Baseline**: Jalankan diff tangkapan layar atau anggaran Lighthouse/bundle hanya terhadap baseline stabil milik repositori dengan toleransi renderer yang terdokumentasi.
+- **Deterministic E2E (Playwright)**: Organize tests by user feature flow, use *web-first auto-waiting assertions* (`expect(locator).toBeVisible()`), forbid fixed time delays (`waitForTimeout` / `sleep`), and record trace/video artifacts only on failure (`retain-on-failure`).
+- **Accessibility automation + manual review**: Use `@axe-core/playwright` or `jest-axe` on complete page states to catch machine-measurable WCAG 2.2 AA violations, then walk the `Tab`/`Shift+Tab`/`Escape` order by hand to find focus traps and modal dialog issues.
+- **API contract testing**: Test request/response shape, HTTP status codes, headers, and the error schema at the interface boundary, without duplicating internal business-logic tests that unit tests already cover.
+- **Baseline-driven visual & performance regression**: Run screenshot diffs or Lighthouse/bundle budgets only against a stable baseline owned by the repository, with a documented renderer tolerance.
 
-## 5. Isolasi Data Uji, Test Doubles & Orkestrasi CI
+## 5. Test Data Isolation, Test Doubles & CI Orchestration
 
-- **Manajemen Data Uji**: Gunakan fungsi *factory* (`createUser()`, `createInvoice()`) dengan nilai bawaan valid dan *override* eksplisit per tes; hindari *shared mutable fixtures*. Pada database uji, utamakan *transaction rollback* per tes atau skema terisolasi per worker.
-- **Hierarki Test Doubles**: Utamakan implementasi nyata atau *in-memory fake* ringan → intersepsi batas jaringan (MSW) → *stub/spy* pada batas keluar (SDK eksternal, waktu sistem). Hindari melakukan *mock* pada fungsi internal modul yang sedang diuji.
-- **Sharding & Kesehatan Suite CI**: Koordinasikan pembagian shard paralel bersama `maxilun-deploy`. Bandingkan tingkat kelulusan, durasi eksekusi, dan tes tidak stabil (*flaky*) terhadap baseline historis repositori — jangan menyembunyikan bug deterministik di balik *auto-retry*.
+- **Test data management**: Use *factory* functions (`createUser()`, `createInvoice()`) with valid defaults and explicit per-test *overrides*; avoid *shared mutable fixtures*. On a test database, prefer a *transaction rollback* per test or an isolated schema per worker.
+- **Test double hierarchy**: Prefer a real implementation or a light *in-memory fake* → network boundary interception (MSW) → a *stub/spy* at the outbound boundary (external SDK, system time). Avoid *mocking* internal functions of the module under test.
+- **Sharding & CI suite health**: Coordinate parallel shard splitting with `maxilun-deploy`. Compare pass rate, execution duration, and unstable (*flaky*) tests against the repository's historical baseline. Do not hide a deterministic bug behind *auto-retry*.
 
 ## Related Skills
 
-- **maxilun-engineer**: Perbaikan bug, penulisan tes unit/integrasi baru, dan resolusi error kompilasi/build.
-- **maxilun-insight**: Diagnosis akar masalah pada kegagalan tes kompleks, *race condition*, atau regresi performa.
-- **maxilun-craft**: Standar rekayasa antarmuka, aksesibilitas WCAG, dan kelengkapan state UI.
-- **maxilun-cinecode**: Verifikasi frame render, timeline komposisi, dan integritas video programatik.
-- **maxilun-motion**: Validasi matematika koreografi, stabilitas WebGL/animasi, dan fallback reduced-motion.
-- **maxilun-sentinel**: Pola pengujian penetrasi aplikasi dan validasi batas kepercayaan (Tier 5).
-- **maxilun-deploy**: Integrasi quality gate, sharding paralel, dan penyimpanan artefak uji di pipeline CI/CD.
+- **maxilun-engineer**: Bug fixes, new unit/integration tests, and resolution of compile/build errors.
+- **maxilun-insight**: Root-cause diagnosis of complex test failures, *race conditions*, or performance regressions.
+- **maxilun-craft**: Interface engineering standards, WCAG accessibility, UI state completeness, and the slopscan gate.
+- **maxilun-cinecode**: Verification of rendered frames, composition timelines, and programmatic video integrity.
+- **maxilun-motion**: Validation of choreography math, WebGL/animation stability, and the reduced-motion fallback.
+- **maxilun-sentinel**: Application penetration test patterns and trust-boundary validation (Tier 5).
+- **maxilun-deploy**: Quality gate integration, parallel sharding, and test artifact storage in the CI/CD pipeline.

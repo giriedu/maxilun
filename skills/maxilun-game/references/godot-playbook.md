@@ -1,14 +1,14 @@
 # Godot Engine 4.x Architecture & Playbook
 
-Standar rekayasa Godot 4.x: GDScript 2.0, modul GDExtension C++, arsitektur berbasis scene & node, shader, MultiplayerAPI, dan pengujian deterministik dengan gdUnit4.
+Godot 4.x engineering standards: GDScript 2.0, GDExtension C++ modules, scene and node based architecture, shaders, MultiplayerAPI, and deterministic testing with gdUnit4.
 
 ---
 
-## 1. Standar Bahasa GDScript 2.0
+## 1. GDScript 2.0 Language Standards
 
 ### 1.1 Static Typing & `@abstract`
 
-Wajib gunakan static typing penuh pada seluruh variabel, parameter fungsi, dan return type:
+Apply full static typing to every variable, function parameter, and return type:
 
 ```gdscript
 class_name CombatEntity extends CharacterBody3D
@@ -19,23 +19,23 @@ var current_health: float = 100.0
 @abstract func execute_ability(ability_id: StringName, target_position: Vector3) -> bool
 ```
 
-### 1.2 Semantik Lambda Capture-by-Value
+### 1.2 Lambda Capture-by-Value Semantics
 
-Di Godot 4, lambda menangkap variabel lokal secara *by-value* saat pembuatan lambda. Mutasi variabel primitif di dalam lambda tidak memengaruhi variabel pemanggil:
+In Godot 4, a lambda captures local variables *by-value* at the moment the lambda is created. Mutating a primitive variable inside the lambda does not affect the caller's variable:
 
 ```gdscript
-# SALAH: hit tetap bernilai false pada pemanggil
+# WRONG: hit stays false in the caller
 var hit: bool = false
 timer.timeout.connect(func(): hit = true)
 
-# BENAR: Gunakan container tipe referensi (Dictionary / Object / Array)
+# RIGHT: use a reference-type container (Dictionary / Object / Array)
 var event_state: Dictionary = {"hit": false}
 timer.timeout.connect(func(): event_state["hit"] = true)
 ```
 
 ### 1.3 Variadic Parameters
 
-Parameter variadic dideklarasikan di posisi akhir fungsi menggunakan sintaks `...`:
+Declare a variadic parameter in the last position of the function with the `...` syntax:
 
 ```gdscript
 func dispatch_game_event(event_name: StringName, ...args: Array) -> void:
@@ -45,9 +45,9 @@ func dispatch_game_event(event_name: StringName, ...args: Array) -> void:
 
 ---
 
-## 2. Arsitektur Data-Driven & Pemisahan UI
+## 2. Data-Driven Architecture & UI Separation
 
-Semua data statistik dan konfigurasi mekanik disimpan dalam berkas Resource (`.tres`), bukan di-hardcode dalam logika node:
+Store all stat data and mechanic configuration in Resource files (`.tres`). Do not hardcode them in node logic:
 
 ```gdscript
 class_name WeaponDataResource extends Resource
@@ -59,11 +59,11 @@ class_name WeaponDataResource extends Resource
 @export var energy_cost: float = 8.0
 ```
 
-### Komunikasi Bebas Coupling dengan Signal:
-Sistem gameplay dilarang memanggil komponen visual atau UI secara langsung:
+### Coupling-Free Communication with Signals:
+Gameplay systems must not call visual or UI components directly:
 
 ```gdscript
-# Logika gameplay memancarkan signal
+# Gameplay logic emits signals
 signal health_depleted(entity: CharacterBody3D)
 signal damage_received(current: float, max: float, delta: float)
 
@@ -74,16 +74,16 @@ func take_damage(amount: float) -> void:
         health_depleted.emit(self)
 ```
 
-Komponen UI HUD terhubung ke signal tersebut secara deklaratif via editor atau skrip scene controller.
+HUD UI components connect to these signals declaratively, through the editor or a scene controller script.
 
 ---
 
-## 3. Fisika & Game Loop
+## 3. Physics & Game Loop
 
-1. **Jolt Physics 3D**: Gunakan mesin fisika Jolt untuk stabilitas tumbukan dan determinisme yang lebih tinggi pada 3D.
+1. **Jolt Physics 3D**: Use the Jolt physics engine for more stable collisions and higher determinism in 3D.
 2. **Delta Time Invariant**:
-   - Seluruh translasi berbasis waktu di `_physics_process(delta)` wajib mengalikan parameter kecepatan dengan `delta`.
-   - Gunakan `move_and_slide()` untuk `CharacterBody3D` di mana `velocity` internal sudah memperhitungkan satuan detik.
+   - Every time-based translation in `_physics_process(delta)` must multiply the speed parameter by `delta`.
+   - Use `move_and_slide()` for `CharacterBody3D`; its internal `velocity` is already expressed per second.
 
 ```gdscript
 func _physics_process(delta: float) -> void:
@@ -107,13 +107,13 @@ func _physics_process(delta: float) -> void:
 
 ## 4. Multiplayer & Authoritative Netcode
 
-Gunakan `MultiplayerAPI` dengan peran server yang otoritatif. Klien mengirim input atau RPC perintah aksi, server mengeksekusi validasi logika dan menyinkronkan state via RPC:
+Use `MultiplayerAPI` with an authoritative server role. The client sends input or action command RPCs. The server validates the logic and synchronizes state through RPC:
 
 ```gdscript
 @rpc("any_peer", "call_local", "reliable")
 func request_fire_weapon(aim_target: Vector3) -> void:
     var sender_id: int = multiplayer.get_remote_sender_id()
-    # Hanya server yang berhak memvalidasi dan memproses peluru
+    # Only the server may validate and process the projectile
     if not multiplayer.is_server():
         return
 
@@ -130,9 +130,9 @@ func notify_weapon_fired(aim_target: Vector3) -> void:
 
 ---
 
-## 5. Pengujian Otomasi dengan gdUnit4
+## 5. Automated Testing with gdUnit4
 
-Semua pengujian unit gameplay wajib menghindari memory leak dan orphan node menggunakan wrapper `auto_free()`:
+Every gameplay unit test must avoid memory leaks and orphan nodes by using the `auto_free()` wrapper:
 
 ```gdscript
 class_name TestCombatHealth extends GdUnitTestSuite
@@ -161,7 +161,7 @@ func test_lethal_damage_triggers_depleted_signal() -> void:
     await assert_signal(signal_monitor).is_emitted("health_depleted")
 ```
 
-Eksekusi CLI headless:
+Headless CLI run:
 ```bash
 godot --headless --path . -s addons/gdUnit4/bin/GdUnitCmdTool.gd --test-dir tests/
 ```

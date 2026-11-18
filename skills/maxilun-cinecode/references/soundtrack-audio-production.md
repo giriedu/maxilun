@@ -29,13 +29,39 @@ export const MusicBed: React.FC = () => {
 ```
 
 ### Automatic Audio Ducking Pattern
-Gunakan fungsi deterministik `computeAudioDuckingGain()` dari `components/Effects` untuk menurunkan volume musik latar secara otomatis saat interval narasi/speech aktif:
+Use this standalone helper function to lower the background music volume automatically while speech intervals are active:
 
 ```tsx
-import { Audio } from '@remotion/media';
-import { useCurrentFrame, staticFile } from 'remotion';
-import { computeAudioDuckingGain } from './components/Effects';
+export interface VoiceInterval {
+  startFrame: number;
+  endFrame: number;
+}
 
+export function computeAudioDuckingGain(
+  frame: number,
+  speechIntervals: VoiceInterval[],
+  options: { duckedGainDb?: number; attackFrames?: number; releaseFrames?: number } = {}
+): number {
+  const { duckedGainDb = -14, attackFrames = 12, releaseFrames = 18 } = options;
+  const duckedGain = Math.pow(10, duckedGainDb / 20);
+  let minGain = 1.0;
+  for (const interval of speechIntervals) {
+    if (frame >= interval.startFrame && frame <= interval.endFrame) return duckedGain;
+    if (frame >= interval.startFrame - attackFrames && frame < interval.startFrame) {
+      const p = (frame - (interval.startFrame - attackFrames)) / attackFrames;
+      const gain = 1.0 - p * (1.0 - duckedGain);
+      if (gain < minGain) minGain = gain;
+    }
+    if (frame > interval.endFrame && frame <= interval.endFrame + releaseFrames) {
+      const p = (frame - interval.endFrame) / releaseFrames;
+      const gain = duckedGain + p * (1.0 - duckedGain);
+      if (gain < minGain) minGain = gain;
+    }
+  }
+  return minGain;
+}
+
+// Usage in timeline:
 export const DuckedSoundtrack: React.FC = () => {
   const frame = useCurrentFrame();
   const speechIntervals = [
@@ -47,7 +73,6 @@ export const DuckedSoundtrack: React.FC = () => {
   return <Audio src={staticFile('soundtrack.mp3')} volume={volume} />;
 };
 ```
-
 For edits that need explicit timeline placement, use `<Sequence>` or the audio component's documented timing props. Calculate every sync point from the actual clip, frame rate, and edit; do not assume a default tempo.
 
 ## 3. Beat and narration sync

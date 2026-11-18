@@ -1,13 +1,13 @@
 ---
 name: maxilun-deploy
 description: >
-  Deployment and operations specialist for CI/CD pipelines, containerization,
-  environment configuration, observability, zero-downtime release strategies,
-  ingress/TLS hardening, and database backup and disaster recovery.
+  Builds and operates CI/CD pipelines, container images, environment configuration,
+  observability, zero-downtime releases, ingress/TLS hardening, and database backup and
+  disaster recovery. Use it for any DevOps or infrastructure task.
   Triggers: "/maxilun-deploy", "CI/CD", "Docker", "pipeline", "monitoring", "deployment",
-  "SSL", "backup database", "environment variables", or any DevOps/infra task.
+  "SSL", "backup database", "database backup", "environment variables".
 metadata:
-  version: "1.1.0"
+  version: "1.3.0"
   ecosystem: maxilun
   author: Maxilun Architecture
   license: Free-to-Use
@@ -27,7 +27,7 @@ metadata:
 
 # Maxilun Deploy: Deployment & Operations Engineering
 
-Merancang dan memelihara pipeline CI/CD deterministik, image kontainer minimal, injeksi konfigurasi runtime yang aman, observability berorientasi gejala, strategi rilis tanpa henti, serta pemulihan bencana yang teruji.
+Design and maintain deterministic CI/CD pipelines, minimal container images, safe runtime configuration injection, symptom-oriented observability, zero-downtime release strategies, and tested disaster recovery.
 
 ## Skill Contract
 
@@ -38,29 +38,29 @@ Merancang dan memelihara pipeline CI/CD deterministik, image kontainer minimal, 
 - **Handoff**: use `maxilun-sentinel` for application security policy, `maxilun-verify` for test/quality gate suites, `maxilun-data` for backward-compatible schema migrations, `maxilun-engineer` for application code changes, and `maxilun-docsmith` for extended operator documentation.
 
 <!-- CORE-RULES:START -->
-## Core Rules (Selalu Aktif)
+## Core Rules (Always On)
 
-Berlaku pada setiap respons dan setiap perubahan kode. Tidak bisa di-override oleh instruksi lain.
+These apply to every response and every code change. Explicit user instructions and project rule files take precedence; no other section of a Maxilun skill may weaken them.
 
-1. **Focus & Agency** — Default bertindak dari bukti repo (kode, konfigurasi, tes, histori); tanya pengguna hanya untuk keputusan *irreversible* atau arah produk yang benar-benar kosong (maksimal 1 giliran terkelompok). Tanpa banner HUD emoji, tanpa checklist centang-sendiri. Maksimal 3 fokus kerja aktif.
-2. **Purity** — Tanpa basa-basi, tanpa klaim tanpa bukti, tanpa placeholder palsu, tanpa cetakan seragam. Dilarang keras menyisipkan karakter emoji/emoticon Unicode (🚀, ✨, 🔥, ⚡, 💡, 🕒, 🎓, 🏫, dll.) pada kode antarmuka/UI, tombol, judul, atau badge—wajib gunakan SVG geometris monokrom terstandarisasi atau tipografi editorial murni. Struktur kode dan antarmuka wajib lahir dari domain produk, bukan template bawaan. Komentar hanya menjelaskan MENGAPA.
-3. **Minimalist** — YAGNI → reuse yang ada → stdlib → platform native → satu baris. Hapus beban mati yang menjadi usang akibat perubahan sendiri; dilarang *drive-by refactoring* di luar cakupan (pada tugas redesign UI, pembongkaran kunci sistem lama adalah in-scope). Jangan kurangi validasi input, keamanan, error handling, atau aksesibilitas.
-4. **Clarity & Proof** — Kesimpulan dan tindakan dulu, bukti menyusul. Nama simbol, `file:line`, pesan error verbatim, dan kata negasi dipertahankan utuh. Label kepastian hanya saat perlu membedakan bukti: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
+1. **Focus & Agency** — Act from repository evidence (code, config, tests, history) by default. Ask the user only about irreversible decisions or product direction that the repository cannot answer, in at most one grouped turn. No emoji HUD banners, no self-ticked checklists. At most three active work focuses.
+2. **Purity** — No filler, no claim without evidence, no fake placeholders, no one-size-fits-all template. No emoji or emoticon characters in interface code, buttons, headings, or badges; use one monochrome SVG icon family or plain typography (`CMP-003`). Code structure and interfaces come from the product domain, not from a boilerplate. Comments explain WHY only.
+3. **Minimalist** — YAGNI → reuse what exists → stdlib → native platform → one line. Delete dead weight your own change made obsolete; no drive-by refactoring outside scope (in a UI redesign, dismantling the old design-system locks is in scope). Never trade away input validation, security, error handling, or accessibility.
+4. **Clarity & Proof** — Conclusion and action first, evidence after. Keep symbol names, `file:line`, verbatim error messages, and negations intact. Use certainty labels only when evidence levels differ: `[CONFIRMED]` `[INFERRED]` `[UNCERTAIN]` `[UNVERIFIED]`.
 
-**Protokol** — dependency (evaluasi stdlib, ukuran, pemeliharaan, isolasi sebelum tambah paket), cognitive load (`SKILL.md` ≤300 baris, kode sumber modular, nesting ≤3), komunikasi (laporkan blocker nyata segera, tanpa *silent failure*, nyatakan asumsi yang memengaruhi hasil).
+**Protocols** — dependencies (weigh stdlib, size, maintenance, and isolation before adding a package), cognitive load (modular source, nesting ≤3), communication (report real blockers immediately, no silent failure, state assumptions that affect the result).
 
-Detail lengkap: `../maxilun/references/engines.md`.
+Full detail: `../maxilun/references/engines.md`.
 <!-- CORE-RULES:END -->
 
-## 1. Prinsip Operasional & Proporsi Infrastruktur
+## 1. Operating Principles & Infrastructure Proportion
 
-- **Infrastruktur Mengikuti Beban Nyata**: Tolak orkestrasi berlebih (misal klaster Kubernetes untuk layanan tunggal bertrafik rendah). Pilih topologi paling sederhana yang memenuhi target ketersediaan, isolasi keamanan, dan kapasitas tim.
-- **Artefak Tunggal (*Build Once, Promote Everywhere*)**: Bangun artefak atau image satu kali dari commit terverifikasi, kunci dengan digest SHA-256, lalu promosikan artefak yang sama dari staging ke produksi.
-- **Tanpa Konfigurasi Semu**: Jangan menulis file workflow dengan komentar `# ... deploy steps` kosong; sesuaikan perintah langsung dengan target platform aktual di repositori (GitHub Actions, GitLab CI, Docker/Compose, Fly.io, Cloud Run, VPS, atau Kubernetes).
+- **Infrastructure follows real load**: Reject over-orchestration (for example a Kubernetes cluster for a single low-traffic service). Choose the simplest topology that meets the availability target, security isolation, and team capacity.
+- **Single artifact (*Build Once, Promote Everywhere*)**: Build the artifact or image once from a verified commit, pin it by SHA-256 digest, then promote that same artifact from staging to production.
+- **No placeholder configuration**: Do not write a workflow file with an empty `# ... deploy steps` comment. Write commands that match the actual target platform in the repository (GitHub Actions, GitLab CI, Docker/Compose, Fly.io, Cloud Run, VPS, or Kubernetes).
 
-## 2. Pipeline CI/CD & Quality Gates
+## 2. CI/CD Pipeline & Quality Gates
 
-Sesuaikan runtime dan skrip dengan lockfile serta `package.json`/`Makefile`/`pyproject.toml` proyek. Pola GitHub Actions untuk Node.js/pnpm tanpa duplikasi setup:
+Match the runtime and scripts to the project's lockfile and `package.json`/`Makefile`/`pyproject.toml`. A GitHub Actions pattern for Node.js/pnpm with no duplicated setup:
 
 ```yaml
 name: CI
@@ -88,12 +88,12 @@ jobs:
       - run: pnpm build
 ```
 
-- **Quality Gates Proporsional**: Kunci versi dependensi (`--frozen-lockfile` / `npm ci`), batasi `permissions` token CI seminimal mungkin, pasang `timeout-minutes` di setiap job, dan jalankan audit kerentanan dependensi produksi selaras dengan `maxilun-verify`.
-- **Kontrak Rilis Produksi**: Workflow rilis hanya berjalan sesudah CI hijau pada environment terproteksi, mengeksekusi migrasi database yang *backward-compatible*, menggulirkan image bertanda digest, lalu memverifikasi HTTP `200` pada endpoint `/health` sebelum menyatakan rilis berhasil.
+- **Proportional quality gates**: Lock dependency versions (`--frozen-lockfile` / `npm ci`), restrict CI token `permissions` to the minimum, set `timeout-minutes` on every job, and run a vulnerability audit of production dependencies in line with `maxilun-verify`.
+- **Production release contract**: The release workflow runs only after CI is green, on a protected environment. It executes *backward-compatible* database migrations, rolls out the digest-pinned image, then verifies HTTP `200` on the `/health` endpoint before declaring the release successful.
 
 ## 3. Containerization & Runtime Image (Docker)
 
-Gunakan *multi-stage build* dengan versi `node:22-alpine` terkunci pada patch eksak (atau digest SHA-256), user non-root, dan satu endpoint kesehatan `/health` yang konsisten di kontainer, ingress, dan pipeline rilis:
+Use a *multi-stage build* with `node:22-alpine` pinned to an exact patch version (or a SHA-256 digest), a non-root user, and one `/health` endpoint used consistently by the container, the ingress, and the release pipeline:
 
 ```dockerfile
 FROM node:22.12.0-alpine AS deps
@@ -120,51 +120,52 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 CMD ["node", "server.js"]
 ```
 
-- **Disiplin Layer & `.dockerignore`**: Salin manifes paket sebelum kode sumber demi memaksimalkan *cache hit*. Sediakan `.dockerignore` yang mengecualikan `.git`, `node_modules`, `.env*`, direktori build lokal, `*.md`, dan direktori pengujian.
-- **Shutdown Anggun (*Graceful Shutdown*)**: Jalankan proses utama langsung sebagai PID 1 (`CMD ["node", ...]`, bukan lewat shell) agar sinyal `SIGTERM` diterima langsung untuk menutup listener dan menguras koneksi aktif sebelum batas waktu terminasi.
+- **Layer discipline & `.dockerignore`**: Copy package manifests before the source code to maximize *cache hits*. Provide a `.dockerignore` that excludes `.git`, `node_modules`, `.env*`, local build directories, `*.md`, and test directories.
+- **Graceful shutdown**: Run the main process directly as PID 1 (`CMD ["node", ...]`, not through a shell) so it receives `SIGTERM` directly, closes its listeners, and drains active connections before the termination deadline.
 
-## 4. Konfigurasi Environment & Manajemen Rahasia
+## 4. Environment Configuration & Secret Management
 
-- **Kontrak *Fail-Fast* Saat Startup**: Aplikasi wajib memvalidasi seluruh variabel environment esensial terhadap skema ketat saat proses mulai berjalan dan segera berhenti (*exit non-zero*) bila ada variabel yang hilang atau salah format; baca konfigurasi melalui satu modul bertipe terpusat (implementasi kode diserahkan ke `maxilun-engineer`).
-- **Injeksi Rahasia Runtime**: Simpan kredensial di secret manager platform (GitHub Secrets, Vault, AWS/GCP Secret Manager). Injeksi hanya saat runtime — dilarang menanam secret di `Dockerfile` (`ENV`/`ARG`) atau membundel file `.env` ke dalam image. Dukung masa transisi kunci ganda (*dual-key overlap*) saat rotasi rahasia.
-- **Paritas Staging–Produksi**: Samakan versi OS kontainer, mesin database, dan skema konfigurasi antar-environment; bedakan kapasitas secara proporsional dan kelola variasi perilaku fitur via *feature flags*, bukan percabangan `NODE_ENV`.
+- **Fail-fast contract at startup**: The application must validate every essential environment variable against a strict schema when the process starts, and exit immediately (*exit non-zero*) when a variable is missing or malformed. Read configuration through one central typed module (code implementation goes to `maxilun-engineer`).
+- **Runtime secret injection**: Store credentials in the platform secret manager (GitHub Secrets, Vault, AWS/GCP Secret Manager). Inject them at runtime only. Never bake a secret into the `Dockerfile` (`ENV`/`ARG`) or bundle a `.env` file into the image. Support a *dual-key overlap* window during secret rotation.
+- **Staging–production parity**: Keep the container OS version, database engine, and configuration schema identical across environments. Scale capacity proportionally, and manage feature behavior differences with *feature flags*, not `NODE_ENV` branching.
 
 ## 5. Observability, Alerting & SLO
 
-- **Structured Logging**: Tulis log JSON ke `stdout` dengan atribut konsisten (`timestamp`, `level`, `message`, `requestId`/`traceId`, `service`, `durationMs`, `statusCode`). Teruskan *correlation ID* dari ingress ke panggilan hilir dan redaksi otomatis token, password, serta PII.
-- **Pelacakan Error & Trace**: Unggah *source maps* saat tahap build dan sematkan tag versi rilis (`release: git-sha`) agar regresi error langsung terpetakan ke commit penyebab.
-- **SRE SLO Multi-Window Multi-Burn-Rate Alerting**: Tolak alert CPU/RAM naif yang memicu *alert fatigue*. Terapkan standar di `references/container-pipeline-hardening.md` (§3):
-  - **P1 Critical (Pager)**: Burn rate $\ge 14.4x$ (konsumsi 2% budget dalam 1 jam / jendela short 5 menit) $\to$ darurat aktif, bangunkan on-call seketika.
-  - **P2 High (Urgent)**: Burn rate $\ge 6.0x$ (konsumsi 5% budget dalam 6 jam / jendela short 30 menit) $\to$ investigasi dalam 30 menit.
-  - **P3 Medium (Ticket)**: Burn rate $\ge 1.0x$ (konsumsi 10% budget dalam 3 hari) $\to$ tiket backlog otomatis.
-  - Setiap alert aktif wajib menyertakan tautan langsung ke runbook penanganan operasional spesifik.
+- **Structured logging**: Write JSON logs to `stdout` with consistent attributes (`timestamp`, `level`, `message`, `requestId`/`traceId`, `service`, `durationMs`, `statusCode`). Propagate the *correlation ID* from the ingress to downstream calls, and redact tokens, passwords, and PII automatically.
+- **Error tracking & traces**: Upload *source maps* during the build stage and attach a release version tag (`release: git-sha`) so an error regression maps directly to the commit that caused it.
+- **SRE SLO Multi-Window Multi-Burn-Rate Alerting**: Reject naive CPU/RAM alerts, which cause *alert fatigue*. Apply the standard in `references/container-pipeline-hardening.md` (§3):
+  - **P1 Critical (Pager)**: Burn rate $\ge 14.4x$ (2% of budget consumed in 1 hour / 5-minute short window) $\to$ active emergency, page on-call immediately.
+  - **P2 High (Urgent)**: Burn rate $\ge 6.0x$ (5% of budget consumed in 6 hours / 30-minute short window) $\to$ investigate within 30 minutes.
+  - **P3 Medium (Ticket)**: Burn rate $\ge 1.0x$ (10% of budget consumed in 3 days) $\to$ automatic backlog ticket.
+  - Every active alert must include a direct link to its specific operational runbook.
 
-## 6. Strategi Rilis, Rollback & Perimeter Domain/TLS
+## 6. Release Strategy, Rollback & Domain/TLS Perimeter
 
-| Strategi Rilis | Pola Pengalihan Trafik | Kecepatan Rollback | Prasyarat Utama |
+| Release Strategy | Traffic Shift Pattern | Rollback Speed | Key Prerequisite |
 |---|---|---|---|
-| **Rolling Update** | Ganti instance bertahap per batch | Menit (redeploy digest lama) | Layanan stateless + probe `/health` akurat |
-| **Blue-Green** | Pindah penuh ke klaster hijau setelah siap | Detik (switch router balik ke biru) | Kapasitas 2x sementara + DB kompatibel mundur |
-| **Canary** | Bertahap `5% → 25% → 100%` berbasis metrik | Detik (cabut bobot trafik canary) | Weighted routing + telemetri error/latensi real-time |
+| **Rolling Update** | Replace instances gradually, batch by batch | Minutes (redeploy the previous digest) | Stateless service + accurate `/health` probe |
+| **Blue-Green** | Switch fully to the green cluster once it is ready | Seconds (switch the router back to blue) | Temporary 2x capacity + backward-compatible DB |
+| **Canary** | Gradual `5% → 25% → 100%` driven by metrics | Seconds (remove the canary traffic weight) | Weighted routing + real-time error/latency telemetry |
 
-- **Protokol Rollback (<5 Menit)**: Sediakan mekanisme satu perintah untuk mengembalikan digest image sebelumnya. Koordinasikan pola migrasi *expand-and-contract* dengan `maxilun-data` agar rollback aplikasi tidak merusak skema database aktif.
-- **Perimeter TLS, DNS & Reverse Proxy**:
-  - Tegakkan TLS 1.2/1.3 dengan perpanjangan sertifikat otomatis, pengalihan `301` HTTP ke HTTPS, dan kanonikalisasi tunggal antara `www` dan apex domain.
-  - Pasang `Strict-Transport-Security: max-age=31536000; includeSubDomains` pada HTTPS (tambahkan `; preload` hanya jika seluruh subdomain permanen HTTPS), pembatasan laju (*rate limiting*) di level reverse-proxy (`Nginx`/`Caddy`), serta aturan edge WAF/DDoS selaras dengan `maxilun-sentinel`.
-  - Konfigurasikan DNS `CAA` pembatas penerbit sertifikat, `SPF`/`DKIM`/`DMARC` untuk reputasi email domain, dan turunkan TTL (misal `300s`) sebelum jendela perpindahan IP/load balancer.
+- **Rollback protocol (<5 minutes)**: Provide a one-command mechanism that restores the previous image digest. Coordinate the *expand-and-contract* migration pattern with `maxilun-data` so an application rollback does not break the live database schema.
+- **TLS, DNS & reverse proxy perimeter**:
+  - Enforce TLS 1.2/1.3 with automatic certificate renewal, a `301` redirect from HTTP to HTTPS, and a single canonical host between `www` and the apex domain.
+  - Set `Strict-Transport-Security: max-age=31536000; includeSubDomains` on HTTPS (add `; preload` only when every subdomain is permanently HTTPS), *rate limiting* at the reverse-proxy level (`Nginx`/`Caddy`), and edge WAF/DDoS rules in line with `maxilun-sentinel`.
+  - Configure a DNS `CAA` record that restricts certificate issuers and `SPF`/`DKIM`/`DMARC` for domain email reputation, and lower the TTL (for example `300s`) before an IP/load balancer cutover window.
 
-## 7. Backup, Pemulihan & Kesiapan Bencana (DR)
+## 7. Backup, Recovery & Disaster Readiness (DR)
 
-- **Arsitektur Pencadangan**: Gabungkan *full backup* harian yang dienkripsi saat disimpan (*encrypted at rest*) dengan pengarsipan log transaksi berkelanjutan (WAL/binlog) untuk *Point-in-Time Recovery* (PITR) di penyimpanan lintas-region/akun terpisah.
-- **Verifikasi Restore Otomatis**: Cadangan tanpa bukti uji pulih dianggap tidak ada. Jadwalkan uji *restore* otomatis berkala ke instance terisolasi guna memvalidasi integritas cadangan dan mengukur ketercapaian **RTO** (*Recovery Time Objective*) serta **RPO** (*Recovery Point Objective*).
-- **Runbook Insiden & Failover**: Dokumentasikan langkah failover primer-ke-replika, verifikasi konsistensi pasca-pemulihan, dan jalur komunikasi insiden bersama `maxilun-docsmith`.
+- **Backup architecture**: Combine a daily *full backup*, *encrypted at rest*, with continuous transaction log archiving (WAL/binlog) for *Point-in-Time Recovery* (PITR), stored in a separate region/account.
+- **Automated restore verification**: A backup with no restore-test evidence counts as no backup. Schedule a periodic automated *restore* test into an isolated instance to validate backup integrity and measure whether **RTO** (*Recovery Time Objective*) and **RPO** (*Recovery Point Objective*) are met.
+- **Incident runbook & failover**: Document the primary-to-replica failover steps, the post-recovery consistency verification, and the incident communication path together with `maxilun-docsmith`.
 
 ## Related Skills
 
-- **maxilun-sentinel**: Kebijakan keamanan aplikasi, header HTTP, rotasi rahasia, dan pemodelan ancaman perimeter.
-- **maxilun-verify**: Eksekusi suite pengujian otomatis dan penentuan quality gate pada pipeline CI/CD.
-- **maxilun-data**: Strategi migrasi database *expand-and-contract*, pengindeksan, dan penyetelan koneksi DB.
-- **maxilun-architect**: Perencanaan kapasitas sistem, topologi layanan, dan batas kegagalan (*fault isolation*).
-- **maxilun-insight**: Investigasi insiden produksi, analisis log/trace, dan diagnosis bottleneck performa.
-- **maxilun-engineer**: Implementasi endpoint `/health`, *graceful shutdown*, dan validasi konfigurasi startup di kode aplikasi.
-- **maxilun-docsmith**: Penyusunan runbook operasional, post-mortem insiden, dan dokumentasi arsitektur rilis.
+- **maxilun-sentinel**: Application security policy, HTTP headers, secret rotation, and perimeter threat modeling.
+- **maxilun-hunt**: Adversarial attack surface verification, perimeter testing, and vulnerability reproduction.
+- **maxilun-verify**: Runs the automated test suite and defines quality gates in the CI/CD pipeline.
+- **maxilun-data**: *Expand-and-contract* database migration strategy, indexing, and DB connection tuning.
+- **maxilun-architect**: System capacity planning, service topology, and failure boundaries (*fault isolation*).
+- **maxilun-insight**: Production incident investigation, log/trace analysis, and performance bottleneck diagnosis.
+- **maxilun-engineer**: Implements the `/health` endpoint, *graceful shutdown*, and startup configuration validation in application code.
+- **maxilun-docsmith**: Writes operational runbooks, incident post-mortems, and release architecture documentation.

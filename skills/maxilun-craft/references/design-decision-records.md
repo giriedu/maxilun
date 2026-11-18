@@ -6,82 +6,82 @@
   origin: "Maxilun Craft Engine"
 -->
 
-Panduan penyusunan rekaman keputusan desain (*Design Decision Records* / DDR) berbasis evaluasi bersaing (*adversarial evaluation*). Setiap perancangan antarmuka baru atau perombakan visual wajib mendokumentasikan alasan pemilihan arah sebelum menulis baris kode pertama.
+Write Design Decision Records (DDR) from an adversarial evaluation of competing directions. For every new interface design or visual overhaul, document why the direction was chosen before writing the first line of code.
 
 ---
 
-## 1. Urutan Operasi (Order of Operations)
+## 1. Order of Operations
 
-Sebelum menentukan tata letak dan palet warna:
+Before deciding layout and color palette:
 
-1. **Riset 3 Pemimpin Kategori Nyata**:
-   - Telusuri implementasi terbaik di ranah terkait (misal: reservasi penginapan butik -> periksa *Airbnb Luxe*, *Mr & Mrs Smith*, *Plum Guide*).
-   - Identifikasi pola konvensional industri dan tentukan satu pembeda utama (*point of differentiation*) yang sengaja ditolak.
-2. **Ekstraksi Palet Fisik Dunia Nyata**:
-   - Dilarang memilih nilai hex sembarang dari palet generik internet.
-   - Ambil warna dari material fisik yang nyata ada di lingkungan subjek produk:
-     - Bengkel cetak / tipografi: Tinta offset pekat, timbal cetak dingin, minyak pelumas baja.
-     - Kedai kopi artisan: Biji sangrai gelap, kertas filter alami, keramik glasir tanah liat.
-     - Penginapan pedesaan: Kapur dinding batu (*lime wash*), hijau daun hutan lokal, terakota ubin lantai bakar.
-3. **Katalog Tipografi Hidup**:
-   - Pilih jenis huruf display yang memiliki kaitan historis atau geografis dengan karakter produk (misal: *Lusitana* untuk arsitektur Portugis, *Fraunces* untuk tipografi editorial organik).
-   - Pasangkan dengan sans-serif fungsional netral untuk teks operasional, data tabular, dan formulir.
-4. **Audit Kunci Desain Lama Sebelum Redesign (Design Lock Assessment)**:
-   - Jika tugas berupa *redesign*, periksa token `:root`, layout shell, dan komponen primitif yang ada.
-   - Identifikasi apakah ada variabel kusam atau wrapper sempit yang mengunci UI ke template lama.
-   - Putuskan titik pembongkaran kunci (*cutover point*) sebelum merombak leaf JSX.
+1. **Research 3 Real Category Leaders**:
+   - Study the best implementations in the relevant field (for example: boutique lodging reservations -> inspect *Airbnb Luxe*, *Mr & Mrs Smith*, *Plum Guide*).
+   - Identify the industry's conventional patterns and decide one main point of differentiation: a convention you deliberately reject.
+2. **Extract a Real-World Physical Palette**:
+   - Do not pick arbitrary hex values from generic internet palettes.
+   - Take colors from physical materials that actually exist in the product subject's environment:
+     - Print shop / typography: dense offset ink, cold cast type metal, steel lubricating oil.
+     - Artisan coffee shop: dark roasted beans, natural filter paper, glazed clay ceramic.
+     - Rural lodging: stone-wall lime wash, local forest leaf green, fired terracotta floor tile.
+3. **Living Typography Catalog**:
+   - Choose a display typeface with a historical or geographic link to the product's character (for example: *Lusitana* for Portuguese architecture, *Fraunces* for organic editorial typography).
+   - Pair it with a neutral functional sans-serif for operational text, tabular data, and forms.
+4. **Audit the Old Design Locks Before a Redesign (Design Lock Assessment)**:
+   - When the task is a *redesign*, inspect the existing `:root` tokens, layout shell, and primitive components.
+   - Identify any dull variable or narrow wrapper that locks the UI to the old template.
+   - Decide the *cutover point* where the lock is dismantled before reworking leaf JSX.
 ---
 
-## 2. Tiga Arah Desain Bersaing (Three Competing Directions)
+## 2. Three Competing Directions
 
-Rancang tiga konsep kontras untuk mencegah bias otomatis model AI:
+Design three contrasting concepts to prevent the AI model's automatic bias:
 
-| Arah | Definisi Konsep | Karakteristik Utama | Risiko / Alasan Evaluasi |
+| Direction | Concept Definition | Key Characteristics | Risk / Evaluation Rationale |
 |---|---|---|---|
-| **Direction 1: The Generic AI Trap** | Pola instinktif pertama yang biasa diambil generator otomatis. | Tumpukan kartu simetris, hero pill badge mengambang, dua tombol solid kembar, tata letak rata-tengah monoton. | Wajib diidentifikasi untuk sengaja ditolak atau dipangkas habis. |
-| **Direction 2: Authentic Domain Artifact** | Struktur antarmuka yang berpusat pada objek kerja atau identitas material subjek. | Membangun antarmuka di sekitar satu objek interaktif utama (*The Object IS the Interface*), hierarki editorial proporsional, palet fisik terkalibrasi. | Menjual karakter subjek dan pengalaman penggunaan sebelum menagih aksi transaksi. |
-| **Direction 3: Radical Utility & Density** | Pendekatan fokus kecepatan dan efisiensi tugas tinggi. | Kepadatan tabular data terukur, monokrom kontras tinggi, navigasi langsung tanpa ornamen visual sekunder. | Sangat efisien untuk alat kerja harian; evaluasi apakah cocok untuk audiens produk ini. |
+| **Direction 1: The Generic AI Trap** | The first instinctive pattern an automatic generator usually picks. | Symmetric card stacks, floating hero pill badge, two twin solid buttons, monotonous center-aligned layout. | Identify it so you can deliberately reject it or cut it entirely. |
+| **Direction 2: Authentic Domain Artifact** | An interface structure centered on the subject's work object or material identity. | Builds the interface around one main interactive object (*The Object IS the Interface*), proportional editorial hierarchy, calibrated physical palette. | Sells the subject's character and the experience of use before asking for a transaction. |
+| **Direction 3: Radical Utility & Density** | An approach focused on speed and high task efficiency. | Measured tabular data density, high-contrast monochrome, direct navigation without secondary visual ornament. | Very efficient for daily work tools; evaluate whether it fits this product's audience. |
 
 ---
 
-## 3. Matriks Komparasi & Justifikasi Pemenang
+## 3. Comparison Matrix & Winner Justification
 
-Bandingkan ketiga arah menggunakan kriteria objektif:
+Compare the three directions against objective criteria:
 
-1. **Kesesuaian Mental Model Pengguna**: Apakah alur visual selaras dengan cara pengguna memproses informasi di dunia nyata?
-2. **Kejujuran Fungsional**: Apakah setiap elemen visual membawa fungsi nyata atau hanya sekadar hiasan?
-3. **Ketahanan Lintas Perangkat**: Apakah geometri antarmuka tetap kokoh pada layar mobile 375px hingga desktop lebar tanpa kebocoran scroll?
+1. **Fit with the User's Mental Model**: Does the visual flow match how users process this information in the real world?
+2. **Functional Honesty**: Does every visual element carry a real function, or is it only decoration?
+3. **Cross-Device Resilience**: Does the interface geometry hold from a 375px mobile screen to a wide desktop without scroll leaks?
 
-### Format Dokumentasi DDR
+### DDR Documentation Format
 
-Dokumentasikan keputusan dalam format ringkas 3 paragraf:
+Document the decision in this concise 3-paragraph format:
 
 ```markdown
-### DDR-001: [Nama Layar / Komponen]
-- **Konteks & Entitas Fisik**: [Material fisik dunia nyata dan jenis huruf terpilih]
-- **Arah Terpilih**: Direction 2 ([Nama Arah])
-- **Alasan Kemenangan**: [2 kalimat faktual mengapa arah ini paling tepat melayani tugas utama]
-- **Elemen yang Ditolak**: [Daftar komponen dari Direction 1 & 3 yang sengaja dibuang dan argumen penolakannya]
+### DDR-001: [Screen / Component Name]
+- **Context & Physical Entities**: [Real-world physical materials and the chosen typefaces]
+- **Chosen Direction**: Direction 2 ([Direction Name])
+- **Why It Won**: [2 factual sentences on why this direction best serves the primary task]
+- **Rejected Elements**: [List of components from Direction 1 & 3 deliberately discarded, with the argument for each rejection]
 ```
 
-### Format Dokumentasi Redesign & Pembongkaran Kunci (DDR-DL)
+### Redesign & Lock Dismantling Documentation Format (DDR-DL)
 
-Gunakan format ini saat melakukan *redesign* antarmuka yang sebelumnya terkunci:
+Use this format when redesigning an interface that was previously locked:
 
 ```markdown
-### DDR-DL-001: [Nama Layar / Area Redesign]
-- **Kunci Desain yang Dibongkar**: [Token `:root` lama, wrapper layout sempit, atau primitif usang yang dihapus]
-- **Fondasi Baru yang Dipasang**: [Palet OKLCH material fisik domain, display/sans typography, layout kanvas bebas]
-- **Pencegahan Tambal Sulam**: [Bukti bahwa CSS lama/zombie dihapus bersih dan tidak menyisakan tabrakan styling]
+### DDR-DL-001: [Screen / Redesign Area Name]
+- **Design Locks Dismantled**: [Old `:root` tokens, narrow layout wrappers, or obsolete primitives removed]
+- **New Foundation Installed**: [OKLCH palette from the domain's physical materials, display/sans typography, free canvas layout]
+- **Patchwork Prevention**: [Evidence that old/zombie CSS was removed cleanly and no styling collisions remain]
 ```
 
 ---
 
-## 4. Protokol Subtraksi Antarmuka (Subtraction Pass)
+## 4. Interface Subtraction Protocol (Subtraction Pass)
 
-Setelah draf antarmuka tersusun:
+After the interface draft is assembled:
 
-1. Hapus satu elemen visual (garis pemisah, badge dekoratif, pembungkus kartu ganda, atau teks keterangan berulang).
-2. Periksa apakah pemahaman pengguna atau keterbacaan data menurun.
-3. Ulangi proses ini secara iteratif sampai penghapusan berikutnya mulai merusak pemahaman atau fungsi navigasi.
-4. Kembalikan elemen terakhir tersebut. Jumlah elemen yang tersisa adalah batas optimal (*densitas murni*).
+1. Remove one visual element (a divider line, a decorative badge, a double card wrapper, or a repeated caption).
+2. Check whether user comprehension or data readability drops.
+3. Repeat until the next removal starts to damage comprehension or navigation.
+4. Restore that last element. The number of elements left is the optimal limit (*pure density*).
