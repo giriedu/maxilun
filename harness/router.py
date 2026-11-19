@@ -114,6 +114,8 @@ class MaxilunRouter:
             ])
             if is_ui_intent or any(k in p for k in ["next.js", "nextjs", "react", "app router", "rsc", "server action", "html", "css", "web"]):
                 companions.append("maxilun-frontend")
+            if any(k in p for k in ["3d", "three.js", "r3f", "webgl", "motion", "animasi", "scrolltrigger", "gsap", "framer motion"]):
+                companions.append("maxilun-motion")
             if is_ui_intent:
                 companions.append("maxilun-verify")
 
@@ -190,10 +192,13 @@ class MaxilunRouter:
             rationale = "Programmatic React/Remotion video compilation to MP4/WebM."
             pre_flight = "Verify frame-indexed composition math (useCurrentFrame) and FFmpeg availability."
 
-        elif any(k in p for k in ["animasi", "three.js", "webgl", "motion", "pegas"]):
+        elif match_tokens(["3d", "three.js", "webgl", "motion", "animasi", "pegas", "r3f", "react three fiber", "gsap", "scrolltrigger", "framer motion", "lottie", "blender", "gltf", "spline", "rive"]):
             owner = "maxilun-motion"
             rationale = "Interactive web motion, analytical springs, or 3D WebGL scenes."
-            pre_flight = "Check spring physics parameters (stiffness, damping) and GPU frame budget."
+            pre_flight = "Check spring physics parameters (stiffness, damping), WebGL budgets (draw calls <= 100, tris <= 100k), and reduced-motion fallback."
+            if any(k in p for k in ["ui", "halaman", "landing", "komponen", "web", "react", "next.js", "nextjs"]):
+                companions.append("maxilun-frontend")
+                companions.append("maxilun-verify")
 
         elif any(k in p for k in ["copywriting", "microcopy", "naskah", "copy produk"]):
             owner = "maxilun-content"
