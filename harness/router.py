@@ -23,11 +23,13 @@ class RoutingDecision:
     is_multi_domain: bool = False
     waves: List[dict] = field(default_factory=list)
     handoff_record: str = ""
+    mode: str = "full"  # "lite", "full", "ultra", "terse", "council"
 
     def summary(self) -> str:
         lines = [
             f"Prompt: \"{self.prompt}\"",
             f"Primary Owner: {self.primary_owner}",
+            f"Execution Mode: {self.mode.upper()}",
             f"Reversibility: {self.reversibility}",
             f"Companions: {', '.join(self.companions) if self.companions else 'None (single cohesive owner)'}",
             f"Multi-Domain: {'Yes (Multi-Wave Coordination Required)' if self.is_multi_domain else 'No (Single-Owner Execution)'}",
@@ -235,6 +237,17 @@ class MaxilunRouter:
             rationale = "Codebase symbol lookup, call hierarchy mapping, or dependency graph generation."
             pre_flight = "Query maxilun-out/graph.json cache or run python cli.py scan."
 
+        # Council Mode Detection
+        is_council = any(k in p for k in ["council", "roundtable", "diskusi", "rembug", "openbot", "ngobrol", "musyawarah", "dewan agent"])
+        mode = "council" if is_council else "full"
+        if is_council:
+            if owner == "maxilun-engineer" or any(k in p for k in ["ui", "aplikasi", "rombak", "desain", "tampilan", "efek", "gelap", "dark", "3d", "motion", "party", "layout"]):
+                owner = "maxilun-craft"
+                for c in ["maxilun-frontend", "maxilun-motion", "maxilun-architect", "maxilun-verify"]:
+                    if c not in companions:
+                        companions.append(c)
+                rationale = "Multi-agent council deliberation for collaborative UI/UX, 3D motion, and architectural synthesis."
+                pre_flight = "Initiate multi-agent roundtable discussion with domain specialists and halt for user ACC before modifying code."
 
         # 3. Wave Coordination Decomposition (Maxilun Section 4)
         is_ui_intent = any(k in p for k in [
@@ -243,7 +256,7 @@ class MaxilunRouter:
             "tampilan baru", "bikin ui", "buat ui", "ganti ui", "landing page",
             "buat halaman", "bikin halaman", "dashboard baru"
         ])
-        is_multi = len(companions) > 0 or is_ui_intent or any(k in p for k in ["lengkap", "fullstack", "end-to-end", "dan test", "beserta ui", "arsitektur"])
+        is_multi = len(companions) > 0 or is_ui_intent or is_council or any(k in p for k in ["lengkap", "fullstack", "end-to-end", "dan test", "beserta ui", "arsitektur"])
         waves = []
         if is_multi:
             w1_candidates = ("maxilun-architect", "maxilun-craft", "maxilun-data", "maxilun-sentinel", "maxilun-scaffold", "maxilun-network", "maxilun-knowledge-graph", "maxilun-insight", "maxilun-docsmith", "maxilun-seo-audit")
@@ -268,8 +281,10 @@ class MaxilunRouter:
             if "maxilun-hunt" in [owner] + companions:
                 w3_specs.append("maxilun-hunt")
 
+            w1_name = "Wave 1: Multi-Agent Council & Consensus Blueprint" if is_council else "Wave 1: Contracts & Design"
+            w1_goal = "Deliberate in character, debate tradeoffs, formulate blueprint & await user ACC before coding" if is_council else "Define schemas, API boundaries, or visual tokens"
             waves = [
-                {"wave": 1, "name": "Wave 1: Contracts & Design", "specialists": w1_specs[:3], "goal": "Define schemas, API boundaries, or visual tokens"},
+                {"wave": 1, "name": w1_name, "specialists": w1_specs[:4] if is_council else w1_specs[:3], "goal": w1_goal},
                 {"wave": 2, "name": "Wave 2: Implementation", "specialists": w2_specs[:3], "goal": "Consume contracts to write convergent production code"},
                 {"wave": 3, "name": "Wave 3: Verification & Proof", "specialists": w3_specs[:3], "goal": "Execute test suite, typecheck, slopscan, and runtime proof"}
             ]
@@ -296,5 +311,6 @@ Residual risks: Disclose operational or runtime boundary limits explicitly"""
             rationale=rationale,
             is_multi_domain=is_multi,
             waves=waves,
-            handoff_record=handoff_record
+            handoff_record=handoff_record,
+            mode=mode
         )

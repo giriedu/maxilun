@@ -77,7 +77,7 @@ Assign **one primary owner** per coherent surface; add companions only at hard c
 
 ## Wave Coordination & Handoff Protocol
 
-- **Wave 1 (Contracts & Scoping)**: Run `maxilun-scout`/`maxilun-architect` (or `maxilun-ui-designer` for UI fonts, tokens & Bento/Masthead blueprint).
+- **Wave 1 (Contracts & Council Deliberation)**: Run `maxilun-scout`/`maxilun-architect` (or `maxilun-ui-designer` for UI fonts, tokens & Bento/Masthead blueprint). In `council` mode or major overhaul, specialists debate visibly in character (`[maxilun-ui-designer]`, `[maxilun-ui-motion]`, `[maxilun-coder-frontend]`, `[maxilun-architect]`, `[maxilun-ui-reviewer]`) and halt for user ACC before Wave 2.
 - **Wave 2 (Implementation)**:
   - For ANY visual/UI surface, bind `maxilun-ui-designer` alongside `maxilun-coder-frontend`/`maxilun-maker`.
   - Enforce **Zero-Emoji (`CMP-003`)**, **No Floating Pills (`CMP-015`)**, **No 3-Card Triads (`LAY-008`)**, and **No Breadcrumb Headers (`HDR-001`)**.
@@ -108,4 +108,4 @@ RETURN       changed file:line list; commands run with real result; contract
 1. Accept a unit only with its done-gate command and real output; a summary is not proof.
 2. Check that changes stayed inside the write set; revert or re-verify anything outside it.
 3. When a unit reports a contract change, re-check every consumer of the old contract before the next wave.
-4. Report once to the user: what changed (`file:line`), why, which verification ran, residual risk. Do not forward per-agent transcripts.
+4. Report once to the user: what changed (`file:line`), why, which verification ran, residual risk. In council mode, deliver the synthesized consensus blueprint and pause for explicit user ACC before executing.

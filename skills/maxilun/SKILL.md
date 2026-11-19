@@ -9,7 +9,8 @@ description: >
   "done" without executable proof. Use it when the user invokes Maxilun or
   asks to run or coordinate work across the Maxilun specialists.
   Triggers: "maxilun", "/maxilun", "maxilun mode", "mode maxilun", "activate maxilun",
-  "aktifkan maxilun", "maxilun lite", "maxilun full", "maxilun ultra".
+  "aktifkan maxilun", "maxilun lite", "maxilun full", "maxilun ultra", "maxilun council",
+  "roundtable", "diskusi agent", "rembug".
 metadata:
   version: "1.3.0"
   ecosystem: maxilun
@@ -31,6 +32,7 @@ metadata:
     - references/code-hygiene.md
     - references/surgical-discipline.md
     - references/dispatch.md
+    - references/agent-council.md
 ---
 
 # Maxilun: Master Orchestrator
@@ -72,8 +74,9 @@ Full detail: `../maxilun/references/engines.md`.
 | `full` *(default)* | Reversibility triage, cohesive routing, waves when the work truly crosses domains, execution proof. |
 | `ultra` | Strict YAGNI: delete before adding, reject speculative abstraction, smallest possible diff. |
 | `terse` | Ultra-compact output: zero prose filler, keep only `file:line`, exact code, and verification proof. |
+| `council` | Multi-agent roundtable discussion: specialists debate ideas in character, synthesize a consensus blueprint, and await user ACC before coding (`references/agent-council.md`). |
 
-Activate with `/maxilun lite`, `/maxilun full`, `/maxilun ultra`, or `/maxilun terse`. Deactivate with `"stop maxilun"` or `"normal mode"` / `"mode normal"`.
+Activate with `/maxilun lite`, `/maxilun full`, `/maxilun ultra`, `/maxilun terse`, or `/maxilun council` (aliases: `roundtable`, `diskusi agent`, `rembug`). Deactivate with `"stop maxilun"` or `"normal mode"` / `"mode normal"`.
 Every coding task follows `references/surgical-discipline.md`: pre-flight reasoning from repository facts, radical simplicity, surgical precision, and a verifiable goal loop.
 
 ## 2. Domain Map (24 Specialists)
@@ -181,6 +184,7 @@ Decide the shape of the work from evidence (the Read plan, a `callsIn:` count), 
 Use waves only for Cross-domain work (§4), at most three units per wave:
 
 - **Wave 1 (independent contracts and design)**: run in real parallel within one subagent dispatch turn, or honestly in sequence on platforms without a parallel dispatcher (for example Cursor or Gemini CLI).
+- **Council Deliberation & User ACC Gate**: In `council` mode (or major creative overhauls), Wave 1 runs a visible roundtable where specialists speak in character (`[maxilun-ui-designer]`, `[maxilun-ui-motion]`, `[maxilun-coder-frontend]`, `[maxilun-architect]`, `[maxilun-ui-reviewer]`), formulate a Consensus Blueprint (`references/agent-council.md`), and pause for explicit user approval ("ACC") before any code execution starts.
 - **Wave 2 (implementation)**: consumes the concrete contracts from Wave 1 (schema, API boundaries, the Craft Brief and tokens). UI work implements that structure; it does not fall back to the previous layout.
 - **Wave 3 (proof)**: runs the test suite, typecheck, build, the UI scan gate, or a real visual check.
 
