@@ -134,6 +134,7 @@ install_target() {
 if [ "$PROJECT_MODE" = true ]; then
     CURRENT_DIR="$(pwd)"
     install_target "Universal / Antigravity / Zed (Project)" "${CURRENT_DIR}/.agents/skills" "${CURRENT_DIR}/.agents/rules" "${CURRENT_DIR}/.agents/agents"
+    install_target "OpenCode (Project)" "${CURRENT_DIR}/.opencode/skills" "${CURRENT_DIR}/.opencode/rules" "${CURRENT_DIR}/.opencode/agents"
     install_target "[CC] / Termul (Project)" "${CURRENT_DIR}/.claude/skills" "${CURRENT_DIR}/.claude/rules" "${CURRENT_DIR}/.claude/agents"
     install_target "Trae (Project)" "${CURRENT_DIR}/.trae/skills"
     install_target "Windsurf (Project)" "${CURRENT_DIR}/.windsurf/skills"

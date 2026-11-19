@@ -21,6 +21,7 @@ if ($Project) {
     $CurrentDir = Get-Location
     $Targets = @(
         @{ Name = "Universal / Antigravity / Zed (Project)"; SkillsPath = "$CurrentDir\.agents\skills"; AgentsPath = "$CurrentDir\.agents\agents"; RulesPath = "$CurrentDir\.agents\rules" },
+        @{ Name = "OpenCode (Project)";                      SkillsPath = "$CurrentDir\.opencode\skills"; AgentsPath = "$CurrentDir\.opencode\agents"; RulesPath = "$CurrentDir\.opencode\rules" },
         @{ Name = "Claude Code (Project)";                 SkillsPath = "$CurrentDir\.claude\skills"; AgentsPath = "$CurrentDir\.claude\agents"; RulesPath = "$CurrentDir\.claude\rules" },
         @{ Name = "Trae (Project)";                          SkillsPath = "$CurrentDir\.trae\skills";   AgentsPath = $null; RulesPath = $null },
         @{ Name = "Windsurf (Project)";                      SkillsPath = "$CurrentDir\.windsurf\skills"; AgentsPath = $null; RulesPath = $null },

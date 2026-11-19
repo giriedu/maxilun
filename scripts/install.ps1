@@ -50,6 +50,7 @@ if ($Project) {
     $CurrentDir = Get-Location
     $Targets = @(
         @{ Name = "Universal / Antigravity / Zed (Project)"; Path = "$CurrentDir\.agents\skills"; AgentsPath = "$CurrentDir\.agents\agents"; LegacyRules = "$CurrentDir\.agents\rules" },
+        @{ Name = "OpenCode (Project)";                      Path = "$CurrentDir\.opencode\skills"; AgentsPath = "$CurrentDir\.opencode\agents"; LegacyRules = "$CurrentDir\.opencode\rules" },
         @{ Name = "[CC] / Termul (Project)";                 Path = "$CurrentDir\.claude\skills"; AgentsPath = "$CurrentDir\.claude\agents"; LegacyRules = "$CurrentDir\.claude\rules" },
         @{ Name = "Trae (Project)";                          Path = "$CurrentDir\.trae\skills";   AgentsPath = $null; LegacyRules = $null },
         @{ Name = "Windsurf (Project)";                      Path = "$CurrentDir\.windsurf\skills"; AgentsPath = $null; LegacyRules = $null },
@@ -72,7 +73,7 @@ if ($Project) {
 
 foreach ($target in $Targets) {
     $parentDir = Split-Path -Parent $target.Path
-    $shouldInstall = $Project -or $target.Name -like "*Antigravity*" -or $target.Name -like "*Termul*" -or (Test-Path $parentDir)
+    $shouldInstall = $Project -or $target.Name -like "*Antigravity*" -or $target.Name -like "*Termul*" -or $target.Name -like "*OpenCode*" -or (Test-Path $parentDir)
     if (-not $shouldInstall) { continue }
 
     $existingMaxilun = @()

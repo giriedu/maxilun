@@ -25,6 +25,7 @@ if [ "$PROJECT_MODE" = true ]; then
     CURRENT_DIR="$(pwd)"
     targets=(
         "Universal / Antigravity / Zed (Project):${CURRENT_DIR}/.agents/skills:${CURRENT_DIR}/.agents/rules:${CURRENT_DIR}/.agents/agents"
+        "OpenCode (Project):${CURRENT_DIR}/.opencode/skills:${CURRENT_DIR}/.opencode/rules:${CURRENT_DIR}/.opencode/agents"
         "Claude Code (Project):${CURRENT_DIR}/.claude/skills:${CURRENT_DIR}/.claude/rules:${CURRENT_DIR}/.claude/agents"
         "Trae (Project):${CURRENT_DIR}/.trae/skills::"
         "Windsurf (Project):${CURRENT_DIR}/.windsurf/skills::"
