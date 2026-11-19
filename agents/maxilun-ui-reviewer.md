@@ -31,6 +31,9 @@ You are **strictly read-only**. You do not possess `Write` or `Edit` tools. Your
      - `LAY-011`: Monotonous center-everything cascades.
      - `LAY-010`: Twin competing solid buttons in the hero.
      - `CMP-003`: Emojis used as UI functional buttons or navigation icons.
+     - `HDR-001`: Breadcrumb-like header slop on flat views (`Home > Dashboard > Overview` or fake category slash trails).
+     - `LAY-008`: Symmetrical 3-card triads with identical boxes without Bento anchor or ledger differentiation.
+     - `TYPO-001`: Naked unconfigured `font-sans` default without declared web font stylesheet.
      - `SYS-004`: Patchwork redesign failure (in-place class tweaks over legacy wrappers; layout not dismantled).
      - `JURY-001` .. `JURY-005`: Twenty scattered effects without a signature moment, scroll-jacking, permanent `will-change` GPU leaks, preloader covering loaded content, or homepage-only design inconsistency.
 

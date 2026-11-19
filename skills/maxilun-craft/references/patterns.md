@@ -24,8 +24,10 @@ opened? A dashboard nobody acts on is a poster.
 - Page title is the scope and the period, with the period control next to it.
 - Filters live in one row above the content they filter.
 
-Avoid: the 4-cards / 2-charts / 1-table stack, greeting header, donut charts
-for more than three slices, a "recent activity" feed added to fill space.
+Avoid: the 4-cards / 2-charts / 1-table stack, the symmetrical 3-card triad
+(`LAY-008`), fake breadcrumb headers on flat pages (`HDR-001`), greeting headers,
+and floating bullet pills (`CMP-015`). Use the Asymmetrical Bento Grid, Operational
+List Ledger, and authentic mastheads from `references/design-archetypes.md`.
 
 ## Data table
 

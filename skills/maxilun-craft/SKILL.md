@@ -121,7 +121,7 @@ If a line could be pasted into the Brief of a different product without edits, r
 Formulas, ranges, and code for every layer are in `references/tokens.md`. Screen-type skeletons (dashboard, data table, form, detail page, landing page, Apps Script web app), the state table, responsive rules, and the accessibility floor are in `references/patterns.md`. Load the deep references only when the task reaches them: `references/interface-engineering.md` (token and layout engineering), `references/component-mobile-patterns.md` (mobile components, overflow), `references/surface-state-topology.md` and `references/resilient-interaction-recovery.md` (states, optimistic updates, undo), `references/task-flow-choreography.md` and `references/cognitive-friction-audit.md` (flow reduction, navigation wording), `references/interaction-telemetry-benchmarks.md` (INP/CLS targets), `references/studio-craft-engine.md` with `assets/craft-primitives.css` (starter primitives). Where a deep reference disagrees with `references/tokens.md` or `references/patterns.md`, those two win.
 
 ### 4.1 Structure
-- Rank the content against the Job. The top-ranked thing gets the best position and the most area. Equal boxes for unequal things is the default grid talking, not you.
+- Rank content against the Job. The top-ranked thing gets the Spotlight and area. Ban the symmetrical 3-card triad (`LAY-008`); use an Asymmetric Bento Grid or Operational List Ledger. Ban fake breadcrumb trails (`HDR-001`); use domain mastheads.
 - Group by meaning. Separate groups with space before borders, and with borders before boxes. A card is for a thing that can be picked up as a unit; most cards are unnecessary. Never nest a bordered box inside a bordered box.
 - App shells use the real viewport: fixed-width navigation, fluid content with a readable cap. Marketing pages get a composed first screen, not a centred stack by reflex.
 - Design the narrow screen as its own layout: reorder by priority, cut secondary columns, keep 44px touch targets. Do not shrink the desktop.
@@ -133,7 +133,7 @@ Formulas, ranges, and code for every layer are in `references/tokens.md`. Screen
 - Things align to shared edges: icons share a column, numbers right-align, labels share a baseline.
 
 ### 4.3 Type
-- Choose families from the Voice and say why. A family nobody chose (whatever the framework shipped) is either confirmed with a reason or replaced. The system font stack is a legitimate choice for tools that must load fast.
+- Choose families from the Voice and declare web font links from `references/design-archetypes.md`. Never leave typography to unconfigured `font-sans` (`TYPO-001`). The system stack is valid for offline tools.
 - At most six sizes from one ratio; two weights plus one reserved for rare emphasis. Hierarchy comes from size, colour role, and space before weight.
 - Sentence case. No all-caps labels with wide tracking, no gradient text (`TYPO-008`), no 800 or 900 weights on interface headings.
 - Compared numbers use tabular figures and a single format. Running text measures 50 to 75 characters.

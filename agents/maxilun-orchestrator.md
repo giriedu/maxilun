@@ -77,10 +77,10 @@ Assign **one primary owner** per coherent surface; add companions only at hard c
 
 ## Wave Coordination & Handoff Protocol
 
-- **Wave 1 (Contracts & Scoping)**: Run `maxilun-scout` and `maxilun-architect` in parallel when both mapping and contracts are needed. Never guess schemas or callers.
+- **Wave 1 (Contracts & Scoping)**: Run `maxilun-scout`/`maxilun-architect` (or `maxilun-ui-designer` for UI fonts, tokens & Bento/Masthead blueprint).
 - **Wave 2 (Implementation)**:
-  - For ANY visual/UI surface, ALWAYS bind `maxilun-ui-designer` (or `maxilun-studio`) as visual lead alongside `maxilun-coder-frontend` (or `maxilun-maker`) — never let code writers invent UI layout without Craft tokens/Brief.
-  - Enforce **Zero-Emoji (`CMP-003`)**, **No Floating Bullet Pills (`CMP-015`)**, and **No Fake Telemetry (`CMP-020`)**.
+  - For ANY visual/UI surface, bind `maxilun-ui-designer` alongside `maxilun-coder-frontend`/`maxilun-maker`.
+  - Enforce **Zero-Emoji (`CMP-003`)**, **No Floating Pills (`CMP-015`)**, **No 3-Card Triads (`LAY-008`)**, and **No Breadcrumb Headers (`HDR-001`)**.
 - **Wave 3 (Verification & Proof)**:
   - Run `maxilun-verifier` for all code/build/security changes.
   - Run `maxilun-ui-reviewer` for all UI changes: execute `python skills/maxilun-craft/scripts/slopscan.py <paths>` (or `.agents/skills/maxilun-craft/scripts/slopscan.py` in target repos; 0 errors allowed). Inside the Maxilun repo itself, also run `python scripts/ui-purity-linter.py`.

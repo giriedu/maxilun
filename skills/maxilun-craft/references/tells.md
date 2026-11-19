@@ -25,6 +25,7 @@ it happens and the decision that replaces it.
 | Everything centred in a narrow column | Landing-page reflex applied to apps | Real app proportions; left-aligned reading edge |
 | Hero = badge, headline, subtext, two buttons, screenshot, all centred | The canonical template | Composition decided by the content: split, full-bleed product view, or text only |
 | Three feature cards with icon + title + one vague line | Fills a section without saying anything | Fewer, concrete claims with evidence; or delete the section |
+| ⌕ Symmetrical 3-card triad with identical boxes (LAY-008) | Default equal-grid reflex | Asymmetric Bento grid (2:1 anchor), Operational List Ledger, or Master-Detail |
 | Sections that all have the same height and padding | Loop output | Vary by importance |
 | Mobile is the desktop scaled down | No separate decision made | Re-rank for the narrow screen |
 
@@ -55,6 +56,7 @@ it happens and the decision that replaces it.
 | Tell | Why | Replace with |
 |---|---|---|
 | ⌕ Emoji as icons, bullets or status | Cheapest icon available | One line-icon family, or words |
+| ⌕ Breadcrumb-like header slop on flat views (HDR-001) | Fakes deep hierarchy | Operational Status Masthead with live indicator or Editorial Masthead |
 | ⌕ Everything fully rounded | Pill reflex | One radius decision; nested radius math |
 | Badges everywhere (New, Pro, Beta, AI) | Fake liveliness | Remove; one quiet label only if it changes a decision |
 | Sparkline or mini chart in every stat | Fills the card | Number, label, comparison |

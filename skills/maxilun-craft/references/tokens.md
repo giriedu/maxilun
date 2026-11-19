@@ -76,9 +76,10 @@ Choosing a family: start from the Voice, and write the reason next to it.
 | Accessibility first | Atkinson Hyperlegible, Lexend | Letterforms designed to be told apart |
 
 Rules: one UI family, optionally one partner (mono for figures or a display
-face for headings). Load only the weights used. If offline use or load speed
-matters (school networks, Apps Script), the system stack is the honest
-choice: `system-ui, -apple-system, "Segoe UI", Roboto, sans-serif`.
+face for headings). Load only the weights used. Never leave typography to naked `font-sans`
+defaults: embed the explicit font stylesheet from `references/design-archetypes.md`.
+If offline use or load speed matters (school networks, Apps Script), the system stack
+is the honest choice: `system-ui, -apple-system, "Segoe UI", Roboto, sans-serif`.
 
 ## Neutrals
 

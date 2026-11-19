@@ -87,6 +87,12 @@ LINE_RULES = [
     ("caps-css", I,
      re.compile(r"text-transform\s*:\s*uppercase", re.I),
      "uppercase transform", "confirm it is not a tracked micro-label"),
+    ("breadcrumb-header", W,
+     re.compile(r">\s*(?:Home|Dashboard|Overview|App|Pages)\s*[/›>»]\s*(?:Dashboard|Analytics|Overview|Settings|Features|Home)\s*<", re.I),
+     "breadcrumb-like header on flat surface (HDR-001)", "domain-authentic masthead; keep breadcrumbs for >=3 deep hierarchies"),
+    ("pill-tagline", W,
+     re.compile(r"rounded-full[^\"'>]*border[^\"'>]*(?:bg-|text-)[^\"'>]*>\s*(?:[•·\|\/]\s*)?[A-Z0-9_\s-]{3,24}(?:\s*[•·\|\/]\s*[A-Z0-9_\s-]{3,24})*\s*<", re.I),
+     "floating pill tagline capsule with bullets above headline (CMP-015)", "unbordered sentence-case text eyebrow or integrate context directly into headline"),
 ]
 
 OFFGRID_TW = re.compile(r"(?<![\w-])-?" + SPACING_PREFIX + r"-\[(\d+(?:\.\d+)?)px\]")
