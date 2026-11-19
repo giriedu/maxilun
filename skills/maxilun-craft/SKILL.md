@@ -46,6 +46,7 @@ metadata:
     - references/brand-logo-guidelines.md
     - references/studio-craft-engine.md
     - references/tactile-interface-craft.md
+    - references/design-archetypes.md
 ---
 
 # Maxilun Craft: Interfaces Decided, Not Averaged
@@ -107,6 +108,7 @@ Seven lines derived from the product in front of you.
 - **Voice.** Three adjectives plus one boundary, like `steady, plain, local - serious but not stern`. Words that fit every product are not allowed: clean, modern, minimal, sleek, premium, elegant, professional, simple.
 - **Origin.** Where the visual material comes from, in priority order: (1) the real brand when one exists; (2) objects and documents of the domain (a school has report cards, stamps, chalk, timetables; a library has spines, index cards, date stamps); (3) the place and culture of the users. Origin gives the hue of the neutrals, the accent, the shapes, and any imagery.
 - **Density.** Airy, regular, or dense, with the reason. Tools used daily by trained people are dense; pages seen once by strangers are airy.
+- **Archetype.** Declare ONE from `references/design-archetypes.md` (`[ARCHETYPE SELECTED: <Name>]`: Technical Ledger, Warm Editorial, Swiss High-Contrast, Cybernetic Deck, Neo-Brutalist, or Nordic Living) and inject tokens. Unchosen generic slate palettes are banned.
 - **Spotlight.** The single element that receives the emphasis budget: one number, one chart, one action, one image. Naming it means everything else agrees to be quiet.
 - **Refusals.** Three things this design will deliberately not do, like `no cards inside cards, no icons in the table, no second accent`. Refusals make a design recognisable.
 
@@ -183,7 +185,7 @@ When local fixes keep getting overridden, the old design system is locking the s
 | Patchwork | `!important` utilities or inline styles stacked on top of a live old foundation | `SYS-004` |
 | Zombie style | Stale CSS, CSS modules, or inline styles that collide with the new tokens | `SYS-005` |
 
-Fix at the root as a clean cutover: replace the token block, open the shell, upgrade the primitives, and delete the stylesheets and classes your change made obsolete. Never layer new utilities over a lock that is still alive; that is why a "redesign" ends up looking the same. Scope stays honest: touch only the foundation the requested screens depend on.
+Fix at the root as a clean cutover: replace the token block, open the shell, upgrade the primitives, and delete obsolete stylesheets and classes. Nuclear Redesign Protocol: in any redesign or revamp, tearing down the legacy container wrapper (`SYS-002`) and rebuilding the layout topology from scratch is mandatory; patchwork cosmetic tweaks on locked shells (`SYS-004`) are rejected on sight. Scope stays honest: touch only the foundation the requested screens depend on.
 
 ## 6. Brand Artifacts & Native Surfaces
 

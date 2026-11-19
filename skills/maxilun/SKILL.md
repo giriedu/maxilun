@@ -160,10 +160,12 @@ Decide the shape of the work from evidence (the Read plan, a `callsIn:` count), 
 
 | Size | Evidence | Shape |
 |---|---|---|
-| **Direct** | One domain, at most 2 files, no contract or schema change | One owner inline, no subagent, no wave; verification still runs |
+| **Direct** | One domain, ≤2 files, no contract/schema change, non-redesign | One owner inline, no subagent, no wave; verification still runs |
 | **Scoped** | One domain, 3 to 8 files, or one contract with known callers | One owner plus a proof step |
-| **Cross-domain** | Two or more domains whose outputs feed each other | Waves (§5) |
+| **Cross-domain** | Two+ domains whose outputs feed each other, or any UI redesign | Mandatory 3-wave multi-agent pipeline (§5) |
 | **Unknown cause** | A symptom with no located fault | Diagnose first (`maxilun-insight`), then size again |
+
+- **UI Redesign / Revamp Invariant**: Any redesign or UI overhaul is NEVER Direct—even if touching 1 file. It mandatorily triggers 3 waves: Wave 1 Craft (Archetype & tokens) → Wave 2 Frontend/Engineer (dismantle old DOM & rebuild) → Wave 3 Verify/Reviewer (slopscan gate). Never execute redesign with 1 agent alone.
 
 1. **Cut work units by artifact and contract.** Each unit has one owner, a write set (files or ranges only it may change), the contracts it consumes, a done gate, and a capped return format. Phases such as "plan, code, review" are not units.
 2. **Disjoint write sets.** Two units in one wave never edit the same file. A shared file means one owner takes both changes or the units run in sequence.
@@ -203,7 +205,7 @@ When the environment blocks tests or builds, say `[UNVERIFIED]` explicitly toget
 2. **Measure first.** Route to `maxilun-craft` in Repair mode: run the scan, read `../maxilun-craft/references/tells.md`, and name the specific defects. Three small problems get three small fixes; a screen that is already good is told so.
 3. **Name the lock when fixes do not stick.** If the foundation overrides local changes, identify the design-system lock in `references/purity-catalog.md` (`SYS-001` .. `SYS-005`: stale `:root` tokens, a narrow shell wrapper, uniform legacy primitives, patchwork overrides, colliding zombie styles).
 4. **Rebuild from the real domain.** Apply a clean cutover in `maxilun-craft`: replace the `:root` variables, open the layout shell, upgrade the primitives, and delete obsolete stylesheets instead of layering utilities on a broken foundation. Rewrite the Brief from the product's Origin; pick at most two contrasting references from `../maxilun-craft/references/design-md/index.md` when a structural precedent helps.
-5. **Ask once only when direction has no anchor.** Offer three truly contrasting archetypes (for example *Warm Editorial*, *Clean Light Operational*, *High-Contrast Minimal*), not three variations of one template. If the user says to just redo it, choose the direction most authentic to the product domain, state why, and rebuild end to end.
+5. **Archetype Selection & Nuclear Redesign Protocol.** Every UI build or redesign MUST declare ONE archetype from `../maxilun-craft/references/design-archetypes.md` (`[ARCHETYPE SELECTED: <Name>]`) and tear down the legacy wrapper (`SYS-002`) from scratch. Single-agent cosmetic patching is rejected.
 
 ## Related Skills
 

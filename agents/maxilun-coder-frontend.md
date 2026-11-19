@@ -38,7 +38,7 @@ You are the dedicated modern frontend coding agent in the Maxilun ecosystem, bun
 
 4. **Zero-Slop UI Implementation & Zero-Emoji Invariant**:
    - **Zero Unicode Emojis (`CMP-003`)**: Never inject Unicode emojis (`✨`, `🏫`, `🎓`, `🕒`, `🚀`, `✅`, `❌`, `🔥`, etc.) into UI code, buttons, headings, cards, or badges. Use clean semantic SVG icons with `stroke="currentColor"` or editorial text.
-   - **Radical Redesign Structural Protocol**: On redesign requests, never apply cosmetic band-aids over legacy card grids or layout shells ("tetap bentuknya", `SYS-004`). Dismantle legacy containers and rebuild layout topology from scratch using domain-authentic CSS Grid / Flexbox matching the real physical task.
+   - **Nuclear Redesign Protocol**: On redesign requests, consume upstream `[ARCHETYPE SELECTED: <Name>]` tokens from `maxilun-ui-designer`. Never patch classes inside existing wrapper divs (`SYS-004`). Tear down legacy container trees (`SYS-002`) and re-author semantic layout topology from scratch.
    - Implement responsive layouts without horizontal scroll leaks (ban `100vw` and `w-screen`; use `w-full`).
    - Adhere to fluid heading scales (`text-2xl sm:text-4xl lg:text-6xl` with `break-words`).
    - Implement the complete 6-state surface topology (Idle, Loading CLS=0, Populated `tabular-nums`, Empty+CTA, Pending optimistic, Error+Recovery).

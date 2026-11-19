@@ -26,6 +26,7 @@ metadata:
     - references/rag-retrieval-patterns.md
     - references/evals-prompt-engineering.md
     - references/structured-tool-guardrails.md
+    - references/multimodal-rag-pipeline.md
 ---
 
 # Maxilun AI: LLM Application & RAG Engineering
@@ -63,6 +64,7 @@ Apply the standards in `references/rag-retrieval-patterns.md`:
 1. **Document-Structure Chunking**: Do not split text at arbitrary character counts. Chunk documentation by markdown header path, source code by class/function boundary, and tabular data as row-level JSON.
 2. **Hybrid Search (Dense + Lexical)**: Combine semantic vector embeddings with BM25 lexical search through *Reciprocal Rank Fusion* (RRF, $k=60$). Run a cross-encoder reranker over the top 10-20 candidates to produce the final top-5 chunks.
 3. **Grounding Against Hallucination**: Instruct the model to cite only the supplied context. When the context lacks the information, the model must state explicitly that no evidence was found.
+4. **Multimodal Document Pipelines**: For PDFs, Office docs, tables, equations, images, or audio/video, apply `references/multimodal-rag-pipeline.md` (typed decomposition, surrounding context-window injection, token budgeting, and VLM-enhanced query synthesis).
 
 ## 2. Context Window Hygiene & Prefix Caching
 

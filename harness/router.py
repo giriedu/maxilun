@@ -102,12 +102,20 @@ class MaxilunRouter:
             rationale = "Cryptographic webhook signature verification and idempotent payload mutation."
             pre_flight = "Check webhook replay window, raw body HMAC, and database idempotency table."
 
-        elif any(k in p for k in ["landing page", "desain ui", "redesign", "komponen ui", "sistem desain", "ui/ux", "tampilan", "dashboard", "halaman web", "website", "logo svg", "brand identity"]):
+        elif any(k in p for k in ["landing page", "desain ui", "redesign", "redesain", "rombak", "revamp", "overhaul", "ganti ui", "komponen ui", "sistem desain", "ui/ux", "tampilan", "dashboard", "halaman web", "website", "logo svg", "brand identity", "ganti tema", "ubah tema", "tema baru"]):
             owner = "maxilun-craft"
             rationale = "Domain-authentic visual design, OKLCH tokens, 4 UI states, or brand assets."
-            pre_flight = "Select 1-2 matching design systems from references/design-md/ and verify tokens."
-            if any(k in p for k in ["next.js", "nextjs", "react", "app router", "rsc", "server action"]):
+            pre_flight = "Select Archetype from references/design-archetypes.md, select matching design systems from references/design-md/, and verify tokens."
+            is_ui_intent = any(k in p for k in [
+                "redesign", "redesain", "rombak", "revamp", "overhaul",
+                "ganti ui", "tampilan baru", "ganti tema", "ubah tema",
+                "tema baru", "desain ulang", "landing page", "buat ui", "bikin ui",
+                "buat halaman", "bikin halaman", "dashboard baru"
+            ])
+            if is_ui_intent or any(k in p for k in ["next.js", "nextjs", "react", "app router", "rsc", "server action", "html", "css", "web"]):
                 companions.append("maxilun-frontend")
+            if is_ui_intent:
+                companions.append("maxilun-verify")
 
         elif any(k in p for k in ["app router", "rsc", "server component", "server action", "next.js", "nextjs", "hydration", "flight"]):
             if any(k in p for k in ["halaman", "landing", "tampilan", "ui", "dashboard", "web", "desain"]):
@@ -224,10 +232,16 @@ class MaxilunRouter:
 
 
         # 3. Wave Coordination Decomposition (Maxilun Section 4)
-        is_multi = len(companions) > 0 or any(k in p for k in ["lengkap", "fullstack", "end-to-end", "dan test", "beserta ui", "arsitektur"])
+        is_ui_intent = any(k in p for k in [
+            "redesign", "redesain", "rombak", "overhaul", "revamp",
+            "ganti tema", "ubah tema", "tema baru", "desain ulang",
+            "tampilan baru", "bikin ui", "buat ui", "ganti ui", "landing page",
+            "buat halaman", "bikin halaman", "dashboard baru"
+        ])
+        is_multi = len(companions) > 0 or is_ui_intent or any(k in p for k in ["lengkap", "fullstack", "end-to-end", "dan test", "beserta ui", "arsitektur"])
         waves = []
         if is_multi:
-            w1_candidates = ("maxilun-architect", "maxilun-data", "maxilun-sentinel", "maxilun-scaffold", "maxilun-network", "maxilun-knowledge-graph", "maxilun-insight", "maxilun-docsmith", "maxilun-seo-audit")
+            w1_candidates = ("maxilun-architect", "maxilun-craft", "maxilun-data", "maxilun-sentinel", "maxilun-scaffold", "maxilun-network", "maxilun-knowledge-graph", "maxilun-insight", "maxilun-docsmith", "maxilun-seo-audit")
             w1_specs = [owner] if owner in w1_candidates else []
             for c in companions:
                 if c in w1_candidates and c not in w1_specs:
