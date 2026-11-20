@@ -47,6 +47,7 @@ metadata:
     - references/studio-craft-engine.md
     - references/tactile-interface-craft.md
     - references/design-archetypes.md
+    - references/ux-audit-matrix.md
 ---
 
 # Maxilun Craft: Interfaces Decided, Not Averaged
@@ -204,7 +205,7 @@ Do not print a self-made PASS/FAIL block. Evidence only:
 5. **Keyboard.** Tab through: focus is always visible and in order; `aria-current="page"` marks the active route; no dead controls.
 6. **Narrow and wide.** At 360px, 768px, and 1440px nothing overflows horizontally (no `100vw` / `w-screen` leaks, flex and grid children carry `min-w-0`), nothing is unreadably small. Targets: INP ≤ 200ms, CLS = 0.
 7. **States.** Empty, loading, error, and long-content versions exist and were exercised.
-8. **Cutover** (when §5 applied): the old tokens, hardcoded backgrounds, and wrappers are gone, with no colliding leftovers.
+8. **Cutover** (when §5 applied): the old tokens, hardcoded backgrounds, and wrappers are gone, with no colliding leftovers. Ground full-spectrum evaluation in `references/ux-audit-matrix.md` (3-layer audit, concentric radii, 6-state matrix).
 
 When a browser runtime is available, open the page and verify visuals and interactive states directly. When it is not, say `[UNVERIFIED]` for the visual checks and list what was checked from code.
 

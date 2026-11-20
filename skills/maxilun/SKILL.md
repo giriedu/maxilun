@@ -33,6 +33,7 @@ metadata:
     - references/surgical-discipline.md
     - references/dispatch.md
     - references/agent-council.md
+    - references/harness-engineering.md
 ---
 
 # Maxilun: Master Orchestrator
@@ -77,7 +78,7 @@ Full detail: `../maxilun/references/engines.md`.
 | `council` | Multi-agent roundtable discussion: specialists debate ideas in character, synthesize a consensus blueprint, and await user ACC before coding (`references/agent-council.md`). |
 
 Activate with `/maxilun lite`, `/maxilun full`, `/maxilun ultra`, `/maxilun terse`, or `/maxilun council` (aliases: `roundtable`, `diskusi agent`, `rembug`). Deactivate with `"stop maxilun"` or `"normal mode"` / `"mode normal"`.
-Every coding task follows `references/surgical-discipline.md`: pre-flight reasoning from repository facts, radical simplicity, surgical precision, and a verifiable goal loop.
+Every coding task follows `references/surgical-discipline.md` and `references/harness-engineering.md`: pre-flight reasoning from repository facts, strict write-set boundaries, continuity ledgers, and a verifiable goal loop.
 
 ## 2. Domain Map (24 Specialists)
 

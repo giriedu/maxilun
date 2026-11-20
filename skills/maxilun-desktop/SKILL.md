@@ -26,6 +26,7 @@ metadata:
     - references/powerbuilder-playbook.md
     - references/native-desktop-patterns.md
     - references/cross-platform-qt-tauri.md
+    - references/rust-systems-migration.md
 ---
 
 # Maxilun Desktop: Native Desktop & Enterprise GUI Specialist
@@ -80,7 +81,7 @@ Apply `references/native-desktop-patterns.md`:
 
 Apply `references/cross-platform-qt-tauri.md`:
 1. **Qt6 C++**: Enforce QObject parent-child hierarchies for automatic memory reclamation. Use `Qt::QueuedConnection` across thread boundaries.
-2. **Tauri 2.0 (Rust)**: Structure commands with typed async Rust handlers. Keep IPC payloads lean (`<= 1MB`) and stream heavy binary assets.
+2. **Tauri 2.0 (Rust) & Systems Migration**: Structure commands with typed async Rust handlers. Keep IPC payloads lean (`<= 1MB`) and stream heavy binary assets. For rewriting or migrating legacy utilities to Rust, apply the behavior-proving protocol in `references/rust-systems-migration.md` (golden trace recording, zero-unsafe invariant, and differential replay verification).
 3. **Packaging Standards**: Build signed, clean-uninstalling installers (WiX MSI, InnoSetup, notarized macOS DMG, Linux AppImage).
 
 ## 5. Verification, Packaging & Diagnostic Reporting Standards

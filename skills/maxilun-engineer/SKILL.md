@@ -25,6 +25,7 @@ metadata:
     - references/simplicity-ladder.md
     - references/root-cause-convergence.md
     - references/refactoring-cutover-discipline.md
+    - references/systematic-tdd-debugging.md
 ---
 
 # Maxilun Engineer: Senior Code Implementation
@@ -76,6 +77,8 @@ Pick the simplest solution, in this order, before adding an abstraction or a dep
 5. **No single-consumer wrappers**: Reject an interface with one implementation and no real adaptation boundary, an empty passthrough wrapper, and a function extracted before the duplication pattern is proven.
 
 ## 3. Root-Cause Debugging & the Red-Green-Refactor Cycle
+
+Ground execution in `references/systematic-tdd-debugging.md`: Ironclad TDD (no production code without a failing test first: RED -> GREEN -> REFACTOR) and the 4-phase debugging sequence (Reproduce -> Isolate -> Identify -> Verify).
 
 ### Fix Bugs at the Convergence Point
 1. **Deterministic reproduction**: Before changing production code for a non-trivial bug, confirm the failure reproduces consistently through a minimal test case or a known triggering input.

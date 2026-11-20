@@ -29,6 +29,7 @@ metadata:
     - references/api-distributed-patterns.md
     - references/migration-operations-playbook.md
     - references/well-architected-framework.md
+    - references/system-design-vault.md
 ---
 
 # Maxilun Architect: Structural Design, `/msal-think` & Impact Analysis
@@ -81,7 +82,7 @@ Match process depth to the reversibility of the decision. Do not add bureaucracy
 | **Type 1b (Standard)** | New public API/event contract, new internal module, choice of cache/transport mechanism | Briefly evaluate the trade-offs of the viable candidates + short ADR |
 | **Type 1a (Critical)** | Service split, destructive schema change, multi-tenancy model, core infrastructure | Full 4-phase convergence + failure-mode and capacity analysis + complete ADR |
 
-**Default Baseline**: Start from a **Modular Monolith + local ACID transactions** (PostgreSQL by default). Whoever proposes a service split, a new broker, or event sourcing carries the burden of quantitative proof.
+**Default Baseline**: Start from a **Modular Monolith + local ACID transactions** (PostgreSQL by default). Whoever proposes a service split, a new broker, or event sourcing carries the burden of quantitative proof. Ground large-scale distributed topologies, L4/L7 load balancing, caching architectures, and database sharding in `references/system-design-vault.md`.
 
 ## 2. Four-Phase Engineering Convergence (`/maxilun-think` / `/msal-think`) & the 6 WAF Pillars
 
