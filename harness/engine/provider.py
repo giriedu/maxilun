@@ -7,6 +7,7 @@ Zero external dependencies (uses urllib.request).
 
 import json
 import os
+import sys
 import time
 import urllib.request
 import urllib.error
@@ -75,21 +76,23 @@ class UniversalProvider:
         self.endpoint = endpoint or os.environ.get("LLM_ENDPOINT") or preset.get("endpoint") or "https://api.deepseek.com/v1"
         self.model = model or os.environ.get("LLM_MODEL") or preset.get("model") or "deepseek-chat"
 
-        env_key_name = preset.get("env_key")
-        preset_key = os.environ.get(env_key_name, "") if env_key_name else ""
-        self.api_key = (
-            api_key
-            or preset_key
-            or os.environ.get("DEEPSEEK_API_KEY")
-            or os.environ.get("OPENAI_API_KEY")
-            or os.environ.get("OPENROUTER_API_KEY")
-            or os.environ.get("GROQ_API_KEY")
-            or os.environ.get("GEMINI_API_KEY")
-            or ""
-        )
+        self.api_key = api_key or self._env_key(preset, explicit_endpoint=bool(endpoint or os.environ.get("LLM_ENDPOINT")))
 
         is_local = "localhost" in self.endpoint or "127.0.0.1" in self.endpoint
         self.mock_mode = mock_mode or (not self.api_key and not is_local)
+        if self.mock_mode and not mock_mode:
+            print("⚠️  Maxilun: no API key for this provider; running in MOCK mode. Responses are simulated, not from a model.",
+                  file=sys.stderr)
+
+    @classmethod
+    def _env_key(cls, preset: Dict[str, Any], explicit_endpoint: bool) -> str:
+        # Sending one vendor's key to another vendor's endpoint leaks it, so a chosen
+        # preset or custom endpoint only ever uses its own key.
+        if preset:
+            return os.environ.get(preset["env_key"], "")
+        if explicit_endpoint:
+            return ""
+        return os.environ.get(cls.PRESETS["deepseek"]["env_key"], "")
     def complete(
         self,
         messages: List[Dict[str, Any]],
@@ -161,9 +164,9 @@ class UniversalProvider:
     ) -> ProviderResponse:
         """Provides deterministic mock responses for testing and offline demo."""
         last_msg = messages[-1] if messages else {}
-        content = last_msg.get("content", "").lower()
+        content = (last_msg.get("content") or "").lower() if last_msg.get("role") == "user" else ""
 
-        # If user asked to inspect or read files and tools are available, simulate tool call
+        # Only a fresh user request triggers the simulated read; after the tool result the mock answers, so it cannot loop.
         if any(k in content for k in ["baca", "read", "lihat", "inspect"]) and tools:
             tool_call = {
                 "id": "call_mock_1",
@@ -183,9 +186,8 @@ class UniversalProvider:
 
         # Standard clean Maxilun response mock
         mock_text = """
-Eksekusi selesai dengan kepatuhan Core Rules Maxilun.
-1. Status Perubahan: Terverifikasi [CONFIRMED].
-2. Invarian: Bebas dari buzzword, mengimplementasikan 4 UI states, dan parameter query aman.
+[MOCK] Simulated reply; no model was called and nothing was verified.
+Configure an API key or a local endpoint for a real answer.
 """
         return ProviderResponse(
             content=mock_text.strip(),

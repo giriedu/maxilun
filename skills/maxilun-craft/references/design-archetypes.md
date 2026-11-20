@@ -8,6 +8,8 @@ OKLCH tokens, typography pairings, surface elevations, and structural layouts.
 Every UI build or redesign task MUST explicitly declare ONE archetype before writing code:
 `[ARCHETYPE SELECTED: <Archetype Name>]`
 
+**Font delivery rule.** The `<link>` snippets below name the font pairing; they are not the delivery method. Use the project's existing loader first (`next/font`, `@fontsource/*`, self-hosted `woff2` with `font-display: swap`). New projects self-host the files. A third-party font CDN link is acceptable only for a throwaway prototype or a single-file preview the user asked for, because it adds a network dependency and sends every visitor's IP to the font host.
+
 ---
 
 ## 1. The 6 Contrasting Visual Archetypes
@@ -481,7 +483,7 @@ Every transition between agents MUST carry this structured packet:
 ```text
 [UI ARCHITECTURE PACKET]
 ARCHETYPE: <Technical Ledger | Warm Editorial | Swiss High-Contrast | Cybernetic Deck | Neo-Brutalist | Nordic Living>
-FONTS: <Exact Google Font CDN <link> and font-family rule>
+FONTS: <font pairing, font-family rule, and delivery: project loader or self-hosted woff2 (CDN link only for a requested prototype)>
 TOKENS: <:root CSS custom properties block>
 CARD_TOPOLOGY: <Asymmetric Bento | Operational List Ledger | Master-Detail | Spotlight Pairing> (Strictly No 3-Card Triads LAY-008)
 MASTHEAD: <Status Masthead | Editorial Masthead | Clean Hero> (Strictly No Breadcrumbs HDR-001)

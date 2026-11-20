@@ -8,7 +8,7 @@ Mendukung instalasi langsung dari GitHub untuk Claude Code, Antigravity, Cursor,
 # 1. Perintah Standar (Interaktif - pilih skill & agen target):
 npx skills add giriedu/maxilun
 
-# 2. Pasang seluruh 23 skill secara global (-g) tanpa prompt (-y):
+# 2. Pasang seluruh 25 skill secara global (-g) tanpa prompt (-y):
 npx skills add giriedu/maxilun -g -y
 
 # 3. Khusus Claude Code (Level Project Workspace):
@@ -36,7 +36,9 @@ cd maxilun && bash scripts/install.sh
 git clone https://github.com/giriedu/maxilun.git
 cd maxilun; .\scripts\install.ps1
 ```
-*(Tambahkan parameter `-Project` jika ingin memasang ke project aktif saat ini: `.\scripts\install.ps1 -Project`)*
+*(Mode project: `.\scripts\install.ps1 -Project` atau `bash scripts/install.sh --project` (alias `-p`) memasang ke direktori kerja saat ini.)*
+
+Installer memasang **25 skill** dan **15 agen** (`agents/maxilun-*.md`). Sebelum menyalin agen, installer menghapus file `maxilun-*.md` lama di direktori agen tujuan agar agen yang dihapus/diganti nama tidak tertinggal. Cache `__pycache__`, `*.pyc`, `.maxilun`, dan `maxilun-out` tidak ikut terpasang.
 
 ## Cara Update Skill ke Versi Terbaru
 
@@ -67,7 +69,7 @@ npm run update-skills
 
 ## Manual Copy
 
-Salin folder `skills/*` ke direktori skill platform Anda (misal: `~/.claude/skills/` atau `~/.agents/skills/`).
+Salin folder `skills/*` ke direktori skill platform Anda (misal: `~/.claude/skills/` atau `~/.agents/skills/`), dan `agents/*.md` ke direktori agen platform (misal: `~/.claude/agents/`). Untuk OMP, agen harus berada di `~/.omp/agent/agents/` tanpa baris `model:` dan dengan nama tool huruf kecil (`read`, `grep`, `glob`, `bash`, `write`, `edit`); installer melakukan transformasi ini otomatis.
 
 Tidak ada folder `rules/` yang perlu disalin. Aturan inti tertanam di setiap `SKILL.md` sebagai blok `CORE-RULES`, dan materi lengkap ada di `skills/maxilun/references/`. Jika Anda menyalin satu skill saja, skill itu tetap membawa aturannya sendiri.
 
@@ -79,20 +81,38 @@ v1 menaruh aturan di `rules/` pada root repo. `npx skills add` hanya menyalin fo
 2. Installer v2 menghapus sisa file aturan v1 di luar folder skill secara otomatis, hanya jika file tersebut membawa penanda Maxilun.
 3. Verifikasi: setiap `SKILL.md` harus memuat blok `<!-- CORE-RULES:START -->`, dan `skills/maxilun/references/engines.md` harus ada.
 
-Jika Anda memakai skill di luar ekosistem ini, hapus rujukan ke paket eksternal di luar 23 skill Maxilun: v2 berdiri mandiri sepenuhnya tanpa dependensi skill pihak ketiga.
+Jika Anda memakai skill di luar ekosistem ini, hapus rujukan ke paket eksternal di luar 25 skill Maxilun: v2 berdiri mandiri sepenuhnya tanpa dependensi skill pihak ketiga.
 
 
-## Kompatibilitas Multi-Platform
+## Target Installer (`install.sh` / `install.ps1`)
 
-| Platform AI | Workspace Project | Lokasi Global | Cara Auto-Install |
+Mode global (default). Target bertanda "selalu" dipasang; lainnya hanya jika direktori platform sudah ada.
+
+| Platform | Kondisi | Skills | Agents |
 |---|---|---|---|
-| **Claude Code** | `.claude/skills/` | `~/.claude/skills/` | Otomatis via `npx skills add` atau `install.sh` / `install.ps1` |
-| **OpenCode** | `.opencode/skills/` | `~/.config/opencode/skills/` | Otomatis via `npx skills add` atau `install.sh` / `install.ps1` |
-| **Codex** | `.codex/skills/` | `~/.codex/skills/` | Otomatis via `npx skills add` atau `install.sh` / `install.ps1` |
-| **Antigravity CLI / IDE** | `.agents/skills/` | `~/.agents/skills/` | Otomatis via `npx skills add` atau `install.sh` / `install.ps1` |
-| **Zed Editor** | `.agents/skills/` | `~/.agents/skills/` | Otomatis via `npx skills add -a zed` atau Universal Agent Standard |
-| **Termul (`termul.dev`)** | `.claude/skills/` & `.agents/skills/` | `~/.claude/skills/` & `~/.agents/skills/` | Otomatis via Claude Code / Antigravity CLI / OpenCode harness di Termul workspace |
-| **Cursor / Windsurf** | `.cursor/skills/` | `~/.cursor/skills/` | Otomatis via `npx skills add` atau `install.sh` / `install.ps1` |
-| **Universal Git Standard** | `skills/` | — | Standar terbuka vendor-neutral bawaan repositori ini |
+| **Antigravity CLI / IDE & Zed** | selalu | `~/.agents/skills/` | `~/.agents/agents/` |
+| **Claude Code & Termul** | selalu | `~/.claude/skills/` | `~/.claude/agents/` |
+| **OMP** | `~/.omp` ada | — (dibaca dari `~/.agents/skills/`) | `~/.omp/agent/agents/` (format OMP) |
+| **Codex** | `~/.codex` ada | `~/.codex/skills/` | — |
+| **OpenCode** | `~/.config/opencode` ada, jika tidak `~/.opencode` ada | `~/.config/opencode/skills/` atau `~/.opencode/skills/` | `agents/` pada direktori yang sama |
+| **Gemini CLI** | `~/.gemini` ada | `~/.gemini/skills/` | — |
+| **Cursor** | `~/.cursor` ada | `~/.cursor/skills/` | — |
+| **Trae** | `~/.trae` ada | `~/.trae/skills/` | — |
+| **Windsurf** | `~/.windsurf` ada | `~/.windsurf/skills/` | — |
+| **CodeBuddy** | `~/.codebuddy` ada | `~/.codebuddy/skills/` | — |
+
+Mode project (`-Project` / `--project` / `-p`), semua target dipasang relatif ke direktori kerja:
+
+| Platform | Skills | Agents |
+|---|---|---|
+| **Universal / Antigravity / Zed** | `.agents/skills/` | `.agents/agents/` |
+| **OpenCode** | `.opencode/skills/` | `.opencode/agents/` |
+| **Claude Code / Termul** | `.claude/skills/` | `.claude/agents/` |
+| **OMP** | — | `.omp/agents/` (format OMP) |
+| **Trae** | `.trae/skills/` | — |
+| **Windsurf** | `.windsurf/skills/` | — |
+| **CodeBuddy** | `.codebuddy/skills/` | — |
+
+Skill lama milik Maxilun dicadangkan ke `_maxilun_backup_<timestamp>` di samping direktori skills (maksimal 2 cadangan terbaru disimpan).
 
 *Catatan: Saat menggunakan `npx skills add giriedu/maxilun`, CLI akan secara interaktif menampilkan menu pemilihan skill dan agen target Anda (termasuk Zed via flag `-a zed`).*

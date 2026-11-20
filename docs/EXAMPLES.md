@@ -132,7 +132,7 @@ flowchart LR
 - `"Rancang pipeline GitHub Actions untuk deployment preview otomatis per pull request dengan zero-downtime rollback."`
 
 ### 12. maxilun-docsmith
-- `"Buat PRD & Engineering RFC untuk fitur Pembayaran QRIS Dinamis lengkap dengan kriteria Gherkin, matriks 4 state UI (merujuk maxilun-craft), dan kontrak OpenAPI 3.1 + RFC 9457."`
+- `"Buat PRD & Engineering RFC untuk fitur Pembayaran QRIS Dinamis lengkap dengan kriteria Gherkin, matriks 6 state UI (merujuk maxilun-craft), dan kontrak OpenAPI 3.1 + RFC 9457."`
 - `"Tulis panduan migrasi komprehensif dari v1 ke v2 untuk SDK publik ini dengan format Keep a Changelog."`
 - `"Buat file llms.txt dan llms-full.txt yang memetakan dokumentasi teknis repositori ini untuk agen AI."`
 
@@ -153,10 +153,31 @@ flowchart LR
 - `"Gambarkan diagram arsitektur microservices yang memperlihatkan pemisahan sinkron (REST) dan asinkron (Kafka/RabbitMQ)."`
 
 ### 17. maxilun-content
-- `"Tulis teks instruksi kosong (empty state) untuk dashboard analitik ketika pengguna belum memiliki data riwayat."`
-- `"Buat pesan kesalahan teknis yang mudah dipahami manusia tanpa membuka detail internal sistem untuk kegagalan koneksi bank."`
+- `"Tulis copy landing page peluncuran fitur laporan otomatis dengan brand voice yang tenang dan klaim yang bisa dibuktikan."`
+- `"Buat naskah narasi video demo produk 60 detik lengkap dengan markup SSML untuk voice-over TTS."`
 
 ### 18. maxilun-seo-audit
 - `"/maxilun-seo audit struktur tag semantik, JSON-LD schema, dan canonical URL pada halaman produk e-commerce ini."`
 - `"Identifikasi dan perbaiki masalah Core Web Vitals pada halaman landing."`
+
+### 19. maxilun-ai
+- `"/maxilun-ai rancang pipeline RAG hybrid (BM25 + vektor) untuk basis pengetahuan support dengan eval regresi prompt."`
+
+### 20. maxilun-desktop
+- `"/maxilun-desktop migrasikan form entri faktur WPF ini ke pola MVVM tanpa memblokir UI thread."`
+
+### 21. maxilun-game
+- `"/maxilun-game rancang sistem inventaris Godot dengan save/load deterministik dan GDD satu halaman."`
+
+### 22. maxilun-hunt
+- `"/maxilun-hunt uji IDOR/BOLA pada endpoint /api/orders/{id} di lingkungan staging yang diizinkan dan buat bundel bukti reproducible."`
+
+### 23. maxilun-iot
+- `"/maxilun-iot tulis firmware ESP32 FreeRTOS yang mengirim telemetri suhu via MQTT over TLS dengan buffer offline."`
+
+### 24. maxilun-mobile
+- `"/maxilun-mobile bangun layar daftar pesanan offline-first di Flutter dengan sinkronisasi saat koneksi kembali."`
+
+### 25. maxilun-network
+- `"/maxilun-network konfigurasi tunnel WireGuard antar dua kantor di MikroTik RouterOS dengan aturan firewall minimal."`
 

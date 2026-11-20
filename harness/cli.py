@@ -4,6 +4,7 @@
 Usage:
     python -m harness chat
     python -m harness run "<task prompt>"
+    python -m harness meeting "<agenda>" --with architect,coder-backend [--rounds 2]
     python -m harness skills
     python -m harness dashboard [--open]
     python -m harness check [<path> | -]
@@ -36,65 +37,54 @@ from harness.hook_installer import HookInstaller
 from harness.dashboard import DashboardGenerator
 from harness.engine.skills_loader import SkillsLoader
 from harness.engine.provider import UniversalProvider
-from harness.engine.agent_loop import MaxilunAgentLoop
+from harness.engine.agent_loop import MaxilunAgentLoop, AGENT_SKILL_MAP, _normalize_agent
+from harness.engine.context import SessionContext
+
+
+ORCHESTRATOR = "maxilun-orchestrator"
+# Coordination tools exist only on top-level loops; persona files cannot grant them.
+COORDINATION_TOOLS = {"delegate_task", "convene_meeting"}
+
+
+def _provider(args) -> UniversalProvider:
+    return UniversalProvider(provider=args.provider, endpoint=args.endpoint, api_key=args.api_key, model=args.model)
+
+
+def _persona_loop(args, agent_name: str = ORCHESTRATOR, verbose: bool = True) -> MaxilunAgentLoop:
+    """Builds a top-level loop limited to the persona's declared tools."""
+    loop = MaxilunAgentLoop(provider=_provider(args), max_turns=getattr(args, "max_turns", 10),
+                            verbose=verbose, agent_name=agent_name)
+    agent_def = loop.loader.get_agent(agent_name)
+    if agent_def is None:
+        sys.exit(f"Unknown agent '{agent_name}'. Known: {', '.join(sorted(loop.loader.agents))}")
+    extra = COORDINATION_TOOLS if agent_name == ORCHESTRATOR else set()
+    loop.allowed_tools = set(agent_def.allowed_harness_tools) | extra
+    return loop
 
 
 def cmd_run(args):
-    provider = UniversalProvider(
-        provider=args.provider,
-        endpoint=args.endpoint,
-        api_key=args.api_key,
-        model=args.model
-    )
-    agent = MaxilunAgentLoop(provider=provider, max_turns=args.max_turns)
-    agent.run_task(args.task)
+    _persona_loop(args).run_task(args.task)
+
 
 def cmd_agent(args):
-    agent_name = args.name.lower().strip()
-    macro_map = {
-        "scout": "maxilun-knowledge-graph",
-        "maxilun-scout": "maxilun-knowledge-graph",
-        "architect": "maxilun-architect",
-        "maxilun-architect": "maxilun-architect",
-        "maker": "maxilun-engineer",
-        "maxilun-maker": "maxilun-engineer",
-        "studio": "maxilun-craft",
-        "maxilun-studio": "maxilun-craft",
-        "verifier": "maxilun-verify",
-        "maxilun-verifier": "maxilun-verify",
-        "orchestrator": "maxilun",
-        "maxilun-orchestrator": "maxilun"
-    }
-    target = macro_map.get(agent_name, agent_name)
-    if not target.startswith("maxilun"):
-        target = f"maxilun-{target}"
-
-    provider = UniversalProvider(
-        provider=args.provider,
-        endpoint=args.endpoint,
-        api_key=args.api_key,
-        model=args.model
-    )
-    agent_loop = MaxilunAgentLoop(provider=provider, max_turns=args.max_turns)
-    print(f"\n🚀 Launching Autonomous Macro-Agent: [{agent_name}] (Mapped skill: {target})")
+    agent_name = _normalize_agent(args.name)
+    if agent_name not in AGENT_SKILL_MAP:
+        sys.exit(f"Unknown agent '{args.name}'. Known: {', '.join(sorted(AGENT_SKILL_MAP))}")
+    target = AGENT_SKILL_MAP[agent_name]
+    agent_loop = _persona_loop(args, agent_name)
+    print(f"\n🚀 Launching agent: [{agent_name}] (skill: {target})")
     print(f"   Task: {args.task}")
     print("=" * 65)
     agent_loop.run_task(args.task, forced_skill=target)
 
 
-
 def cmd_chat(args):
-    provider = UniversalProvider(
-        provider=args.provider,
-        endpoint=args.endpoint,
-        api_key=args.api_key,
-        model=args.model
-    )
-    agent = MaxilunAgentLoop(provider=provider, max_turns=args.max_turns)
+    agent = _persona_loop(args)
     print("🌑 Maxilun Harness Agent Session (type 'exit' or 'quit' to end)")
-    print("   Governed by Maxilun Core Rules & 21 Specialist Skills (22 skills total)")
+    print(f"   Governed by Maxilun Core Rules: {len(agent.loader.skills)} skills, {len(agent.loader.agents)} agents")
     print("=" * 60)
 
+    session = SessionContext()
     while True:
         try:
             prompt = input("\nmaxilun> ").strip()
@@ -103,10 +93,35 @@ def cmd_chat(args):
             if prompt.lower() in ("exit", "quit"):
                 print("Session ended.")
                 break
-            agent.run_task(prompt)
+            agent.run_task(prompt, context=session)
         except (KeyboardInterrupt, EOFError):
             print("\nSession interrupted.")
             break
+
+
+def _flat(text: str) -> str:
+    return " / ".join(line.strip() for line in text.splitlines() if line.strip())
+
+
+def cmd_meeting(args):
+    agent = _persona_loop(args, verbose=False)
+    participants = [p for p in args.with_.split(",") if p.strip()]
+    context = SessionContext()
+    result = agent.hold_meeting(context, args.agenda, participants, args.rounds)
+    if result.get("status") != "success":
+        sys.exit(f"Meeting not held: {result.get('error')}")
+    print(f"Meeting {result['meeting_id']}: {args.agenda}")
+    for m in result["minutes"]:
+        print(f"@{m['speaker']} (R{m['round']}){' [FAILED]' if m['failed'] else ''}: {_flat(m['text'])}")
+    print("-" * 60)
+    print(f"Consensus: {'yes' if result['consensus'] else 'no'} after {result['rounds_held']} round(s)")
+    for o in result["open_objections"]:
+        print(f"Open objection @{o['speaker']}: {o['objection']}")
+    for a in result["unanswered_asks"]:
+        print(f"Unanswered ask @{a['from']} -> @{a['to']}: {a['ask']}")
+    for f in result["failed_turns"]:
+        print(f"Failed turn @{f['speaker']} (R{f['round']}): {_flat(f['reply']) or '(no reply)'}")
+    print(f"Bus saved: {agent.save_artifacts(context)}")
 
 
 def cmd_skills(args):
@@ -375,14 +390,14 @@ def cmd_doctor(args):
 
     loader = SkillsLoader()
     skills = loader.list_skills()
-    skills_ok = len(skills) >= 23 and all(s.line_count <= 300 for s in skills)
-    print(f"[{'✅ PASS' if skills_ok else '❌ FAIL'}] Skills inventory: {len(skills)}/23 skills discovered (all <= 300 lines)")
+    skills_ok = len(skills) >= 25 and all(s.line_count <= 300 for s in skills)
+    print(f"[{'✅ PASS' if skills_ok else '❌ FAIL'}] Skills inventory: {len(skills)}/25 skills discovered (all <= 300 lines)")
 
     repo_root = Path(__file__).resolve().parent.parent
     agents_dir = repo_root / "agents"
     agents_found = list(agents_dir.glob("*.md")) if agents_dir.exists() else []
-    agents_ok = len(agents_found) >= 6
-    print(f"[{'✅ PASS' if agents_ok else '❌ FAIL'}] Autonomous agents: {len(agents_found)}/6 macro-agents present in agents/")
+    agents_ok = len(agents_found) >= 15
+    print(f"[{'✅ PASS' if agents_ok else '❌ FAIL'}] Autonomous agents: {len(agents_found)}/15 agents present in agents/")
     for a in sorted(agents_found):
         print(f"     • {a.name}")
 
@@ -429,8 +444,8 @@ def main():
     run_parser.add_argument("--max-turns", type=int, default=10, help="Max interaction turns")
 
     # agent
-    agent_parser = subparsers.add_parser("agent", help="Directly run a macro-role agent (scout, architect, maker, studio, verifier, orchestrator)")
-    agent_parser.add_argument("name", help="Macro agent name: scout, architect, maker, studio, verifier, orchestrator")
+    agent_parser = subparsers.add_parser("agent", help="Directly run one of the 15 Maxilun agents (scout, architect, maker, coder-backend, ...)")
+    agent_parser.add_argument("name", help="Agent name with or without the maxilun- prefix, e.g. architect, coder-backend")
     agent_parser.add_argument("task", help="Task prompt to execute")
     agent_parser.add_argument("--provider", choices=["deepseek", "openai", "openrouter", "ollama", "groq", "gemini"], default=None, help="Provider preset")
     agent_parser.add_argument("--model", default=None, help="Model name")
@@ -438,9 +453,20 @@ def main():
     agent_parser.add_argument("--api-key", default=None, help="LLM API key")
     agent_parser.add_argument("--max-turns", type=int, default=10, help="Max interaction turns")
 
+    # meeting
+    meet_parser = subparsers.add_parser("meeting", help="Hold a read-only roundtable between specialist agents")
+    meet_parser.add_argument("agenda", help="Decision the meeting must reach")
+    meet_parser.add_argument("--with", dest="with_", required=True, help="Comma-separated participants, e.g. architect,coder-backend")
+    meet_parser.add_argument("--rounds", type=int, default=2, help="Maximum rounds (1-3)")
+    meet_parser.add_argument("--provider", choices=["deepseek", "openai", "openrouter", "ollama", "groq", "gemini"], default=None, help="Provider preset")
+    meet_parser.add_argument("--model", default=None, help="Model name")
+    meet_parser.add_argument("--endpoint", default=None, help="LLM endpoint URL")
+    meet_parser.add_argument("--api-key", default=None, help="LLM API key")
+    meet_parser.add_argument("--max-turns", type=int, default=10, help="Max turns per speaker loop")
+
     # skills
-    subparsers.add_parser("skills", help="List and inspect all 23 Maxilun ecosystem skills (1 orchestrator + 22 specialists)")
-    subparsers.add_parser("doctor", help="Run diagnostic healthcheck on environment, 23 skills, and 6 autonomous agents")
+    subparsers.add_parser("skills", help="List and inspect all 25 Maxilun ecosystem skills (1 orchestrator + 24 specialists)")
+    subparsers.add_parser("doctor", help="Run diagnostic healthcheck on environment, 25 skills, and 15 agents")
 
     # dashboard
     dash_parser = subparsers.add_parser("dashboard", help="Generate and open the interactive visual HTML dashboard")
@@ -488,6 +514,7 @@ def main():
     dispatch = {
         "chat": cmd_chat,
         "run": cmd_run,
+        "meeting": cmd_meeting,
         "agent": cmd_agent,
         "skills": cmd_skills,
         "dashboard": cmd_dashboard,

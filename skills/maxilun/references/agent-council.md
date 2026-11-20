@@ -15,7 +15,7 @@ Activate Council Mode whenever:
 
 ## 2. Council Roster & Domain Personas
 
-During deliberation, each specialist speaks in character using their explicit domain tag:
+Invite only the 2-5 agents whose domains the decision actually crosses, in the order their outputs depend on each other (structure before pixels before runtime before review). The UI roster below is the default for a visual overhaul; a backend or mobile decision invites `maxilun-architect`, `maxilun-coder-backend`, `maxilun-coder-mobile`, `maxilun-security-auditor`, or `maxilun-verifier` instead.
 
 | Tag | Specialist | Deliberation Focus |
 |---|---|---|
@@ -29,7 +29,39 @@ During deliberation, each specialist speaks in character using their explicit do
 
 ## 3. Deliberation Turn Sequence
 
-A Council session executes in 4 structured phases:
+### 3.1 How the meeting runs
+
+Every turn is a separately dispatched agent, so each specialist reasons with its own skill and persona; one model writing all the voices is not a meeting. Dispatch by host:
+
+| Host | How each turn is dispatched |
+|---|---|
+| Maxilun harness | `convene_meeting` tool (`harness/engine/meeting.py`) runs the whole loop, or `python -m harness.cli meeting "<agenda>" --with <agents>` from a terminal |
+| Claude Code | Task tool, `subagent_type: maxilun-<agent>` (agents installed in `~/.claude/agents`) |
+| OMP / Termul | `task` tool, `agent: maxilun-<agent>` (agents installed in `~/.omp/agent/agents`) |
+| OpenCode | its agent dispatcher (agents installed in `~/.config/opencode/agents`) |
+
+On the host paths the orchestrator is the loop: dispatch one speaker, append the reply verbatim to the minutes, dispatch the next speaker with the updated minutes, and stop on a round with no objection or after round 3. Each dispatch prompt carries the agenda, the full minutes, the five-line format below, and "read-only: do not edit files".
+
+1. **Turn-taking.** Speakers talk one at a time in roster order. Each speaker receives the agenda and the full minutes so far, so the second speaker answers the first and round 2 answers round 1.
+2. **Fixed turn format.** Every turn is five lines: `POSITION`, `AGREE: @agent`, `OBJECT: @agent + evidence`, `PROPOSE`, `ASK: @agent`. Questions addressed with `@name` must be answered first in that agent's next turn. An objection needs `file:line` evidence or the label `[UNVERIFIED]`.
+3. **Read-only.** During the meeting, speakers can only read files, query the knowledge graph, and read the bus. Writing, shell, and delegation are blocked, so nobody changes code before the decision is made.
+4. **Closing.** A round with no `OBJECT` closes the meeting with consensus. Otherwise it continues up to 3 rounds and returns the open objections. An objection is withdrawn by writing `OBJECT: none`.
+5. **Minutes.** Every turn is posted to the agent bus as one thread (`meeting_open` → `meeting_turn` → `meeting_close`), with `reply_to` linking each turn to the one before it, and saved to `maxilun-out/agent_bus.json`. Later `delegate_task` handoffs carry the meeting outcome, not the full transcript.
+
+Without any dispatcher (Cursor, Gemini CLI, Codex without agents), say so in one sentence, then run the same format in order within one message, reading each `agents/<name>.md` for its voice. Label those minutes `[simulated]`; they must still use the five lines per turn, answer every `ASK`, and stop on a round with no objections.
+
+### 3.1.1 Minutes shown to the user
+
+```text
+Agenda: <one line>
+**@maxilun-architect** (R1): POSITION ... / OBJECT ... / ASK @maxilun-coder-backend ...
+**@maxilun-coder-backend** (R1): POSITION ... (answers the ASK first) / AGREE @maxilun-architect ...
+Synthesis (chair): decision, who settled each objection, open questions
+```
+
+### 3.2 Phase content
+
+A Council session moves through 4 phases:
 
 ### Phase 1: Creative Exploration & Pitches
 Specialists propose bold domain solutions tailored to the product purpose:
@@ -43,8 +75,8 @@ Specialists challenge and optimize each other's ideas:
 - **`[maxilun-ui-reviewer]`**: Verifies compliance against strict mechanical purity rules—rejects symmetrical cards, checks WCAG contrast, and confirms mobile responsive layout.
 
 ### Phase 3: Consensus Blueprint
-The Master Orchestrator gathers all contributions and outputs a crisp **Consensus Blueprint**:
-- **Design Archetype & Fonts**: Declared archetype and Google Font CDN pairing.
+The Master Orchestrator turns the minutes into a crisp **Consensus Blueprint**. Each open objection must state who resolved it and how (by the contract owner: `maxilun-architect` for structure, `maxilun-craft` for rendered surfaces, `maxilun-data` for schema, `maxilun-sentinel` for trust boundaries), or it goes to the user as an open question:
+- **Design Archetype & Fonts**: Declared archetype, font pairing, and delivery (project loader or self-hosted; CDN only for a requested prototype).
 - **Layout Topology**: Asymmetric Bento 2:1, Tabular Ledger, or Spotlight Pairing.
 - **3D & Motion Layer**: Interactive WebGL shader/canvas, spring physics parameters.
 - **Technical Architecture**: RSC layout with dynamic client island for 3D/motion.

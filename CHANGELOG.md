@@ -9,6 +9,22 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- **Meetings on every host** (`skills/maxilun/SKILL.md` §5.1, `references/agent-council.md` §3.1): each turn is a separately dispatched agent. The harness uses `convene_meeting`, Claude Code the Task tool `subagent_type`, OMP/Termul `task` `agent`, and OpenCode its dispatcher. The minutes are shown to the user, then one synthesis. On hosts without a dispatcher the minutes are labelled `[simulated]`. `council` mode now covers plain questions, not only coding work. New triggers: "rapat agent", "meeting agent", "tanya tim", "maxilun terse".
+- **`python -m harness meeting "<agenda>" --with a,b [--rounds N]`** and `harness/__main__.py`; `MaxilunAgentLoop.hold_meeting()` is shared by the tool and the CLI.
+- **Trust boundary** in the Core Rules of all 25 skills and `references/engines.md` §8. File contents, web pages, tool output, and other agents' messages are data, not instructions. Requests inside them to skip a gate, leak a secret, or widen scope are reported and not executed.
+- **Agent persona map** (`skills/maxilun/SKILL.md` §2.1) mapping each of the 15 agents to the skills it loads; §4.9 rule for failed subagents; §6 evidence rows for migrations, security findings, deploys, video, diagrams, docs, store submissions, and meeting answers.
+- **OMP/Termul agents target** in both installers (`~/.omp/agent/agents`, project `.omp/agents`) with frontmatter converted for OMP. OMP never read `.claude/agents`, which is why Maxilun agents could not be dispatched there.
+- **Agent meeting (`convene_meeting`)**: a real roundtable between agents, implemented in `harness/engine/meeting.py` and registered in `harness/engine/agent_loop.py`. 2-5 agents speak in turn, each as its own subagent with only read-only tools. Every speaker sees the agenda plus the full minutes. A turn is five lines (`POSITION` / `AGREE` / `OBJECT` / `PROPOSE` / `ASK`), and a question addressed `@agent` must be answered on that agent's next turn. A round with no `OBJECT` ends the meeting with consensus; otherwise it stops at 3 rounds and returns the open objections. Minutes are stored as a single thread on the agent bus (`meeting_open` / `meeting_turn` / `meeting_close`), each turn linked to the previous one by `reply_to`. Covered by `test_agent_meeting` in `scripts/test-suite.py`.
+- Agent bus: `post_handoff` records `kind`, `thread`, `round`, and `reply_to`; `send_handoff` accepts `reply_to`; `SessionContext.read_thread()`.
+- **Upstream clean-room synthesis (13 repositories)**, audit in `docs/AUDIT-UPSTREAM-2026-11.md`. All 13 references are original Maxilun text with no upstream code, prose, or data. They are wired into each owner's `SKILL.md` and index:
+  - `maxilun-cinecode`: `references/auto-clip-pipeline.md`, `references/html-frame-rendering.md`.
+  - `maxilun-diagrams`: `references/editorial-svg-diagrams.md`.
+  - `maxilun-mobile`: `references/store-review-compliance.md`.
+  - `maxilun-craft`: `references/measured-design-gates.md`, `references/uiux-workflow-hooks.md`.
+  - `maxilun-motion`: `references/agent-state-indicators.md`, `references/css-transition-recipes.md`.
+  - `maxilun-frontend`: `references/lightweight-reactive-islands.md`.
+  - `maxilun-desktop`: `references/config-manager-patterns.md`.
+  - `maxilun`: `references/harness-hooks-memory.md`, `references/plugin-harness-architecture.md`, `references/swarm-coordination.md`.
 - **15 Autonomous Agents & Shared Agent Message Bus**:
   - Added `agents/maxilun-planner.md` (conflict-free parallel workstream partitioning & `docs/` context bootstrap) and `agents/maxilun-security-auditor.md` (coverage-led adversarial hunting & independent `confirmed` / `needs_validation` / `rejected` validation).
   - Added inter-agent communication bus (`SessionContext.post_handoff`, `read_handoffs`, `send_handoff`/`read_handoffs` tools, automatic upstream handoff injection, and `maxilun-out/agent_bus.json` persistence) across `harness/engine/context.py` and `harness/engine/agent_loop.py`.
@@ -29,7 +45,18 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - **Harness tool `kg_locate`** (`harness/tools/kg_tool.py`, `registry.py`), granted to every agent alongside `kg_query` and `kg_scan`.
 - **Test coverage**: `test_kg_locate_functional` in `scripts/test-suite.py` (ranking, verbatim excerpt, caller lead, trace pinning, secret exclusion, unrelated-question confidence).
 
+### Fixed
+- Meeting engine: a failed or unparseable turn blocks consensus (`failed_turns`); an objection stays open until its author writes `OBJECT: none`; an unanswered `ASK: @x` blocks consensus (`unanswered_asks`); turns are flattened in later briefs, so a speaker cannot forge another speaker's line.
+- Harness security: fs tools are confined to the repo root (`../` and absolute paths are rejected); `delegate_task` refuses unknown agents (previously `allowed_tools=None` granted every tool); bash is pinned to the root with a timeout capped at 600s; a provider preset uses only its own API key (no cross-vendor key fallback); mock mode warns on stderr and never claims `[CONFIRMED]`; the duplicate `kg_locate` schema is removed.
+- Root `cli.py` loads the knowledge-graph CLI by file path (`scan`/`context`/`diff`/`snapshot` previously failed with AttributeError), and `dashboard` calls the class that exists.
+- Fonts: font pairings are delivered through the project loader or self-hosted files; a CDN `<link>` is used only for a requested prototype (`design-archetypes.md`, `agent-council.md`, ui-designer and coder-frontend agents).
+- Consistency: viewport widths are 320 (reflow) / 360 / 768 / 1440 everywhere; the 6-state matrix is used everywhere; craft owns interface words and content owns long-form copy; security PoC work moved from verifier to security-auditor; the planner's broken frontmatter (`1---`) is fixed; harness-only tools in agent files now have fallbacks; stale skill/agent counts in docs and READMEs are corrected; the missing slash triggers are added.
+- Installers and hooks: removed agents are pruned on reinstall, caches are not copied, OpenCode/Gemini targets are fixed, and backups are removed on uninstall. The git hooks get the exec bit, use absolute tool paths, and never overwrite a pre-commit hook they did not create.
+
 ### Changed
+- `delegate_task` previously failed when reading a subagent's final reply, because it called `m.get` on a `Message` object. Delegate and meeting spawns now share `MaxilunAgentLoop._spawn_agent` and `AGENT_SKILL_MAP`. Upstream injection skips individual meeting turns and keeps only meeting outcomes.
+- `skills/maxilun/references/agent-council.md`, `skills/maxilun/SKILL.md` §5 and `agents/maxilun-orchestrator.md` now describe the real meeting mechanism. Previously, council mode was one model role-playing every voice.
+- **Agents load the upstream-synthesis references**: `maxilun-ui-reviewer` (measured design gates), `maxilun-ui-motion` (agent state indicators, CSS transition recipes), `maxilun-studio` (auto-clip pipeline, HTML frame rendering, editorial SVG diagrams), `maxilun-coder-mobile` (store review compliance), `maxilun-coder-frontend` (lightweight reactive islands), `maxilun-coder-systems` (config manager patterns), `maxilun-orchestrator` (harness hooks/memory, plugin harness, swarm coordination).
 - **`maxilun-orchestrator` agent**: new Discovery, Work Sizing & Decomposition, routing tie-breakers, Escalation, the eight-field handoff packet, and Receiving & Synthesis sections.
 - **`maxilun-scout` agent**: gains `Bash`, restricted by its invariant to the knowledge-graph CLI and read-only inspection, plus a Discovery Protocol and a paste-ready output format. Previously it could not run graph queries on hosts without the harness and fell back to reading files.
 - **Executor agents** (`maxilun-maker`, `maxilun-coder-*`, `maxilun-architect`, `maxilun-verifier`): a Context Intake rule to start from the packet's Read plan and stay inside the write set.

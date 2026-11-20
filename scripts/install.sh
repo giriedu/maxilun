@@ -26,6 +26,7 @@ if [ -z "$expected_skill_count" ] || [ "$expected_skill_count" -le 0 ]; then
 fi
 
 installed_to=()
+installed_agents=()
 installed_backups=()
 python_available=false
 
@@ -38,7 +39,7 @@ check_python() {
             ver=$("$cmd" -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null) || true
             major=$(echo "$ver" | cut -d. -f1)
             minor=$(echo "$ver" | cut -d. -f2)
-            if [ -n "$major" ] && [ -n "$minor" ] && [ "$major" -ge 3 ] && [ "$minor" -ge 8 ]; then
+            if [ -n "$major" ] && [ -n "$minor" ] && { [ "$major" -gt 3 ] || { [ "$major" -eq 3 ] && [ "$minor" -ge 8 ]; }; }; then
                 python_available=true
                 echo "✅ Python ${major}.${minor} detected ($cmd) — Knowledge Graph visualizer ready."
                 return 0
@@ -85,6 +86,38 @@ clean_legacy_skills() {
     return 0
 }
 
+# Copy agent definitions (*.md only). Owned maxilun-*.md files are removed first so
+# renamed/removed agents never linger. format=omp rewrites frontmatter for OMP:
+# drops the `model:` line (OMP model selector) and lowercases tool names.
+install_agents() {
+    local platform_name="$1"
+    local agents_dir="$2"
+    local format="${3:-claude}"
+    [ -d "$AGENTS_SRC" ] || return 0
+    mkdir -p "$agents_dir"
+    local f dest
+    for f in "$agents_dir"/maxilun-*.md; do
+        [ -f "$f" ] || continue
+        rm -f -- "$f"
+    done
+    for f in "$AGENTS_SRC"/*.md; do
+        [ -f "$f" ] || continue
+        dest="${agents_dir}/$(basename "$f")"
+        if [ "$format" = omp ]; then
+            awk '
+                NR == 1 && /^---/ { fm = 1; print; next }
+                fm && /^---/ { fm = 0 }
+                fm && /^model:/ { next }
+                fm && /^  - (Read|Grep|Glob|Bash|Write|Edit)[[:space:]]*$/ { sub(/- [A-Za-z]+/, "- " tolower($2)) }
+                { print }
+            ' "$f" > "$dest" || { echo "❌ Failed to write ${dest}" >&2; exit 1; }
+        else
+            cp -- "$f" "$dest" || { echo "❌ Failed to copy ${f} to ${agents_dir}" >&2; exit 1; }
+        fi
+    done
+    installed_agents+=("$platform_name: $agents_dir")
+}
+
 install_target() {
     local platform_name="$1"
     local target_dir="$2"
@@ -100,32 +133,41 @@ install_target() {
     fi
 
     if [ ${#existing_maxilun[@]} -gt 0 ]; then
-        local ts
+        local ts parent_dir backup_root b i
         ts=$(date +%Y%m%d-%H%M%S 2>/dev/null || date +%s)
-        local backup_root
-        backup_root="$(dirname "$target_dir")/_maxilun_backup_${ts}"
+        parent_dir="$(dirname "$target_dir")"
+        backup_root="${parent_dir}/_maxilun_backup_${ts}"
         mkdir -p "$backup_root/skills"
         for d in "${existing_maxilun[@]}"; do
-            cp -R "$d" "$backup_root/skills/"
+            cp -R -- "$d" "$backup_root/skills/" || { echo "❌ Backup of ${d} failed; aborting." >&2; exit 1; }
             rm -rf -- "$d"
         done
         installed_backups+=("$platform_name: $backup_root")
-        # Keep at most 2 most recent backups to prevent disk bloat
-        ls -dt "$(dirname "$target_dir")"/_maxilun_backup_* 2>/dev/null | tail -n +3 | xargs rm -rf 2>/dev/null || true
+        # Keep at most 2 most recent backups (timestamped names glob in chronological order)
+        local backups=()
+        for b in "$parent_dir"/_maxilun_backup_*; do
+            [ -d "$b" ] && backups+=("$b")
+        done
+        for ((i = 0; i < ${#backups[@]} - 2; i++)); do
+            rm -rf -- "${backups[$i]}"
+        done
     fi
 
     clean_legacy_skills "$target_dir"
-    mkdir -p "$target_dir" 2>/dev/null || true
-    cp -R "${SKILLS_SRC}/"* "$target_dir/" 2>/dev/null || true
-
-    # Never ship bytecode or local scan caches
-    find "$target_dir" -type d \( -name __pycache__ -o -name .maxilun -o -name maxilun-out \) -prune -exec rm -rf {} + 2>/dev/null || true
-    find "$target_dir" -type f -name '*.pyc' -delete 2>/dev/null || true
+    mkdir -p "$target_dir"
+    local src name
+    for src in "$SKILLS_SRC"/*/; do
+        src="${src%/}"
+        name="$(basename "$src")"
+        cp -R -- "$src" "$target_dir/" || { echo "❌ Failed to copy ${name} to ${target_dir}" >&2; exit 1; }
+        # Never ship bytecode or local scan caches (scoped to the skill just copied)
+        find "${target_dir}/${name}" -type d \( -name __pycache__ -o -name .maxilun -o -name maxilun-out \) -prune -exec rm -rf {} +
+        find "${target_dir}/${name}" -type f -name '*.pyc' -delete
+    done
     [ -n "$legacy_rules_dir" ] && clean_legacy_rules "$legacy_rules_dir"
 
-    if [ -n "$agents_dir" ] && [ -d "$AGENTS_SRC" ]; then
-        mkdir -p "$agents_dir" 2>/dev/null || true
-        cp -R "${AGENTS_SRC}/"* "$agents_dir/" 2>/dev/null || true
+    if [ -n "$agents_dir" ]; then
+        install_agents "$platform_name" "$agents_dir"
     fi
 
     installed_to+=("$platform_name: $target_dir")
@@ -136,6 +178,7 @@ if [ "$PROJECT_MODE" = true ]; then
     install_target "Universal / Antigravity / Zed (Project)" "${CURRENT_DIR}/.agents/skills" "${CURRENT_DIR}/.agents/rules" "${CURRENT_DIR}/.agents/agents"
     install_target "OpenCode (Project)" "${CURRENT_DIR}/.opencode/skills" "${CURRENT_DIR}/.opencode/rules" "${CURRENT_DIR}/.opencode/agents"
     install_target "[CC] / Termul (Project)" "${CURRENT_DIR}/.claude/skills" "${CURRENT_DIR}/.claude/rules" "${CURRENT_DIR}/.claude/agents"
+    install_agents "OMP (Project)" "${CURRENT_DIR}/.omp/agents" omp
     install_target "Trae (Project)" "${CURRENT_DIR}/.trae/skills"
     install_target "Windsurf (Project)" "${CURRENT_DIR}/.windsurf/skills"
     install_target "CodeBuddy (Project)" "${CURRENT_DIR}/.codebuddy/skills"
@@ -143,6 +186,9 @@ else
     install_target "Antigravity CLI/IDE & Zed" "${HOME}/.agents/skills" "${HOME}/.agents/rules" "${HOME}/.agents/agents"
     install_target "[CC] & Termul" "${HOME}/.claude/skills" "${HOME}/.claude/rules" "${HOME}/.claude/agents"
 
+    if [ -d "${HOME}/.omp" ]; then
+        install_agents "OMP" "${HOME}/.omp/agent/agents" omp
+    fi
     if [ -d "${HOME}/.codex" ]; then
         install_target "Codex" "${HOME}/.codex/skills" "${HOME}/.codex/rules"
     fi
@@ -152,7 +198,7 @@ else
         install_target "OpenCode" "${HOME}/.opencode/skills" "${HOME}/.opencode/rules" "${HOME}/.opencode/agents"
     fi
     if [ -d "${HOME}/.gemini" ]; then
-        install_target "Gemini CLI" "${HOME}/.gemini/config/skills"
+        install_target "Gemini CLI" "${HOME}/.gemini/skills"
     fi
     if [ -d "${HOME}/.cursor" ]; then
         install_target "Cursor" "${HOME}/.cursor/skills"
@@ -182,6 +228,12 @@ if [ ${#installed_to[@]} -eq 0 ]; then
 else
     echo "✅ Maxilun installed to:"
     for loc in "${installed_to[@]}"; do
+        echo "   → $loc"
+    done
+fi
+if [ ${#installed_agents[@]} -gt 0 ]; then
+    echo "✅ Agents installed to:"
+    for loc in "${installed_agents[@]}"; do
         echo "   → $loc"
     done
 fi

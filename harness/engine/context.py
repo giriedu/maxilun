@@ -81,17 +81,26 @@ class SessionContext:
             "metadata": metadata or {}
         })
 
-    def post_handoff(self, from_agent: str, to_agent: str, summary: str, artifacts: Optional[List[str]] = None) -> Dict[str, Any]:
+    def post_handoff(self, from_agent: str, to_agent: str, summary: str, artifacts: Optional[List[str]] = None,
+                     thread: Optional[str] = None, kind: str = "handoff", round_no: Optional[int] = None,
+                     reply_to: Optional[int] = None) -> Dict[str, Any]:
         entry = {
             "id": len(self.agent_bus) + 1,
             "timestamp": round(time.time() - self.created_at, 2),
             "from": from_agent,
             "to": to_agent,
+            "kind": kind,
             "summary": summary,
             "artifacts": artifacts or [],
         }
+        if thread:
+            entry["thread"] = thread
+        if round_no is not None:
+            entry["round"] = round_no
+        if reply_to is not None:
+            entry["reply_to"] = reply_to
         self.agent_bus.append(entry)
-        self.record_swarm_event(from_agent, f"Handoff -> {to_agent}", summary[:60])
+        self.record_swarm_event(from_agent, f"{kind} -> {to_agent}", summary[:60])
         return entry
 
     def read_handoffs(self, for_agent: Optional[str] = None) -> List[Dict[str, Any]]:
@@ -103,6 +112,10 @@ class SessionContext:
             if msg.get("to", "").lower() in (target, "*", "all", "broadcast")
             or msg.get("from", "").lower() == target
         ]
+
+    def read_thread(self, thread: str) -> List[Dict[str, Any]]:
+        return [msg for msg in self.agent_bus if msg.get("thread") == thread]
+
     def summary(self) -> Dict[str, Any]:
         duration_s = time.time() - self.created_at
         return {

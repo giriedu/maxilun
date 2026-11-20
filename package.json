@@ -1,7 +1,7 @@
 {
   "name": "maxilun",
   "version": "1.3.0",
-  "description": "AI engineering co-pilot & autonomous agent runtime — 25 skills (1 master orchestrator + 24 specialists) + 13 autonomous agents, reversibility triage, in-process Knowledge Graph, AST security inspection, and interactive dashboard.",
+  "description": "AI engineering co-pilot & autonomous agent runtime — 25 skills (1 master orchestrator + 24 specialists) + 15 autonomous agents, reversibility triage, in-process Knowledge Graph, AST security inspection, and interactive dashboard.",
   "keywords": [
     "ai-skills",
     "claude-code",

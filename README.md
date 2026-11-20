@@ -130,7 +130,7 @@ Structured by real-world software engineering lifecycle — from foundational ar
 | 10 | `maxilun-insight` | Performance Diagnostics — CPU/memory/DB profiling, distributed tracing, leak detection | `/maxilun-insight`, `/msal-audit` |
 | 11 | `maxilun-deploy` | Cloud & Operations — CI/CD pipelines, multi-stage Docker, zero-downtime rollouts | `/maxilun-deploy` |
 | 12 | `maxilun-docsmith` | Technical Specs & Documentation — Feature PRDs/RFCs, OpenAPI 3.1/AsyncAPI contracts, ADRs, runbooks, `llms.txt` | `/maxilun-docsmith`, `/msal-docs` |
-| 13 | `maxilun-craft` | UI/UX Craft & Brand Identity — seven-line Brief, token lock, eight ordered layers, `slopscan.py` proof gate, OKLCH ramps, WCAG contrast, 100 design references, SVG logo suite | `/maxilun-craft`, `/msal-ui` |
+| 13 | `maxilun-craft` | UI/UX Craft & Brand Identity — eight-line Brief, token lock, eight ordered layers, `slopscan.py` proof gate, OKLCH ramps, WCAG contrast, 100 design references, SVG logo suite | `/maxilun-craft`, `/msal-ui` |
 | 14 | `maxilun-motion` | Motion Design — interactive browser animation, complete WebGL 3D scenes, camera choreography, reference-led art direction, motion storyboards, preview review, and accessible fallbacks | `/maxilun-motion`, `3D scene`, `immersive website`, `Three.js`, `WebGL`, `motion-led website` |
 | 15 | `maxilun-cinecode` | Programmatic Video — code-driven MP4/WebM/GIF, React frame compiler, data-driven batch pipelines | `/maxilun-cinecode` |
 | 16 | `maxilun-diagrams` | System Visualization — C4, sequence, Event Storming, data-flow diagrams via Mermaid | `/maxilun-diagram`, `/maxilun-diagrams` |
@@ -202,6 +202,21 @@ python harness/cli.py install-hook
 Full runtime architecture, provider configurations, and tool schemas are documented in [**docs/HARNESS.md**](docs/HARNESS.md).
 
 ---
+
+## Agent Meetings
+
+Council mode runs a meeting between specialist agents. The orchestrator chairs from the main session and dispatches agents one at a time through the host's subagent tool. Every turn is five lines: `POSITION`, `AGREE`, `OBJECT`, `PROPOSE`, `ASK`. Meetings are read-only: no agent edits files. The meeting stops after a round with no objections, or after 3 rounds, and the minutes are shown to you before any work starts.
+
+From the terminal:
+
+```bash
+python -m harness.cli meeting "<agenda>" --with architect,coder-backend
+```
+
+On OMP/Termul, the agents install to `~/.omp/agent/agents`.
+
+---
+
 ## Platform Support
 
 | AI Coding Platform | Support Status | Note |
@@ -220,8 +235,8 @@ Full runtime architecture, provider configurations, and tool schemas are documen
 | Guide | Description |
 |---|---|
 | [docs/INSTALL.md](docs/INSTALL.md) | Comprehensive installation guides, one-line scripts & verification |
-| [docs/SKILLS.md](docs/SKILLS.md) | Triggers, capabilities, and parameters for all 23 skills |
-| [docs/AGENTS.md](docs/AGENTS.md) | 6 Macro-Role Autonomous Agents architecture, tool permissions & subagent protocols |
+| [docs/SKILLS.md](docs/SKILLS.md) | Triggers, capabilities, and parameters for all 25 skills |
+| [docs/AGENTS.md](docs/AGENTS.md) | 15 autonomous agents (1 orchestrator + 14 specialists), tool permissions & subagent protocols |
 | [docs/ENGINES.md](docs/ENGINES.md) | Four Always-On Engines and three Operating Protocols |
 | [docs/EXAMPLES.md](docs/EXAMPLES.md) | Real-world engineering scenarios & multi-specialist Wave Patterns |
 | [docs/SKILL-CONTRACTS.md](docs/SKILL-CONTRACTS.md) | Ownership, standalone behavior, inputs, outputs, and handoffs for every skill |

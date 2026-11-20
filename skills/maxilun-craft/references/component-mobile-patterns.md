@@ -93,8 +93,8 @@ Separate planes through subtle surface tone (`Canvas` → `Surface` with a `1px`
 
 1. **Mobile Input & Semantic Keyboard**: `<input>`/`<select>`/`<textarea>` font at least `16px`, touch targets `≥ 44×44px` with a gap `≥ 8px`, plus matching `inputmode` and `autocomplete` (`numeric`, `decimal`, `tel`, `one-time-code`).
 2. **Accessible Swipe Actions**: every *swipe* action must have an equivalent button/menu reachable by keyboard and screen reader.
-3. **Strict 3-Screen-Width Check (`375px`, `768px`, `1440px`) & Zero Canvas Leak**:
-   - *375px Phone Screen Leak Test (`document.documentElement.scrollWidth <= window.innerWidth`)*:
+3. **Strict Screen-Width Check (`320px` reflow, `360px`, `768px`, `1440px`) & Zero Canvas Leak**:
+   - *320px / 360px Phone Screen Leak Test (`document.documentElement.scrollWidth <= window.innerWidth`)*:
      - `100vw` and `w-screen` are forbidden (the #1 cause of a leaking horizontal scrollbar). Use `w-full`.
      - Excessive horizontal padding is forbidden: use `px-4 sm:px-6` (not `px-12` or `px-20` on mobile).
      - Every flex/grid child must include `min-w-0` so text truncation (`truncate`) and `break-words` work without pushing the container wider.

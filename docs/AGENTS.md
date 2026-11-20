@@ -1,6 +1,6 @@
 # Maxilun Autonomous Agents Architecture
 
-Maxilun menyediakan **13 Autonomous Agents** yang terdiri dari **6 Macro-Role Agents** (orkestrasi gelombang & tata kelola sistem) serta **7 Specialized Coding & UI/UX Agents** (eksekusi pengkodean dan desain tingkat tinggi tanpa kompromi). Arsitektur agen ini memecah eksekusi tugas ke dalam subagent dengan konteks terisolasi, hak akses tool terikat (*Principle of Least Privilege*), dan gating verifikasi faktual.
+Maxilun menyediakan **15 Autonomous Agents**: **1 orchestrator** (`maxilun-orchestrator`) dan **14 agen spesialis** yang membungkus 24 skill spesialis. Orchestrator berjalan sebagai sesi utama (memimpin dan mendelegasikan lewat tool subagent milik host); bila dipanggil sebagai subagent, ia mengembalikan rencana dan paket handoff tanpa mendelegasikan. Arsitektur agen ini memecah eksekusi tugas ke dalam subagent dengan konteks terisolasi, hak akses tool terikat (*Principle of Least Privilege*), dan gating verifikasi faktual.
 
 ---
 
@@ -15,7 +15,7 @@ Maxilun menyediakan **13 Autonomous Agents** yang terdiri dari **6 Macro-Role Ag
 
 ---
 
-## 2. Peta 6 Macro-Role Agents & 23 Spesialis
+## 2. Peta 6 Macro-Role Agents & 24 Spesialis
 
 ```mermaid
 flowchart TD
@@ -50,7 +50,7 @@ flowchart TD
 | Nama Agent | Spesialis yang Dibungkus | Izin Tool (*Whitelist*) | Tanggung Jawab Utama |
 |---|---|---|---|
 | **`maxilun-orchestrator`** | `maxilun` | `Read`, `Grep`, `Glob`, `Bash` | Triase reversibilitas (Type 1 vs Type 2), penunjukan pemilik utama, orkestrasi Wave 1 $\rightarrow$ Wave 2 $\rightarrow$ Wave 3, dan gate bukti nyata. |
-| **`maxilun-scout`** | `maxilun-knowledge-graph`, `maxilun-insight`, `maxilun-seo-audit` | **Strict Read-Only**: `Read`, `Grep`, `Glob` | Pemetaan graf simbol (`defOf:`, `callsIn:`), pencarian akar masalah, audit radius dampak edit, dan crawlability SEO tanpa risiko mengubah file. |
+| **`maxilun-scout`** | `maxilun-knowledge-graph`, `maxilun-insight`, `maxilun-seo-audit` | **Strict Read-Only**: `Read`, `Grep`, `Glob`, `Bash` (hanya CLI graf, tanpa edit) | Pemetaan graf simbol (`defOf:`, `callsIn:`), pencarian akar masalah, audit radius dampak edit, dan crawlability SEO tanpa risiko mengubah file. |
 | **`maxilun-architect`** | `maxilun-architect`, `maxilun-data`, `maxilun-sentinel`, `maxilun-docsmith` | `Read`, `Grep`, `Glob`, `Write`, `Edit` (kontrak & docs) | Batas modul dalam (*Deep Modules*), migrasi skema zero-downtime, threat modeling OWASP/STRIDE, kontrak OpenAPI 3.1, dan ADR. |
 | **`maxilun-maker`** | `maxilun-engineer`, `maxilun-frontend`, `maxilun-desktop`, `maxilun-mobile`, `maxilun-iot`, `maxilun-network`, `maxilun-game` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Payung makro eksekusi kode produksi lintas-surface dengan diff minimal. |
 | **`maxilun-studio`** | `maxilun-craft`, `maxilun-motion`, `maxilun-cinecode`, `maxilun-diagrams`, `maxilun-content` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Payung makro desain visual, motion graphics, video programatik Remotion, dan diagram Mermaid. |
@@ -61,7 +61,9 @@ flowchart TD
 | **`maxilun-coder-systems`** | `maxilun-desktop`, `maxilun-iot`, `maxilun-network` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Native Desktop Win32/WPF/Qt/PowerBuilder, firmware IoT ESP32 FreeRTOS (zero-heap ISR), dan enterprise MikroTik RouterOS scripts. |
 | **`maxilun-ui-designer`** | `maxilun-craft` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | 100 sistem desain brand nyata, protokol buka kunci desain (*Clean Cutover*), tata letak asimetris, tipografi display solid, dan anti-slop. |
 | **`maxilun-ui-motion`** | `maxilun-motion` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Animasi browser 60 FPS, ScrollBlurReveal (hide $\to$ blur $\to$ focus), kurva pegas fisika teredam, dan 3D WebGL autentik domain. |
-| **`maxilun-ui-reviewer`** | `maxilun-verify`, `maxilun-craft` | **Strict Read-Only**: `Read`, `Grep`, `Glob`, `Bash` (**Tanpa izin edit kode**) | Quality gatekeeper visual: audit 45 AI design tells (`ui-purity-linter`), radius konsentris eksak, kontras WCAG, dan uji zero canvas leak 375px. |
+| **`maxilun-ui-reviewer`** | `maxilun-verify`, `maxilun-craft` | **Strict Read-Only**: `Read`, `Grep`, `Glob`, `Bash` (**Tanpa izin edit kode**) | Quality gatekeeper visual: audit 45 AI design tells (`ui-purity-linter`), radius konsentris eksak, kontras WCAG, dan uji zero canvas leak pada 320px (reflow), 360px, 768px, 1440px. |
+| **`maxilun-planner`** | `maxilun-scaffold`, `maxilun-docsmith` | `Read`, `Grep`, `Glob`, `Write`, `Edit` (tanpa Bash) | Partisi workstream paralel tanpa konflik (kepemilikan file tidak tumpang tindih), bootstrap konteks `docs/`, serta PRD/RFC berbasis bukti repositori. |
+| **`maxilun-security-auditor`** | `maxilun-hunt`, `maxilun-sentinel` | **Read-Only**: `Read`, `Grep`, `Glob`, `Bash` (PoC, tanpa izin edit kode) | Audit keamanan adversarial berbasis coverage ledger, 7-Question Gate, PoC reproducible, dan verdict `confirmed` / `needs_validation` / `rejected`. |
 ---
 
 ## 3. Cara Menggunakan Agen di Editor AI

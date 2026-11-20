@@ -25,7 +25,8 @@ if ($Project) {
         @{ Name = "Claude Code (Project)";                 SkillsPath = "$CurrentDir\.claude\skills"; AgentsPath = "$CurrentDir\.claude\agents"; RulesPath = "$CurrentDir\.claude\rules" },
         @{ Name = "Trae (Project)";                          SkillsPath = "$CurrentDir\.trae\skills";   AgentsPath = $null; RulesPath = $null },
         @{ Name = "Windsurf (Project)";                      SkillsPath = "$CurrentDir\.windsurf\skills"; AgentsPath = $null; RulesPath = $null },
-        @{ Name = "CodeBuddy (Project)";                     SkillsPath = "$CurrentDir\.codebuddy\skills"; AgentsPath = $null; RulesPath = $null }
+        @{ Name = "CodeBuddy (Project)";                     SkillsPath = "$CurrentDir\.codebuddy\skills"; AgentsPath = $null; RulesPath = $null },
+        @{ Name = "OMP (Project)";                           SkillsPath = $null; AgentsPath = "$CurrentDir\.omp\agents"; RulesPath = $null }
     )
 } else {
     $Targets = @(
@@ -34,16 +35,17 @@ if ($Project) {
         @{ Name = "Codex";               SkillsPath = "$env:USERPROFILE\.codex\skills";           AgentsPath = $null;                                      RulesPath = "$env:USERPROFILE\.codex\rules" },
         @{ Name = "OpenCode (.config)"; SkillsPath = "$env:USERPROFILE\.config\opencode\skills"; AgentsPath = "$env:USERPROFILE\.config\opencode\agents"; RulesPath = "$env:USERPROFILE\.config\opencode\rules" },
         @{ Name = "OpenCode";            SkillsPath = "$env:USERPROFILE\.opencode\skills";        AgentsPath = "$env:USERPROFILE\.opencode\agents";        RulesPath = "$env:USERPROFILE\.opencode\rules" },
-        @{ Name = "Gemini CLI";          SkillsPath = "$env:USERPROFILE\.gemini\config\skills";   AgentsPath = $null;                                      RulesPath = $null },
+        @{ Name = "Gemini CLI";          SkillsPath = "$env:USERPROFILE\.gemini\skills";          AgentsPath = $null;                                      RulesPath = $null },
         @{ Name = "Cursor";              SkillsPath = "$env:USERPROFILE\.cursor\skills";          AgentsPath = $null;                                      RulesPath = $null },
         @{ Name = "Trae";                SkillsPath = "$env:USERPROFILE\.trae\skills";            AgentsPath = $null;                                      RulesPath = $null },
         @{ Name = "Windsurf";            SkillsPath = "$env:USERPROFILE\.windsurf\skills";        AgentsPath = $null;                                      RulesPath = $null },
-        @{ Name = "CodeBuddy";           SkillsPath = "$env:USERPROFILE\.codebuddy\skills";       AgentsPath = $null;                                      RulesPath = $null }
+        @{ Name = "CodeBuddy";           SkillsPath = "$env:USERPROFILE\.codebuddy\skills";       AgentsPath = $null;                                      RulesPath = $null },
+        @{ Name = "OMP";                 SkillsPath = $null;                                      AgentsPath = "$env:USERPROFILE\.omp\agent\agents";       RulesPath = $null }
     )
 }
 
 foreach ($target in $Targets) {
-    if (Test-Path $target.SkillsPath) {
+    if ($target.SkillsPath -and (Test-Path $target.SkillsPath)) {
         $skillsDirs = Get-ChildItem -Path $target.SkillsPath -Directory -ErrorAction SilentlyContinue | Where-Object {
             ($_.Name -eq "maxilun" -or $_.Name -like "maxilun-*" -or $_.Name -like "msal-*") -and
             (Test-Path (Join-Path $_.FullName "SKILL.md")) -and
@@ -55,6 +57,17 @@ foreach ($target in $Targets) {
             }
             $Removed += "$($target.Name) (skills): $($target.SkillsPath)"
             Write-Host "  Removed Maxilun/MSAL skills from: $($target.SkillsPath)" -ForegroundColor Green
+        }
+    }
+
+    # Backups created by the installer live next to the skills dir
+    if ($target.SkillsPath) {
+        $backupParent = Split-Path -Parent $target.SkillsPath
+        $backups = @(Get-ChildItem -Path $backupParent -Directory -Filter "_maxilun_backup_*" -ErrorAction SilentlyContinue)
+        if ($backups.Count -gt 0) {
+            $backups | Remove-Item -Recurse -Force
+            $Removed += "$($target.Name) (backups): $backupParent"
+            Write-Host "  Removed $($backups.Count) Maxilun installer backup(s) from: $backupParent" -ForegroundColor Green
         }
     }
 
@@ -73,22 +86,24 @@ foreach ($target in $Targets) {
         $ruleFiles = Get-ChildItem -Path $target.RulesPath -File -ErrorAction SilentlyContinue | Where-Object {
             $_.Name -in @("always-on.md", "maxilun-global.md", "code-hygiene.md", "purity-catalog.md")
         }
-        if ($ruleFiles) {
-            foreach ($file in $ruleFiles) {
-                $content = Get-Content -Path $file.FullName -Raw -ErrorAction SilentlyContinue
-                $ownedRule = switch ($file.Name) {
-                    "maxilun-global.md" { $content -match '(?m)^# Aturan Global Maxilun' }
-                    "always-on.md" { $content -match '(?m)^# (Tujuh Mesin Wajib Maxilun|Four Always-On Engines and Three Operating Protocols|Maxilun Always-On)' }
-                    "code-hygiene.md" { $content -match '(?m)^# Maxilun Code Hygiene Rules' }
-                    "purity-catalog.md" { $content -match '(?m)^# Maxilun Purity Catalog' }
-                    default { $false }
-                }
-                if ($ownedRule) {
-                    Remove-Item -Path $file.FullName -Force
-                }
+        $deletedRules = 0
+        foreach ($file in $ruleFiles) {
+            $content = Get-Content -Path $file.FullName -Raw -ErrorAction SilentlyContinue
+            $ownedRule = switch ($file.Name) {
+                "maxilun-global.md" { $content -match '(?m)^# Aturan Global Maxilun' }
+                "always-on.md" { $content -match '(?m)^# (Tujuh Mesin Wajib Maxilun|Four Always-On Engines and Three Operating Protocols|Maxilun Always-On)' }
+                "code-hygiene.md" { $content -match '(?m)^# Maxilun Code Hygiene Rules' }
+                "purity-catalog.md" { $content -match '(?m)^# Maxilun Purity Catalog' }
+                default { $false }
             }
+            if ($ownedRule) {
+                Remove-Item -Path $file.FullName -Force
+                $deletedRules++
+            }
+        }
+        if ($deletedRules -gt 0) {
             $Removed += "$($target.Name) (legacy rules): $($target.RulesPath)"
-            Write-Host "  Removed legacy Maxilun rule files from: $($target.RulesPath)" -ForegroundColor Green
+            Write-Host "  Removed $deletedRules legacy Maxilun rule file(s) from: $($target.RulesPath)" -ForegroundColor Green
         }
     }
 }

@@ -29,6 +29,16 @@ sys.path.insert(0, str(REPO_ROOT / "harness"))
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 
+def _kg_cli():
+    # Loaded by file path: `import cli` would resolve to this file or harness/cli.py depending on sys.path order.
+    import importlib.util
+    path = REPO_ROOT / "skills" / "maxilun-knowledge-graph" / "cli.py"
+    spec = importlib.util.spec_from_file_location("maxilun_kg_cli", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def cmd_route(args):
     from harness.router import MaxilunRouter
     router = MaxilunRouter()
@@ -41,23 +51,19 @@ def cmd_route(args):
 
 
 def cmd_scan(args):
-    import cli as kg_cli
-    return kg_cli.cmd_scan(args)
+    return _kg_cli().cmd_scan(args)
 
 
 def cmd_snapshot(args):
-    import cli as kg_cli
-    return kg_cli.cmd_snapshot(args)
+    return _kg_cli().cmd_snapshot(args)
 
 
 def cmd_diff(args):
-    import cli as kg_cli
-    return kg_cli.cmd_diff(args)
+    return _kg_cli().cmd_diff(args)
 
 
 def cmd_context(args):
-    import cli as kg_cli
-    return kg_cli.cmd_context(args)
+    return _kg_cli().cmd_context(args)
 
 
 def cmd_lint(args):
@@ -139,10 +145,9 @@ def cmd_test(args):
 
 
 def cmd_dashboard(args):
-    import importlib
-    dash_mod = importlib.import_module("harness.dashboard")
-    dash = dash_mod.MaxilunDashboard()
-    dash.render()
+    from harness.dashboard import DashboardGenerator
+    out_path = DashboardGenerator.generate(REPO_ROOT)
+    print(f"Maxilun dashboard generated: {out_path}")
 
 
 def main():

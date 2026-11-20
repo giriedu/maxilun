@@ -30,6 +30,7 @@ if [ "$PROJECT_MODE" = true ]; then
         "Trae (Project):${CURRENT_DIR}/.trae/skills::"
         "Windsurf (Project):${CURRENT_DIR}/.windsurf/skills::"
         "CodeBuddy (Project):${CURRENT_DIR}/.codebuddy/skills::"
+        "OMP (Project):::${CURRENT_DIR}/.omp/agents"
     )
 else
     targets=(
@@ -38,11 +39,12 @@ else
         "Codex:${HOME}/.codex/skills:${HOME}/.codex/rules:"
         "OpenCode (.config):${HOME}/.config/opencode/skills:${HOME}/.config/opencode/rules:${HOME}/.config/opencode/agents"
         "OpenCode:${HOME}/.opencode/skills:${HOME}/.opencode/rules:${HOME}/.opencode/agents"
-        "Gemini CLI:${HOME}/.gemini/config/skills::"
+        "Gemini CLI:${HOME}/.gemini/skills::"
         "Cursor:${HOME}/.cursor/skills::"
         "Trae:${HOME}/.trae/skills::"
         "Windsurf:${HOME}/.windsurf/skills::"
         "CodeBuddy:${HOME}/.codebuddy/skills::"
+        "OMP:::${HOME}/.omp/agent/agents"
     )
 fi
 
@@ -60,6 +62,21 @@ for entry in "${targets[@]}"; do
         if [ "$removed_skills" -gt 0 ]; then
             removed+=("$name (skills): $skills_dir")
             echo "  Removed $removed_skills owned Maxilun skill(s) from: $skills_dir"
+        fi
+    fi
+
+    # Backups created by the installer live next to the skills dir
+    if [ -n "$skills_dir" ]; then
+        backup_parent="$(dirname "$skills_dir")"
+        removed_backups=0
+        for b in "$backup_parent"/_maxilun_backup_*; do
+            [ -d "$b" ] || continue
+            rm -rf -- "$b"
+            removed_backups=$((removed_backups + 1))
+        done
+        if [ "$removed_backups" -gt 0 ]; then
+            removed+=("$name (backups): $backup_parent")
+            echo "  Removed $removed_backups Maxilun installer backup(s) from: $backup_parent"
         fi
     fi
 

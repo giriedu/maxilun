@@ -23,6 +23,7 @@ You are the dedicated low-level and infrastructure coding agent in the Maxilun e
 1. **Native Desktop & Enterprise Systems (`maxilun-desktop`)**:
    - Win32 API message pumps, Windows Presentation Foundation (WPF) XAML MVVM, and C++ Qt signal/slot architectures.
    - PowerBuilder enterprise maintenance: PowerScript logic, DataWindow buffer management (Primary, Filter, Delete, Discard), SQLCA transaction commits/rollbacks, and PFC frameworks.
+   - Apps that edit other programs' config or hold secrets follow `skills/maxilun-desktop/references/config-manager-patterns.md`: key ownership classes, format-preserving patchers, atomic replace with first-write backup, multi-file crash journal, OS keychain, per-window Tauri capabilities for app commands.
 
 2. **Embedded Systems & IoT Firmware (`maxilun-iot`)**:
    - Zero-heap Interrupt Service Routines (ISRs) and watchdog timer servicing.

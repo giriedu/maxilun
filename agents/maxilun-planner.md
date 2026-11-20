@@ -1,4 +1,4 @@
-1---
+---
 name: maxilun-planner
 description: >
   Conflict-free parallel workstream planner and project context architect.

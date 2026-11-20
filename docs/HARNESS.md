@@ -15,7 +15,7 @@ Jika skill Maxilun bertindak sebagai **governance & instruction layer** bagi mod
                            │
 ┌──────────────────────────▼─────────────────────────────┐
 │  Maxilun Autonomous Agent Engine (harness/engine/)     │
-│  - Skills Loader: parses 22 specialists on disk        │
+│  - Skills Loader: parses 24 specialists on disk        │
 │  - Reversibility Gate: Type 1 vs Type 2 triage         │
 │  - ReAct Execution Loop: tool calls & state tracking   │
 └───────────┬────────────────────────────────┬───────────┘
@@ -42,7 +42,7 @@ Jika skill Maxilun bertindak sebagai **governance & instruction layer** bagi mod
 Harness dapat dijalankan tanpa dependensi eksternal (stdlib Python 3.8+):
 
 ### A. Sesi Interaktif & Eksekusi Tugas Otonom
-Menjalankan sesi agen terminal lengkap dengan 18 spesialis dan pemanggilan tool bawaan:
+Menjalankan sesi agen terminal lengkap dengan 24 spesialis dan pemanggilan tool bawaan:
 ```bash
 # Sesi chat interaktif mandiri:
 python harness/cli.py chat

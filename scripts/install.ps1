@@ -30,7 +30,7 @@ foreach ($cmd in @("python", "python3", "py")) {
         if ($verOutput -match '(\d+)\.(\d+)') {
             $major = [int]$Matches[1]
             $minor = [int]$Matches[2]
-            if ($major -ge 3 -and $minor -ge 8) {
+            if ($major -gt 3 -or ($major -eq 3 -and $minor -ge 8)) {
                 $PythonAvailable = $true
                 Write-Host "  Python ${major}.${minor} detected ($cmd) -- Knowledge Graph visualizer ready." -ForegroundColor Green
                 break
@@ -46,6 +46,43 @@ if (-not $PythonAvailable) {
     Write-Host "  All other Maxilun skills work without Python." -ForegroundColor Gray
 }
 
+$AgentsInstalled = @()
+
+# Copy agent definitions (*.md only). Owned maxilun-*.md files are removed first so
+# renamed/removed agents never linger. Format "omp" rewrites frontmatter for OMP:
+# drops the `model:` line (OMP model selector) and lowercases tool names.
+function Install-Agents([string]$Name, [string]$AgentsPath, [string]$Format = "claude") {
+    if (-not (Test-Path $AgentsSrc)) { return }
+    New-Item -ItemType Directory -Path $AgentsPath -Force -ErrorAction Stop | Out-Null
+    Get-ChildItem -LiteralPath $AgentsPath -File -Filter "maxilun-*.md" -ErrorAction SilentlyContinue |
+        Remove-Item -Force -ErrorAction Stop
+    $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+    foreach ($agent in Get-ChildItem -LiteralPath $AgentsSrc -File -Filter "*.md") {
+        $dest = Join-Path $AgentsPath $agent.Name
+        if ($Format -eq "omp") {
+            $out = New-Object System.Collections.Generic.List[string]
+            $inFrontmatter = $false
+            $lineNo = 0
+            foreach ($line in [System.IO.File]::ReadAllLines($agent.FullName)) {
+                $lineNo++
+                if ($lineNo -eq 1 -and $line -match '^---') { $inFrontmatter = $true; $out.Add($line); continue }
+                if ($inFrontmatter) {
+                    if ($line -match '^---') { $inFrontmatter = $false }
+                    elseif ($line -match '^model:') { continue }
+                    elseif ($line -cmatch '^  - (Read|Grep|Glob|Bash|Write|Edit)\s*$') { $line = "  - " + $Matches[1].ToLowerInvariant() }
+                }
+                $out.Add($line)
+            }
+            [System.IO.File]::WriteAllText($dest, (($out -join "`n") + "`n"), $utf8NoBom)
+        } else {
+            Copy-Item -LiteralPath $agent.FullName -Destination $dest -Force -ErrorAction Stop
+        }
+    }
+    $script:AgentsInstalled += "  ${Name}: $AgentsPath"
+}
+
+$U = $env:USERPROFILE
+$AgentsOnlyTargets = @()
 if ($Project) {
     $CurrentDir = Get-Location
     $Targets = @(
@@ -56,25 +93,28 @@ if ($Project) {
         @{ Name = "Windsurf (Project)";                      Path = "$CurrentDir\.windsurf\skills"; AgentsPath = $null; LegacyRules = $null },
         @{ Name = "CodeBuddy (Project)";                     Path = "$CurrentDir\.codebuddy\skills"; AgentsPath = $null; LegacyRules = $null }
     )
+    $AgentsOnlyTargets += @{ Name = "OMP (Project)"; AgentsPath = "$CurrentDir\.omp\agents" }
 } else {
     $Targets = @(
-        @{ Name = "Antigravity CLI/IDE & Zed"; Path = "$env:USERPROFILE\.agents\skills";          AgentsPath = "$env:USERPROFILE\.agents\agents";          LegacyRules = "$env:USERPROFILE\.agents\rules" },
-        @{ Name = "[CC] & Termul";             Path = "$env:USERPROFILE\.claude\skills";          AgentsPath = "$env:USERPROFILE\.claude\agents";          LegacyRules = "$env:USERPROFILE\.claude\rules" },
-        @{ Name = "Codex";                     Path = "$env:USERPROFILE\.codex\skills";           AgentsPath = $null;                                      LegacyRules = "$env:USERPROFILE\.codex\rules" },
-        @{ Name = "OpenCode (.config)";        Path = "$env:USERPROFILE\.config\opencode\skills"; AgentsPath = "$env:USERPROFILE\.config\opencode\agents"; LegacyRules = "$env:USERPROFILE\.config\opencode\rules" },
-        @{ Name = "OpenCode";                  Path = "$env:USERPROFILE\.opencode\skills";        AgentsPath = "$env:USERPROFILE\.opencode\agents";        LegacyRules = "$env:USERPROFILE\.opencode\rules" },
-        @{ Name = "Gemini CLI";                Path = "$env:USERPROFILE\.gemini\config\skills";   AgentsPath = $null;                                      LegacyRules = $null },
-        @{ Name = "Cursor";                    Path = "$env:USERPROFILE\.cursor\skills";          AgentsPath = $null;                                      LegacyRules = $null },
-        @{ Name = "Trae";                      Path = "$env:USERPROFILE\.trae\skills";            AgentsPath = $null;                                      LegacyRules = $null },
-        @{ Name = "Windsurf";                  Path = "$env:USERPROFILE\.windsurf\skills";        AgentsPath = $null;                                      LegacyRules = $null },
-        @{ Name = "CodeBuddy";                 Path = "$env:USERPROFILE\.codebuddy\skills";       AgentsPath = $null;                                      LegacyRules = $null }
+        @{ Name = "Antigravity CLI/IDE & Zed"; Path = "$U\.agents\skills"; AgentsPath = "$U\.agents\agents"; LegacyRules = "$U\.agents\rules" },
+        @{ Name = "[CC] & Termul";             Path = "$U\.claude\skills"; AgentsPath = "$U\.claude\agents"; LegacyRules = "$U\.claude\rules" }
     )
+    if (Test-Path "$U\.omp") { $AgentsOnlyTargets += @{ Name = "OMP"; AgentsPath = "$U\.omp\agent\agents" } }
+    if (Test-Path "$U\.codex") { $Targets += @{ Name = "Codex"; Path = "$U\.codex\skills"; AgentsPath = $null; LegacyRules = "$U\.codex\rules" } }
+    if (Test-Path "$U\.config\opencode") {
+        $Targets += @{ Name = "OpenCode"; Path = "$U\.config\opencode\skills"; AgentsPath = "$U\.config\opencode\agents"; LegacyRules = "$U\.config\opencode\rules" }
+    } elseif (Test-Path "$U\.opencode") {
+        $Targets += @{ Name = "OpenCode"; Path = "$U\.opencode\skills"; AgentsPath = "$U\.opencode\agents"; LegacyRules = "$U\.opencode\rules" }
+    }
+    if (Test-Path "$U\.gemini")    { $Targets += @{ Name = "Gemini CLI"; Path = "$U\.gemini\skills";    AgentsPath = $null; LegacyRules = $null } }
+    if (Test-Path "$U\.cursor")    { $Targets += @{ Name = "Cursor";     Path = "$U\.cursor\skills";    AgentsPath = $null; LegacyRules = $null } }
+    if (Test-Path "$U\.trae")      { $Targets += @{ Name = "Trae";       Path = "$U\.trae\skills";      AgentsPath = $null; LegacyRules = $null } }
+    if (Test-Path "$U\.windsurf")  { $Targets += @{ Name = "Windsurf";   Path = "$U\.windsurf\skills";  AgentsPath = $null; LegacyRules = $null } }
+    if (Test-Path "$U\.codebuddy") { $Targets += @{ Name = "CodeBuddy";  Path = "$U\.codebuddy\skills"; AgentsPath = $null; LegacyRules = $null } }
 }
 
 foreach ($target in $Targets) {
     $parentDir = Split-Path -Parent $target.Path
-    $shouldInstall = $Project -or $target.Name -like "*Antigravity*" -or $target.Name -like "*Termul*" -or $target.Name -like "*OpenCode*" -or (Test-Path $parentDir)
-    if (-not $shouldInstall) { continue }
 
     $existingMaxilun = @()
     if (Test-Path $target.Path -PathType Container) {
@@ -88,39 +128,41 @@ foreach ($target in $Targets) {
     if ($existingMaxilun.Count -gt 0) {
         $backupRoot = Join-Path $parentDir "_maxilun_backup_$Timestamp"
         $backupSkills = Join-Path $backupRoot "skills"
-        New-Item -ItemType Directory -Path $backupSkills -Force | Out-Null
+        New-Item -ItemType Directory -Path $backupSkills -Force -ErrorAction Stop | Out-Null
         foreach ($dir in $existingMaxilun) {
-            Copy-Item -Path $dir.FullName -Destination (Join-Path $backupSkills $dir.Name) -Recurse -Force
+            Copy-Item -Path $dir.FullName -Destination (Join-Path $backupSkills $dir.Name) -Recurse -Force -ErrorAction Stop
         }
         $BackedUp += "  $($target.Name): $backupRoot"
         $existingMaxilun | Remove-Item -Recurse -Force
-    }
 
         # Keep at most 2 most recent backups to prevent disk bloat
-        $oldBackups = @(Get-ChildItem -Path $parentDir -Directory -Filter "_maxilun_backup_*" -ErrorAction SilentlyContinue | Sort-Object CreationTime -Descending)
+        $oldBackups = @(Get-ChildItem -Path $parentDir -Directory -Filter "_maxilun_backup_*" -ErrorAction SilentlyContinue | Sort-Object Name -Descending)
         if ($oldBackups.Count -gt 2) {
             $oldBackups | Select-Object -Skip 2 | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
         }
-
-    if (-not (Test-Path $target.Path)) {
-        New-Item -ItemType Directory -Path $target.Path -Force | Out-Null
     }
 
-    Copy-Item -Path "$SkillsSrc\*" -Destination $target.Path -Recurse -Force
+    New-Item -ItemType Directory -Path $target.Path -Force -ErrorAction Stop | Out-Null
 
-
-    if ($target.AgentsPath -and (Test-Path $AgentsSrc)) {
-        if (-not (Test-Path $target.AgentsPath)) {
-            New-Item -ItemType Directory -Path $target.AgentsPath -Force | Out-Null
+    foreach ($skillDir in Get-ChildItem -LiteralPath $SkillsSrc -Directory) {
+        $dest = Join-Path $target.Path $skillDir.Name
+        if (Test-Path -LiteralPath $dest) {
+            Copy-Item -Path (Join-Path $skillDir.FullName "*") -Destination $dest -Recurse -Force -ErrorAction Stop
+        } else {
+            Copy-Item -LiteralPath $skillDir.FullName -Destination $dest -Recurse -Force -ErrorAction Stop
         }
-        Copy-Item -Path "$AgentsSrc\*.md" -Destination $target.AgentsPath -Force
+        # Never ship bytecode or local scan caches (scoped to the skill just copied)
+        foreach ($cacheDir in @("__pycache__", ".maxilun", "maxilun-out")) {
+            Get-ChildItem -LiteralPath $dest -Directory -Recurse -Force -Filter $cacheDir -ErrorAction SilentlyContinue |
+                Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+        }
+        Get-ChildItem -LiteralPath $dest -File -Recurse -Force -Filter "*.pyc" -ErrorAction SilentlyContinue |
+            Remove-Item -Force -ErrorAction SilentlyContinue
     }
-    foreach ($cacheDir in @("__pycache__", ".maxilun", "maxilun-out")) {
-        Get-ChildItem -Path $target.Path -Directory -Recurse -Force -Filter $cacheDir -ErrorAction SilentlyContinue |
-            Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+
+    if ($target.AgentsPath) {
+        Install-Agents -Name $target.Name -AgentsPath $target.AgentsPath
     }
-    Get-ChildItem -Path $target.Path -File -Recurse -Force -Filter "*.pyc" -ErrorAction SilentlyContinue |
-        Remove-Item -Force -ErrorAction SilentlyContinue
     # Remove v1 rule files that lived outside the skill folder (marked Maxilun only)
     if ($target.LegacyRules -and (Test-Path $target.LegacyRules)) {
         foreach ($ruleName in @("always-on.md", "maxilun-global.md", "code-hygiene.md", "purity-catalog.md")) {
@@ -137,6 +179,10 @@ foreach ($target in $Targets) {
     $InstalledTo += "  $($target.Name): $($target.Path)"
 }
 
+foreach ($target in $AgentsOnlyTargets) {
+    Install-Agents -Name $target.Name -AgentsPath $target.AgentsPath -Format "omp"
+}
+
 Write-Host ""
 if ($BackedUp.Count -gt 0) {
     Write-Host "  Previous versions backed up to:" -ForegroundColor Yellow
@@ -149,6 +195,10 @@ if ($InstalledTo.Count -eq 0) {
 } else {
     Write-Host "  Installed successfully to:" -ForegroundColor Green
     foreach ($loc in $InstalledTo) { Write-Host $loc -ForegroundColor White }
+}
+if ($AgentsInstalled.Count -gt 0) {
+    Write-Host "  Agents installed to:" -ForegroundColor Green
+    foreach ($loc in $AgentsInstalled) { Write-Host $loc -ForegroundColor White }
 }
 
 Write-Host ""

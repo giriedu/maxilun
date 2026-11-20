@@ -41,7 +41,7 @@ Core principle: **reject raw LLM clichés and reject single-mold monoculture as 
 4. **Extreme line length (`TYPO-004`)** — reading paragraphs wider than `> 75ch` with no reading-width limit (`max-w-[65ch]`).
 5. **Mobile inputs `< 16px` (`TYPO-007`)** — triggers forced auto-zoom on iOS Safari.
 6. **Rainbow text gradient on headings (`TYPO-008` / `CLR-008`)** — coloring heading words with a multicolor gradient (`bg-gradient-to-r ... bg-clip-text text-transparent`) to hide dull typography. STRICTLY PROHIBITED. Headings must use solid ink with high contrast ($\ge 4.5:1$, dark theme $\ge 7:1$). Visual authority comes from letterform (*typeface character*), weight contrast, and size scale, not from a cheap gradient effect.
-7. **Giant display text with no mobile scale (`TYPO-009`)** — a large static font size (`text-5xl` / `text-6xl` with no responsiveness) or long text (URL, JID, token hash) without `break-words`/`min-w-0`, which pushes long words past the screen canvas at widths $\le 375\text{px}$. Apply fluid scaling (`text-2xl sm:text-4xl lg:text-6xl`) and `break-words`.
+7. **Giant display text with no mobile scale (`TYPO-009`)** — a large static font size (`text-5xl` / `text-6xl` with no responsiveness) or long text (URL, JID, token hash) without `break-words`/`min-w-0`, which pushes long words past the screen canvas at widths $\le 360\text{px}$ (and the `320px` reflow check). Apply fluid scaling (`text-2xl sm:text-4xl lg:text-6xl`) and `break-words`.
 
 ### B2. Color & Surface
 6. **Default decorative purple-blue gradient (`CLR-001`)** — a `#667eea → #764ba2` gradient or random neon glow with no brand/status meaning.
@@ -99,7 +99,7 @@ Use these reference codes to report design/code audit results precisely (`file:l
 | Category | ID Range | Main Evaluation Focus |
 |---|---|---|
 | Typography | `TYPO-001` .. `TYPO-009` | Role-based scale hierarchy, no rainbow text gradient, no mobile overflow, `tabular-nums` |
-| Color | `CLR-001` .. `CLR-008` | No clichéd decorative gradient, no excessive neon glow, calm background chroma, `color-scheme` |
+| Color | `CLR-001` .. `CLR-009` | No clichéd decorative gradient, no excessive neon glow, calm background chroma, `color-scheme` |
 | Layout | `LAY-001` .. `LAY-016` | No centered stack, no oversized mobile navbar, no horizontal scroll leak (`100vw`) |
 | Components | `CMP-001` .. `CMP-020` | No pill capsule, no neon card border, no fake status theater, concentric radius |
 | Motion | `ANI-001` .. `ANI-007` | `transform`/`opacity` only, micro duration `≤250ms`, respect `prefers-reduced-motion` |

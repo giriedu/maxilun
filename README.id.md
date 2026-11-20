@@ -188,7 +188,7 @@ Gunakan `maxilun-knowledge-graph` untuk perubahan kode struktural atau lintas-fi
 Maxilun dilengkapi dengan runtime agen otonom bawaan, inspektor keamanan AST, dan runner benchmark empiris di folder `harness/` (100% zero-dependency Python stdlib):
 
 ```bash
-# Inspeksi 23 skill ekosistem (1 orchestrator + 22 spesialis), kepatuhan batas baris (<=300), dan pemicunya:
+# Inspeksi 25 skill ekosistem (1 orchestrator + 24 spesialis), kepatuhan batas baris (<=300), dan pemicunya:
 python harness/cli.py skills
 
 # Jalankan benchmark komparatif empiris (+55% peningkatan atas Raw AI):
@@ -204,6 +204,21 @@ python harness/cli.py install-hook
 Arsitektur runtime lengkap, konfigurasi provider, dan skema tool didokumentasikan di [**docs/HARNESS.md**](docs/HARNESS.md).
 
 ---
+
+## Rapat Agen
+
+Mode council menjalankan rapat antar agen spesialis. Orchestrator memimpin dari sesi utama dan memanggil agen satu per satu lewat tool subagent milik host. Setiap giliran berisi lima baris: `POSITION`, `AGREE`, `OBJECT`, `PROPOSE`, `ASK`. Rapat bersifat read-only: tidak ada agen yang mengubah file. Rapat berhenti setelah satu ronde tanpa keberatan, atau setelah 3 ronde, dan notulen ditampilkan kepada Anda sebelum pekerjaan dimulai.
+
+Dari terminal:
+
+```bash
+python -m harness.cli meeting "<agenda>" --with architect,coder-backend
+```
+
+Di OMP/Termul, agen terpasang ke `~/.omp/agent/agents`.
+
+---
+
 ## Dukungan Platform AI
 
 | Platform AI | Status Dukungan | Catatan |
@@ -222,8 +237,8 @@ Arsitektur runtime lengkap, konfigurasi provider, dan skema tool didokumentasika
 | Berkas Panduan | Cakupan Informasi |
 |---|---|
 | [docs/INSTALL.md](docs/INSTALL.md) | Panduan instalasi multi-platform lengkap & integrasi CLI |
-| [docs/SKILLS.md](docs/SKILLS.md) | Detail mendalam, peran teknis, dan pemicu seluruh 23 skill |
-| [docs/AGENTS.md](docs/AGENTS.md) | Arsitektur 6 Macro-Role Autonomous Agents, hak akses tool & protokol subagent |
+| [docs/SKILLS.md](docs/SKILLS.md) | Detail mendalam, peran teknis, dan pemicu seluruh 25 skill |
+| [docs/AGENTS.md](docs/AGENTS.md) | 15 agen otonom (1 orchestrator + 14 spesialis), hak akses tool & protokol subagent |
 | [docs/ENGINES.md](docs/ENGINES.md) | Empat engine kualitas dan tiga protokol operasi |
 | [docs/EXAMPLES.md](docs/EXAMPLES.md) | Contoh skenario rekayasa nyata & orkestrasi Wave Pattern |
 | [docs/SKILL-CONTRACTS.md](docs/SKILL-CONTRACTS.md) | Ownership, mode standalone, input, output, dan handoff setiap skill |

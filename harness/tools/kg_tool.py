@@ -14,9 +14,10 @@ class KnowledgeGraphTool:
 
     def __init__(self, repo_root: Path):
         self.root = repo_root
-        self.kg_dir = self.root / "skills" / "maxilun-knowledge-graph"
-        if not self.kg_dir.exists():
-            self.kg_dir = self.root / ".agents" / "skills" / "maxilun-knowledge-graph"
+        # Same skill roots SkillsLoader searches, so installed layouts resolve too.
+        candidates = [self.root / base / "maxilun-knowledge-graph"
+                      for base in ("skills", Path(".agents") / "skills", Path(".claude") / "skills")]
+        self.kg_dir = next((c for c in candidates if c.exists()), candidates[0])
         if str(self.kg_dir) not in sys.path and self.kg_dir.exists():
             sys.path.insert(0, str(self.kg_dir))
 

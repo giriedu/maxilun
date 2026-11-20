@@ -19,6 +19,13 @@ AGENT_TOOL_MAP = {
     "Bash": "execute_bash",
 }
 
+# The repo this harness ships in; used when the working directory has no installed skills.
+HARNESS_REPO = Path(__file__).resolve().parents[2]
+
+
+def _layout_roots(root: Path) -> List[Path]:
+    return [root, root / ".agents", root / ".claude", HARNESS_REPO]
+
 
 @dataclass
 class AgentDefinition:
@@ -60,14 +67,9 @@ class SkillsLoader:
         self.load_agents()
 
     def _find_agents_dir(self) -> Path:
-        candidates = [
-            self.root / "agents",
-            self.root / ".agents" / "agents",
-            self.root / ".claude" / "agents",
-        ]
-        for c in candidates:
-            if c.exists() and (c / "maxilun-orchestrator.md").exists():
-                return c
+        for base in _layout_roots(self.root):
+            if (base / "agents" / "maxilun-orchestrator.md").exists():
+                return base / "agents"
         return self.root / "agents"
 
     def load_agents(self) -> Dict[str, AgentDefinition]:
@@ -109,15 +111,13 @@ class SkillsLoader:
         return self.agents.get(name)
 
     def _find_skills_dir(self) -> Path:
-        candidates = [
-            self.root / "skills",
-            self.root / ".agents" / "skills",
-            self.root / ".claude" / "skills",
-        ]
-        for c in candidates:
-            if c.exists() and (c / "maxilun" / "SKILL.md").exists():
-                return c
-        return self.root / "skills"
+        for base in _layout_roots(self.root):
+            if (base / "skills" / "maxilun" / "SKILL.md").exists():
+                return base / "skills"
+        raise FileNotFoundError(
+            f"No Maxilun skills found under {self.root} (skills/, .agents/skills/, .claude/skills/) "
+            f"or the harness repo {HARNESS_REPO}. Run from a repo with Maxilun installed."
+        )
 
     def load_all(self) -> Dict[str, SkillDefinition]:
         if not self.skills_dir.exists():

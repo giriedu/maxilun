@@ -17,8 +17,8 @@ class ToolRegistry:
 
     def __init__(self, repo_root: Path):
         self.root = repo_root
-        self.fs = FSTools()
-        self.bash = BashTool()
+        self.fs = FSTools(repo_root)
+        self.bash = BashTool(repo_root)
         self.kg = KnowledgeGraphTool(repo_root)
         self._custom_schemas: Dict[str, Dict[str, Any]] = {}
 
@@ -126,23 +126,6 @@ class ToolRegistry:
                             "timeout": {"type": "integer", "description": "Timeout in seconds", "default": 30}
                         },
                         "required": ["command"]
-                    }
-                }
-            },
-            {
-                "type": "function",
-                "function": {
-                    "name": "kg_locate",
-                    "description": "Locate code, schemas, docs, or assets by natural-language question, symbol, or stack trace. Returns a ranked file:start-end Read plan with excerpts.",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "question": {"type": "string", "description": "Question, behaviour, stack trace, or symbol to locate"},
-                            "target_path": {"type": "string", "description": "Project root path", "default": "."},
-                            "also": {"type": "string", "description": "Comma-separated identifier hints", "default": ""},
-                            "top": {"type": "integer", "description": "Max ranked hits", "default": 5}
-                        },
-                        "required": ["question"]
                     }
                 }
             },
