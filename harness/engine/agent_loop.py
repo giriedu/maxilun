@@ -38,6 +38,7 @@ AGENT_SKILL_MAP = {
     "maxilun-ui-reviewer": "maxilun-verify",
     "maxilun-planner": "maxilun-scaffold",
     "maxilun-security-auditor": "maxilun-hunt",
+    "maxilun-coder-ai": "maxilun-ai",
 }
 
 
@@ -302,10 +303,16 @@ class MaxilunAgentLoop:
                     context.add_tool_result(call_id, fn_name, json.dumps({"error": "Tool arguments must be a JSON object."}))
                     continue
 
-                # Middleware: Pre-flight Knowledge Graph inspection before file edits
+                # Middleware: Pre-flight Knowledge Graph inspection & security guard
                 pre_notice = self.middleware.before_tool_call(fn_name, args)
-                if pre_notice and self.verbose:
-                    print(f"   🔍 {pre_notice}")
+                if pre_notice:
+                    if pre_notice.startswith("[BLOCKED]"):
+                        if self.verbose:
+                            print(f"   🚫 {pre_notice}")
+                        context.add_tool_result(call_id, fn_name, json.dumps({"error": pre_notice}))
+                        continue
+                    elif self.verbose:
+                        print(f"   🔍 {pre_notice}")
 
                 if self.verbose:
                     print(f"   🛠️ Tool Call: {fn_name}({', '.join(f'{k}={repr(v)[:30]}' for k, v in args.items())})")

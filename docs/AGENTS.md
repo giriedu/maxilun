@@ -1,6 +1,6 @@
 # Maxilun Autonomous Agents Architecture
 
-Maxilun menyediakan **15 Autonomous Agents**: **1 orchestrator** (`maxilun-orchestrator`) dan **14 agen spesialis** yang membungkus 24 skill spesialis. Orchestrator berjalan sebagai sesi utama (memimpin dan mendelegasikan lewat tool subagent milik host); bila dipanggil sebagai subagent, ia mengembalikan rencana dan paket handoff tanpa mendelegasikan. Arsitektur agen ini memecah eksekusi tugas ke dalam subagent dengan konteks terisolasi, hak akses tool terikat (*Principle of Least Privilege*), dan gating verifikasi faktual.
+Maxilun menyediakan **16 Autonomous Agents**: **1 orchestrator** (`maxilun-orchestrator`) dan **15 agen spesialis** yang membungkus 24 skill spesialis. Orchestrator berjalan sebagai sesi utama (memimpin dan mendelegasikan lewat tool subagent milik host); bila dipanggil sebagai subagent, ia mengembalikan rencana dan paket handoff tanpa mendelegasikan. Arsitektur agen ini memecah eksekusi tugas ke dalam subagent dengan konteks terisolasi, hak akses tool terikat (*Principle of Least Privilege*), dan gating verifikasi faktual.
 
 ---
 
@@ -64,6 +64,7 @@ flowchart TD
 | **`maxilun-ui-reviewer`** | `maxilun-verify`, `maxilun-craft` | **Strict Read-Only**: `Read`, `Grep`, `Glob`, `Bash` (**Tanpa izin edit kode**) | Quality gatekeeper visual: audit 45 AI design tells (`ui-purity-linter`), radius konsentris eksak, kontras WCAG, dan uji zero canvas leak pada 320px (reflow), 360px, 768px, 1440px. |
 | **`maxilun-planner`** | `maxilun-scaffold`, `maxilun-docsmith` | `Read`, `Grep`, `Glob`, `Write`, `Edit` (tanpa Bash) | Partisi workstream paralel tanpa konflik (kepemilikan file tidak tumpang tindih), bootstrap konteks `docs/`, serta PRD/RFC berbasis bukti repositori. |
 | **`maxilun-security-auditor`** | `maxilun-hunt`, `maxilun-sentinel` | **Read-Only**: `Read`, `Grep`, `Glob`, `Bash` (PoC, tanpa izin edit kode) | Audit keamanan adversarial berbasis coverage ledger, 7-Question Gate, PoC reproducible, dan verdict `confirmed` / `needs_validation` / `rejected`. |
+| **`maxilun-coder-ai`** | `maxilun-ai`, `maxilun-engineer`, `maxilun-sentinel` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Rekayasa aplikasi AI & LLM: arsitektur hybrid RAG deterministik, semantic chunking, prompt regression evals, LLM-as-a-judge rubrics, context caching hygiene, dan structured JSON tool schemas. |
 ---
 
 ## 3. Cara Menggunakan Agen di Editor AI

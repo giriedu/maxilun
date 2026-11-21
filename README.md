@@ -2,14 +2,14 @@
 
 <div align="center">
 
-<img src="assets/banner.svg" alt="Maxilun — 25 Skills · 15 Autonomous Agents · Shared Agent Bus · Knowledge Graph MCP · Purity Gate" width="100%">
+<img src="assets/banner.svg" alt="Maxilun — 25 Skills · 16 Autonomous Agents · Shared Agent Bus · Knowledge Graph MCP · Purity Gate" width="100%">
 
 <br/>
 
 [![CI](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml/badge.svg)](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml)
 [![Version](https://img.shields.io/badge/version-1.3.0-7c3aed?style=flat-square)](CHANGELOG.md)
 [![Skills](https://img.shields.io/badge/skills-25_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
-[![Agents](https://img.shields.io/badge/agents-15_autonomous-3b82f6?style=flat-square)](docs/AGENTS.md)
+[![Agents](https://img.shields.io/badge/agents-16_autonomous-3b82f6?style=flat-square)](docs/AGENTS.md)
 [![License](https://img.shields.io/badge/license-Free_to_Use-22c55e?style=flat-square)](LICENSE)
 [![Sponsor](https://img.shields.io/badge/Sponsor-GitHub_Sponsors-ea4aaa?style=flat-square)](https://github.com/sponsors/giriedu)
 [![Platform](https://img.shields.io/badge/runs_on-Claude_·_Cursor_·_Codex_·_Antigravity_·_Zed_·_Termul-white?style=flat-square)](#platform-support)

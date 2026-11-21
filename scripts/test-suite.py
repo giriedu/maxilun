@@ -75,6 +75,7 @@ EXPECTED_AGENTS = [
     "maxilun-ui-reviewer",
     "maxilun-planner",
     "maxilun-security-auditor",
+    "maxilun-coder-ai",
 ]
 REQUIRED_REFERENCES = [
     "engines.md",

@@ -375,6 +375,100 @@ def cmd_generate_ci(args):
     ok = HookInstaller.generate_ci_workflow()
     sys.exit(0 if ok else 1)
 
+
+def cmd_memory(args):
+    repo_root = Path(__file__).resolve().parent.parent
+    lessons_file = repo_root / ".maxilun" / "lessons.jsonl"
+    if not lessons_file.exists():
+        lessons_file.parent.mkdir(parents=True, exist_ok=True)
+        lessons_file.write_text("", encoding="utf-8")
+
+    action = getattr(args, "action", "list") or "list"
+
+    lessons = []
+    if lessons_file.exists():
+        for line in lessons_file.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if line:
+                try:
+                    lessons.append(json.loads(line))
+                except Exception:
+                    continue
+
+    if action == "stats":
+        print("\n" + "=" * 65)
+        print("  🧠 Maxilun Persistent Memory & Lessons Learned")
+        print("=" * 65)
+        print(f"File Path:              {lessons_file}")
+        print(f"Total Lessons Recorded: {len(lessons)}")
+        if lessons:
+            confidences = [float(l.get("confidence", 1.0)) for l in lessons]
+            avg_conf = sum(confidences) / len(confidences)
+            print(f"Average Confidence:     {avg_conf:.2f}")
+            scopes = set(l.get("scope", "repo") for l in lessons)
+            print(f"Scopes:                 {', '.join(scopes)}")
+            print("\nRecent Lesson Triggers:")
+            for l in lessons[-5:]:
+                print(f"  • [{l.get('id', 'L-???')}] {l.get('trigger')} (conf: {l.get('confidence', 1.0)})")
+        print("=" * 65 + "\n")
+
+    elif action == "list":
+        print("\n" + "=" * 80)
+        print("  🧠 Maxilun Repository Lessons (.maxilun/lessons.jsonl)")
+        print("=" * 80)
+        if not lessons:
+            print("  (No lessons recorded yet. Use 'maxilun-harness memory --action add' to add one.)")
+        for l in lessons:
+            lid = l.get("id", "L-???")
+            trig = l.get("trigger", "")
+            act = l.get("action", "")
+            conf = l.get("confidence", 1.0)
+            date = l.get("last_confirmed", "")
+            print(f"\n[{lid}] Trigger: \"{trig}\" (conf: {conf}, date: {date})")
+            print(f"  Action:   {act}")
+            if l.get("evidence"):
+                print(f"  Evidence: {', '.join(l.get('evidence'))}")
+        print("\n" + "=" * 80 + "\n")
+
+    elif action == "prune":
+        print("\n🧹 Pruning stale and duplicate lessons in .maxilun/lessons.jsonl...")
+        deduped = {}
+        for l in lessons:
+            trig = l.get("trigger", "").strip().lower()
+            conf = float(l.get("confidence", 1.0))
+            if conf >= 0.3 and trig:
+                if trig not in deduped or conf > float(deduped[trig].get("confidence", 0)):
+                    deduped[trig] = l
+        pruned_list = list(deduped.values())
+        removed_count = len(lessons) - len(pruned_list)
+        with open(lessons_file, "w", encoding="utf-8") as f:
+            for l in pruned_list:
+                f.write(json.dumps(l, ensure_ascii=False) + "\n")
+        print(f"✅ Pruning complete: {removed_count} stale/duplicate entries removed. {len(pruned_list)} active lessons retained.\n")
+
+    elif action == "add":
+        trigger = getattr(args, "trigger", None)
+        action_text = getattr(args, "action_text", None)
+        if not trigger or not action_text:
+            print("❌ Error: Both --trigger and --action-text are required for 'add'.")
+            return
+        new_id = f"L-{len(lessons) + 1:03d}"
+        from datetime import date
+        today = date.today().isoformat()
+        entry = {
+            "id": new_id,
+            "trigger": trigger,
+            "action": action_text,
+            "evidence": [f"manual CLI entry on {today}"],
+            "confidence": 1.0,
+            "scope": "repo",
+            "last_confirmed": today
+        }
+        with open(lessons_file, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+        print(f"✅ Successfully added lesson [{new_id}]: \"{trigger}\" -> \"{action_text}\"")
+
+
 def cmd_doctor(args):
     print("\n🌑 Maxilun Ecosystem Healthcheck (Doctor):")
     print("=" * 65)
@@ -396,8 +490,8 @@ def cmd_doctor(args):
     repo_root = Path(__file__).resolve().parent.parent
     agents_dir = repo_root / "agents"
     agents_found = list(agents_dir.glob("*.md")) if agents_dir.exists() else []
-    agents_ok = len(agents_found) >= 15
-    print(f"[{'✅ PASS' if agents_ok else '❌ FAIL'}] Autonomous agents: {len(agents_found)}/15 agents present in agents/")
+    agents_ok = len(agents_found) >= 16
+    print(f"[{'✅ PASS' if agents_ok else '❌ FAIL'}] Autonomous agents: {len(agents_found)}/16 agents present in agents/")
     for a in sorted(agents_found):
         print(f"     • {a.name}")
 
@@ -506,6 +600,12 @@ def main():
     subparsers.add_parser("uninstall-hook", help="Remove Maxilun pre-commit Git hook")
     subparsers.add_parser("generate-ci", help="Generate GitHub Actions workflow in .github/workflows/maxilun-harness.yml")
 
+    # memory
+    mem_parser = subparsers.add_parser("memory", help="Inspect and manage persistent repository memory and lessons")
+    mem_parser.add_argument("--action", choices=["stats", "list", "prune", "add"], default="list", help="Action to perform (default: list)")
+    mem_parser.add_argument("--trigger", default=None, help="Trigger phrase or keyword (for add)")
+    mem_parser.add_argument("--action-text", default=None, help="Action/policy text (for add)")
+
     args = parser.parse_args()
     if not args.command:
         parser.print_help()
@@ -528,6 +628,7 @@ def main():
         "uninstall-hook": cmd_uninstall_hook,
         "generate-ci": cmd_generate_ci,
         "doctor": cmd_doctor,
+        "memory": cmd_memory,
     }
 
     fn = dispatch.get(args.command)
