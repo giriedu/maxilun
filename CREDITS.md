@@ -92,6 +92,25 @@ Maxilun synthesizes and builds upon pioneering open-source design engineering ph
 * **License**: Free-to-Use / Open Web Resource
 * **Contribution to Maxilun**: Curated catalog of 450+ micro-interactions and tactile motion blueprints (sliding pills, magnetic pull, liquid toggles, 3D card perspective tilt, shake on error, and odometer counters) synthesized in `skills/maxilun-motion/references/ui-motion-recipes.md`.
 
+---
+
+### 11. First Fold (Hero Section Archetypes)
+* **Author**: First Fold (`first-fold.pages.dev`)
+* **Project**: First Fold
+* **Repository**: `https://first-fold.pages.dev/`
+* **License**: Free-to-Use / Open Web Resource
+* **Contribution to Maxilun**: Curated taxonomy of 48 high-converting above-the-fold hero section architectures across 13 industries, interactive hero centerpieces, and conversion copy frameworks synthesized in `skills/maxilun-craft/references/hero-section-archetypes.md`.
+
+---
+
+### 12. Game Feel & Juice Prompts
+* **Author**: Game Feel Prompts (`game-feel-prompts.pages.dev`)
+* **Project**: Game Feel Prompts
+* **Repository**: `https://game-feel-prompts.pages.dev/`
+* **License**: Free-to-Use / Open Web Resource
+* **Contribution to Maxilun**: Curated catalog of 60 game feel and tactile juice mechanics (Hit Stop, Screen Shake, Squash & Stretch, Delayed Health Bar Chip, Coyote Time, and Impact Waves for Godot 4, Unity, and interactive Web Canvas) synthesized in `skills/maxilun-game/references/game-feel-juice.md`.
+
+
 
 
 

@@ -5,7 +5,8 @@ description: >
   GDD specification, and production pipelines. Use it when a task touches a game engine project,
   gameplay mechanics, game balancing, or game design documents.
   Triggers: "/maxilun-game", "/maxilun-gamestudio", "game dev", "game engine",
-  "godot", "unreal", "unity", "gdd", "game design", "gameplay", "game studio".
+  "godot", "unreal", "unity", "gdd", "game design", "gameplay", "game studio",
+  "game feel", "juice", "hit stop", "screen shake", "coyote time".
 metadata:
   version: "1.3.0"
   ecosystem: maxilun
@@ -26,6 +27,7 @@ metadata:
     - references/godot-playbook.md
     - references/unity-playbook.md
     - references/unreal-engine-playbook.md
+    - references/game-feel-juice.md
 ---
 
 # Maxilun Game: Game Studio & Multi-Engine Architecture Specialist
