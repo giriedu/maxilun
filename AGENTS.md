@@ -57,4 +57,5 @@ Ketika percakapan mendekati batas konteks atau memasuki transisi wave:
 2. **Purity (Anti-Slop)**: Dilarang menggunakan emoji sebagai ikon UI (`CMP-003`), dilarang membuat template SaaS generik ungu-cyan, dan dilarang menampilkan checklist centang sendiri (*fake PASS theater*).
 3. **Surgical Discipline**: YAGNI, diff sekecil mungkin yang menyelesaikan masalah, zero drive-by refactor di luar ruang lingkup tugas.
 4. **Clarity & Real Proof**: Status *"Done"* HANYA sah jika dibuktikan dengan hasil eksekusi terminal nyata (exit code 0 dari test runner, build, atau linter).
+5. **Zero-Redundant Exploration (Locate via KG Only)**: Ketika Knowledge Graph (`maxilun-kg`) sudah diindeks/tersedia, agen DILARANG melakukan grep acak, listing direktori berulang, atau membaca file satu per satu. Agen wajib memanfaatkan query AST graph (`kg_locate`, `kg_query`, `defOf:`, `callsIn:`, `importersOf:`) untuk langsung menuju koordinat `file:line` yang presisi.
 
