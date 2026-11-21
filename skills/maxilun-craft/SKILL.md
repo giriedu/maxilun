@@ -15,7 +15,8 @@ description: >
   "design system", "sistem desain", "tampilan antarmuka", "responsive", "responsif",
   "accessibility", "aksesibilitas", "dark mode", "bolder", "quieter", "typeset",
   "harden", "critique", "shape", "colorize", "taste", "hallmark", "hue",
-  "component ecosystem", "shadcn ecosystem", "registry".
+  "component ecosystem", "shadcn ecosystem", "registry",
+  "/maxilun-creative", "creative UI", "high-impact UI", "awwwards", "jaw-dropping", "efek wah".
 metadata:
   version: "1.3.0"
   ecosystem: maxilun
@@ -40,6 +41,7 @@ metadata:
     - references/hue-brand-tokens.md
     - references/component-ecosystem.md
     - references/design-intelligence.md
+    - references/creative-vanguard.md
     - references/design-md/README.md
     - references/design-md/index.md
     - references/interface-engineering.md

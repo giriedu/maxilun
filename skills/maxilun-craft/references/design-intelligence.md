@@ -66,3 +66,4 @@ Every interface task must progress through five structured stages:
    - `polish`: Refine micro-spring physics and hover states.
    - `harden`: Stress-test 320px mobile viewport reflow and text overflow.
 5. **Verify**: Execute `python scripts/slopscan.py` to mechanically confirm zero AI tells, WCAG AAA contrast, and keyboard focus visibility.
+

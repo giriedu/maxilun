@@ -9,7 +9,8 @@ description: >
   "SVG animation", "kinetic typography", "scroll animation", "audio-reactive animation", "choreography",
   "3D scene", "immersive website", "Three.js", "React Three Fiber", "R3F", "WebGL experience",
   "GSAP", "ScrollTrigger", "Framer Motion", "React Spring", "Babylon.js", "PlayCanvas", "PixiJS",
-  "Spline", "Rive", "Blender web pipeline", "Substance 3D", "Web 3D", "web visual reference", "scroll storytelling".
+  "Spline", "Rive", "Blender web pipeline", "Substance 3D", "Web 3D", "web visual reference", "scroll storytelling",
+  "ui-motion-prompts", "micro-interactions".
 metadata:
   version: "1.3.0"
   ecosystem: maxilun
@@ -38,6 +39,7 @@ metadata:
     - references/agent-state-indicators.md
     - references/css-transition-recipes.md
     - references/animation-craft.md
+    - references/ui-motion-recipes.md
 ---
 
 # Maxilun Motion: Interactive Motion, 3D Scenes & Frame Choreography

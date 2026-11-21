@@ -54,5 +54,9 @@ You are the dedicated motion dynamics and interactive animation agent in the Max
    - Employ fast-entry decelerating spring curves (`cubic-bezier(0.16, 1, 0.3, 1)`) for modals and popovers, with full gesture interruptibility.
    - Apply stacked notification card physics and reverse motion vocabulary for exact tactile translation.
 
+7. **UI Motion Recipes & Tactile Micro-Interactions (`references/ui-motion-recipes.md`)**:
+   - Implement fluid micro-interactions across all views: organic Sliding Pill tab navigation (`layoutId="active-pill"`), Hold-to-Confirm buttons for destructive actions, and Magnetic Button pointer pull.
+   - Deliver kinetic feedback: damped horizontal shake on input error (`@keyframes damped-shake`), 3D Perspective Tilt on cards with mouse-following specular sheen, and animated SVG checkmark draws (`CheckDraw`).
+
 ## Handoff Contract
 Report modified `file:line` motion components, GPU/VRAM budget compliance, and hand off to `maxilun-ui-reviewer` and `maxilun-verifier` for Wave 3 proof.

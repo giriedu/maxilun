@@ -83,5 +83,15 @@ Maxilun synthesizes and builds upon pioneering open-source design engineering ph
 * **License**: MIT License
 * **Contribution to Maxilun**: Rigorous test-first development (TDD), git worktree workspace isolation, structured step-by-step execution planning, and the 3-strike debugging review protocol synthesized in `skills/maxilun-engineer/references/systematic-tdd-debugging.md`.
 
+---
+
+### 10. UI Motion Prompts & Micro-Interaction Catalog
+* **Author**: UI Motion Prompts (`ui-motion-prompts.pages.dev`)
+* **Project**: UI Motion Prompts
+* **Repository**: `https://ui-motion-prompts.pages.dev/`
+* **License**: Free-to-Use / Open Web Resource
+* **Contribution to Maxilun**: Curated catalog of 450+ micro-interactions and tactile motion blueprints (sliding pills, magnetic pull, liquid toggles, 3D card perspective tilt, shake on error, and odometer counters) synthesized in `skills/maxilun-motion/references/ui-motion-recipes.md`.
+
+
 
 
