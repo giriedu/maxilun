@@ -56,4 +56,32 @@ Maxilun synthesizes and builds upon pioneering open-source design engineering ph
 * **License**: MIT License
 * **Contribution to Maxilun**: Curated taxonomy of 220+ specialized headless components (adaptive overlays, schema-driven forms, high-density data grids, diff viewers, AI streaming chat components) and 80+ component registries documented in `skills/maxilun-craft/references/component-ecosystem.md`.
 
+---
+
+### 7. Design Intelligence (RYUX)
+* **Author**: Ryu (`@ryuxdsgn`)
+* **Project**: Design Intelligence (`ryuxdsgn/design-intelligence`)
+* **Repository**: `https://github.com/ryuxdsgn/design-intelligence`
+* **License**: MIT License
+* **Contribution to Maxilun**: "Ask Before You Design" contextual verification, strict ban on invented business facts/pricing/policies, comprehensive failure state design (loading, empty, error, offline), and the 5-stage product design lifecycle synthesized in `skills/maxilun-craft/references/design-intelligence.md`.
+
+---
+
+### 8. Animation & Design Engineering Skills
+* **Author**: Emil Kowalski (`@emilkowalski`)
+* **Project**: Skills (`emilkowalski/skills`)
+* **Repository**: `https://github.com/emilkowalski/skills`
+* **License**: MIT License
+* **Contribution to Maxilun**: Elite animation engineering principles, composite-only GPU properties (`transform`, `opacity`), 60 FPS frame budgeting, spring physics over rigid easing, interruptible gesture choreographies, and Sonner toast architecture synthesized in `skills/maxilun-motion/references/animation-craft.md`.
+
+---
+
+### 9. Systematic Software Engineering Methodology
+* **Author**: Jesse Vincent (`@obra`)
+* **Project**: Superpowers (`obra/superpowers`)
+* **Repository**: `https://github.com/obra/superpowers`
+* **License**: MIT License
+* **Contribution to Maxilun**: Rigorous test-first development (TDD), git worktree workspace isolation, structured step-by-step execution planning, and the 3-strike debugging review protocol synthesized in `skills/maxilun-engineer/references/systematic-tdd-debugging.md`.
+
+
 

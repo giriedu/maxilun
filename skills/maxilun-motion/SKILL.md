@@ -37,6 +37,7 @@ metadata:
     - references/blender-headless-pipeline.md
     - references/agent-state-indicators.md
     - references/css-transition-recipes.md
+    - references/animation-craft.md
 ---
 
 # Maxilun Motion: Interactive Motion, 3D Scenes & Frame Choreography

@@ -39,6 +39,7 @@ metadata:
     - references/hallmark-themes.md
     - references/hue-brand-tokens.md
     - references/component-ecosystem.md
+    - references/design-intelligence.md
     - references/design-md/README.md
     - references/design-md/index.md
     - references/interface-engineering.md

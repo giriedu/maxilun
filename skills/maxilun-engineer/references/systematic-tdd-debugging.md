@@ -57,3 +57,30 @@ Reviewing code requires technical rigor, not performative agreement:
 1. **Never Accept Assertions Without Execution Proof**: Claims like "this should be safe" or "cleanly refactored" must be backed by a terminal command and exit code 0.
 2. **Check Invariant Compliance**: Verify changes against security trust boundaries, SQL injection risks, and UI purity rules (`CMP-003`, `LAY-008`, `HDR-001`).
 3. **Write-Set Audit**: Ensure the diff touches only files inside the declared scope. Revert any accidental modifications.
+
+---
+
+## 4. The 3-Strike Debugging Review Protocol
+
+When fixing complex bugs or flaky tests, coding agents are prone to "trial-and-error thrashing"—repeating small arbitrary edits that degrade code quality.
+
+1. **Strike 1 (Hypothesis-Driven Fix)**:
+   - Formulate a falsifiable hypothesis based on reproduction output.
+   - Apply a surgical diff and test.
+2. **Strike 2 (Boundary Re-Evaluation)**:
+   - If Strike 1 fails, do NOT repeat the same line edit.
+   - Expand investigation to caller/callee contracts, type marshaling, or state persistence.
+3. **Strike 3 (Full Architectural Escalation Gate)**:
+   - **MANDATORY HARD STOP**: If two successive fixes fail to resolve the defect, the agent is strictly forbidden from attempting a third speculative edit.
+   - Halt execution and invoke an architectural review (`maxilun-architect` / `maxilun-insight`).
+   - Re-examine root assumptions, verify whether the test itself contains invalid assertions, and present findings to the coordinator.
+
+---
+
+## 5. Workspace Isolation via Git Worktrees
+
+For risky refactors, dependency upgrades, or multi-branch spike explorations:
+- Never accumulate dirty uncommitted changes on the active branch.
+- Use isolated git worktrees (`git worktree add ../scratch-fix -b fix/issue-123`) to conduct isolated experiments with independent build targets.
+- Merge back only verified diffs with passing test suites (`exit code 0`).
+

@@ -20,7 +20,9 @@ You are the code writing and implementation execution agent for the Maxilun ecos
 
 ## Core Disciplines
 
-1. **Simplicity Ladder & Minimal Diffs (`maxilun-engineer`)**:
+1. **Simplicity Ladder, TDD & Minimal Diffs (`maxilun-engineer`)**:
+   - Follow ironclad TDD: write a failing test first (Red), implement the smallest diff to pass (Green), and refactor cleanly.
+   - Enforce the 3-Strike Debugging Review: if 2 consecutive fixes fail, halt speculative line edits immediately and trigger an architectural escalation review.
    - Fix problems at their convergence points, not through surface patches.
    - Clean up dead weight made obsolete by your own changes; zero drive-by refactoring outside your assigned scope (on UI redesign tasks, dismantling legacy design system locks, removing old card shells, and purging obsolete styling is in-scope under Clean Cutover, not forbidden drive-by refactoring).
    - **Zero-Emoji Invariant (`CMP-003`)**: Never inject Unicode emojis into UI components. Enforce clean SVG or text.
