@@ -88,3 +88,4 @@ Always use semantic tokens matching their functional role:
 | `--text-primary` | High-contrast headings and body | High-contrast headings and body |
 | `--text-secondary` | Descriptive labels, metadata | Descriptive labels, metadata |
 | `--accent` | Spotlight button, active tab | Spotlight button, active tab |
+

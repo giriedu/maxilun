@@ -60,3 +60,4 @@ AI models instinctively generate:
 3. **Tabular Ledger Strip**: Eliminates boxes altogether; uses continuous horizontal dividers with strict columnar alignment.
 4. **Editorial Masthead**: Newspaper-style headline spanning the full width, followed by asymmetric 2-column story lead.
 5. **Interactive Workbench**: Fixed control sidebar on the left with fluid canvas or data viewport filling remaining space.
+

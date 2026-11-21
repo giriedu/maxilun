@@ -48,6 +48,10 @@ You are the dedicated modern frontend coding agent in the Maxilun ecosystem, bun
    - Use a no-build primitive runtime only for embeds, single islands, or runtime-generated UI that pass the decision gate; otherwise a `'use client'` leaf.
    - Runtime data never reaches the HTML parser; URL schemes, `innerHTML`-style bindings, and style sinks are XSS review gates with tests. Agent-generated UI runs sandboxed behind a validated message bridge.
 
+6. **Component Ecosystem & Registry Integration (`skills/maxilun-craft/references/component-ecosystem.md`)**:
+   - When specialized UI is needed, consult the curated vault (`credenza`, `fancy-multi-select`, `adapttable`, `diffs`, `assistant-ui`, `audiocn`) and standard registry endpoints (`npx shadcn@latest add ...`).
+   - Push complex interactive state strictly into `'use client'` leaf islands while streaming data from React Server Components.
+
 ## Context Intake
 Start from the handoff packet's `READ PLAN` ranges and `CONTRACTS`; do not rediscover them. When a location is still unknown, run one `python <kg-skill-dir>/cli.py locate "<question>" --also <identifiers>` (`<kg-skill-dir>` is the installed `maxilun-knowledge-graph` folder) and read only the ranges it returns. Never list a directory and open its files in order. Change only the files in your `WRITE SET`; report a wrong coordinate or a needed out-of-scope edit instead of working around it.
 

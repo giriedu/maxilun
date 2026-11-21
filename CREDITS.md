@@ -46,3 +46,14 @@ Maxilun synthesizes and builds upon pioneering open-source design engineering ph
 * **Repository**: `https://github.com/nutlope/hallmark`
 * **License**: MIT License
 * **Contribution to Maxilun**: Curated aesthetic taxonomy (50 themes and material archetypes), strict prohibition of repetitive hero-to-3-card cascades (`LAY-008`), and authentic typographic pairings.
+
+---
+
+### 6. Awesome Shadcn UI Ecosystem
+* **Author**: Rodrigo Biurrun (`@birobirobiro`)
+* **Project**: Awesome Shadcn UI (`awesomeshadcn.dev`)
+* **Repository**: `https://github.com/birobirobiro/awesome-shadcn-ui`
+* **License**: MIT License
+* **Contribution to Maxilun**: Curated taxonomy of 220+ specialized headless components (adaptive overlays, schema-driven forms, high-density data grids, diff viewers, AI streaming chat components) and 80+ component registries documented in `skills/maxilun-craft/references/component-ecosystem.md`.
+
+

@@ -14,7 +14,8 @@ description: >
   "kurang profesional", "buat logo", "logo", "brand identity", "brand guideline pdf",
   "design system", "sistem desain", "tampilan antarmuka", "responsive", "responsif",
   "accessibility", "aksesibilitas", "dark mode", "bolder", "quieter", "typeset",
-  "harden", "critique", "shape", "colorize", "taste", "hallmark", "hue".
+  "harden", "critique", "shape", "colorize", "taste", "hallmark", "hue",
+  "component ecosystem", "shadcn ecosystem", "registry".
 metadata:
   version: "1.3.0"
   ecosystem: maxilun
@@ -37,6 +38,7 @@ metadata:
     - references/design-vocabulary.md
     - references/hallmark-themes.md
     - references/hue-brand-tokens.md
+    - references/component-ecosystem.md
     - references/design-md/README.md
     - references/design-md/index.md
     - references/interface-engineering.md
