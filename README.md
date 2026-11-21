@@ -130,7 +130,7 @@ Structured by real-world software engineering lifecycle — from foundational ar
 | 10 | `maxilun-insight` | Performance Diagnostics — CPU/memory/DB profiling, distributed tracing, leak detection | `/maxilun-insight`, `/msal-audit` |
 | 11 | `maxilun-deploy` | Cloud & Operations — CI/CD pipelines, multi-stage Docker, zero-downtime rollouts | `/maxilun-deploy` |
 | 12 | `maxilun-docsmith` | Technical Specs & Documentation — Feature PRDs/RFCs, OpenAPI 3.1/AsyncAPI contracts, ADRs, runbooks, `llms.txt` | `/maxilun-docsmith`, `/msal-docs` |
-| 13 | `maxilun-craft` | UI/UX Craft & Brand Identity — eight-line Brief, token lock, eight ordered layers, `slopscan.py` proof gate, OKLCH ramps, WCAG contrast, 100 design references, SVG logo suite | `/maxilun-craft`, `/msal-ui` |
+| 13 | `maxilun-craft` | UI/UX Craft & Brand Identity — directional tuning vocabulary (`bolder`, `quieter`, `typeset`, `polish`, `harden`, `shape`), 50 Hallmark aesthetic themes, Hue OKLCH brand token model, 220+ component ecosystem vault, `slopscan.py` proof gate, OKLCH ramps, WCAG contrast, 100 design references, SVG logo suite | `/maxilun-craft`, `/msal-ui`, `bolder`, `quieter`, `typeset`, `polish`, `harden`, `shape`, `hallmark`, `hue` |
 | 14 | `maxilun-motion` | Motion Design — interactive browser animation, complete WebGL 3D scenes, camera choreography, reference-led art direction, motion storyboards, preview review, and accessible fallbacks | `/maxilun-motion`, `3D scene`, `immersive website`, `Three.js`, `WebGL`, `motion-led website` |
 | 15 | `maxilun-cinecode` | Programmatic Video — code-driven MP4/WebM/GIF, React frame compiler, data-driven batch pipelines | `/maxilun-cinecode` |
 | 16 | `maxilun-diagrams` | System Visualization — C4, sequence, Event Storming, data-flow diagrams via Mermaid | `/maxilun-diagram`, `/maxilun-diagrams` |
@@ -187,7 +187,7 @@ Use `maxilun-knowledge-graph` for structural or multi-file code changes when its
 Maxilun ships with a complete built-in autonomous agent runtime, AST security inspector, and empirical benchmark suite in `harness/` (100% zero-dependency Python stdlib):
 
 ```bash
-# Inspect all 25 ecosystem skills (1 orchestrator + 24 specialists) and 15 autonomous agents:
+# Inspect all 25 ecosystem skills (1 orchestrator + 24 specialists) and 16 autonomous agents:
 python harness/cli.py skills
 # Run empirical benchmark suite (+55% quality improvement over Raw AI):
 python harness/cli.py bench --view
@@ -236,7 +236,7 @@ On OMP/Termul, the agents install to `~/.omp/agent/agents`.
 |---|---|
 | [docs/INSTALL.md](docs/INSTALL.md) | Comprehensive installation guides, one-line scripts & verification |
 | [docs/SKILLS.md](docs/SKILLS.md) | Triggers, capabilities, and parameters for all 25 skills |
-| [docs/AGENTS.md](docs/AGENTS.md) | 15 autonomous agents (1 orchestrator + 14 specialists), tool permissions & subagent protocols |
+| [docs/AGENTS.md](docs/AGENTS.md) | 16 autonomous agents (1 orchestrator + 15 specialists), tool permissions & subagent protocols |
 | [docs/ENGINES.md](docs/ENGINES.md) | Four Always-On Engines and three Operating Protocols |
 | [docs/EXAMPLES.md](docs/EXAMPLES.md) | Real-world engineering scenarios & multi-specialist Wave Patterns |
 | [docs/SKILL-CONTRACTS.md](docs/SKILL-CONTRACTS.md) | Ownership, standalone behavior, inputs, outputs, and handoffs for every skill |
@@ -245,6 +245,7 @@ On OMP/Termul, the agents install to `~/.omp/agent/agents`.
 | [docs/ROUTING-MATRIX.md](docs/ROUTING-MATRIX.md) | Primary-owner routing and trigger collision boundaries |
 | [docs/PURITY-GATE.md](docs/PURITY-GATE.md) | Distribution-safe Purity Gate and evidence delivery rules |
 | [docs/RELEASE.md](docs/RELEASE.md) | Automated GitHub Releases, tag dispatch, and versioning protocols |
+| [CREDITS.md](CREDITS.md) | Open source design attributions & MIT compatibility receipts |
 | [CHANGELOG.md](CHANGELOG.md) | Semantic version release history |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution standards, test-suite validation, and code hygiene |
 
@@ -252,9 +253,9 @@ On OMP/Termul, the agents install to `~/.omp/agent/agents`.
 
 ## About Releases
 
-Maxilun follows [Semantic Versioning](https://semver.org/) and [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Every release is validated against all 25 skills, 15 autonomous agents, Knowledge Graph scanners, UI Purity Linter, and harness integration tests via `python scripts/test-suite.py`.
+Maxilun follows [Semantic Versioning](https://semver.org/) and [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Every release is validated against all 25 skills, 16 autonomous agents, Knowledge Graph scanners, UI Purity Linter, and harness integration tests via `python scripts/test-suite.py`.
 
-- **Latest Stable**: `v1.3.0` — see [CHANGELOG.md](CHANGELOG.md) for full release notes and `[Unreleased]` additions (`15` agents, Shared Agent Bus, `maxilun-kg` MCP, `OutputCompressor`, `/maxilun terse`, `icon_lookup.py`, and anti-slop prose/tactile UI playbooks).
+- **Latest Stable**: `v1.3.0` — see [CHANGELOG.md](CHANGELOG.md) for full release notes and `[Unreleased]` additions (`16` agents, Shared Agent Bus, `maxilun-kg` MCP, `OutputCompressor`, `/maxilun terse`, `icon_lookup.py`, 5-in-1 design engine, and component ecosystem vault).
 - **Release Pipeline**: See [docs/RELEASE.md](docs/RELEASE.md) and [GitHub Releases](https://github.com/giriedu/maxilun/releases).
 
 ---

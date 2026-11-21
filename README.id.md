@@ -130,7 +130,7 @@ Disusun berdasarkan siklus rekayasa perangkat lunak dari fondasi arsitektur hing
 | 10 | `maxilun-insight` | Diagnostik Performa — profiling CPU/memori/database, distributed tracing | `/maxilun-insight`, `/msal-audit` |
 | 11 | `maxilun-deploy` | Operasi & Cloud — pipeline CI/CD, Docker multi-stage, rollout zero-downtime | `/maxilun-deploy` |
 | 12 | `maxilun-docsmith` | Spesifikasi & Dokumentasi Teknis — Feature PRD/RFC, OpenAPI 3.1/AsyncAPI, ADR, runbook, `llms.txt` | `/maxilun-docsmith`, `/msal-docs` |
-| 13 | `maxilun-craft` | Desain Sistem & UI/UX — palet warna OKLCH, kepatuhan WCAG AAA, grid 4px, 100 referensi brand | `/maxilun-craft`, `/msal-ui` |
+| 13 | `maxilun-craft` | Desain Sistem & UI/UX — directional tuning vocabulary (`bolder`, `quieter`, `typeset`, `polish`, `harden`, `shape`), 50 tema estetika Hallmark, model token brand Hue OKLCH, vault ekosistem 220+ komponen, gate pembuktian `slopscan.py`, palet OKLCH, kepatuhan WCAG AAA, grid 4px, 100 referensi brand | `/maxilun-craft`, `/msal-ui`, `bolder`, `quieter`, `typeset`, `polish`, `harden`, `shape`, `hallmark`, `hue` |
 | 14 | `maxilun-motion` | Desain Motion — animasi browser interaktif, scene 3D/WebGL penuh, arah visual berbasis referensi, storyboard motion, review preview, dan fallback aksesibel | `/maxilun-motion`, `scene 3D`, `immersive website`, `Three.js`, `WebGL`, `motion-led website` |
 | 15 | `maxilun-cinecode` | Video Programatik — MP4/WebM/GIF berbasis kode, kompilator frame React, pipeline batch | `/maxilun-cinecode` |
 | 16 | `maxilun-diagrams` | Visualisasi Sistem — diagram alur, sequence, C4 diagram via Mermaid/SVG | `/maxilun-diagram`, `/maxilun-diagrams` |
@@ -188,7 +188,7 @@ Gunakan `maxilun-knowledge-graph` untuk perubahan kode struktural atau lintas-fi
 Maxilun dilengkapi dengan runtime agen otonom bawaan, inspektor keamanan AST, dan runner benchmark empiris di folder `harness/` (100% zero-dependency Python stdlib):
 
 ```bash
-# Inspeksi 25 skill ekosistem (1 orchestrator + 24 spesialis), kepatuhan batas baris (<=300), dan pemicunya:
+# Inspeksi 25 skill ekosistem (1 orchestrator + 24 spesialis) dan 16 agen otonom:
 python harness/cli.py skills
 
 # Jalankan benchmark komparatif empiris (+55% peningkatan atas Raw AI):
@@ -238,7 +238,7 @@ Di OMP/Termul, agen terpasang ke `~/.omp/agent/agents`.
 |---|---|
 | [docs/INSTALL.md](docs/INSTALL.md) | Panduan instalasi multi-platform lengkap & integrasi CLI |
 | [docs/SKILLS.md](docs/SKILLS.md) | Detail mendalam, peran teknis, dan pemicu seluruh 25 skill |
-| [docs/AGENTS.md](docs/AGENTS.md) | 15 agen otonom (1 orchestrator + 14 spesialis), hak akses tool & protokol subagent |
+| [docs/AGENTS.md](docs/AGENTS.md) | 16 agen otonom (1 orchestrator + 15 spesialis), hak akses tool & protokol subagent |
 | [docs/ENGINES.md](docs/ENGINES.md) | Empat engine kualitas dan tiga protokol operasi |
 | [docs/EXAMPLES.md](docs/EXAMPLES.md) | Contoh skenario rekayasa nyata & orkestrasi Wave Pattern |
 | [docs/SKILL-CONTRACTS.md](docs/SKILL-CONTRACTS.md) | Ownership, mode standalone, input, output, dan handoff setiap skill |
@@ -247,6 +247,7 @@ Di OMP/Termul, agen terpasang ke `~/.omp/agent/agents`.
 | [docs/ROUTING-MATRIX.md](docs/ROUTING-MATRIX.md) | Routing primary owner dan batas trigger yang bertabrakan |
 | [docs/PURITY-GATE.md](docs/PURITY-GATE.md) | Standar Purity Gate dan aturan pengiriman berbasis bukti |
 | [docs/RELEASE.md](docs/RELEASE.md) | Alur rilis GitHub Release otomatis & pembaruan metadata |
+| [CREDITS.md](CREDITS.md) | Atribusi lisensi open source & bukti kompatibilitas MIT |
 | [CHANGELOG.md](CHANGELOG.md) | Riwayat pembaruan versi ekosistem |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Standar kontribusi & pengujian test-suite |
 
@@ -254,9 +255,9 @@ Di OMP/Termul, agen terpasang ke `~/.omp/agent/agents`.
 
 ## Tentang Rilis
 
-Maxilun mengikuti [Semantic Versioning](https://semver.org/) dan [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Setiap rilis diverifikasi terhadap seluruh 25 skill, 15 agen otonom, scanner Knowledge Graph, UI Purity Linter, dan uji integrasi harness melalui `python scripts/test-suite.py`.
+Maxilun mengikuti [Semantic Versioning](https://semver.org/) dan [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Setiap rilis diverifikasi terhadap seluruh 25 skill, 16 agen otonom, scanner Knowledge Graph, UI Purity Linter, dan uji integrasi harness melalui `python scripts/test-suite.py`.
 
-- **Versi Stabil Terbaru**: `v1.3.0` — lihat [CHANGELOG.md](CHANGELOG.md) untuk catatan rilis lengkap dan pembaruan `[Unreleased]` (`15` agen, Shared Agent Bus, `maxilun-kg` MCP, `OutputCompressor`, `/maxilun terse`, `icon_lookup.py`, serta playbook anti-slop tulisan & UI taktil).
+- **Versi Stabil Terbaru**: `v1.3.0` — lihat [CHANGELOG.md](CHANGELOG.md) untuk catatan rilis lengkap dan pembaruan `[Unreleased]` (`16` agen, Shared Agent Bus, `maxilun-kg` MCP, `OutputCompressor`, `/maxilun terse`, `icon_lookup.py`, 5-in-1 design engine, dan vault ekosistem komponen).
 - **Alur Rilis**: Lihat [docs/RELEASE.md](docs/RELEASE.md) dan [GitHub Releases](https://github.com/giriedu/maxilun/releases).
 
 ---
