@@ -13,7 +13,8 @@ description: >
   "review UI", "AI slop", "generic", "generik", "template-like", "kurang rapi",
   "kurang profesional", "buat logo", "logo", "brand identity", "brand guideline pdf",
   "design system", "sistem desain", "tampilan antarmuka", "responsive", "responsif",
-  "accessibility", "aksesibilitas", "dark mode".
+  "accessibility", "aksesibilitas", "dark mode", "bolder", "quieter", "typeset",
+  "harden", "critique", "shape", "colorize", "taste", "hallmark", "hue".
 metadata:
   version: "1.3.0"
   ecosystem: maxilun
@@ -33,6 +34,9 @@ metadata:
     - references/patterns.md
     - references/tells.md
     - references/motion.md
+    - references/design-vocabulary.md
+    - references/hallmark-themes.md
+    - references/hue-brand-tokens.md
     - references/design-md/README.md
     - references/design-md/index.md
     - references/interface-engineering.md
@@ -83,7 +87,7 @@ These apply to every response and every code change. Explicit user instructions 
 Full detail: `../maxilun/references/engines.md`.
 <!-- CORE-RULES:END -->
 
-## 1. Pick a Mode
+## 1. Pick a Mode & Design Vocabulary
 
 | Mode | When | Deliverable |
 |---|---|---|
@@ -91,7 +95,12 @@ Full detail: `../maxilun/references/engines.md`.
 | **Repair** | Existing screen looks generic or messy | Findings → Brief → rewritten screen → scan → report |
 | **Review** | The user asks for an audit only | Findings with `file:line`, severity, exact fix. No edits. |
 
-In Repair, read the request before planning. An explicit "redesign" or "rombak UI/UX" is a mandate to rebuild the structure from a new Brief; keeping the old shell with new colours is the patchwork failure `SYS-004` (§5). For "polish", "tidy", "fix", or "looks generic", measure first: three small problems get three small fixes, and a screen that is already good is told so, with at most three optional refinements. Changing a good screen to prove you did something is its own kind of averaging.
+**Directional Tuning Vocabulary (`references/design-vocabulary.md`)**:
+- `bolder` / `quieter`: intensify contrast and heading weight, or subdue visual clutter and noise.
+- `typeset` / `harden`: sentence-case, `text-wrap: balance`, `tabular-nums` on numbers, 320px reflow stress test.
+- `shape` / `critique`: declare asymmetric topology (Bento, Ledger) or run heuristic audit.
+
+In Repair, read the request before planning. An explicit "redesign" or "rombak UI/UX" is a mandate to rebuild the structure from a new Brief; keeping the old shell with new colours is the patchwork failure `SYS-004` (§5). For "polish", "tidy", "fix", or "looks generic", measure first: three small problems get three small fixes, and a screen that is already good is told so. Changing a good screen to prove you did something is its own kind of averaging.
 
 ## 2. The Loop
 
@@ -111,7 +120,7 @@ Eight lines derived from the product in front of you.
 - **Voice.** Three adjectives plus one boundary, like `steady, plain, local - serious but not stern`. Words that fit every product are not allowed: clean, modern, minimal, sleek, premium, elegant, professional, simple.
 - **Origin.** Where the visual material comes from, in priority order: (1) the real brand when one exists; (2) objects and documents of the domain (a school has report cards, stamps, chalk, timetables; a library has spines, index cards, date stamps); (3) the place and culture of the users. Origin gives the hue of the neutrals, the accent, the shapes, and any imagery.
 - **Density.** Airy, regular, or dense, with the reason. Tools used daily by trained people are dense; pages seen once by strangers are airy.
-- **Archetype.** Declare ONE from `references/design-archetypes.md` (`[ARCHETYPE SELECTED: <Name>]`: Technical Ledger, Warm Editorial, Swiss High-Contrast, Cybernetic Deck, Neo-Brutalist, or Nordic Living) and inject tokens. Unchosen generic slate palettes are banned.
+- **Archetype.** Declare ONE from `references/design-archetypes.md` or `references/hallmark-themes.md` (50 themes: Technical Ledger, Warm Editorial, Neo-Brutalist, Dark Atmospheric, Japanese Wabi-Sabi, etc.) and inject tokens via `references/hue-brand-tokens.md`. Unchosen generic slate palettes are banned.
 - **Spotlight.** The single element that receives the emphasis budget: one number, one chart, one action, one image. Naming it means everything else agrees to be quiet.
 - **Refusals.** Three things this design will deliberately not do, like `no cards inside cards, no icons in the table, no second accent`. Refusals make a design recognisable.
 

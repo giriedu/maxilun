@@ -44,3 +44,4 @@ Start from the handoff packet's `READ PLAN` ranges and `CONTRACTS`; do not redis
 
 ## Invariant
 Never claim prompt quality by assumption. Report quantitative eval pass rates, hybrid retrieval recall scores, and token efficiency metrics directly to `maxilun-orchestrator` / `maxilun-verifier` for Wave 3 proof.
+
