@@ -400,6 +400,8 @@ class UIPurityLinter:
                 # Avoid scanning self definition files
                 if file_path.name in ("ui-purity-linter.py", "purity-catalog.md", "SKILL.md") and "TELL_RULES" in line:
                     continue
+                if rule_id == "ANI-TEL-03" and "prefers-reduced-motion" in content:
+                    continue
                 match = pattern.search(line)
                 if match:
                     snippet = line.strip()
@@ -458,6 +460,27 @@ class UIPurityLinter:
                     line_number=ln,
                     snippet=snippet
                 ))
+
+        # Multiline checks for Symmetrical 4/5 KPI Card Strip across parent/child nodes (LAY-017)
+        if not is_md:
+            for m_kpi in re.finditer(r"""\b(?:md:|lg:|xl:)?grid-cols-(?:4|5)\b[\s\S]{0,650}""", content, re.IGNORECASE):
+                window = m_kpi.group(0)
+                if not re.search(r"""\bcol-span-(?:2|3|4|5|6|7|8)\b""", window):
+                    if len(re.findall(r"""\brounded-(?:lg|xl|2xl|3xl)\b""", window)) >= 2:
+                        ln = content[:m_kpi.start()].count("\n") + 1
+                        if not any(v.rule_id == "LAY-TEL-08" for v in violations):
+                            snippet = window.splitlines()[0].strip()[:87]
+                            violations.append(TellViolation(
+                                rule_id="LAY-TEL-08",
+                                category="Tata Letak",
+                                severity="ERROR",
+                                message="Symmetrical 4 or 5 KPI card strip without role differentiation (LAY-017)",
+                                remedy="Ganti dengan Asymmetric Bento Grid (8:4 anchor) atau Operational List Ledger.",
+                                file_path=str(file_path),
+                                line_number=ln,
+                                snippet=snippet
+                            ))
+                        break
 
         return violations
 

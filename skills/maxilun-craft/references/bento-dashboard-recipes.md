@@ -56,6 +56,12 @@ interface MetricSummary {
 
 export function EduCoreDashboardView() {
   const [selectedRange, setSelectedRange] = useState<'today' | '7d' | '30d'>('7d');
+  const [expandedRow, setExpandedRow] = useState<string | null>('SES-9482');
+  const [holdProgress, setHoldProgress] = useState<number>(0);
+  const [spotlight, setSpotlight] = useState({ x: 300, y: 120, active: false });
+
+  const ranges: ('today' | '7d' | '30d')[] = ['today', '7d', '30d'];
+  const activeRangeIdx = ranges.indexOf(selectedRange);
 
   // Authentic mock data
   const activities: ActivityItem[] = [
@@ -90,16 +96,31 @@ export function EduCoreDashboardView() {
           </p>
         </div>
 
-        {/* Primary Action + Context Controls */}
+        {/* Primary Action + Sliding Segmented Range Switcher (ui-motion-recipes.md §1.A) */}
         <div className="flex items-center gap-3">
-          <div className="inline-flex rounded-lg bg-stone-800 p-0.5 border border-stone-700">
-            {(['today', '7d', '30d'] as const).map((rng) => (
+          <div
+            role="tablist"
+            aria-label="Rentang Waktu Telemetri"
+            className="relative grid grid-cols-3 rounded-lg bg-stone-950 p-1 border border-stone-800"
+          >
+            <span
+              aria-hidden="true"
+              style={{
+                transform: `translate3d(${activeRangeIdx * 100}%, 0, 0)`,
+                transition: 'transform 220ms cubic-bezier(0.16, 1, 0.3, 1)',
+              }}
+              className="pointer-events-none absolute inset-y-1 left-1 w-[calc((100%-8px)/3)] rounded-md bg-stone-800 border border-stone-700"
+            />
+            {ranges.map((rng) => (
               <button
                 key={rng}
+                role="tab"
+                type="button"
+                aria-selected={selectedRange === rng}
                 onClick={() => setSelectedRange(rng)}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                className={`relative z-10 px-3 py-1.5 text-xs font-medium rounded-md transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
                   selectedRange === rng
-                    ? 'bg-stone-700 text-stone-100 shadow-sm'
+                    ? 'text-stone-100'
                     : 'text-stone-400 hover:text-stone-200'
                 }`}
               >
@@ -108,8 +129,11 @@ export function EduCoreDashboardView() {
             ))}
           </div>
 
-          <button className="px-4 py-2 text-xs font-medium rounded-lg bg-emerald-600 hover:bg-emerald-500 text-stone-950 font-semibold transition-colors">
-            + Buat Jadwal Asesmen
+          <button
+            type="button"
+            className="px-4 py-2 text-xs rounded-lg bg-emerald-600 hover:bg-emerald-500 active:scale-[0.97] text-stone-950 font-semibold transition-transform duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+          >
+            Simpan Jadwal Asesmen
           </button>
         </div>
       </header>
@@ -117,8 +141,23 @@ export function EduCoreDashboardView() {
       {/* 2. THE ASYMMETRIC BENTO GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        {/* === CARD 1: THE SPOTLIGHT HERO (8 cols) === */}
-        <section className="lg:col-span-8 rounded-xl bg-stone-800/60 border border-stone-800 p-6 flex flex-col justify-between">
+        {/* === CARD 1: THE SPOTLIGHT HERO (8 cols) with Specular Spotlight (ui-motion-recipes.md §4) === */}
+        <section
+          onMouseMove={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            setSpotlight({ x: e.clientX - rect.left, y: e.clientY - rect.top, active: true });
+          }}
+          onMouseLeave={() => setSpotlight((s) => ({ ...s, active: false }))}
+          className="relative overflow-hidden lg:col-span-8 rounded-xl bg-stone-800/60 border border-stone-800 p-6 flex flex-col justify-between"
+        >
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 transition-opacity duration-200"
+            style={{
+              opacity: spotlight.active ? 1 : 0,
+              background: `radial-gradient(400px circle at ${spotlight.x}px ${spotlight.y}px, rgba(16, 185, 129, 0.08), transparent 70%)`,
+            }}
+          />
           <div>
             <div className="flex items-start justify-between">
               <div>
@@ -191,7 +230,7 @@ export function EduCoreDashboardView() {
                 <li key={i} className="flex items-center justify-between p-3 rounded-lg bg-stone-900/60 border border-stone-800/80 hover:border-stone-700 transition-colors">
                   <div>
                     <span className="text-xs font-medium text-stone-200 block">{act.label}</span>
-                    <span className="text-[11px] font-mono text-stone-400">{act.desc}</span>
+                    <span className="text-xs font-mono text-stone-400">{act.desc}</span>
                   </div>
                   <button className="px-2.5 py-1 text-xs font-mono rounded bg-stone-800 hover:bg-stone-700 text-stone-300 border border-stone-700 transition-colors">
                     {act.action}
@@ -212,44 +251,65 @@ export function EduCoreDashboardView() {
         <section className="lg:col-span-8 rounded-xl bg-stone-800/60 border border-stone-800 p-6">
           <div className="flex items-center justify-between pb-4 border-b border-stone-800">
             <div>
-              <h2 className="text-sm font-semibold text-stone-200 tracking-tight">Log Aktivitas Peserta Ujian</h2>
+              <h2 className="text-sm font-semibold text-stone-200 tracking-tight text-balance">Log aktivitas peserta ujian</h2>
               <p className="text-xs text-stone-400 mt-0.5">Aliran pengiriman lembar jawaban sesi aktif</p>
             </div>
             <span className="text-xs font-mono text-stone-400">Real-Time Polling &bull; 5 detik</span>
           </div>
 
-          {/* Borderless Ledger Rows (Anti Card-in-Card LAY-001) */}
+          {/* Expandable Ledger Rows (ui-motion-recipes.md §5.A - Zero-CLS Grid Disclosure) */}
           <div className="divide-y divide-stone-800/80 mt-2">
-            {activities.map((act) => (
-              <div key={act.id} className="py-3 flex items-center justify-between text-xs hover:bg-stone-800/40 px-2 rounded transition-colors">
-                <div className="flex items-center gap-3">
-                  <span className="font-mono text-stone-400 text-[11px]">{act.id}</span>
-                  <div>
-                    <span className="font-medium text-stone-200">{act.candidateName}</span>
-                    <span className="text-stone-400 ml-2 hidden sm:inline">&bull; {act.examTitle}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-6">
-                  <span className="font-mono tabular-nums text-stone-400 hidden md:inline">{act.timestamp}</span>
-                  <div className="text-right">
-                    <span className="font-mono tabular-nums font-semibold text-stone-100">{act.score}</span>
-                    <span className="text-[10px] text-stone-400 block sm:inline sm:ml-1">/ 100</span>
-                  </div>
-                  <span
-                    className={`text-[11px] font-mono font-medium ${
-                      act.status === 'submitted'
-                        ? 'text-emerald-400'
-                        : act.status === 'flagged'
-                        ? 'text-amber-400'
-                        : 'text-stone-400'
-                    }`}
+            {activities.map((act) => {
+              const isOpen = expandedRow === act.id;
+              return (
+                <div key={act.id} className="py-1">
+                  <button
+                    type="button"
+                    aria-expanded={isOpen}
+                    onClick={() => setExpandedRow(isOpen ? null : act.id)}
+                    className="w-full py-2.5 flex items-center justify-between text-xs hover:bg-stone-800/40 px-2 rounded transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                   >
-                    {act.status === 'submitted' ? 'Valid' : act.status === 'flagged' ? 'Anomali' : 'Berjalan'}
-                  </span>
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="font-mono text-stone-400 text-xs">{act.id}</span>
+                      <div className="truncate">
+                        <span className="font-medium text-stone-200">{act.candidateName}</span>
+                        <span className="text-stone-400 ml-2 hidden sm:inline">&bull; {act.examTitle}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-6 shrink-0">
+                      <span className="font-mono tabular-nums text-stone-400 hidden md:inline">{act.timestamp}</span>
+                      <div className="text-right">
+                        <span className="font-mono tabular-nums font-semibold text-stone-100">{act.score}</span>
+                        <span className="text-xs text-stone-400 block sm:inline sm:ml-1">/ 100</span>
+                      </div>
+                      <span
+                        className={`text-xs font-mono font-medium ${
+                          act.status === 'submitted'
+                            ? 'text-emerald-400'
+                            : act.status === 'flagged'
+                            ? 'text-amber-400'
+                            : 'text-stone-400'
+                        }`}
+                      >
+                        {act.status === 'submitted' ? 'Valid' : act.status === 'flagged' ? 'Anomali' : 'Berjalan'}
+                      </span>
+                    </div>
+                  </button>
+                  <div
+                    className="grid transition-[grid-template-rows,opacity] duration-200 ease-out"
+                    style={{ gridTemplateRows: isOpen ? '1fr' : '0fr', opacity: isOpen ? 1 : 0 }}
+                  >
+                    <div className="overflow-hidden">
+                      <div className="px-3 py-2 mb-2 text-xs font-mono text-stone-400 bg-stone-950/50 rounded flex items-center justify-between">
+                        <span>Integritas Peramban: Terkunci &bull; Durasi Pengerjaan: 84m 12d</span>
+                        <span className="text-stone-300 tabular-nums">SHA-256: 9f8a..c41e</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 
@@ -267,13 +327,13 @@ export function EduCoreDashboardView() {
                     <span className="text-2xl font-semibold font-mono tabular-nums text-stone-100">{m.value}</span>
                     <span className="text-xs font-mono font-medium text-emerald-400">{m.delta}</span>
                   </div>
-                  <span className="text-[11px] font-mono text-stone-400 mt-1 block">{m.reference}</span>
+                  <span className="text-xs font-mono text-stone-400 mt-1 block">{m.reference}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="pt-4 border-t border-stone-800 mt-4 text-[11px] font-mono text-stone-400">
+          <div className="pt-4 border-t border-stone-800 mt-4 text-xs font-mono text-stone-400">
             Sumber Data: Kurikulum Merdeka Engine v1.3
           </div>
         </section>
@@ -297,7 +357,7 @@ When designing light-theme dashboards for school administration, health clinics,
   <header class="flex justify-between items-baseline border-b border-[#e7e5e4] pb-4 mb-8">
     <div>
       <span class="text-xs font-mono uppercase tracking-widest text-[#78716c]">Arsip & Evaluasi Asesmen</span>
-      <h1 class="text-2xl font-serif text-[#1c1917] mt-1">SMA Negeri 1 EduCore Jakarta</h1>
+      <h1 class="text-2xl font-serif text-[#1c1917] text-balance mt-1">SMA Negeri 1 EduCore Jakarta</h1>
     </div>
     <div class="text-xs font-mono tabular-nums text-[#78716c]">
       2024/2025 &bull; Semester Genap
@@ -309,7 +369,7 @@ When designing light-theme dashboards for school administration, health clinics,
     <div class="col-span-12 lg:col-span-8 space-y-6">
       <!-- Spotlight Table (Not generic cards) -->
       <div class="border border-[#e7e5e4] bg-[#fafaf9] rounded-lg p-6">
-        <h2 class="text-base font-medium text-[#1c1917] mb-4">Distribusi Capaian Kompetensi (KKTP: 75.0)</h2>
+        <h2 class="text-base font-medium text-[#1c1917] text-balance mb-4">Distribusi Capaian Kompetensi (KKTP: 75.0)</h2>
         <!-- Ledger Table with tabular-nums -->
         <table class="w-full text-xs font-mono">
           <thead>
@@ -340,7 +400,7 @@ When designing light-theme dashboards for school administration, health clinics,
 
     <!-- Asymmetric Rail -->
     <div class="col-span-12 lg:col-span-4 border border-[#e7e5e4] bg-[#fafaf9] rounded-lg p-6">
-      <h3 class="text-xs font-mono uppercase tracking-wider text-[#78716c]">Antrean Pengawas Aktif</h3>
+      <h3 class="text-xs font-mono uppercase tracking-wider text-[#78716c] text-balance">Antrean Pengawas Aktif</h3>
       <!-- Rail List -->
       <ul class="divide-y divide-[#e7e5e4] mt-4 text-xs">
         <li class="py-3 flex justify-between">

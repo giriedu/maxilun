@@ -126,7 +126,7 @@ Eight lines derived from the product in front of you.
 - **Voice.** Three adjectives plus one boundary, like `steady, plain, local - serious but not stern`. Words that fit every product are not allowed: clean, modern, minimal, sleek, premium, elegant, professional, simple.
 - **Origin.** Where the visual material comes from, in priority order: (1) the real brand when one exists; (2) objects and documents of the domain (a school has report cards, stamps, chalk, timetables; a library has spines, index cards, date stamps); (3) the place and culture of the users. Origin gives the hue of the neutrals, the accent, the shapes, and any imagery.
 - **Density.** Airy, regular, or dense, with the reason. Tools used daily by trained people are dense; pages seen once by strangers are airy.
-- **Archetype.** Declare ONE from `references/design-archetypes.md` or `references/hallmark-themes.md` (50 themes: Technical Ledger, Warm Editorial, Neo-Brutalist, Dark Atmospheric, Japanese Wabi-Sabi, etc.) and inject tokens via `references/hue-brand-tokens.md`. Unchosen generic slate palettes are banned.
+- **Archetype & Domain Recipe Binding.** Declare ONE visual archetype from `references/design-archetypes.md` or `references/hallmark-themes.md` (50 themes: Technical Ledger, Warm Editorial, Neo-Brutalist, Dark Atmospheric, Japanese Wabi-Sabi, etc.), ONE First-Fold Hero Archetype (`HERO-EDTECH-01` .. `HERO-DEVTOOLS-05`) from `references/hero-section-archetypes.md` & `references/domain-recipe-matrix.md`, and at least THREE tactile micro-interaction recipes from `../maxilun-motion/references/ui-motion-recipes.md`. Inject colour tokens via `references/hue-brand-tokens.md`. Unchosen generic slate palettes are banned.
 - **Spotlight.** The single element that receives the emphasis budget: one number, one chart, one action, one image. Naming it means everything else agrees to be quiet.
 - **Refusals.** Three things this design will deliberately not do, like `no cards inside cards, no icons in the table, no second accent`. Refusals make a design recognisable.
 
@@ -141,7 +141,7 @@ Formulas, ranges, and code for every layer are in `references/tokens.md`. Screen
 ### 4.1 Structure
 - Rank content against the Job. The top-ranked thing gets the Spotlight and area. Ban the symmetrical 3-card triad (`LAY-008`), the symmetrical 4/5-card metric strip (`LAY-017`), decorative pill overload (`CMP-022`), and sterile white-box admin templates (`LAY-014`); deploy an Asymmetric Bento Grid (8:4 anchor) or Operational List Ledger (`references/bento-dashboard-recipes.md`). Ban fake breadcrumb trails (`HDR-001`); use domain mastheads.
 - Group by meaning. Separate groups with space before borders, and with borders before boxes. A card is for a thing that can be picked up as a unit; most cards are unnecessary. Never nest a bordered box inside a bordered box.
-- App shells use the real viewport: fixed-width navigation, fluid content with a readable cap. Marketing pages get a composed first screen, not a centred stack by reflex.
+- App shells use the real viewport: fixed-width navigation, fluid content with a readable cap. Marketing pages and first-fold viewports MUST follow `references/hero-section-archetypes.md` and `references/domain-recipe-matrix.md` (asymmetric split or workbench hero with a live interactive centerpiece—never a centred stack `LAY-018` or floating pill tagline `CMP-015`).
 - Design the narrow screen as its own layout: reorder by priority, cut secondary columns, keep 44px touch targets. Do not shrink the desktop.
 
 ### 4.2 Rhythm
@@ -179,12 +179,12 @@ Formulas, ranges, and code for every layer are in `references/tokens.md`. Screen
 - Sample data is plausible for the domain and locale: real-looking names, realistic counts, correct date and number formats (`14 Nov 2026`, `1.250.000`).
 - Empty states say what will appear here and how to create the first one.
 
-### 4.7 Motion
-Read `references/motion.md` before adding any.
-- Movement must answer one of: where did this come from, what just changed, did my action register. If it answers none, remove it.
-- The more often something is seen, the shorter its animation; things seen hundreds of times a day get none.
-- Animate only transform and opacity. Three durations, one curve for entering, one for leaving, springs only for things that are dragged. Respect `prefers-reduced-motion` everywhere.
-- CSS first. Use the Motion library only for exits, shared-layout transitions, gestures, and scroll-linked values; anything larger belongs to `maxilun-motion`.
+### 4.7 Motion & Micro-Interactions
+Read `references/motion.md` and `../maxilun-motion/references/ui-motion-recipes.md` before writing UI components.
+- Every Landing Page, Hero Section, and Operational Dashboard MUST mount at least **3 tactile micro-interaction recipes** from `../maxilun-motion/references/ui-motion-recipes.md` mapped by `references/domain-recipe-matrix.md` (e.g. `SlidingPillNav` / `SegmentedControlCSS`, `StaggerBentoGrid` with `when: "beforeChildren"`, `DraggableWorkbenchCard`, `PerspectiveCard` with cursor spotlight, `ExpandableDataRow`, `HoldToConfirmButton`, `CounterOdometer`). Relying solely on `transition-colors` is rejected (`shallow-motion`).
+- High-frequency operational controls use crisp `120ms–220ms` spring responses (`cubic-bezier(0.16, 1, 0.3, 1)` or Framer Motion `stiffness: 320–380, damping: 28–30`) and `active:scale-[0.97]` tactile press feedback.
+- Animate only composite properties (`transform`, `opacity`) or zero-CLS grid disclosure (`grid-template-rows: 0fr -> 1fr`). Respect `prefers-reduced-motion` everywhere.
+- Provide Dual-Runtime resilience: use Framer Motion primitives (`layoutId`, `variants`, `dragConstraints`, `useAnimationControls`) when installed, or the paired Zero-Dependency React + CSS Spring recipes in `../maxilun-motion/references/ui-motion-recipes.md` when not installed.
 
 ### 4.8 Imagery
 - App screens rarely need illustration. Their richness is real content set with care: a well-drawn chart, real photos, a properly typeset document.
@@ -238,8 +238,9 @@ Rendered-output measurement (three-exit gates, file-hash receipts, composited co
 ## 9. Report Format
 
 ```
-BRIEF       the seven lines
+BRIEF       the eight lines (including Hero Archetype & 3 Motion Recipes)
 DECISIONS   font, ramp tint, accent, radius, density - each with its reason;
+            hero-section-archetypes.md & ui-motion-recipes.md primitives mounted;
             design-md references adapted / rejected, when used
 CHANGED     one or two lines per layer, with file:line
 SCAN        before → after counts (errors / warnings), justified leftovers

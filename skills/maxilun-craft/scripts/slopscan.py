@@ -209,13 +209,59 @@ def scan_file(path):
         add("pill-tagline", E, ln, "floating pill tagline capsule above headline (CMP-015)",
             "unbordered sentence-case text eyebrow or integrate context directly into headline", m_pill.group(0)[:80])
 
-    white_cards = len(re.findall(r"\bbg-white\b[^\"'>\n]*(?:\brounded-(?:lg|xl|2xl)\b[^\"'>\n]*\bborder-(?:gray|slate)-(?:100|200)\b|\bborder-(?:gray|slate)-(?:100|200)\b[^\"'>\n]*\brounded-(?:lg|xl|2xl)\b)", text))
+    white_cards = sum(
+        1 for ln_str in lines
+        if re.search(r"\bbg-white\b", ln_str)
+        and re.search(r"\brounded-(?:lg|xl|2xl|3xl)\b", ln_str)
+        and re.search(r"\bborder(?:-(?:gray|slate|zinc|neutral|stone)-(?:100|200|300))?\b|\bshadow-(?:sm|md|lg)\b", ln_str)
+    )
     if white_cards > 3:
         add("white-box-monoculture", E if white_cards >= 4 else W, 1,
-            "%d generic white rounded cards with gray borders (LAY-014)" % white_cards,
+            "%d generic white rounded cards with light borders/shadows (LAY-014)" % white_cards,
             "declare an authentic archetype (e.g. Technical Ledger, Deep Space Obsidian, Swiss High-Contrast); avoid generic white boxes on light-gray background")
 
+    # Multiline Symmetric 4/5 KPI Card Strip (LAY-017): parent grid-cols-4/5 with child rounded cards and no col-span anchor
+    for m_kpi in re.finditer(r"\b(?:md:|lg:|xl:)?grid-cols-(?:4|5)\b[\s\S]{0,650}", text, re.I):
+        window = m_kpi.group(0)
+        if not re.search(r"\bcol-span-(?:2|3|4|5|6|7|8)\b", window):
+            card_children = len(re.findall(r"\brounded-(?:lg|xl|2xl|3xl)\b", window))
+            if card_children >= 2 and not any(f["rule"] == "symmetric-kpi-strip" for f in findings):
+                ln = text[:m_kpi.start()].count("\n") + 1
+                add("symmetric-kpi-strip", E, ln,
+                    "symmetrical 4 or 5 KPI card strip across parent/child nodes (LAY-017)",
+                    "anchor layout with an Asymmetric Bento Spotlight (8:4 / col-span-8) or an Operational List Ledger",
+                    window.splitlines()[0][:80])
+
+    # Multiline Symmetric 3-Card Triad (LAY-008): parent grid-cols-3 with >=3 rounded card boxes and no col-span differentiation
+    for m_tri in re.finditer(r"\b(?:md:|lg:)?grid-cols-3\b[\s\S]{0,800}", text, re.I):
+        window = m_tri.group(0)
+        first_line = window.splitlines()[0]
+        if "tablist" in first_line or "<dl" in first_line:
+            continue
+        if not re.search(r"\bcol-span-(?:2|4|6|8)\b", window):
+            tri_cards = len(re.findall(r"\brounded-(?:xl|2xl|3xl)\b", window))
+            if tri_cards >= 3 and not any(f["rule"] == "symmetric-triad" for f in findings):
+                ln = text[:m_tri.start()].count("\n") + 1
+                add("symmetric-triad", W, ln,
+                    "symmetrical 3-card triad without role differentiation (LAY-008)",
+                    "replace with Asymmetric Bento Grid (8:4), comparison ledger table, or master-detail split",
+                    first_line[:80])
+
+    tactile_rx = re.compile(
+        r"cubic-bezier\(0\.16,\s*1,\s*0\.3,\s*1\)|layoutId|useSpring|useAnimationControls|"
+        r"staggerChildren|beforeChildren|dragConstraints|active:scale-|translate3d\(|"
+        r"rotateX\(|radial-gradient\([^)]*circle at|gridTemplateRows|grid-template-rows|"
+        r"requestAnimationFrame|@keyframes\s+\w+", re.I
+    )
+    has_tactile = bool(tactile_rx.search(text))
+    is_interactive_view = bool(re.search(r"<button|<a\s|<input|onClick", text)) and len(lines) >= 45
+    if is_interactive_view and not has_tactile and path.lower().endswith((".tsx", ".jsx", ".vue", ".svelte", ".html")):
+        add("shallow-motion", W, 1,
+            "interactive screen lacks tactile micro-interactions from ui-motion-recipes.md",
+            "mount >=3 domain motion recipes (SlidingPillNav, StaggerBentoGrid, PerspectiveCard, ExpandableDataRow, HoldToConfirmButton)")
+
     stats["motion"] = bool(re.search(r"transition|animation|@keyframes|animate-|motion\.", text))
+    stats["tactile_motion"] = has_tactile
     stats["reduced"] = bool(re.search(r"prefers-reduced-motion|motion-reduce:|motion-safe:|"
                                       r"useReducedMotion|reducedMotion", text))
     stats["interactive"] = bool(re.search(r"<button|<a\s|<input|onClick", text))

@@ -85,12 +85,12 @@ Maxilun synthesizes and builds upon pioneering open-source design engineering ph
 
 ---
 
-### 10. UI Motion Prompts & Micro-Interaction Catalog
-* **Author**: UI Motion Prompts (`ui-motion-prompts.pages.dev`)
-* **Project**: UI Motion Prompts
-* **Repository**: `https://ui-motion-prompts.pages.dev/`
-* **License**: Free-to-Use / Open Web Resource
-* **Contribution to Maxilun**: Curated catalog of 450+ micro-interactions and tactile motion blueprints (sliding pills, magnetic pull, liquid toggles, 3D card perspective tilt, shake on error, and odometer counters) synthesized in `skills/maxilun-motion/references/ui-motion-recipes.md`.
+### 10. UI Motion Prompts & Framer Motion React Orchestration Catalog
+* **Author**: UI Motion Prompts (`ui-motion-prompts.pages.dev`) & Sami (`sami12344/framer-motion`)
+* **Project**: UI Motion Prompts & Framer Motion React Patterns
+* **Repository**: `https://ui-motion-prompts.pages.dev/` & `https://github.com/sami12344/framer-motion`
+* **License**: Free-to-Use / MIT Open Web Resource
+* **Contribution to Maxilun**: Curated catalog of 450+ micro-interactions, tactile motion blueprints (sliding pills, magnetic pull, liquid toggles, 3D card perspective tilt, shake on error, odometer counters), and the 6 core Framer Motion React orchestration patterns (`variants` state machines, `when: "beforeChildren"` parent-child stagger with `custom={index}` and `whileInView`, bounded `dragConstraints`, keyframe arrays, and `useAnimationControls` imperative sequencing) synthesized in `skills/maxilun-motion/references/ui-motion-recipes.md`.
 
 ---
 

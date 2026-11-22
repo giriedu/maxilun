@@ -37,6 +37,8 @@ You are **strictly read-only**. You do not possess `Write` or `Edit` tools. Your
      - `LAY-008`: Symmetrical 3-card triads with identical boxes without Bento anchor or ledger differentiation.
      - `TYPO-001`: Naked unconfigured `font-sans` default without declared web font stylesheet.
      - `SYS-004`: Patchwork redesign failure (in-place class tweaks over legacy wrappers; layout not dismantled).
+     - `shallow-motion`: Interactive React/HTML views relying solely on static `transition-colors` without tactile micro-interaction primitives from `skills/maxilun-motion/references/ui-motion-recipes.md` (`layoutId`, `translate3d` sliding pill, `active:scale-`, `cubic-bezier(0.16, 1, 0.3, 1)`, `when: "beforeChildren"` stagger, `dragConstraints`, `gridTemplateRows` disclosure, or cursor spotlight coordinates).
+     - `missing-hero-centerpiece`: Landing page or First-Fold Hero lacking an asymmetric 5-element structure and living interactive centerpiece from `skills/maxilun-craft/references/hero-section-archetypes.md` (`HERO-EDTECH-01` .. `HERO-DEVTOOLS-05`).
      - `JURY-001` .. `JURY-005`: Twenty scattered effects without a signature moment, scroll-jacking, permanent `will-change` GPU leaks, preloader covering loaded content, or homepage-only design inconsistency.
 
 2. **Mobile Responsiveness & Zero Canvas Leak Invariant**:

@@ -162,8 +162,8 @@ Do not hand routine technical decisions back to the user.
 Splitting one page or one feature across four or five specialists dilutes context and produces stiff results.
 
 1. **An explicit user instruction wins** as long as the named specialist is installed.
-2. **Domain Skill Reflex Table (Mandatory Pre-Code Skill Load)**: In single-agent CLI sessions (where subagents are not spawned), the agent **MUST explicitly load and follow the corresponding `SKILL.md` before generating code**:
-   - *UI, UX, redesign, landing page, dashboard, forms* → load `../maxilun-craft/SKILL.md` & `../maxilun-craft/references/bento-dashboard-recipes.md`. Enforce Craft Brief, Bento 8:4 ratio, ban pill overload (`CMP-022`) and symmetric strips (`LAY-017`).
+2. **Domain Skill Reflex Table (Mandatory Pre-Code Skill Load)**: In single-agent CLI sessions (where subagents are not spawned), the agent **MUST explicitly load and follow the corresponding `SKILL.md` and reference blueprints before generating code**:
+   - *UI, UX, redesign, landing page, hero, dashboard, forms* → load `../maxilun-craft/SKILL.md`, `../maxilun-craft/references/domain-recipe-matrix.md`, `../maxilun-craft/references/hero-section-archetypes.md`, `../maxilun-craft/references/bento-dashboard-recipes.md`, and `../maxilun-motion/references/ui-motion-recipes.md`. Enforce Craft Brief, First-Fold Hero Archetype (`HERO-EDTECH-01` .. `HERO-DEVTOOLS-05` with interactive centerpiece), Bento 8:4 ratio, $\ge 3$ tactile micro-interaction recipes (`SlidingPillNav`, `StaggerBentoGrid`, `DraggableWorkbenchCard`, `PerspectiveCard`, `ExpandableDataRow`, `HoldToConfirmButton`), and ban pill overload (`CMP-022`), centered hero stacks (`LAY-018`), and symmetric strips (`LAY-017`).
    - *Database, schema, migration, slow query, RLS* → load `../maxilun-data/SKILL.md`. Enforce `EXPLAIN (ANALYZE, BUFFERS)` proof and expand-contract migrations.
    - *Auth, JWT, crypto, security, CSRF, permissions* → load `../maxilun-sentinel/SKILL.md`. Enforce DPoP (RFC 9449), `timingSafeEqual`, and input sanitization.
    - *Automation, n8n, webhook workflow* → load `../maxilun-n8n/SKILL.md`. Enforce `n8n_validate.py` schema verification.
@@ -207,7 +207,7 @@ Decide the shape of the work from evidence (the Read plan, a `callsIn:` count), 
 | **Cross-domain** | Two+ domains whose outputs feed each other, or any UI redesign | Mandatory 3-wave multi-agent pipeline (§5) |
 | **Unknown cause** | A symptom with no located fault | Diagnose first (`maxilun-insight`), then size again |
 
-- **UI Redesign / Revamp Invariant**: Any redesign or UI overhaul is NEVER Direct—even if touching 1 file. It mandatorily triggers 3 waves: Wave 1 Craft (Archetype & tokens) → Wave 2 Frontend/Engineer (dismantle old DOM & rebuild) → Wave 3 Verify/Reviewer (slopscan gate). Never execute redesign with 1 agent alone.
+- **UI Redesign / Revamp Invariant**: Any redesign or UI overhaul is NEVER Direct—even if touching 1 file. It mandatorily triggers 3 waves: Wave 1 Craft & Motion (`ARCHETYPE`, `HERO_ARCHETYPE` from `hero-section-archetypes.md`, `MOTION_RECIPES` from `ui-motion-recipes.md`, & tokens) → Wave 2 Frontend/Engineer (dismantle old DOM, rebuild First-Fold Hero & Asymmetric Bento with $\ge 3$ live micro-interactions) → Wave 3 Verify/Reviewer (`slopscan.py` & `ui-purity-linter.py` gate). Never execute redesign with 1 agent alone or without binding `domain-recipe-matrix.md`.
 
 1. **Cut work units by artifact and contract.** Each unit has one owner, a write set (files or ranges only it may change), the contracts it consumes, a done gate, and a capped return format. Phases such as "plan, code, review" are not units.
 2. **Disjoint write sets.** Two units in one wave never edit the same file. A shared file means one owner takes both changes or the units run in sequence.
