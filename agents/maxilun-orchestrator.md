@@ -4,7 +4,7 @@ description: >
   Master Orchestrator Agent for the Maxilun ecosystem. Classifies outcomes,
   gates reversibility (Type 1 vs Type 2), locates affected code through the
   knowledge graph, sizes and decomposes work into owned units, dispatches the
-  18 specialist agents with complete handoff packets, coordinates multi-domain
+  19 specialist agents with complete handoff packets, coordinates multi-domain
   waves (Contracts -> Implementation -> Verification), and enforces verifiable
   execution proof.
 tools:
@@ -55,7 +55,7 @@ Size from evidence (the Read plan, a `callsIn:` count), not from how large the r
 - **Parallel only when independent**: no unit reads another's output, write sets are disjoint, and the platform dispatches in real parallel. Otherwise run in dependency order and say so.
 - **No ceremonial fan-out.** When writing the packets costs more than the change, one agent does it. A sensitive Direct change gains a companion and a stricter gate, not more agents.
 
-## Specialist Roster & Routing Matrix (18 Specialists)
+## Specialist Roster & Routing Matrix (19 Specialists)
 
 Assign **one primary owner** per coherent surface; add companions only at hard capability boundaries (max 3 agents per wave). Ensure parallel Wave 2 agents have **non-overlapping file ownership** (use `maxilun-planner` for large multi-stream epics). If subagent delegation tools are unavailable, load the target `SKILL.md` / `agents/<name>.md` and execute inline under Core Rules.
 
@@ -71,6 +71,7 @@ Assign **one primary owner** per coherent surface; add companions only at hard c
 | **W2** | `maxilun-coder-frontend` | Next.js 15 App Router, React 19 RSC, Client Islands, Server Actions, Flight boundaries, UI implementation | No |
 | **W2** | `maxilun-coder-backend` | APIs, expand-contract DB migrations, ACID/BIGINT money, `timingSafeEqual` crypto, idempotent webhooks | No |
 | **W2** | `maxilun-data-engineer` | Physical DB schemas, zero-downtime expand-contract migrations, RLS tenant isolation, `EXPLAIN` query indexing, multi-engine stores (`maxilun-data`) | No |
+| **W2** | `maxilun-automator` | Production n8n workflows (v1 schema), HMAC webhook pipelines, code nodes, AI Agent nodes (`maxilun-n8n`) | No |
 | **W2** | `maxilun-coder-ai` | Deterministic hybrid RAG, semantic chunking, prompt regression evals, LLM-as-a-judge rubrics, context caching hygiene | No |
 | **W2** | `maxilun-coder-mobile` | Native Android (Kotlin/Compose), iOS (Swift/SwiftUI), Flutter, React Native, offline-first sync | No |
 | **W2** | `maxilun-coder-systems` | Desktop (Win32/WPF/Qt/PowerBuilder), Embedded IoT (ESP32/FreeRTOS/MQTT), MikroTik RouterOS/networking | No |

@@ -58,6 +58,7 @@ EXPECTED_SKILLS = [
     "maxilun-ai",
     "maxilun-game",
     "maxilun-hunt",
+    "maxilun-n8n",
 ]
 EXPECTED_AGENTS = [
     "maxilun-orchestrator",
@@ -79,6 +80,7 @@ EXPECTED_AGENTS = [
     "maxilun-data-engineer",
     "maxilun-devops",
     "maxilun-docsmith",
+    "maxilun-automator",
 ]
 REQUIRED_REFERENCES = [
     "engines.md",
@@ -745,6 +747,7 @@ def test_cross_references():
         ("maxilun-game", ["maxilun-craft", "maxilun-motion", "maxilun-verify"]),
         ("maxilun-hunt", ["maxilun-sentinel", "maxilun-verify", "maxilun-deploy"]),
         ("maxilun-deploy", ["maxilun-hunt"]),
+        ("maxilun-n8n", ["maxilun-deploy", "maxilun-engineer", "maxilun-sentinel"]),
     ]
     passed = True
     for skill, targets in checks:
@@ -950,7 +953,7 @@ def test_agents_validity():
 
         print(f"  ✅ {agent}: Verified valid frontmatter & security invariants ({lines} lines)")
 
-    # Collaboration Invariant 4: Orchestrator must know all 18 specialist agents
+    # Collaboration Invariant 4: Orchestrator must know all 19 specialist agents
     orch_text = (agents_dir / "maxilun-orchestrator.md").read_text(encoding="utf-8")
     for agent in EXPECTED_AGENTS:
         if agent == "maxilun-orchestrator":
@@ -959,7 +962,7 @@ def test_agents_validity():
             print(f"  ❌ maxilun-orchestrator.md does not reference specialist '{agent}'")
             passed = False
 
-    # Collaboration Invariant 5: Every specialist skill (24) must be covered by at least one agent
+    # Collaboration Invariant 5: Every specialist skill (25) must be covered by at least one agent
     all_agents_text = "\n".join((agents_dir / f"{a}.md").read_text(encoding="utf-8") for a in EXPECTED_AGENTS)
     for skill in EXPECTED_SKILLS:
         if skill == "maxilun":
@@ -968,7 +971,7 @@ def test_agents_validity():
             print(f"  ❌ Skill '{skill}' is not referenced by any agent in agents/")
             passed = False
 
-    # Collaboration Invariant 6: Harness SkillsLoader loads all 19 agents & enforces read-only tools
+    # Collaboration Invariant 6: Harness SkillsLoader loads all 20 agents & enforces read-only tools
     from harness.engine.skills_loader import SkillsLoader
     from harness.tools.registry import ToolRegistry
     loader = SkillsLoader(REPO_ROOT)
@@ -1237,8 +1240,56 @@ def test_agent_aliases_system():
         passed = False
 
     if passed:
-        print(f"  ✅ Agent Alias System verified ({len(PRESETS)} presets, 19 agents bidirectional resolution)")
+        print(f"  ✅ Agent Alias System verified ({len(PRESETS)} presets, {len(CANONICAL_AGENTS)} agents bidirectional resolution)")
     return passed
+
+
+def test_n8n_validator():
+    print("\n🧪 Validating n8n Workflow Linter & Schema Validator...")
+    n8n_val_path = SKILLS_DIR / "maxilun-n8n" / "scripts" / "n8n_validate.py"
+    if not n8n_val_path.exists():
+        print("  ❌ n8n_validate.py does not exist")
+        return False
+
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("n8n_val", str(n8n_val_path))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    val = mod.N8nWorkflowValidator()
+
+    # Valid workflow
+    valid_wf = {
+        "nodes": [
+            {"id": "n1", "name": "Webhook Ingress", "type": "n8n-nodes-base.webhook", "typeVersion": 2, "position": [100, 100]},
+            {"id": "n2", "name": "Update DB", "type": "n8n-nodes-base.postgres", "typeVersion": 2, "position": [300, 100]},
+        ],
+        "connections": {
+            "Webhook Ingress": {"main": [[{"node": "Update DB", "type": "main", "index": 0}]]}
+        }
+    }
+    if not val.validate(valid_wf):
+        print(f"  ❌ Valid workflow failed validation: {val.errors}")
+        return False
+
+    # Check Mermaid generation
+    mm = val.to_mermaid(valid_wf)
+    if "flowchart LR" not in mm or "Webhook Ingress" not in mm:
+        print(f"  ❌ Mermaid generation failed: {mm}")
+        return False
+
+    # Check secret leak detection
+    leaky_wf = {
+        "nodes": [
+            {"id": "n1", "name": "Bad Node", "type": "n8n-nodes-base.httpRequest", "typeVersion": 1, "parameters": {"api_key": "123456789012345678901234567890"}},
+        ],
+        "connections": {}
+    }
+    if val.validate(leaky_wf) or not any("SEC-N8N-001" in e for e in val.errors):
+        print("  ❌ Validator failed to catch SEC-N8N-001 secret leak")
+        return False
+
+    print("  ✅ n8n validator verified (schema, graph integrity, SEC-N8N-001 secret detection, Mermaid)")
+    return True
 
 
 def main():
@@ -1269,6 +1320,7 @@ def main():
         test_harness_confinement(),
         test_evals_suites(),
         test_agent_aliases_system(),
+        test_n8n_validator(),
     ]
 
     print("\n" + "=" * 48)

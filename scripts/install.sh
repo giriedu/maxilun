@@ -11,7 +11,7 @@ for arg in "$@"; do
     esac
 done
 
-echo "🌑 Installing Maxilun ${VERSION} (25 skills + 19 autonomous agents)"
+echo "🌑 Installing Maxilun ${VERSION} (26 skills + 20 autonomous agents)"
 echo ""
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -190,12 +190,15 @@ else
         install_agents "OMP" "${HOME}/.omp/agent/agents" omp
     fi
     if [ -d "${HOME}/.codex" ]; then
-        install_target "Codex" "${HOME}/.codex/skills" "${HOME}/.codex/rules"
+        install_target "Codex" "${HOME}/.codex/skills" "${HOME}/.codex/rules" "${HOME}/.codex/agents"
     fi
     if [ -d "${HOME}/.config/opencode" ]; then
         install_target "OpenCode" "${HOME}/.config/opencode/skills" "${HOME}/.config/opencode/rules" "${HOME}/.config/opencode/agents"
     elif [ -d "${HOME}/.opencode" ]; then
         install_target "OpenCode" "${HOME}/.opencode/skills" "${HOME}/.opencode/rules" "${HOME}/.opencode/agents"
+    fi
+    if [ -d "${HOME}/.gemini/config/skills" ]; then
+        install_target "Gemini CLI / Antigravity Config" "${HOME}/.gemini/config/skills"
     fi
     if [ -d "${HOME}/.gemini" ]; then
         install_target "Gemini CLI" "${HOME}/.gemini/skills"

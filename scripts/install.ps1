@@ -6,7 +6,7 @@ param(
 $Version = "1.3.0"
 Write-Host ""
 Write-Host "  MAXILUN $Version Installer" -ForegroundColor Cyan
-Write-Host "  25 skills + 19 autonomous agents" -ForegroundColor DarkCyan
+Write-Host "  26 skills + 20 autonomous agents" -ForegroundColor DarkCyan
 Write-Host ""
 
 $ScriptDir = Split-Path -Parent $PSScriptRoot
@@ -100,13 +100,16 @@ if ($Project) {
         @{ Name = "[CC] & Termul";             Path = "$U\.claude\skills"; AgentsPath = "$U\.claude\agents"; LegacyRules = "$U\.claude\rules" }
     )
     if (Test-Path "$U\.omp") { $AgentsOnlyTargets += @{ Name = "OMP"; AgentsPath = "$U\.omp\agent\agents" } }
-    if (Test-Path "$U\.codex") { $Targets += @{ Name = "Codex"; Path = "$U\.codex\skills"; AgentsPath = $null; LegacyRules = "$U\.codex\rules" } }
+    if (Test-Path "$U\.codex") { $Targets += @{ Name = "Codex"; Path = "$U\.codex\skills"; AgentsPath = "$U\.codex\agents"; LegacyRules = "$U\.codex\rules" } }
     if (Test-Path "$U\.config\opencode") {
         $Targets += @{ Name = "OpenCode"; Path = "$U\.config\opencode\skills"; AgentsPath = "$U\.config\opencode\agents"; LegacyRules = "$U\.config\opencode\rules" }
     } elseif (Test-Path "$U\.opencode") {
         $Targets += @{ Name = "OpenCode"; Path = "$U\.opencode\skills"; AgentsPath = "$U\.opencode\agents"; LegacyRules = "$U\.opencode\rules" }
     }
-    if (Test-Path "$U\.gemini")    { $Targets += @{ Name = "Gemini CLI"; Path = "$U\.gemini\skills";    AgentsPath = $null; LegacyRules = $null } }
+    if (Test-Path "$U\.gemini\config\skills") {
+        $Targets += @{ Name = "Gemini CLI / Antigravity Config"; Path = "$U\.gemini\config\skills"; AgentsPath = $null; LegacyRules = $null }
+    }
+    if (Test-Path "$U\.gemini")    { $Targets += @{ Name = "Gemini CLI"; Path = "$U\.gemini\skills";    AgentsPath = $null; LegacyRules = "$U\.gemini\rules" } }
     if (Test-Path "$U\.cursor")    { $Targets += @{ Name = "Cursor";     Path = "$U\.cursor\skills";    AgentsPath = $null; LegacyRules = $null } }
     if (Test-Path "$U\.trae")      { $Targets += @{ Name = "Trae";       Path = "$U\.trae\skills";      AgentsPath = $null; LegacyRules = $null } }
     if (Test-Path "$U\.windsurf")  { $Targets += @{ Name = "Windsurf";   Path = "$U\.windsurf\skills";  AgentsPath = $null; LegacyRules = $null } }

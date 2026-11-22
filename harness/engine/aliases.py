@@ -31,6 +31,7 @@ CANONICAL_AGENTS = [
     "maxilun-data-engineer",
     "maxilun-devops",
     "maxilun-docsmith",
+    "maxilun-automator",
 ]
 
 PRESETS: Dict[str, Dict[str, Dict[str, str]]] = {
@@ -54,6 +55,7 @@ PRESETS: Dict[str, Dict[str, Dict[str, str]]] = {
         "maxilun-data-engineer": {"alias": "DataEng", "callsign": "Data Architect"},
         "maxilun-devops": {"alias": "DevOps", "callsign": "DevOps & SRE"},
         "maxilun-docsmith": {"alias": "DocSmith", "callsign": "DocSmith & Specs"},
+        "maxilun-automator": {"alias": "Automator", "callsign": "Workflow Automator"},
     },
     "nusantara-squad": {
         "maxilun-orchestrator": {"alias": "Pandu", "callsign": "Chief Orchestrator"},
@@ -75,6 +77,7 @@ PRESETS: Dict[str, Dict[str, Dict[str, str]]] = {
         "maxilun-data-engineer": {"alias": "Rian", "callsign": "Data Architect"},
         "maxilun-devops": {"alias": "Reza", "callsign": "DevOps & SRE"},
         "maxilun-docsmith": {"alias": "Citra", "callsign": "DocSmith & Specs"},
+        "maxilun-automator": {"alias": "Aji", "callsign": "Workflow Automator"},
     },
     "global-forge": {
         "maxilun-orchestrator": {"alias": "Apex", "callsign": "Chief Orchestrator"},
@@ -96,6 +99,7 @@ PRESETS: Dict[str, Dict[str, Dict[str, str]]] = {
         "maxilun-data-engineer": {"alias": "Noah", "callsign": "Data Architect"},
         "maxilun-devops": {"alias": "Marcus", "callsign": "DevOps & SRE"},
         "maxilun-docsmith": {"alias": "Grace", "callsign": "DocSmith & Specs"},
+        "maxilun-automator": {"alias": "Felix", "callsign": "Workflow Automator"},
     },
 }
 
@@ -308,3 +312,4 @@ def get_alias_manager(repo_root: Optional[Path] = None) -> AliasManager:
     if _GLOBAL_MANAGER is None or (repo_root and _GLOBAL_MANAGER.repo_root != repo_root):
         _GLOBAL_MANAGER = AliasManager(repo_root)
     return _GLOBAL_MANAGER
+

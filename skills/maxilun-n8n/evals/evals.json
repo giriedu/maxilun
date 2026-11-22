@@ -1,0 +1,40 @@
+{
+  "skill_name": "maxilun-n8n",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Buatkan workflow n8n untuk webhook notifikasi pembayaran Midtrans yang memvalidasi HMAC signature lalu simpan ke Postgres.",
+      "expected_output": "Valid n8n v1 JSON workflow with Webhook trigger, Code node verifying HMAC SHA-256 via crypto.timingSafeEqual, and PostgreSQL node with parameterized query.",
+      "assertions": [
+        "n8n v1 JSON structure with nodes and connections",
+        "timingSafeEqual HMAC verification",
+        "no hardcoded secret in parameters",
+        "parameterized PostgreSQL query",
+        "Mermaid flowchart rendering"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Bagaimana cara mengakses data body webhook di Code node JavaScript n8n v1 secara aman?",
+      "expected_output": "Uses canonical $json.body notation, returns array of objects with { json: ... }, and guards against undefined properties.",
+      "assertions": [
+        "uses $json.body",
+        "returns { json: ... } array",
+        "no deprecated $node syntax",
+        "handles missing payload safely"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Rancang arsitektur n8n self-hosted dengan docker compose yang siap untuk high-concurrency queue mode.",
+      "expected_output": "docker-compose.yml defining n8n webhook processor, dedicated n8n worker, PostgreSQL 16 database, Redis queue instance, and non-root security.",
+      "assertions": [
+        "EXECUTIONS_MODE=queue",
+        "dedicated postgres service",
+        "redis queue service",
+        "separate worker container",
+        "volume persistence and healthchecks"
+      ]
+    }
+  ]
+}

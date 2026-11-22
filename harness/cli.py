@@ -540,14 +540,14 @@ def cmd_doctor(args):
 
     loader = SkillsLoader()
     skills = loader.list_skills()
-    skills_ok = len(skills) >= 25 and all(s.line_count <= 300 for s in skills)
-    print(f"[{'✅ PASS' if skills_ok else '❌ FAIL'}] Skills inventory: {len(skills)}/25 skills discovered (all <= 300 lines)")
+    skills_ok = len(skills) >= 26 and all(s.line_count <= 300 for s in skills)
+    print(f"[{'✅ PASS' if skills_ok else '❌ FAIL'}] Skills inventory: {len(skills)}/26 skills discovered (all <= 300 lines)")
 
     repo_root = Path(__file__).resolve().parent.parent
     agents_dir = repo_root / "agents"
     agents_found = list(agents_dir.glob("*.md")) if agents_dir.exists() else []
-    agents_ok = len(agents_found) >= 19
-    print(f"[{'✅ PASS' if agents_ok else '❌ FAIL'}] Autonomous agents: {len(agents_found)}/19 agents present in agents/")
+    agents_ok = len(agents_found) >= 20
+    print(f"[{'✅ PASS' if agents_ok else '❌ FAIL'}] Autonomous agents: {len(agents_found)}/20 agents present in agents/")
     for a in sorted(agents_found):
         print(f"     • {a.name}")
 

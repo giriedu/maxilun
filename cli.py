@@ -48,6 +48,18 @@ def cmd_alias(args):
     module.cmd_alias(args)
 
 
+def cmd_n8n_lint(args):
+    import importlib.util
+    path = REPO_ROOT / "skills" / "maxilun-n8n" / "scripts" / "n8n_validate.py"
+    spec = importlib.util.spec_from_file_location("n8n_val_mod", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    sys.argv = [str(path), args.workflow]
+    if args.mermaid:
+        sys.argv.append("--mermaid")
+    module.main()
+
+
 def cmd_new(args):
     import importlib.util
     path = REPO_ROOT / "skills" / "maxilun-scaffold" / "scripts" / "greenfield.py"
@@ -247,6 +259,11 @@ def main():
     alias_parser.add_argument("--callsign", default="", help="Optional role title / callsign when using --set")
     alias_parser.add_argument("--interactive", action="store_true", help="Interactive persona preset setup")
 
+    # n8n-lint
+    n8n_parser = subparsers.add_parser("n8n-lint", help="Validate an n8n workflow JSON file and generate Mermaid diagram")
+    n8n_parser.add_argument("workflow", help="Path to .json workflow file")
+    n8n_parser.add_argument("--mermaid", action="store_true", help="Emit Mermaid flowchart")
+
     # init-hook
     hook_parser = subparsers.add_parser("init-hook", help="Install git pre-commit purity gate hook")
     hook_parser.add_argument("path", nargs="?", default=None, help="Repository root path")
@@ -274,6 +291,7 @@ def main():
         "init-hook": cmd_init_hook,
         "new": cmd_new,
         "alias": cmd_alias,
+        "n8n-lint": cmd_n8n_lint,
         "test": cmd_test,
         "dashboard": cmd_dashboard
     }

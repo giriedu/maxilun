@@ -1,6 +1,6 @@
 # Maxilun Autonomous Agents Architecture
 
-Maxilun menyediakan **19 Autonomous Agents**: **1 orchestrator** (`maxilun-orchestrator`) dan **18 agen spesialis** yang membungkus 24 skill spesialis. Orchestrator berjalan sebagai sesi utama (memimpin dan mendelegasikan lewat tool subagent milik host); bila dipanggil sebagai subagent, ia mengembalikan rencana dan paket handoff tanpa mendelegasikan. Arsitektur agen ini memecah eksekusi tugas ke dalam subagent dengan konteks terisolasi, hak akses tool terikat (*Principle of Least Privilege*), dan gating verifikasi faktual.
+Maxilun menyediakan **20 Autonomous Agents**: **1 orchestrator** (`maxilun-orchestrator`) dan **19 agen spesialis** yang membungkus 25 skill spesialis. Orchestrator berjalan sebagai sesi utama (memimpin dan mendelegasikan lewat tool subagent milik host); bila dipanggil sebagai subagent, ia mengembalikan rencana dan paket handoff tanpa mendelegasikan. Arsitektur agen ini memecah eksekusi tugas ke dalam subagent dengan konteks terisolasi, hak akses tool terikat (*Principle of Least Privilege*), dan gating verifikasi faktual.
 
 ---
 
@@ -67,6 +67,7 @@ flowchart TD
 | **`maxilun-data-engineer`** | `maxilun-data`, `maxilun-engineer`, `maxilun-sentinel` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Arsitektur database fisik, migrasi expand-contract zero-downtime, isolasi tenant RLS, optimasi query berdasar `EXPLAIN`, dan data store multi-engine. |
 | **`maxilun-devops`** | `maxilun-deploy`, `maxilun-network`, `maxilun-sentinel` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Hardening Docker non-root multi-stage, orkestrasi compose, pipeline CI/CD, reverse proxy & TLS ingress, serta otomatisasi backup dan disaster recovery. |
 | **`maxilun-security-auditor`** | `maxilun-hunt`, `maxilun-sentinel` | **Read-Only**: `Read`, `Grep`, `Glob`, `Bash` (PoC, tanpa izin edit kode) | Audit keamanan adversarial berbasis coverage ledger, 7-Question Gate, PoC reproducible, dan verdict `confirmed` / `needs_validation` / `rejected`. |
+| **`maxilun-automator`** | `maxilun-n8n`, `maxilun-engineer`, `maxilun-deploy`, `maxilun-sentinel` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Otomasi alur kerja n8n v1, pipa webhook HMAC anti-tamper, node kode JS/Python, orkestrasi visual AI Agent, dan glue-code Next.js/PHP. |
 | **`maxilun-coder-ai`** | `maxilun-ai`, `maxilun-engineer`, `maxilun-sentinel` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Rekayasa aplikasi AI & LLM: arsitektur hybrid RAG deterministik, semantic chunking, prompt regression evals, LLM-as-a-judge rubrics, context caching hygiene, dan structured JSON tool schemas. |
 ---
 
@@ -117,6 +118,7 @@ Maxilun mendukung pemberian nama panggilan akrab (*custom persona aliases*) untu
    - `Rian` (`maxilun-data-engineer`) · Data Architect
    - `Reza` (`maxilun-devops`) · DevOps & SRE
    - `Citra` (`maxilun-docsmith`) · DocSmith & Specs
+   - `Aji` (`maxilun-automator`) · Workflow Automator
    - `Rama` (`maxilun-coder-ai`) · AI & RAG Engineer
    - `Aris` (`maxilun-ui-motion`) · Motion Specialist
    - `Tara` (`maxilun-studio`) · Creative Studio

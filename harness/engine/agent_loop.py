@@ -42,6 +42,7 @@ AGENT_SKILL_MAP = {
     "maxilun-data-engineer": "maxilun-data",
     "maxilun-devops": "maxilun-deploy",
     "maxilun-docsmith": "maxilun-docsmith",
+    "maxilun-automator": "maxilun-n8n",
 }
 
 

@@ -2,14 +2,14 @@
 
 <div align="center">
 
-<img src="assets/banner.svg" alt="Maxilun — 25 Skills · 19 Autonomous Agents · Shared Agent Bus · Knowledge Graph MCP · Purity Gate" width="100%">
+<img src="assets/banner.svg" alt="Maxilun — 26 Skills · 20 Autonomous Agents · Shared Agent Bus · Knowledge Graph MCP · Purity Gate" width="100%">
 
 <br/>
 
 [![CI](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml/badge.svg)](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml)
 [![Version](https://img.shields.io/badge/version-1.3.0-7c3aed?style=flat-square)](CHANGELOG.md)
-[![Skills](https://img.shields.io/badge/skills-25_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
-[![Agents](https://img.shields.io/badge/agents-19_autonomous-3b82f6?style=flat-square)](docs/AGENTS.md)
+[![Skills](https://img.shields.io/badge/skills-26_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
+[![Agents](https://img.shields.io/badge/agents-20_autonomous-3b82f6?style=flat-square)](docs/AGENTS.md)
 [![License](https://img.shields.io/badge/license-Free_to_Use-22c55e?style=flat-square)](LICENSE)
 [![Sponsor](https://img.shields.io/badge/Sponsor-GitHub_Sponsors-ea4aaa?style=flat-square)](https://github.com/sponsors/giriedu)
 [![Platform](https://img.shields.io/badge/runs_on-Claude_·_Cursor_·_Codex_·_Antigravity_·_Zed_·_Termul-white?style=flat-square)](#platform-support)
@@ -187,7 +187,7 @@ Use `maxilun-knowledge-graph` for structural or multi-file code changes when its
 Maxilun ships with a complete built-in autonomous agent runtime, AST security inspector, and empirical benchmark suite in `harness/` (100% zero-dependency Python stdlib):
 
 ```bash
-# Inspect all 25 ecosystem skills (1 orchestrator + 24 specialists) and 19 autonomous agents:
+# Inspect all 26 ecosystem skills (1 orchestrator + 25 specialists) and 20 autonomous agents:
 python harness/cli.py skills
 # Run empirical benchmark suite (+55% quality improvement over Raw AI):
 python harness/cli.py bench --view
@@ -236,7 +236,7 @@ On OMP/Termul, the agents install to `~/.omp/agent/agents`.
 |---|---|
 | [docs/INSTALL.md](docs/INSTALL.md) | Comprehensive installation guides, one-line scripts & verification |
 | [docs/SKILLS.md](docs/SKILLS.md) | Triggers, capabilities, and parameters for all 25 skills |
-| [docs/AGENTS.md](docs/AGENTS.md) | 19 autonomous agents (1 orchestrator + 18 specialists), tool permissions & subagent protocols |
+| [docs/AGENTS.md](docs/AGENTS.md) | 20 autonomous agents (1 orchestrator + 19 specialists), tool permissions & subagent protocols |
 | [docs/ENGINES.md](docs/ENGINES.md) | Four Always-On Engines and three Operating Protocols |
 | [docs/EXAMPLES.md](docs/EXAMPLES.md) | Real-world engineering scenarios & multi-specialist Wave Patterns |
 | [docs/SKILL-CONTRACTS.md](docs/SKILL-CONTRACTS.md) | Ownership, standalone behavior, inputs, outputs, and handoffs for every skill |
@@ -253,7 +253,7 @@ On OMP/Termul, the agents install to `~/.omp/agent/agents`.
 
 ## About Releases
 
-Maxilun follows [Semantic Versioning](https://semver.org/) and [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Every release is validated against all 25 skills, 19 autonomous agents, Knowledge Graph scanners, UI Purity Linter, and harness integration tests via `python scripts/test-suite.py`.
+Maxilun follows [Semantic Versioning](https://semver.org/) and [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Every release is validated against all 26 skills, 20 autonomous agents, Knowledge Graph scanners, UI Purity Linter, and harness integration tests via `python scripts/test-suite.py`.
 
 - **Latest Stable**: `v1.3.0` — see [CHANGELOG.md](CHANGELOG.md) for full release notes and `[Unreleased]` additions (`16` agents, Shared Agent Bus, `maxilun-kg` MCP, `OutputCompressor`, `/maxilun terse`, `icon_lookup.py`, 5-in-1 design engine, and component ecosystem vault).
 - **Release Pipeline**: See [docs/RELEASE.md](docs/RELEASE.md) and [GitHub Releases](https://github.com/giriedu/maxilun/releases).
