@@ -25,10 +25,12 @@ opened? A dashboard nobody acts on is a poster.
 - Filters live in one row above the content they filter.
 
 Avoid: the 4-cards / 2-charts / 1-table stack, the symmetrical 3-card triad
-(`LAY-008`), sterile white-card boxy admin monoculture (`LAY-014`), pastel rounded
+(`LAY-008`), the symmetrical 4/5 KPI metric strip (`LAY-017`), decorative pill badge
+proliferation (`CMP-022`), sterile white-card boxy admin monoculture (`LAY-014`), pastel rounded
 icon boxes (`CMP-021`), fake breadcrumb headers on flat pages (`HDR-001`), greeting
-headers, and floating bullet pills (`CMP-015`). Use the Asymmetrical Bento Grid,
-Operational List Ledger, and authentic mastheads from `references/design-archetypes.md`.
+headers, and floating bullet pills (`CMP-015`). Deploy the Asymmetrical Bento Grid (8:4
+anchor ratio) and Operational List Ledger from `references/bento-dashboard-recipes.md`
+and authentic mastheads from `references/design-archetypes.md`.
 
 ## Data table
 

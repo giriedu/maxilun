@@ -59,6 +59,7 @@ metadata:
     - references/ux-audit-matrix.md
     - references/measured-design-gates.md
     - references/uiux-workflow-hooks.md
+    - references/bento-dashboard-recipes.md
 ---
 
 # Maxilun Craft: Interfaces Decided, Not Averaged
@@ -138,7 +139,7 @@ If a line could be pasted into the Brief of a different product without edits, r
 Formulas, ranges, and code for every layer are in `references/tokens.md`. Screen-type skeletons (dashboard, data table, form, detail page, landing page, Apps Script web app), the state table, responsive rules, and the accessibility floor are in `references/patterns.md`. Load the deep references only when the task reaches them: `references/interface-engineering.md` (token and layout engineering), `references/component-mobile-patterns.md` (mobile components, overflow), `references/surface-state-topology.md` and `references/resilient-interaction-recovery.md` (states, optimistic updates, undo), `references/task-flow-choreography.md` and `references/cognitive-friction-audit.md` (flow reduction, navigation wording), `references/interaction-telemetry-benchmarks.md` (INP/CLS targets), `references/studio-craft-engine.md` with `assets/craft-primitives.css` (starter primitives). Where a deep reference disagrees with `references/tokens.md` or `references/patterns.md`, those two win.
 
 ### 4.1 Structure
-- Rank content against the Job. The top-ranked thing gets the Spotlight and area. Ban the symmetrical 3-card triad (`LAY-008`) and sterile white-box admin templates (`LAY-014`); use an Asymmetric Bento Grid or Operational List Ledger. Ban fake breadcrumb trails (`HDR-001`); use domain mastheads.
+- Rank content against the Job. The top-ranked thing gets the Spotlight and area. Ban the symmetrical 3-card triad (`LAY-008`), the symmetrical 4/5-card metric strip (`LAY-017`), decorative pill overload (`CMP-022`), and sterile white-box admin templates (`LAY-014`); deploy an Asymmetric Bento Grid (8:4 anchor) or Operational List Ledger (`references/bento-dashboard-recipes.md`). Ban fake breadcrumb trails (`HDR-001`); use domain mastheads.
 - Group by meaning. Separate groups with space before borders, and with borders before boxes. A card is for a thing that can be picked up as a unit; most cards are unnecessary. Never nest a bordered box inside a bordered box.
 - App shells use the real viewport: fixed-width navigation, fluid content with a readable cap. Marketing pages get a composed first screen, not a centred stack by reflex.
 - Design the narrow screen as its own layout: reorder by priority, cut secondary columns, keep 44px touch targets. Do not shrink the desktop.

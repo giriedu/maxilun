@@ -104,7 +104,7 @@ class UIPurityLinter:
             re.compile(r"""(?:\btext-center\b[^\n]*\bitems-center\b[^\n]*\bjustify-center\b[^\n]*\brounded-full\b[^\n]*\btracking-wid)""", re.IGNORECASE)
         ),
         (
-            "LAY-TEL-02", "Tata Letak", "WARNING",
+            "LAY-TEL-02", "Tata Letak", "ERROR",
             "Symmetrical 3-card triad without role differentiation (grid-cols-3)",
             "Ganti sesuai sifat konten: tabel perbandingan faktual, alur langkah, atau split showcase.",
             re.compile(r"""\bgrid-cols-1\s+md:grid-cols-3\b[^\n]*\brounded-2xl\b""", re.IGNORECASE)
@@ -138,6 +138,18 @@ class UIPurityLinter:
             "Unbounded paragraph line length (> 75ch without max-w constraint)",
             "Terapkan max-w-[65ch] atau max-w-prose dan text-wrap: pretty.",
             re.compile(r"""<p[^>]*class=["'][^"']*\b(?:max-w-none|w-full)\b[^"']*["'][^>]*>[^<]{120,}""", re.IGNORECASE)
+        ),
+        (
+            "LAY-TEL-08", "Tata Letak", "ERROR",
+            "Symmetrical 4 or 5 KPI card strip without role differentiation (LAY-017)",
+            "Ganti dengan Asymmetric Bento Grid (8:4 anchor) atau Operational List Ledger.",
+            re.compile(r"""\b(?:grid-cols-4|grid-cols-5|md:grid-cols-4|md:grid-cols-5)\b[^\n]*(?:\brounded-(?:lg|xl|2xl)\b|card)""", re.IGNORECASE)
+        ),
+        (
+            "LAY-TEL-09", "Tata Letak", "ERROR",
+            "Centered hero stack with floating capsule badge (LAY-018)",
+            "Terapkan tata letak start-aligned editorial atau split hero dengan working console artifact.",
+            re.compile(r"""\btext-center\b[^\n]*\b(?:mx-auto|items-center)\b[^\n]*\brounded-full\b""", re.IGNORECASE)
         ),
 
         # --- 13-20: Komponen (Components) ---
@@ -188,6 +200,12 @@ class UIPurityLinter:
             "Centered bare spinner loader isolated in screen without geometry skeleton",
             "Gunakan skeleton geometri proporsional 1:1 (CLS = 0) alih-alih spinner kosong.",
             re.compile(r"""\b(?:animate-spin|border-t-transparent)\b[^\n]*\b(?:w-8\s+h-8|w-12\s+h-12)\b[^\n]*\bmx-auto\b""", re.IGNORECASE)
+        ),
+        (
+            "CMP-TEL-09", "Komponen", "ERROR",
+            "Pill badge overload / decorative capsule proliferation across view (CMP-022)",
+            "Hilangkan kapsul rounded-full dekoratif; gunakan tipografi polos dan tabular-nums.",
+            re.compile(r"""\brounded-full\b[^\n]*\b(?:text-xs|px-2)\b[^\n]*>(?:\s*(?:•|\*)|[^<]*(?:LIVE|HOST|AI|NORMAL|VALID|AKTIF|STATUS|KKTP))""", re.IGNORECASE)
         ),
 
         # --- 21-28: Tipografi (Typography) ---

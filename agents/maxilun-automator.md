@@ -43,3 +43,4 @@ Start from the handoff packet's `READ PLAN` ranges and `CONTRACTS`. Change only 
 
 ## Handoff Contract
 Validate workflows with `python skills/maxilun-n8n/scripts/n8n_validate.py <workflow.json> --mermaid` (0 errors required) and hand off directly to `maxilun-orchestrator` / `maxilun-verifier` for Wave 3 proof.
+

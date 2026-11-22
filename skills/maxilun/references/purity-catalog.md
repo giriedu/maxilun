@@ -60,6 +60,8 @@ Core principle: **reject raw LLM clichés and reject single-mold monoculture as 
 16. **Oversized navbar & overflowing menu on mobile (`LAY-015`)** — mobile navbar height $> 64\text{px}$, desktop links not hidden (`hidden md:flex`), a desktop CTA button covering the logo on touch screens, or a menu drawer without background scroll lock (`overscroll-behavior: contain`).
 17. **Mobile horizontal scroll leak (`LAY-016`)** — using `width: 100vw` or `w-screen` (which counts the desktop scrollbar and so leaks on mobile), a fixed width without `max-w-full`, or `px-12`/`px-20` padding on a narrow viewport.
 18. **Sterile White-Box Admin Monoculture (`LAY-014`)** — stacking generic rounded white card boxes (`bg-white border-gray-200 rounded-xl`) onto a light-gray shell background (`bg-gray-50`/`bg-slate-50`), turning an application into an uninspired, off-the-shelf admin template. Ground the interface in a declared domain archetype (e.g., Technical Ledger, Warm Swiss Editorial, Deep Space Obsidian). Differentiate structural zones with background step hierarchy, unified border rhythm, or subtle tonal surface transitions instead of generic white card boxes.
+19. **Symmetrical 4- or 5-Card Metric Strip (`LAY-017` / `LAY-TEL-08`)** — slicing a dashboard row into 4 or 5 identical small boxes (`grid-cols-4` or `grid-cols-5`) showing a static number and an invented delta (`+12%`), without an AreaChart, BarChart, or Operational Spotlight. STRICTLY PROHIBITED. Dashboards MUST use an Asymmetric Bento Grid (e.g. 8:4 or 7:5 anchor ratio) with a prominent data visualization in the Spotlight card and dense tabular rows in an Operational List Ledger (`../maxilun-craft/references/bento-dashboard-recipes.md`).
+20. **Centered Hero Stack with Floating Capsule Badge (`LAY-018` / `LAY-TEL-09`)** — stacking centered elements down the screen (Pill badge -> centered H1 -> centered 2-line subtitle -> 2 twin buttons -> symmetrical card row) on marketing or app hero surfaces. This is the hallmark of the "Plain Turned Strange" AI failure. Replace with an asymmetric start-aligned layout (`text-align: start`) or a 50/50 split hero with a living operational console artifact.
 
 ### B4. Components & Navigation
 16. **Breadcrumb Header Slop on Flat Surfaces (`HDR-001` / `CMP-001` / `CMP-011`)** — showing fake breadcrumb trails like `Dashboard / Analytics / Overview` or `Home > Products` on a landing page, top-level dashboard, or shallow app. Use a domain masthead with live status dot or an editorial masthead; reserve breadcrumbs strictly for deep taxonomies (`≥ 3` levels).
@@ -73,6 +75,7 @@ Core principle: **reject raw LLM clichés and reject single-mold monoculture as 
 24. **Radial glow blob behind cards (`CMP-019`)** — placing a large blurred circle (`blur-3xl bg-cyan-500/20`) behind a card to fake a glowing look. Replace it with the *4-Level Surface Ladder* and a thin transparent contact shadow.
 25. **Fake telemetry & status theater (`CMP-020`)** — attaching fictional decorative badges (`// 60 FPS`, `• PING: 0.1ms`, `SYSTEM NORMAL`) with no real data source. Show real operational telemetry with a filter or an action.
 26. **Pastel Rounded Icon Square Boxes (Anti-Pastel Badge Box `CMP-021`)** — placing an icon inside a soft pastel rounded box (`bg-blue-50 text-blue-600 rounded-lg p-2.5`, `bg-indigo-50`, etc.) as a decorative badge. This is a generic AI template hallmark. Use clean monochrome `text-foreground` / `text-muted-foreground` SVG icon, or render on a calibrated neutral surface step.
+27. **Pill Badge Overload & Capsule Proliferation (`CMP-022` / `CMP-TEL-09`)** — scattering `rounded-full` pill badges across the screen for every status label, mode, tag, or button (`[LIVE]`, `[HOST]`, `[AI]`, `[VALID]`, `[NORMAL]`), turning the interface into a noisy pill matrix. Maximum 2 functional status pills per screen. Status should be expressed by plain typography, tabular numerals, subtle borderless tags, or a single 6px active dot indicator.
 
 ### B5. Motion & Accessibility
 23. **Animating layout properties (`ANI-002`)** — animating `width`, `height`, `top`, `left`, which triggers reflow; use `transform` and `opacity`.
@@ -102,8 +105,8 @@ Use these reference codes to report design/code audit results precisely (`file:l
 |---|---|---|
 | Typography | `TYPO-001` .. `TYPO-009` | Role-based scale hierarchy, no rainbow text gradient, no mobile overflow, `tabular-nums` |
 | Color | `CLR-001` .. `CLR-009` | No clichéd decorative gradient, no excessive neon glow, calm background chroma, `color-scheme` |
-| Layout | `LAY-001` .. `LAY-016` | No centered stack, no oversized mobile navbar, no horizontal scroll leak (`100vw`) |
-| Components | `CMP-001` .. `CMP-020` | No pill capsule, no neon card border, no fake status theater, concentric radius |
+| Layout | `LAY-001` .. `LAY-018` | No centered stack, no symmetrical KPI strips, no oversized mobile navbar, no horizontal scroll leak (`100vw`) |
+| Components | `CMP-001` .. `CMP-022` | No pill capsule/overload, no neon card border, no fake status theater, concentric radius |
 | Motion | `ANI-001` .. `ANI-007` | `transform`/`opacity` only, micro duration `≤250ms`, respect `prefers-reduced-motion` |
 | Accessibility | `A11Y-001` .. `A11Y-007` | Accessible name, `<label>` association, `:focus-visible` indicator, semantic heading order |
 | Design Locks & Redesign | `SYS-001` .. `SYS-005` | Detect design system locks, delete dull root tokens, open the layout shell, clean cutover |

@@ -55,3 +55,4 @@ class N8nClient:
                 return {"status": resp.status, "body": resp.read().decode("utf-8")}
         except urllib.error.HTTPError as e:
             return {"status": e.code, "error": e.read().decode("utf-8")}
+

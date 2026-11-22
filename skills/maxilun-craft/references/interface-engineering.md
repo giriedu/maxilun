@@ -177,6 +177,10 @@ Use logical properties for every directional dimension:
   - Never use `width: 100vw` (always use `width: 100%` so the desktop scrollbar width is not counted).
   - Horizontal container padding on mobile is capped at `px-4 sm:px-6` (`px-12` and `px-16` are forbidden on mobile).
   - Every card and layout container must have `max-w-full`.
+
+### 4.6 Anti-Symmetrical Dashboard Metric Strip & Anti-Pill Proliferation Mandate (`LAY-017` / `CMP-022`)
+- **Ban Symmetrical 4-5 KPI Metric Strips (`LAY-017`)**: Slicing the dashboard into 4 or 5 identical small boxes (`grid-cols-4` or `grid-cols-5`) with a number and an invented delta is the primary hallmark of generic dashboard slop. Dashboards MUST use an Asymmetric Bento Grid (8:4 or 7:5 anchor ratio) with a real visual data chart (AreaChart/BarChart) in the 8-col Spotlight card and an operational work queue or tabular ledger in the companion container (`references/bento-dashboard-recipes.md`).
+- **Ban Pill Badge Proliferation & Pill Overload (`CMP-022`)**: Scattering `rounded-full` pill capsules across the screen for every status label, mode, tag, or button (`[LIVE]`, `[HOST]`, `[AI]`, `[VALID]`, `[NORMAL]`), turning the interface into a noisy pill matrix. Maximum 2 functional status pills per screen. Status should be expressed by plain typography, tabular numerals, subtle borderless tags, or a single 6px active dot indicator.
 ---
 
 ## 5. Interface Copy & Product Language (Product Writing)
@@ -235,6 +239,8 @@ If any of these 13 conditions is found, the finding is automatically **HIGH** an
 | Every page section is centered (Overline -> H2 -> centered Card) | Change to a layout derived from the craft Brief, such as start-edge alignment or a `2:1` grid |
 | Two pill buttons side by side in the hero section competing for attention | Apply the 1 primary action rule; make the second button a neutral button/link |
 | Strip of 4 uniform KPI metric boxes with static percentages | Replace with an operational telemetry panel or a real workflow queue |
+| Symmetrical 4- or 5-card metric strip (`grid-cols-4` / `5`) | Deploy an Asymmetric Bento Grid (8:4 anchor) with real SVG AreaChart (`LAY-017`) |
+| Pill badge proliferation / pill overload (`rounded-full` > 2) | Use plain typography, tabular-nums, or a single active status dot (`CMP-022`) |
 | Fake science-fiction terms (*"Chamber 01"*, *"3D Virtual Space"*) | Use real technical terms (*"Connection Socket"*, *"Session Store"*, *"Webhook Stream"*) |
 | `transition: all` or `transition-all` | Write the specific properties: `transition-property: transform, opacity` |
 | `:active` without a `:disabled` exclusion | Add `:not(:disabled):active` or `enabled:active:` |

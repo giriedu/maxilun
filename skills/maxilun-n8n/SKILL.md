@@ -87,3 +87,4 @@ Refer to `references/workflow-patterns.md` for pre-validated patterns:
 1. **Deterministic Verification**: Validate every generated workflow before delivery using `python skills/maxilun-n8n/scripts/n8n_validate.py <workflow.json>`. Ensure 0 errors and zero secret leaks.
 2. **Self-Hosted Infrastructure**: For high-concurrency environments, architect n8n with PostgreSQL 16 backend, Redis queue mode (`EXECUTIONS_MODE=queue`), separate worker instances, and Caddy/Traefik reverse proxy with automated TLS.
 3. **REST API Deployment**: Use `scripts/n8n_client.py` to deploy and activate workflows directly to running n8n instances when API access is configured.
+

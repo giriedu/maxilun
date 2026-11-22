@@ -90,9 +90,18 @@ LINE_RULES = [
     ("breadcrumb-header", W,
      re.compile(r">\s*(?:Home|Dashboard|Overview|App|Pages)\s*[/›>»]\s*(?:Dashboard|Analytics|Overview|Settings|Features|Home)\s*<", re.I),
      "breadcrumb-like header on flat surface (HDR-001)", "domain-authentic masthead; keep breadcrumbs for >=3 deep hierarchies"),
-    ("pill-tagline", W,
-     re.compile(r"rounded-full[^\"'>]*border[^\"'>]*(?:bg-|text-)[^\"'>]*>\s*(?:[•·\|\/]\s*)?[A-Z0-9_\s-]{3,24}(?:\s*[•·\|\/]\s*[A-Z0-9_\s-]{3,24})*\s*<", re.I),
+    ("pill-tagline", E,
+     re.compile(r"rounded-full[^\"'>]*border[^\"'>]*(?:bg-|text-)[^\"'>]*>\s*(?:[•·\|\/\*]\s*)?[A-Z0-9_\s\/-]{3,80}(?:\s*[•·\|\/\*]\s*[A-Z0-9_\s\/-]{3,80})*\s*<", re.I),
      "floating pill tagline capsule with bullets above headline (CMP-015)", "unbordered sentence-case text eyebrow or integrate context directly into headline"),
+    ("pill-overload", E,
+     re.compile(r"rounded-full[^>\n]*>[^<]*(?:LIVE|HOST|AI|KKTP|PIPELINE|VALID|NORMAL|AKTIF)", re.I),
+     "scattered status pill badges used as micro-frames (CMP-022)", "use plain typography, tabular numbers, or a single live status indicator dot"),
+    ("symmetric-kpi-strip", E,
+     re.compile(r"\bgrid-cols-(?:4|5)\b[^\"'>\n]*(?:\brounded-(?:lg|xl|2xl)\b|card)", re.I),
+     "symmetrical 4 or 5 KPI card strip without role differentiation (LAY-017)", "anchor layout with an Asymmetric Bento Spotlight (col-span-2) or an Operational List Ledger"),
+    ("centered-hero-stack", E,
+     re.compile(r"(?:text-center\b[^\n]*\b(?:items-center|mx-auto)\b[^\n]*\brounded-full|rounded-full\b[^\n]*\btext-center\b[^\n]*\b(?:items-center|mx-auto))", re.I),
+     "centered hero stack with floating pill badge capsule (LAY-018)", "use an asymmetric start-aligned layout or split editorial composition"),
     ("pastel-badge", W,
      re.compile(r"(?:bg-(?:blue|indigo|sky|purple|emerald|amber|violet|teal|cyan|pink|rose)-50\b[^\"'>\n]*\brounded\b|\brounded\b[^\"'>\n]*bg-(?:blue|indigo|sky|purple|emerald|amber|violet|teal|cyan|pink|rose)-50\b)", re.I),
      "icon or badge inside a pastel rounded square (CMP-021)", "monochrome text-colour icon or clean neutral surface badge"),
@@ -174,13 +183,19 @@ def scan_file(path):
         add("glass", W, 1, "backdrop blur used %d times" % blur,
             "solid surfaces; blur only behind one floating layer")
     pills = len(re.findall(r"\brounded-full\b|border-radius\s*:\s*(?:9999px|999px|50rem)", text))
-    if pills > 8:
-        add("pill-everything", I, 1, "fully rounded shape used %d times" % pills,
-            "one radius decision; pills only for tags and toggles")
+    if pills > 4:
+        add("pill-overload", E if pills >= 5 else W, 1, "fully rounded pill shape used %d times (CMP-022)" % pills,
+            "one radius decision; pills only for tags and toggles, maximum 2 per screen")
+
+    m_pill = re.search(r"rounded-full[^>]*>\s*(?:[•·\|\/\*]\s*)?[A-Z0-9_\s\/-]{3,80}\s*</", text, re.I)
+    if m_pill and not any(f["rule"] == "pill-tagline" for f in findings):
+        ln = text[:m_pill.start()].count("\n") + 1
+        add("pill-tagline", E, ln, "floating pill tagline capsule above headline (CMP-015)",
+            "unbordered sentence-case text eyebrow or integrate context directly into headline", m_pill.group(0))
 
     white_cards = len(re.findall(r"\bbg-white\b[^\"'>\n]*(?:\brounded-(?:lg|xl|2xl)\b[^\"'>\n]*\bborder-(?:gray|slate)-(?:100|200)\b|\bborder-(?:gray|slate)-(?:100|200)\b[^\"'>\n]*\brounded-(?:lg|xl|2xl)\b)", text))
     if white_cards > 3:
-        add("white-box-monoculture", W, 1,
+        add("white-box-monoculture", E if white_cards >= 4 else W, 1,
             "%d generic white rounded cards with gray borders (LAY-014)" % white_cards,
             "declare an authentic archetype (e.g. Technical Ledger, Deep Space Obsidian, Swiss High-Contrast); avoid generic white boxes on light-gray background")
 
