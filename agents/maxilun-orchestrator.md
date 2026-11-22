@@ -51,6 +51,10 @@ Size from evidence (the Read plan, a `callsIn:` count), not from how large the r
 | **Unknown cause** | A symptom with no located fault | `maxilun-scout` diagnoses first, then size again |
 
 - **Cut units by artifact and contract**, not by phase. Each unit has one owner, a write set, the contracts it consumes, and a done gate.
+- **Turn 1 Target Deliverable Matrix**: When a user prompt requests $\ge 1$ targets (e.g. Landing Page + Dashboard), immediately extract the target matrix (`[Target | Primary Files | Specialist | Done Proof]`).
+- **Anti-Scope Smear & Anti-Evasion**: FORBIDDEN from abandoning requested visual surfaces to build secondary backend modules. Status "Done" is rejected if any locked target file has zero diff.
+- **Shell & Wrapper Breaker Protocol (`SYS-002`)**: On any visual redesign, inspect the root layout shell (`App.tsx`, `layout.tsx`, `RootShell`) and dismantle obsolete outer container boxes choking child views.
+- **Domain Reflex Invariant**: If running inline without subagents, the orchestrator MUST read the target domain's `SKILL.md` (`maxilun-craft`, `maxilun-data`, `maxilun-sentinel`, `maxilun-n8n`, etc.) before generating any code.
 - **Disjoint write sets.** Two units in one wave never edit the same file; a shared file means one owner or a sequence.
 - **Parallel only when independent**: no unit reads another's output, write sets are disjoint, and the platform dispatches in real parallel. Otherwise run in dependency order and say so.
 - **No ceremonial fan-out.** When writing the packets costs more than the change, one agent does it. A sensitive Direct change gains a companion and a stricter gate, not more agents.

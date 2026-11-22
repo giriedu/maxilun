@@ -162,11 +162,22 @@ Do not hand routine technical decisions back to the user.
 Splitting one page or one feature across four or five specialists dilutes context and produces stiff results.
 
 1. **An explicit user instruction wins** as long as the named specialist is installed.
-2. **Mandatory Craft Auto-Load Invariant (Rendered surfaces are led by `maxilun-craft`).** When ANY request touches or reworks a page, landing page, dashboard, form, or visual UI surface, the agent **MUST IMMEDIATELY LOAD AND FOLLOW `../maxilun-craft/SKILL.md`**. Writing frontend code under `maxilun` alone without loading Craft's Brief, tokens, and Bento recipes (`../maxilun-craft/references/bento-dashboard-recipes.md`) is STRICTLY PROHIBITED. Pair `maxilun-frontend` as a companion for runtime plumbing (RSC, Server Actions). `maxilun-frontend` and `maxilun-engineer` do not invent layout or styling on their own.
-   **Target Screen Locking Invariant**: When a request specifies target screens (e.g. Landing Page or Dashboard), the agent MUST lock those exact component files into the primary `write set` and prove visual transformation on those targets FIRST. Deflecting to secondary modules or backend suites while leaving requested UI surfaces untouched (*Mega-Scope Smear Trap*) is a critical purity failure.
-   Five failures are rejected on sight: emoji as interface icons (`CMP-003`), floating bullet pills and fake status text (`CMP-015`, `CMP-020`), symmetrical 4/5-card metric strips (`LAY-017`), decorative pill overload (`CMP-022`), and a "redesign" that keeps the old shape (`SYS-001` .. `SYS-005`).
-3. **Order when several specialists touch one task:** Architect (application structure) → Craft (Brief, tokens, markup) → Engineer / Frontend (behaviour, data) → Craft (states, motion) → Verify (tests plus scan gate).
-4. **Add a companion only at a hard capability boundary:**
+2. **Domain Skill Reflex Table (Mandatory Pre-Code Skill Load)**: In single-agent CLI sessions (where subagents are not spawned), the agent **MUST explicitly load and follow the corresponding `SKILL.md` before generating code**:
+   - *UI, UX, redesign, landing page, dashboard, forms* → load `../maxilun-craft/SKILL.md` & `../maxilun-craft/references/bento-dashboard-recipes.md`. Enforce Craft Brief, Bento 8:4 ratio, ban pill overload (`CMP-022`) and symmetric strips (`LAY-017`).
+   - *Database, schema, migration, slow query, RLS* → load `../maxilun-data/SKILL.md`. Enforce `EXPLAIN (ANALYZE, BUFFERS)` proof and expand-contract migrations.
+   - *Auth, JWT, crypto, security, CSRF, permissions* → load `../maxilun-sentinel/SKILL.md`. Enforce DPoP (RFC 9449), `timingSafeEqual`, and input sanitization.
+   - *Automation, n8n, webhook workflow* → load `../maxilun-n8n/SKILL.md`. Enforce `n8n_validate.py` schema verification.
+   - *Animation, spring physics, Three.js, WebGL* → load `../maxilun-motion/SKILL.md`. Enforce 60 FPS GPU budget and `prefers-reduced-motion`.
+   - *Mobile (Android, iOS, RN, Flutter)* → load `../maxilun-mobile/SKILL.md`. Enforce $\ge 44\text{pt}$ touch targets and Safe Area insets.
+   - *RAG, vector search, prompt evals, LLM judge* → load `../maxilun-ai/SKILL.md`. Enforce hybrid dense+BM25 retrieval.
+   - *Refactor, module boundaries, system architecture* → load `../maxilun-architect/SKILL.md`. Enforce OpenAPI 3.1 contracts and ADRs.
+3. **Target Deliverable Matrix & Anti-Evasion Invariant**:
+   - *Turn 1 Target Locking*: When a request specifies target screens or endpoints (e.g. Landing Page or Dashboard), the agent MUST lock those exact files into the primary `write set`.
+   - *Anti-Scope Smear*: FORBIDDEN from abandoning requested visual surfaces to build secondary backend modules (*Mega-Scope Smear Trap*).
+   - *Shell Breaker Protocol (`SYS-002`)*: When redesigning UI, inspect root layout wrappers (`App.tsx`, `layout.tsx`, `RootShell`) to dismantle obsolete container boxes choking child views.
+   - *Done Gate*: Status "Done" is REJECTED if any locked target file has zero git diff.
+4. **Order when several specialists touch one task:** Architect (structure) → Craft (Brief, tokens, markup) → Engineer / Frontend (plumbing, data) → Craft (states, motion) → Verify (tests plus scan gate).
+5. **Add a companion only at a hard capability boundary:**
    - Authentication, cryptography, webhook signatures, or tenant permissions → `maxilun-sentinel`.
    - Table schema changes or production migrations → `maxilun-data`.
    - Cause of a bug or slowdown unknown → diagnose in `maxilun-insight` before editing in `maxilun-engineer`.
