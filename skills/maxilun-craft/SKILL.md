@@ -13,11 +13,8 @@ description: >
   "review UI", "AI slop", "generic", "generik", "template-like", "kurang rapi",
   "kurang profesional", "buat logo", "logo", "brand identity", "brand guideline pdf",
   "design system", "sistem desain", "tampilan antarmuka", "responsive", "responsif",
-  "accessibility", "aksesibilitas", "dark mode", "bolder", "quieter", "typeset",
-  "harden", "critique", "shape", "colorize", "taste", "hallmark", "hue",
-  "component ecosystem", "shadcn ecosystem", "registry",
-  "/maxilun-creative", "creative UI", "high-impact UI", "awwwards", "jaw-dropping", "efek wah",
-  "first fold", "hero section", "above the fold".
+  "accessibility", "aksesibilitas", "dark mode", "bolder", "quieter", "typeset", "harden", "critique", "shape", "colorize", "taste", "hallmark", "hue",
+  "component ecosystem", "shadcn ecosystem", "registry", "/maxilun-creative", "creative UI", "high-impact UI", "awwwards", "jaw-dropping", "efek wah", "first fold", "hero section", "above the fold".
 metadata:
   version: "1.3.0"
   ecosystem: maxilun
@@ -44,6 +41,7 @@ metadata:
     - references/design-intelligence.md
     - references/creative-vanguard.md
     - references/hero-section-archetypes.md
+    - references/domain-recipe-matrix.md
     - references/design-md/README.md
     - references/design-md/index.md
     - references/interface-engineering.md

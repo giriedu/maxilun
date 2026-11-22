@@ -18,6 +18,7 @@ Size is measured from repository evidence (a `locate` Read plan, a `callsIn:` co
 |---|---|---|
 | **Direct** | One domain, at most 2 files, no contract or schema change | One owner executes inline. No subagent, no wave. Verification still runs. |
 | **Scoped** | One domain, 3 to 8 files, or one contract with known callers | One owner plus a proof step. A subagent is justified when the reading would crowd the main context. |
+| **Greenfield** | Empty directory, `/maxilun-new`, or "buat aplikasi dari nol" | `maxilun-scaffold` 3-question triage → Dual-scaffold (`docs/` + starter code tree) → Wave 1 Vertical Slice |
 | **Cross-domain** | Two or more domains whose outputs feed each other | Waves: contracts, then implementation, then proof. |
 | **Unknown cause** | A symptom with no located fault | Diagnose first (`maxilun-insight`, or `maxilun-scout` as an agent). Size again once the fault has a `file:line`. |
 

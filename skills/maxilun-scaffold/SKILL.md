@@ -7,7 +7,8 @@ description: >
   from the 100 production UI/UX references in maxilun-craft, so every AI assistant
   (Claude, Antigravity, Codex, Cursor, Grok, or any other) shares context without
   re-reading the codebase. Use it before coding begins or to refresh project context.
-  Triggers: "/maxilun-scaffold", "/maxilun-init", "/msal-init", "scaffold dokumen" / "scaffold docs",
+  Triggers: "/maxilun-scaffold", "/maxilun-init", "/msal-init", "/maxilun-new", "greenfield",
+  "buat aplikasi dari nol", "folder kosong", "scaffold app", "scaffold dokumen" / "scaffold docs",
   "buat docs project" / "create project docs", "init konteks project" / "init project context",
   "generate project docs", "siapkan dokumen awal" / "prepare initial docs", "bikin PRD" / "write a PRD",
   "setup dokumentasi project" / "set up project documentation", or any request to bootstrap
@@ -31,6 +32,7 @@ metadata:
     - references/doc-templates.md
     - references/prd-archetypes.md
     - references/context-maintenance-update.md
+    - references/greenfield-templates.md
 ---
 
 # Maxilun Scaffold: Project Context Generator
@@ -109,13 +111,28 @@ docs/
 - **`DESIGN.md`**: For products with a UI, include the **Design Reference Record** block from `../maxilun-craft/references/design-md/index.md` together with semantic `oklch()` tokens, a typography scale, and `tabular-nums` derived from domain needs. For headless products, document the command structure, the output format (`--json` vs human table), and structured error messages.
 - **`ARCHITECTURE.md`, `TECHSTACK.md`, & `SECURITY.md`**: Align module boundaries with the real folders in the repo; include the **Rejected Alternatives** column in `TECHSTACK.md`; derive the STRIDE threats in `SECURITY.md` from the archetype in `references/prd-archetypes.md`.
 
-## 5. Update Mode (`--update`) & Quick Mode (`--quick`)
+## 5. Greenfield Zero-to-App Protocol (`/maxilun-new`)
+
+When starting in an empty directory or when invoked with `/maxilun-new` / "buat aplikasi dari nol":
+1. **Interactive Stack Triage (1 Batched Question)**:
+   - Ask target hosting & architecture: `[A] Next.js 15 Fullstack`, `[B] React Vite + PHP 8+ REST API (SQLite/MySQL)`, or `[C] Google Apps Script (GAS) Web App`.
+   - Ask visual tone: `[A] Obsidian Command Deck (Theme 01)`, `[B] Warm Academic Editorial (Theme 12)`, or `[C] Technical Swiss Ledger (Theme 08)`.
+2. **Dual-Scaffold Execution**:
+   - Generate the 10 context files in `docs/`.
+   - Run `python scripts/greenfield.py <target-dir> --stack [nextjs|vite-php|gas] --name <name> --title <title>` (per `references/greenfield-templates.md`).
+3. **Auto-Binding Creative Vanguard**:
+   - Query `../maxilun-craft/references/domain-recipe-matrix.md` to bind the matching Hero Archetype (`../maxilun-craft/references/hero-section-archetypes.md`) and UI Motion Primitives (`../maxilun-motion/references/ui-motion-recipes.md`).
+   - Populate state with Indonesian realistic domain seed data (NISN, class, schedule).
+4. **Mechanical Day-1 Purity Gate**:
+   - Run `python ../maxilun-craft/scripts/slopscan.py <target-dir>` to confirm zero errors before reporting ready.
+
+## 6. Update Mode (`--update`) & Quick Mode (`--quick`)
 
 Apply `references/context-maintenance-update.md`:
 - **`--quick` mode**: Generate all 10 documents directly from the nearest archetype in `references/prd-archetypes.md` and `references/doc-templates.md`, mark decisions not yet locked with `[INFERRED]` or `[UNCERTAIN: reason]`, then summarize the main assumptions at the end of the response.
 - **`--update` mode**: Compare the current `docs/` content against the latest changes in `package.json`, the database schema, routes, and `git log`. Update facts that changed (`[CONFIRMED]`), keep decisions that still hold, and mark contradictory sections with `[UNCERTAIN: needs sync]`.
 
-## 6. Handoff Readiness Criteria
+## 7. Handoff Readiness Criteria
 
 Before handing over `docs/`, confirm that: all 10 files exist and follow `references/doc-templates.md`; no quality claim lacks a metric; every uncertainty states its reason in an `[UNCERTAIN: reason]` label; and every script name and environment variable in `TECHSTACK.md` and `ONBOARDING.md` matches the repository's configuration files.
 
