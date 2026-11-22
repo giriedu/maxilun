@@ -187,11 +187,27 @@ def scan_file(path):
         add("pill-overload", E if pills >= 5 else W, 1, "fully rounded pill shape used %d times (CMP-022)" % pills,
             "one radius decision; pills only for tags and toggles, maximum 2 per screen")
 
+    # Multiline Centered Hero Stack: text-center with mx-auto followed by rounded-full and h1
+    m_hero = re.search(r"text-center[^\n]*mx-auto[\s\S]{0,400}?rounded-full[\s\S]{0,400}?<h1", text, re.I)
+    if m_hero and not any(f["rule"] == "centered-hero-stack" for f in findings):
+        ln = text[:m_hero.start()].count("\n") + 1
+        add("centered-hero-stack", E, ln,
+            "monotonous centered hero stack with floating pill capsule (LAY-018)",
+            "use an asymmetric start-aligned layout or split editorial composition", m_hero.group(0)[:80])
+
+    # Tagline pill capsule with or without nested child spans
+    for m in re.finditer(r"rounded-full[^>]*>[\s\S]{0,250}?(?:STANDAR|MULTI-TENANT|SAAS|\b[A-Z0-9_\/-]{4,}\s*\/\/\s*[A-Z0-9_\/-]{4,})[\s\S]{0,100}?<\/(?:div|span)>", text, re.I):
+        if len(m.group(0)) < 350:
+            ln = text[:m.start()].count("\n") + 1
+            if not any(f["rule"] == "pill-tagline" and f["line"] == ln for f in findings):
+                add("pill-tagline", E, ln, "floating pill tagline capsule above headline (CMP-015)",
+                    "unbordered sentence-case text eyebrow or integrate context directly into headline", m.group(0)[:80])
+
     m_pill = re.search(r"rounded-full[^>]*>\s*(?:[•·\|\/\*]\s*)?[A-Z0-9_\s\/-]{3,80}\s*</", text, re.I)
     if m_pill and not any(f["rule"] == "pill-tagline" for f in findings):
         ln = text[:m_pill.start()].count("\n") + 1
         add("pill-tagline", E, ln, "floating pill tagline capsule above headline (CMP-015)",
-            "unbordered sentence-case text eyebrow or integrate context directly into headline", m_pill.group(0))
+            "unbordered sentence-case text eyebrow or integrate context directly into headline", m_pill.group(0)[:80])
 
     white_cards = len(re.findall(r"\bbg-white\b[^\"'>\n]*(?:\brounded-(?:lg|xl|2xl)\b[^\"'>\n]*\bborder-(?:gray|slate)-(?:100|200)\b|\bborder-(?:gray|slate)-(?:100|200)\b[^\"'>\n]*\brounded-(?:lg|xl|2xl)\b)", text))
     if white_cards > 3:

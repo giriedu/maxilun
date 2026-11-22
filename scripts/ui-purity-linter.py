@@ -157,7 +157,7 @@ class UIPurityLinter:
             "CMP-TEL-01", "Komponen", "ERROR",
             "Floating pill badge with glowing dot stamped above heading",
             "Hapus kapsul dekoratif; integrasikan konteks langsung ke dalam judul atau navigasi.",
-            re.compile(r"""(?:rounded-full[^"']*\b(?:px-[2-6]|py-[0-3])\b[^"']*(?:uppercase|tracking-wid)[^"']*["'][^>]*>(?:\s*(?:•|\*)|[^<]*[•·\*]|<span[^>]*bg-(?:emerald|green|indigo|cyan)-500))""", re.IGNORECASE)
+            re.compile(r"""(?:rounded-full[^"']*\b(?:px-[2-6]|py-[0-3])|\b(?:px-[2-6]|py-[0-3])\b[^"']*rounded-full)[^"']*["'][^>]*>(?:\s*(?:•|\*)|[^<]*[•·\*]|[\s\n]*<span[^>]*bg-(?:emerald|green|indigo|cyan)-500)""", re.IGNORECASE)
         ),
         (
             "CMP-TEL-02", "Komponen", "WARNING",
@@ -415,6 +415,50 @@ class UIPurityLinter:
                         snippet=snippet,
                         remedy=remedy,
                     ))
+
+        # Multi-line checks for split JSX/HTML elements
+        multiline_pill = re.search(
+            r"""(?:rounded-full[^"']*\b(?:px-[2-6]|py-[0-3])|\b(?:px-[2-6]|py-[0-3])\b[^"']*rounded-full)[^"']*["'][^>]*>[\s\S]{0,180}?(?:<span[^>]*bg-(?:emerald|green|indigo|cyan)-500|•|\*|&bull;)[\s\S]{0,180}?(?:[A-Z0-9_\/-]{4,}\s*\/\/\s*[A-Z0-9_\/-]{4,}|STANDAR|MULTI-TENANT|SAAS)""",
+            content, re.IGNORECASE
+        )
+        if multiline_pill:
+            ln = content[:multiline_pill.start()].count("\n") + 1
+            if not any(v.rule_id == "CMP-TEL-01" for v in violations):
+                snippet = multiline_pill.group(0).replace("\n", " ").strip()
+                if len(snippet) > 90:
+                    snippet = snippet[:87] + "..."
+                violations.append(TellViolation(
+                    rule_id="CMP-TEL-01",
+                    category="Komponen",
+                    severity="ERROR",
+                    message="Floating pill badge with glowing dot stamped above heading",
+                    remedy="Hapus kapsul dekoratif; integrasikan konteks langsung ke dalam judul atau navigasi.",
+                    file_path=str(file_path),
+                    line_number=ln,
+                    snippet=snippet
+                ))
+
+        multiline_hero = re.search(
+            r"""text-center[^\n]*mx-auto[\s\S]{0,400}?rounded-full[\s\S]{0,400}?<h1""",
+            content, re.IGNORECASE
+        )
+        if multiline_hero:
+            ln = content[:multiline_hero.start()].count("\n") + 1
+            if not any(v.rule_id == "LAY-TEL-09" for v in violations):
+                snippet = multiline_hero.group(0).replace("\n", " ").strip()
+                if len(snippet) > 90:
+                    snippet = snippet[:87] + "..."
+                violations.append(TellViolation(
+                    rule_id="LAY-TEL-09",
+                    category="Tata Letak",
+                    severity="ERROR",
+                    message="Centered hero stack with floating capsule badge (LAY-018)",
+                    remedy="Terapkan tata letak start-aligned editorial atau split hero dengan working console artifact.",
+                    file_path=str(file_path),
+                    line_number=ln,
+                    snippet=snippet
+                ))
+
         return violations
 
     def scan_path(self, target_path: Path) -> ScanResult:
