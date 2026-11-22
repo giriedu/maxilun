@@ -33,3 +33,4 @@ When a new project is bootstrapped via `maxilun-scaffold` / `greenfield.py`:
    - Populate the initial state with the Day-1 Realistic Seed Invariant. The app must never render an empty, dead UI upon first launch.
 5. **Enforce Mechanical Purity**:
    - Run `slopscan.py` on the generated files to ensure zero emoji icons (`CMP-003`), zero pastel rounded boxes (`CMP-021`), and zero white-box monoculture (`LAY-014`).
+

@@ -39,6 +39,25 @@ def _kg_cli():
     return module
 
 
+def cmd_new(args):
+    import importlib.util
+    path = REPO_ROOT / "skills" / "maxilun-scaffold" / "scripts" / "greenfield.py"
+    spec = importlib.util.spec_from_file_location("greenfield_mod", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    target_dir = Path(args.target or ".").resolve()
+    target_dir.mkdir(parents=True, exist_ok=True)
+    if args.stack == "nextjs":
+        module.scaffold_nextjs(target_dir, args.name, args.title, domain=args.domain)
+    elif args.stack == "vite-php":
+        module.scaffold_vite_php(target_dir, args.name, args.title, domain=args.domain)
+    elif args.stack == "gas":
+        module.scaffold_gas(target_dir, args.name, args.title, domain=args.domain)
+
+    print(f"\n✅ Greenfield project '{args.name}' ({args.stack} · domain: {args.domain}) generated at {target_dir}")
+
+
 def cmd_route(args):
     from harness.router import MaxilunRouter
     router = MaxilunRouter()
@@ -202,6 +221,14 @@ def main():
     verify_parser.add_argument("surface", help="HTML surface file to audit")
     verify_parser.add_argument("--json", action="store_true", help="JSON output format")
 
+    # new
+    new_parser = subparsers.add_parser("new", help="Scaffold a slop-free greenfield application (Next.js, Vite-PHP, GAS)")
+    new_parser.add_argument("target", nargs="?", default=".", help="Target project root directory")
+    new_parser.add_argument("--stack", choices=["nextjs", "vite-php", "gas"], default="nextjs", help="Technology stack")
+    new_parser.add_argument("--domain", choices=["edtech", "saas", "ledger"], default="edtech", help="Domain archetype")
+    new_parser.add_argument("--name", default="my-app", help="Project slug name")
+    new_parser.add_argument("--title", default="EduCore Platform", help="Human-readable project title")
+
     # init-hook
     hook_parser = subparsers.add_parser("init-hook", help="Install git pre-commit purity gate hook")
     hook_parser.add_argument("path", nargs="?", default=None, help="Repository root path")
@@ -227,6 +254,7 @@ def main():
         "lint": cmd_lint,
         "verify": cmd_verify,
         "init-hook": cmd_init_hook,
+        "new": cmd_new,
         "test": cmd_test,
         "dashboard": cmd_dashboard
     }

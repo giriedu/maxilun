@@ -94,6 +94,13 @@ Choose tier depth in proportion to the changed code surface and the release targ
   - `--contrast <fg> <bg>` checks one WCAG contrast pair. A clean scan is necessary, not sufficient: the manual checks above still apply.
 - **Programmatic Video & Motion**: For Remotion compositions or interactive animation, verify that sample frames render intact, timeline math is deterministic, audio is in sync, and the `prefers-reduced-motion` fallback works, per `../maxilun-cinecode/references/index.md` and `maxilun-motion`.
 
+### Tier 6: Autonomous Live Browser Verification (Visual & Console Gate)
+When a task modifies or creates user-facing web screens and local server scripts exist (`npm run dev`, `php -S`, `vite`, `next dev`, or `local_preview.html`):
+1. **Start the local server** as a background process (`run_command` with `IsDaemon: true`).
+2. **Invoke the `browser` subagent** to navigate directly to `http://localhost:<port>` (e.g. 3000, 5173, or 8000).
+3. **Verify real visual rendering**: confirm layout geometry matches the Brief, zero horizontal scrollbar leaks at 375px/768px (`LAY-016`), zero flashing unstyled content (FOUC), and inspect the browser console for unhandled runtime errors (`console.error`).
+4. **Capture visual evidence**: save the screenshot receipt to the artifact directory and cite the receipt in the report before declaring `PASS`.
+
 ## 3. Evidence Report Format & Verdict
 
 Use one factual final status — **`PASS`**, **`FAIL`**, or **`UNVERIFIED`** — with no emoji banner and no unsupported claim:

@@ -275,3 +275,4 @@ Allows full UI/UX testing in Chrome/Edge without uploading to Google Drive:
   { "nisn": "0082341005", "name": "Rizky Pratama", "grade": "XI-MIPA 2", "attendance": 91.5, "status": "Terverifikasi" }
 ]
 ```
+
