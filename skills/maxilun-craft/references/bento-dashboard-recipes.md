@@ -365,3 +365,4 @@ When designing light-theme dashboards for school administration, health clinics,
 - [ ] Are all numbers, timestamps, and percentages formatted with `tabular-nums`?
 - [ ] Are decorative pill badges (`rounded-full`) restricted to $\le 2$ functional status tags per screen?
 - [ ] Is the masthead free of fake breadcrumbs (`HDR-001`) and floating pill tagline capsules (`CMP-015`)?
+
