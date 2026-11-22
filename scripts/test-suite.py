@@ -76,6 +76,9 @@ EXPECTED_AGENTS = [
     "maxilun-planner",
     "maxilun-security-auditor",
     "maxilun-coder-ai",
+    "maxilun-data-engineer",
+    "maxilun-devops",
+    "maxilun-docsmith",
 ]
 REQUIRED_REFERENCES = [
     "engines.md",
@@ -947,7 +950,7 @@ def test_agents_validity():
 
         print(f"  ✅ {agent}: Verified valid frontmatter & security invariants ({lines} lines)")
 
-    # Collaboration Invariant 4: Orchestrator must know all 12 specialist agents
+    # Collaboration Invariant 4: Orchestrator must know all 18 specialist agents
     orch_text = (agents_dir / "maxilun-orchestrator.md").read_text(encoding="utf-8")
     for agent in EXPECTED_AGENTS:
         if agent == "maxilun-orchestrator":
@@ -965,7 +968,7 @@ def test_agents_validity():
             print(f"  ❌ Skill '{skill}' is not referenced by any agent in agents/")
             passed = False
 
-    # Collaboration Invariant 6: Harness SkillsLoader loads all 13 agents & enforces read-only tools
+    # Collaboration Invariant 6: Harness SkillsLoader loads all 19 agents & enforces read-only tools
     from harness.engine.skills_loader import SkillsLoader
     from harness.tools.registry import ToolRegistry
     loader = SkillsLoader(REPO_ROOT)

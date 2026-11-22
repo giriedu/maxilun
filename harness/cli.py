@@ -490,8 +490,8 @@ def cmd_doctor(args):
     repo_root = Path(__file__).resolve().parent.parent
     agents_dir = repo_root / "agents"
     agents_found = list(agents_dir.glob("*.md")) if agents_dir.exists() else []
-    agents_ok = len(agents_found) >= 16
-    print(f"[{'✅ PASS' if agents_ok else '❌ FAIL'}] Autonomous agents: {len(agents_found)}/16 agents present in agents/")
+    agents_ok = len(agents_found) >= 19
+    print(f"[{'✅ PASS' if agents_ok else '❌ FAIL'}] Autonomous agents: {len(agents_found)}/19 agents present in agents/")
     for a in sorted(agents_found):
         print(f"     • {a.name}")
 

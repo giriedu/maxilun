@@ -21,3 +21,4 @@ if os.path.exists(TARGET):
 else:
     print(f"Error: component_lookup.py not found at {TARGET}", file=sys.stderr)
     sys.exit(1)
+

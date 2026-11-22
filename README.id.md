@@ -2,14 +2,14 @@
 
 <div align="center">
 
-<img src="assets/banner.svg" alt="Maxilun — 25 Skill · 16 Agen Otonom · Shared Agent Bus · Knowledge Graph MCP · Purity Gate" width="100%">
+<img src="assets/banner.svg" alt="Maxilun — 25 Skill · 19 Agen Otonom · Shared Agent Bus · Knowledge Graph MCP · Purity Gate" width="100%">
 
 <br/>
 
 [![CI](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml/badge.svg)](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml)
 [![Version](https://img.shields.io/badge/version-1.3.0-7c3aed?style=flat-square)](CHANGELOG.md)
 [![Skills](https://img.shields.io/badge/skills-25_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
-[![Agents](https://img.shields.io/badge/agents-16_autonomous-3b82f6?style=flat-square)](docs/AGENTS.md)
+[![Agents](https://img.shields.io/badge/agents-19_autonomous-3b82f6?style=flat-square)](docs/AGENTS.md)
 [![License](https://img.shields.io/badge/license-Free_to_Use-22c55e?style=flat-square)](LICENSE)
 [![Sponsor](https://img.shields.io/badge/Sponsor-GitHub_Sponsors-ea4aaa?style=flat-square)](https://github.com/sponsors/giriedu)
 [![Platform](https://img.shields.io/badge/runs_on-Claude_·_Cursor_·_Codex_·_Antigravity_·_Zed_·_Termul-white?style=flat-square)](#dukungan-platform-ai)
@@ -188,7 +188,7 @@ Gunakan `maxilun-knowledge-graph` untuk perubahan kode struktural atau lintas-fi
 Maxilun dilengkapi dengan runtime agen otonom bawaan, inspektor keamanan AST, dan runner benchmark empiris di folder `harness/` (100% zero-dependency Python stdlib):
 
 ```bash
-# Inspeksi 25 skill ekosistem (1 orchestrator + 24 spesialis) dan 16 agen otonom:
+# Inspeksi 25 skill ekosistem (1 orchestrator + 24 spesialis) dan 19 agen otonom:
 python harness/cli.py skills
 
 # Jalankan benchmark komparatif empiris (+55% peningkatan atas Raw AI):
@@ -238,7 +238,7 @@ Di OMP/Termul, agen terpasang ke `~/.omp/agent/agents`.
 |---|---|
 | [docs/INSTALL.md](docs/INSTALL.md) | Panduan instalasi multi-platform lengkap & integrasi CLI |
 | [docs/SKILLS.md](docs/SKILLS.md) | Detail mendalam, peran teknis, dan pemicu seluruh 25 skill |
-| [docs/AGENTS.md](docs/AGENTS.md) | 16 agen otonom (1 orchestrator + 15 spesialis), hak akses tool & protokol subagent |
+| [docs/AGENTS.md](docs/AGENTS.md) | 19 agen otonom (1 orchestrator + 18 spesialis), hak akses tool & protokol subagent |
 | [docs/ENGINES.md](docs/ENGINES.md) | Empat engine kualitas dan tiga protokol operasi |
 | [docs/EXAMPLES.md](docs/EXAMPLES.md) | Contoh skenario rekayasa nyata & orkestrasi Wave Pattern |
 | [docs/SKILL-CONTRACTS.md](docs/SKILL-CONTRACTS.md) | Ownership, mode standalone, input, output, dan handoff setiap skill |
@@ -255,7 +255,7 @@ Di OMP/Termul, agen terpasang ke `~/.omp/agent/agents`.
 
 ## Tentang Rilis
 
-Maxilun mengikuti [Semantic Versioning](https://semver.org/) dan [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Setiap rilis diverifikasi terhadap seluruh 25 skill, 16 agen otonom, scanner Knowledge Graph, UI Purity Linter, dan uji integrasi harness melalui `python scripts/test-suite.py`.
+Maxilun mengikuti [Semantic Versioning](https://semver.org/) dan [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Setiap rilis diverifikasi terhadap seluruh 25 skill, 19 agen otonom, scanner Knowledge Graph, UI Purity Linter, dan uji integrasi harness melalui `python scripts/test-suite.py`.
 
 - **Versi Stabil Terbaru**: `v1.3.0` — lihat [CHANGELOG.md](CHANGELOG.md) untuk catatan rilis lengkap dan pembaruan `[Unreleased]` (`16` agen, Shared Agent Bus, `maxilun-kg` MCP, `OutputCompressor`, `/maxilun terse`, `icon_lookup.py`, 5-in-1 design engine, dan vault ekosistem komponen).
 - **Alur Rilis**: Lihat [docs/RELEASE.md](docs/RELEASE.md) dan [GitHub Releases](https://github.com/giriedu/maxilun/releases).

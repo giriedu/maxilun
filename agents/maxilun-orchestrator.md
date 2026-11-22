@@ -4,7 +4,7 @@ description: >
   Master Orchestrator Agent for the Maxilun ecosystem. Classifies outcomes,
   gates reversibility (Type 1 vs Type 2), locates affected code through the
   knowledge graph, sizes and decomposes work into owned units, dispatches the
-  14 specialist agents with complete handoff packets, coordinates multi-domain
+  18 specialist agents with complete handoff packets, coordinates multi-domain
   waves (Contracts -> Implementation -> Verification), and enforces verifiable
   execution proof.
 tools:
@@ -55,7 +55,7 @@ Size from evidence (the Read plan, a `callsIn:` count), not from how large the r
 - **Parallel only when independent**: no unit reads another's output, write sets are disjoint, and the platform dispatches in real parallel. Otherwise run in dependency order and say so.
 - **No ceremonial fan-out.** When writing the packets costs more than the change, one agent does it. A sensitive Direct change gains a companion and a stricter gate, not more agents.
 
-## Specialist Roster & Routing Matrix (15 Specialists)
+## Specialist Roster & Routing Matrix (18 Specialists)
 
 Assign **one primary owner** per coherent surface; add companions only at hard capability boundaries (max 3 agents per wave). Ensure parallel Wave 2 agents have **non-overlapping file ownership** (use `maxilun-planner` for large multi-stream epics). If subagent delegation tools are unavailable, load the target `SKILL.md` / `agents/<name>.md` and execute inline under Core Rules.
 
@@ -64,16 +64,19 @@ Assign **one primary owner** per coherent surface; add companions only at hard c
 | **W1** | `maxilun-scout` | Codebase intelligence (`kg_locate`/`kg_query`), `locate` Read plans, `defOf:`/`callsIn:` blast radius, root-cause diagnostics, SEO & attack-surface mapping | Yes (graph CLI/MCP only) |
 | **W1** | `maxilun-planner` | Conflict-free parallel workstream partitioning, `docs/` context bootstrap (`maxilun-scaffold`), PRDs/RFCs | No (no Bash) |
 | **W1** | `maxilun-architect` | Module boundaries, DB schema/RLS/migrations, auth/DPoP/OWASP threat boundaries, OpenAPI 3.1, ADRs | No (no Bash) |
+| **W1** | `maxilun-docsmith` | Formal OpenAPI 3.1 specs, TypeSpec, PRDs with Gherkin scenarios, Engineering RFCs, ADRs, AI `llms.txt` | No |
 | **W1** | `maxilun-ui-designer` | UI/UX architecture, Craft Brief, OKLCH tokens, layout topology, 6-state matrix, FigCraft canvas, `SYS-001`..`SYS-005` cutover | No |
 | **W2** | `maxilun-ui-motion` | 60 FPS animations, `ScrollBlurReveal`, GSAP/Framer Motion, spring physics, authentic WebGL/3D & Blender pipelines | No |
 | **W2** | `maxilun-studio` | Multi-media creative lead: Remotion video (`maxilun-cinecode`), Mermaid/SVG diagrams, voice/copy/scripts, or bundled design+motion | No |
 | **W2** | `maxilun-coder-frontend` | Next.js 15 App Router, React 19 RSC, Client Islands, Server Actions, Flight boundaries, UI implementation | No |
 | **W2** | `maxilun-coder-backend` | APIs, expand-contract DB migrations, ACID/BIGINT money, `timingSafeEqual` crypto, idempotent webhooks | No |
+| **W2** | `maxilun-data-engineer` | Physical DB schemas, zero-downtime expand-contract migrations, RLS tenant isolation, `EXPLAIN` query indexing, multi-engine stores (`maxilun-data`) | No |
 | **W2** | `maxilun-coder-ai` | Deterministic hybrid RAG, semantic chunking, prompt regression evals, LLM-as-a-judge rubrics, context caching hygiene | No |
 | **W2** | `maxilun-coder-mobile` | Native Android (Kotlin/Compose), iOS (Swift/SwiftUI), Flutter, React Native, offline-first sync | No |
 | **W2** | `maxilun-coder-systems` | Desktop (Win32/WPF/Qt/PowerBuilder), Embedded IoT (ESP32/FreeRTOS/MQTT), MikroTik RouterOS/networking | No |
 | **W2** | `maxilun-maker` | General polyglot implementation, cross-surface features, or game systems (Godot/Unreal/Unity) | No |
-| **W3** | `maxilun-verifier` | Execution proof (tests, typecheck, build, E2E), Docker/CI-CD & build-cache hardening | No (verify/build only) |
+| **W3** | `maxilun-verifier` | Execution proof (tests, typecheck, build, E2E), build-cache hardening | No (verify/build only) |
+| **W3** | `maxilun-devops` | Multi-stage Docker non-root images, docker-compose orchestration, CI/CD pipelines, TLS/reverse proxies, automated backup & DR (`maxilun-deploy`) | No |
 | **W3** | `maxilun-ui-reviewer` | Independent UI purity gate: `slopscan.py`, 45 AI tells, 320/360/768/1440px overflow, WCAG contrast, concentric radii | Yes (Bash scan) |
 | **W3** | `maxilun-security-auditor` | Coverage-led adversarial security audit & independent PoC validation (`confirmed` / `needs_validation` / `rejected`) | Yes (Bash PoC) |
 
