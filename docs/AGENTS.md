@@ -99,3 +99,51 @@ python harness/cli.py doctor
 # Jalankan tugas otonom dengan subagent delegator:
 python harness/cli.py run "Audit keamanan endpoint login dan buktikan dengan test"
 ```
+
+---
+
+## 4. Persona Kustom & Alias Panggilan Tim (`maxilun alias`)
+
+Maxilun mendukung pemberian nama panggilan akrab (*custom persona aliases*) untuk ke-19 agen otonom agar kolaborasi terasa seperti bekerja bersama tim rekayasa nyata, tanpa mengubah ID kanonikal sistem (*Canonical Anchor*).
+
+### A. Preset Siap Pakai
+
+1. **`default`**: Nama resmi Maxilun (`Orchestrator`, `Architect`, `Designer`, `Backend`, `DataEng`, `DevOps`...).
+2. **`nusantara-squad`**: Nama tim tech lokal:
+   - `Bram` (`maxilun-architect`) · Lead Architect
+   - `Maya` (`maxilun-ui-designer`) · UI/UX Principal
+   - `Fajar` (`maxilun-coder-frontend`) · Frontend Lead
+   - `Dian` (`maxilun-coder-backend`) · Backend Lead
+   - `Rian` (`maxilun-data-engineer`) · Data Architect
+   - `Reza` (`maxilun-devops`) · DevOps & SRE
+   - `Citra` (`maxilun-docsmith`) · DocSmith & Specs
+   - `Rama` (`maxilun-coder-ai`) · AI & RAG Engineer
+   - `Aris` (`maxilun-ui-motion`) · Motion Specialist
+   - `Tara` (`maxilun-studio`) · Creative Studio
+   - `Bagas` (`maxilun-verifier`) · Verification QA
+   - `Surya` (`maxilun-ui-reviewer`) · UI Purity Gatekeeper
+   - `Sinta` (`maxilun-scout`) · Codebase Intelligence
+   - `Indra` (`maxilun-security-auditor`) · Security Auditor
+   - `Pandu` (`maxilun-orchestrator`) · Chief Orchestrator
+3. **`global-forge`**: Nama tim internasional (`Alex`, `Elena`, `Viktor`, `Liam`, `Noah`, `Marcus`, `Grace`, `Kai`...).
+
+### B. Perintah CLI
+
+```bash
+# Tampilkan preset yang tersedia:
+python cli.py alias --list-presets
+
+# Tampilkan alias yang aktif saat ini:
+python cli.py alias --show
+
+# Terapkan preset tertentu:
+python cli.py alias --preset nusantara-squad
+
+# Atur alias kustom untuk agen tertentu:
+python cli.py alias --set maxilun-architect "Bram" --callsign "Principal Architect"
+
+# Setup interaktif ramah pengguna:
+python cli.py alias --interactive
+```
+
+Konfigurasi disimpan secara otomatis di `.maxilun/aliases.json` (per repositori) atau `~/.maxilun/aliases.json` (global). Router dan runtime meeting secara otomatis mengenali mention pengguna seperti `@Bram` atau `@Maya` dan memetakan langsung ke agen yang tepat.

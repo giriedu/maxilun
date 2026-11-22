@@ -39,6 +39,15 @@ def _kg_cli():
     return module
 
 
+def cmd_alias(args):
+    import importlib.util
+    path = REPO_ROOT / "harness" / "cli.py"
+    spec = importlib.util.spec_from_file_location("harness_cli", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    module.cmd_alias(args)
+
+
 def cmd_new(args):
     import importlib.util
     path = REPO_ROOT / "skills" / "maxilun-scaffold" / "scripts" / "greenfield.py"
@@ -229,6 +238,15 @@ def main():
     new_parser.add_argument("--name", default="my-app", help="Project slug name")
     new_parser.add_argument("--title", default="EduCore Platform", help="Human-readable project title")
 
+    # alias
+    alias_parser = subparsers.add_parser("alias", help="Manage custom agent personas, callnames, and team presets")
+    alias_parser.add_argument("--preset", choices=["default", "nusantara-squad", "global-forge"], default=None, help="Apply a built-in agent persona preset")
+    alias_parser.add_argument("--list-presets", action="store_true", help="List all available persona presets")
+    alias_parser.add_argument("--show", action="store_true", help="Show currently configured agent aliases")
+    alias_parser.add_argument("--set", nargs=2, metavar=("AGENT", "ALIAS"), help="Assign a custom alias to an agent (e.g. --set maxilun-architect Bram)")
+    alias_parser.add_argument("--callsign", default="", help="Optional role title / callsign when using --set")
+    alias_parser.add_argument("--interactive", action="store_true", help="Interactive persona preset setup")
+
     # init-hook
     hook_parser = subparsers.add_parser("init-hook", help="Install git pre-commit purity gate hook")
     hook_parser.add_argument("path", nargs="?", default=None, help="Repository root path")
@@ -255,6 +273,7 @@ def main():
         "verify": cmd_verify,
         "init-hook": cmd_init_hook,
         "new": cmd_new,
+        "alias": cmd_alias,
         "test": cmd_test,
         "dashboard": cmd_dashboard
     }

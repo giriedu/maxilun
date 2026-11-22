@@ -50,7 +50,18 @@ def _is_failed(text: str) -> bool:
 
 def _asked(ask: str, roster: List[str]) -> List[str]:
     targets = []
+    try:
+        from .aliases import get_alias_manager
+        mgr = get_alias_manager()
+    except Exception:
+        mgr = None
+
     for handle in re.findall(r"@([\w-]+)", ask):
+        if mgr:
+            resolved = mgr.resolve_agent(handle)
+            if resolved and resolved in roster:
+                targets.append(resolved)
+                continue
         name = handle.lower()
         name = name if name.startswith("maxilun") else f"maxilun-{name}"
         if name in roster:

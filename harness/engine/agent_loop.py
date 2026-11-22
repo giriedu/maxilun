@@ -39,12 +39,23 @@ AGENT_SKILL_MAP = {
     "maxilun-planner": "maxilun-scaffold",
     "maxilun-security-auditor": "maxilun-hunt",
     "maxilun-coder-ai": "maxilun-ai",
+    "maxilun-data-engineer": "maxilun-data",
+    "maxilun-devops": "maxilun-deploy",
+    "maxilun-docsmith": "maxilun-docsmith",
 }
 
 
 def _normalize_agent(name: str) -> str:
-    clean = name.strip().lower().lstrip("@")
-    return clean if clean.startswith("maxilun") else f"maxilun-{clean}"
+    clean = name.strip().lstrip("@")
+    try:
+        from .aliases import get_alias_manager
+        resolved = get_alias_manager().resolve_agent(clean)
+        if resolved:
+            return resolved
+    except Exception:
+        pass
+    clean_lower = clean.lower()
+    return clean_lower if clean_lower.startswith("maxilun") else f"maxilun-{clean_lower}"
 
 
 def _last_reply(sub_ctx: SessionContext) -> str:

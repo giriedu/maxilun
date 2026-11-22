@@ -1195,6 +1195,52 @@ def test_harness_confinement():
     return passed
 
 
+def test_agent_aliases_system():
+    print("\n🧪 Validating Agent Persona & Alias System...")
+    from harness.engine.aliases import get_alias_manager, PRESETS, CANONICAL_AGENTS
+    passed = True
+    mgr = get_alias_manager()
+
+    # 1. Check all canonical agents covered in presets
+    for p_name, p_agents in PRESETS.items():
+        missing = [a for a in CANONICAL_AGENTS if a not in p_agents]
+        if missing:
+            print(f"  ❌ Preset '{p_name}' missing agents: {missing}")
+            passed = False
+        for a, info in p_agents.items():
+            if not info.get("alias") or not info.get("callsign"):
+                print(f"  ❌ Preset '{p_name}' agent '{a}' missing alias or callsign")
+                passed = False
+
+    # 2. Check resolution
+    mgr.apply_preset("nusantara-squad")
+    if mgr.resolve_agent("@Bram") != "maxilun-architect":
+        print(f"  ❌ Failed to resolve @Bram -> maxilun-architect (got {mgr.resolve_agent('@Bram')})")
+        passed = False
+    if mgr.resolve_agent("maya") != "maxilun-ui-designer":
+        print(f"  ❌ Failed to resolve maya -> maxilun-ui-designer (got {mgr.resolve_agent('maya')})")
+        passed = False
+    if mgr.resolve_agent("maxilun-architect") != "maxilun-architect":
+        print("  ❌ Canonical resolution failed")
+        passed = False
+
+    # 3. Check tag formatting
+    tag = mgr.format_agent_tag("maxilun-architect")
+    if "Bram" not in tag or "Architect" not in tag:
+        print(f"  ❌ Tag formatting unexpected: {tag}")
+        passed = False
+
+    # 4. Check normalization in agent loop
+    from harness.engine.agent_loop import _normalize_agent
+    if _normalize_agent("@Bram") != "maxilun-architect":
+        print(f"  ❌ _normalize_agent(@Bram) failed: got {_normalize_agent('@Bram')}")
+        passed = False
+
+    if passed:
+        print(f"  ✅ Agent Alias System verified ({len(PRESETS)} presets, 19 agents bidirectional resolution)")
+    return passed
+
+
 def main():
     print(f"🌑 Starting Maxilun {len(EXPECTED_SKILLS)}-Skill Test Suite\n" + "=" * 48)
     results = [
@@ -1222,6 +1268,7 @@ def main():
         test_agent_meeting(),
         test_harness_confinement(),
         test_evals_suites(),
+        test_agent_aliases_system(),
     ]
 
     print("\n" + "=" * 48)

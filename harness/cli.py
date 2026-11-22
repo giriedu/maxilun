@@ -469,6 +469,62 @@ def cmd_memory(args):
         print(f"✅ Successfully added lesson [{new_id}]: \"{trigger}\" -> \"{action_text}\"")
 
 
+def cmd_alias(args):
+    from harness.engine.aliases import get_alias_manager, PRESETS
+    mgr = get_alias_manager()
+
+    if getattr(args, "list_presets", False):
+        print("\n🏛️  Available Maxilun Persona Presets:")
+        for name, agents in PRESETS.items():
+            print(f"\n  • Preset: '{name}'")
+            sample = [f"{info['alias']} ({k.replace('maxilun-', '')})" for k, info in list(agents.items())[:6]]
+            print(f"    Sample: {', '.join(sample)} ...")
+        print("\nApply a preset using: python -m harness alias --preset <name>\n")
+        return
+
+    if getattr(args, "show", False):
+        print(f"\n{mgr.get_summary()}\n")
+        return
+
+    if getattr(args, "preset", None):
+        mgr.apply_preset(args.preset)
+        print(f"✅ Persona preset '{args.preset}' applied successfully to {mgr.get_config_path()}!\n")
+        print(mgr.get_summary() + "\n")
+        return
+
+    if getattr(args, "set", None):
+        agent_id, alias = args.set
+        callsign = getattr(args, "callsign", "")
+        mgr.set_alias(agent_id, alias, callsign=callsign)
+        print(f"✅ Alias for '{agent_id}' set to '{alias}' (callsign: '{callsign or 'Custom'}')")
+        return
+
+    # Interactive setup or default
+    print("\n" + "=" * 65)
+    print("🏛️  MAXILUN PERSONA & ALIAS CONFIGURATION")
+    print("=" * 65)
+    print("Pilih preset panggilan nama agen untuk kolaborasi yang lebih personal:")
+    print("  [1] default        - Nama resmi Maxilun (Architect, Designer, Coder, dll.)")
+    print("  [2] nusantara-squad- Nama tech squad lokal (Bram, Maya, Dian, Fajar, Rian, Reza...)")
+    print("  [3] global-forge   - Nama engineering global (Alex, Elena, Viktor, Liam, Noah, Marcus...)")
+    print("  [4] show current   - Tampilkan konfigurasi saat ini")
+    try:
+        choice = input("\nPilihan Anda [1-4] (default: 2): ").strip() or "2"
+    except (EOFError, KeyboardInterrupt):
+        choice = "2"
+
+    preset_map = {"1": "default", "2": "nusantara-squad", "3": "global-forge"}
+    if choice in preset_map:
+        p_name = preset_map[choice]
+        mgr.apply_preset(p_name)
+        print(f"\n✅ Preset '{p_name}' berhasil diaktifkan!")
+        print(f"\n{mgr.get_summary()}\n")
+    elif choice == "4":
+        print(f"\n{mgr.get_summary()}\n")
+    else:
+        print("Pilihan dibatalkan.")
+
+
 def cmd_doctor(args):
     print("\n🌑 Maxilun Ecosystem Healthcheck (Doctor):")
     print("=" * 65)
@@ -606,6 +662,15 @@ def main():
     mem_parser.add_argument("--trigger", default=None, help="Trigger phrase or keyword (for add)")
     mem_parser.add_argument("--action-text", default=None, help="Action/policy text (for add)")
 
+    # alias
+    alias_parser = subparsers.add_parser("alias", help="Manage custom agent personas, callnames, and team presets")
+    alias_parser.add_argument("--preset", choices=["default", "nusantara-squad", "global-forge"], default=None, help="Apply a built-in agent persona preset")
+    alias_parser.add_argument("--list-presets", action="store_true", help="List all available persona presets")
+    alias_parser.add_argument("--show", action="store_true", help="Show currently configured agent aliases")
+    alias_parser.add_argument("--set", nargs=2, metavar=("AGENT", "ALIAS"), help="Assign a custom alias to an agent (e.g. --set maxilun-architect Bram)")
+    alias_parser.add_argument("--callsign", default="", help="Optional role title / callsign when using --set")
+    alias_parser.add_argument("--interactive", action="store_true", help="Interactive persona preset setup")
+
     args = parser.parse_args()
     if not args.command:
         parser.print_help()
@@ -629,6 +694,7 @@ def main():
         "generate-ci": cmd_generate_ci,
         "doctor": cmd_doctor,
         "memory": cmd_memory,
+        "alias": cmd_alias,
     }
 
     fn = dispatch.get(args.command)
