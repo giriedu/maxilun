@@ -140,7 +140,7 @@ If a line could be pasted into the Brief of a different product without edits, r
 Formulas, ranges, and code for every layer are in `references/tokens.md`. Screen-type skeletons (dashboard, data table, form, detail page, landing page, Apps Script web app), the state table, responsive rules, and the accessibility floor are in `references/patterns.md`. Load the deep references only when the task reaches them: `references/interface-engineering.md` (token and layout engineering), `references/component-mobile-patterns.md` (mobile components, overflow), `references/surface-state-topology.md` and `references/resilient-interaction-recovery.md` (states, optimistic updates, undo), `references/task-flow-choreography.md` and `references/cognitive-friction-audit.md` (flow reduction, navigation wording), `references/interaction-telemetry-benchmarks.md` (INP/CLS targets), `references/studio-craft-engine.md` with `assets/craft-primitives.css` (starter primitives). Where a deep reference disagrees with `references/tokens.md` or `references/patterns.md`, those two win.
 
 ### 4.1 Structure
-- Rank content against the Job. The top-ranked thing gets the Spotlight and area. Ban the symmetrical 3-card triad (`LAY-008`); use an Asymmetric Bento Grid or Operational List Ledger. Ban fake breadcrumb trails (`HDR-001`); use domain mastheads.
+- Rank content against the Job. The top-ranked thing gets the Spotlight and area. Ban the symmetrical 3-card triad (`LAY-008`) and sterile white-box admin templates (`LAY-014`); use an Asymmetric Bento Grid or Operational List Ledger. Ban fake breadcrumb trails (`HDR-001`); use domain mastheads.
 - Group by meaning. Separate groups with space before borders, and with borders before boxes. A card is for a thing that can be picked up as a unit; most cards are unnecessary. Never nest a bordered box inside a bordered box.
 - App shells use the real viewport: fixed-width navigation, fluid content with a readable cap. Marketing pages get a composed first screen, not a centred stack by reflex.
 - Design the narrow screen as its own layout: reorder by priority, cut secondary columns, keep 44px touch targets. Do not shrink the desktop.
@@ -167,7 +167,7 @@ Formulas, ranges, and code for every layer are in `references/tokens.md`. Screen
 
 ### 4.5 Components and States
 - One radius decision derived from the Voice; nested radius = outer radius − padding. Full pills only for literal tags and toggles; no decorative pill above the headline (`CMP-015`).
-- One icon family, one size, one stroke, coloured by text role. No emoji as icons (`CMP-003`). An icon that only repeats the label beside it can go.
+- One icon family, one size, one stroke, coloured by text role. No emoji as icons (`CMP-003`); no icons in pastel rounded squares (`CMP-021`). An icon that only repeats the label beside it can go.
 - Every interactive element has hover, focus-visible, active, and disabled. Every data region has loading, empty, error, and partial. A screen without its empty state is half a screen.
 - Forms: label above the field and always visible; help text before the error happens; error text says what to do; one primary button per form; typed data is never lost on a failed submit.
 - Tables: text left, numbers right, quiet header, consistent row height, actions at the row end; never zebra plus borders plus hover at once.
@@ -204,7 +204,7 @@ When local fixes keep getting overridden, the old design system is locking the s
 | Patchwork | `!important` utilities or inline styles stacked on top of a live old foundation | `SYS-004` |
 | Zombie style | Stale CSS, CSS modules, or inline styles that collide with the new tokens | `SYS-005` |
 
-Fix at the root as a clean cutover: replace the token block, open the shell, upgrade the primitives, and delete obsolete stylesheets and classes. Nuclear Redesign Protocol: in any redesign or revamp, tearing down the legacy container wrapper (`SYS-002`) and rebuilding the layout topology from scratch is mandatory; patchwork cosmetic tweaks on locked shells (`SYS-004`) are rejected on sight. Scope stays honest: touch only the foundation the requested screens depend on.
+Fix at the root as a clean cutover: replace the token block, open the shell, upgrade the primitives, and delete obsolete stylesheets and classes. Nuclear Redesign Protocol: in any redesign or revamp, tearing down the legacy container wrapper (`SYS-002`) and rebuilding the layout topology from scratch is mandatory; patchwork cosmetic tweaks on locked shells (`SYS-004`) are rejected on sight. On multi-page or multi-module redesigns, enforce the Vertical Slice Protocol: rebuild the Root Shell and the primary view completely before touching secondary views. Scope stays honest: touch only the foundation the requested screens depend on.
 
 ## 6. Brand Artifacts & Native Surfaces
 
@@ -231,7 +231,7 @@ Rendered-output measurement (three-exit gates, file-hash receipts, composited co
 ## 8. Do Not
 
 - Do not change what the product is, rename it, or reorder its content without being asked. Craft is applied to the product, not instead of it.
-- Do not replace one trend with another. Swapping purple gradients for glass, grain, bento grids, brutalist borders, or a dark developer-tool dashboard on a non-technical product is the same mistake (`LAY-013`).
+- Do not replace one trend with another. Swapping purple gradients for glass, grain, bento grids, brutalist borders, or a dark developer-tool dashboard on a non-technical product is the same mistake (`LAY-013`). Never fall back to sterile white rounded card boxes on off-white backgrounds (`LAY-014`).
 - Do not invent features, data, testimonials, or metrics.
 - Do not reuse the previous project's palette and type because it worked. The Brief decides; habit does not.
 - Do not add a dependency for something CSS already does (Grid, Flexbox, `@container`, `oklch()`, `<dialog>`, logical properties).

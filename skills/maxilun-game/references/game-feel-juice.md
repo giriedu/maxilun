@@ -151,3 +151,4 @@ export function JuicyHealthBar({ currentHp, maxHp }: { currentHp: number; maxHp:
 All dynamic screen shakes and flashing lights MUST respect the global accessibility preference:
 - In Web runtimes: check `@media (prefers-reduced-motion: reduce)` and cap camera offset at `Vector2.ZERO`.
 - In Native Game Engines: provide an in-game "Screen Shake: [Off / 50% / 100%]" toggle in accessibility options.
+

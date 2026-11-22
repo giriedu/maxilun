@@ -43,6 +43,7 @@ Give content media/images a `1px` outline inset by `1px`:
 - **Neutral Hairline Border, Not a Neon Line (`CMP-018`)**: A card container border must be neutral, 1px, low opacity (`oklch(1 0 0 / 0.08)` in dark mode, `oklch(0 0 0 / 0.08)` in light mode). **Never wrap the card perimeter in a high-saturation/neon border** (`border-cyan-500`, `border-purple-500`). Use the accent color only as a status dot or a small active indicator, never as a fence line around the card.
 - **Reject Radial Glow Blobs Behind Cards (`CMP-019`)**: Do not place a large blurred circle (`blur-3xl bg-cyan-500/20`) behind a card to make it look "lit". Card depth must come from the surface tone difference (`Surface` vs `Elevated`) and a subtle contact shadow.
 - **Reject Fake Telemetry & Status Theater**: Do not attach static fictional labels such as `// 60 FPS`, `• ONLINE`, `• PING: 0.1ms`, `SYSTEM NORMAL` without a real streaming data source (`CMP-020`). When you show socket/connection status, reflect the real state (`CONNECTED`, `CONNECTING`, `DISCONNECTED`) with text + a matching semantic icon.
+- **Ban on Pastel Rounded Icon Square Boxes (`CMP-021`)**: Do not place an icon inside a soft pastel rounded box (`bg-blue-50 text-blue-600 rounded-lg p-2.5`, `bg-indigo-50`, etc.) as a decorative badge or empty state visual. This is a generic AI template hallmark. Use clean monochrome `text-foreground` / `text-muted-foreground` SVG vector icon, or render on a calibrated neutral surface step (`bg-surface-elevated border border-border`).
 
 ### 1.6 Ban on Emoticon/Emoji Pollution in the Interface (`CMP-003`)
 - **Strictly Forbidden**: Inserting Unicode emoji characters (`🚀`, `✨`, `🔥`, `⚡`, `💡`, `🎉`, `⭐`, `✅`, `❌`, `⚠️`, `👉`, `💎`, `🌟`, `🤖`, `💬`, etc.) into:
@@ -322,3 +323,11 @@ Dashboards are the area most exposed to AI slop pollution. Automatic generators 
 
 5. **Clear Emoji from Dashboard Controls (`CMP-003`)**:
    - Never use emoji (`🚀`, `✨`, `🔥`, `📊`, `💳`, `⚡`) on dashboard buttons, navigation tabs, or filter chips. Use standardized geometric monochrome SVG icons.
+
+6. **Eradicate Sterile White-Box Admin Monoculture (`LAY-014`)**:
+   - *Slop*: A generic template of floating white rounded card boxes (`bg-white border-gray-200 rounded-xl`) stacked haphazardly onto a light-gray shell background (`bg-gray-50`/`bg-slate-50`), turning an application into an uninspired, off-the-shelf admin template.
+   - *Enterprise Solution*: Ground the interface in a declared domain archetype (e.g., Technical Ledger, Warm Swiss Editorial, Deep Space Obsidian). Differentiate structural zones with background step hierarchy, unified border rhythm, or subtle tonal surface transitions instead of generic white card boxes.
+
+7. **Vertical Slice Protocol for Multi-Module Redesigns**:
+   - On massive multi-screen revamp mandates, never perform superficial styling patches across dozens of files simultaneously.
+   - Re-architect the Root Layout Shell (Sidebar, Header, Main Canvas tokens) and ONE primary workspace view to 100% production completeness first, verify with user, then systematically propagate to secondary views.

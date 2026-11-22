@@ -93,6 +93,9 @@ LINE_RULES = [
     ("pill-tagline", W,
      re.compile(r"rounded-full[^\"'>]*border[^\"'>]*(?:bg-|text-)[^\"'>]*>\s*(?:[•·\|\/]\s*)?[A-Z0-9_\s-]{3,24}(?:\s*[•·\|\/]\s*[A-Z0-9_\s-]{3,24})*\s*<", re.I),
      "floating pill tagline capsule with bullets above headline (CMP-015)", "unbordered sentence-case text eyebrow or integrate context directly into headline"),
+    ("pastel-badge", W,
+     re.compile(r"(?:bg-(?:blue|indigo|sky|purple|emerald|amber|violet|teal|cyan|pink|rose)-50\b[^\"'>\n]*\brounded\b|\brounded\b[^\"'>\n]*bg-(?:blue|indigo|sky|purple|emerald|amber|violet|teal|cyan|pink|rose)-50\b)", re.I),
+     "icon or badge inside a pastel rounded square (CMP-021)", "monochrome text-colour icon or clean neutral surface badge"),
 ]
 
 OFFGRID_TW = re.compile(r"(?<![\w-])-?" + SPACING_PREFIX + r"-\[(\d+(?:\.\d+)?)px\]")
@@ -174,6 +177,12 @@ def scan_file(path):
     if pills > 8:
         add("pill-everything", I, 1, "fully rounded shape used %d times" % pills,
             "one radius decision; pills only for tags and toggles")
+
+    white_cards = len(re.findall(r"\bbg-white\b[^\"'>\n]*(?:\brounded-(?:lg|xl|2xl)\b[^\"'>\n]*\bborder-(?:gray|slate)-(?:100|200)\b|\bborder-(?:gray|slate)-(?:100|200)\b[^\"'>\n]*\brounded-(?:lg|xl|2xl)\b)", text))
+    if white_cards > 3:
+        add("white-box-monoculture", W, 1,
+            "%d generic white rounded cards with gray borders (LAY-014)" % white_cards,
+            "declare an authentic archetype (e.g. Technical Ledger, Deep Space Obsidian, Swiss High-Contrast); avoid generic white boxes on light-gray background")
 
     stats["motion"] = bool(re.search(r"transition|animation|@keyframes|animate-|motion\.", text))
     stats["reduced"] = bool(re.search(r"prefers-reduced-motion|motion-reduce:|motion-safe:|"

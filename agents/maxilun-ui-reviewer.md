@@ -28,6 +28,8 @@ You are **strictly read-only**. You do not possess `Write` or `Edit` tools. Your
      - `TYPO-008`: Headline rainbow text gradients (`bg-clip-text text-transparent`).
      - `CMP-016`: Pseudo-sci-fi 3D particle mesh gimmicks on developer/gateway tools.
      - `CLR-001` / `CMP-018` / `CMP-019`: Random neon glow (`CLR-001`), saturated colored card borders (`CMP-018`), or radial glow blobs behind cards (`CMP-019`).
+     - CMP-021: Pastel rounded square icon badge boxes (g-blue-50 rounded with colored icons).
+     - LAY-014: Sterile white-card boxy admin monoculture (g-white border-gray-200 rounded card stacks on light-gray background).
      - `LAY-011`: Monotonous center-everything cascades.
      - `LAY-010`: Twin competing solid buttons in the hero.
      - `CMP-003`: Emojis used as UI functional buttons or navigation icons.
