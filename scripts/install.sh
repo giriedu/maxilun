@@ -241,6 +241,18 @@ if [ ${#installed_agents[@]} -gt 0 ]; then
     done
 fi
 
+# Register the knowledge graph as a native MCP tool in Claude Code (idempotent),
+# so agents call kg_locate instead of falling back to grep.
+if command -v claude >/dev/null 2>&1 && ! claude mcp get maxilun-kg >/dev/null 2>&1; then
+    kg_py=$(command -v python3 || command -v python)
+    for kg in "${CURRENT_DIR}/.claude/skills/maxilun-knowledge-graph/mcp_server.py:project" "${HOME}/.claude/skills/maxilun-knowledge-graph/mcp_server.py:user"; do
+        if [ -n "$kg_py" ] && [ -f "${kg%:*}" ]; then
+            claude mcp add --scope "${kg##*:}" maxilun-kg -- "$kg_py" "${kg%:*}" >/dev/null 2>&1                 && echo "✅ maxilun-kg MCP server registered in Claude Code (${kg##*:} scope)"
+            break
+        fi
+    done
+fi
+
 echo ""
 echo "──────────────────────────────────────"
 echo "  Post-Install Verification"

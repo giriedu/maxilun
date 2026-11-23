@@ -204,6 +204,25 @@ if ($AgentsInstalled.Count -gt 0) {
     foreach ($loc in $AgentsInstalled) { Write-Host $loc -ForegroundColor White }
 }
 
+# Register the knowledge graph as a native MCP tool in Claude Code (idempotent),
+# so agents call kg_locate instead of falling back to grep.
+if ((Get-Command claude -ErrorAction SilentlyContinue) -and (Get-Command python -ErrorAction SilentlyContinue)) {
+    & claude mcp get maxilun-kg *> $null
+    if ($LASTEXITCODE -ne 0) {
+        $kgCandidates = @(
+            @{ Path = "$CurrentDir\.claude\skills\maxilun-knowledge-graph\mcp_server.py"; Scope = "project" },
+            @{ Path = "$env:USERPROFILE\.claude\skills\maxilun-knowledge-graph\mcp_server.py"; Scope = "user" }
+        )
+        foreach ($kg in $kgCandidates) {
+            if (Test-Path $kg.Path) {
+                & claude mcp add --scope $kg.Scope maxilun-kg -- python ($kg.Path -replace '\\','/') *> $null
+                if ($LASTEXITCODE -eq 0) { Write-Host "  maxilun-kg MCP server registered in Claude Code ($($kg.Scope) scope)" -ForegroundColor Green }
+                break
+            }
+        }
+    }
+}
+
 Write-Host ""
 Write-Host "  --------------------------------------" -ForegroundColor DarkCyan
 Write-Host "  Post-Install Verification" -ForegroundColor Cyan
