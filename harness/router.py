@@ -2,7 +2,7 @@
 
 Simulates the Master Orchestrator decision logic:
 - Type 1 (Irreversible / High-Cost) vs Type 2 (Reversible / Low-Cost) classification
-- Single-owner routing across the 24 specialists (25 skills total)
+- Single-owner routing across the 26 specialists (27 skills total)
 - Conditional companion attachment at hard capability boundaries
 - Pre-flight Knowledge Graph inspection recommendation
 """
@@ -103,6 +103,17 @@ class MaxilunRouter:
             companions.append("maxilun-data")
             rationale = "Cryptographic webhook signature verification and idempotent payload mutation."
             pre_flight = "Check webhook replay window, raw body HMAC, and database idempotency table."
+
+        elif match_tokens(["figcraft", "live canvas", "desain kanvas desktop", "kanvas live", "figcraft mcp", "figcraft swarm"]):
+            owner = "maxilun-figcraft"
+            rationale = "Live desktop vector canvas engineering and multi-agent UI orchestration via FigCraft MCP."
+            pre_flight = "Verify FigCraft desktop instance is listening on 127.0.0.1:7979 (--control 7979) and inspect document structure."
+            if any(k in p for k in ["token", "warna", "oklch", "style"]):
+                companions.append("maxilun-craft")
+            if any(k in p for k in ["copy", "teks", "tulisan"]):
+                companions.append("maxilun-content")
+            if any(k in p for k in ["audit", "qa", "verifikasi"]):
+                companions.append("maxilun-verify")
 
         elif any(k in p for k in ["landing page", "desain ui", "redesign", "redesain", "rombak", "revamp", "overhaul", "ganti ui", "komponen ui", "sistem desain", "ui/ux", "tampilan", "dashboard", "halaman web", "website", "logo svg", "brand identity", "ganti tema", "ubah tema", "tema baru"]):
             owner = "maxilun-craft"

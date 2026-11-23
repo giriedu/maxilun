@@ -59,6 +59,7 @@ EXPECTED_SKILLS = [
     "maxilun-game",
     "maxilun-hunt",
     "maxilun-n8n",
+    "maxilun-figcraft",
 ]
 EXPECTED_AGENTS = [
     "maxilun-orchestrator",
@@ -81,6 +82,7 @@ EXPECTED_AGENTS = [
     "maxilun-devops",
     "maxilun-docsmith",
     "maxilun-automator",
+    "maxilun-figcraft",
 ]
 REQUIRED_REFERENCES = [
     "engines.md",
@@ -528,6 +530,8 @@ def test_referenced_paths():
         REPO_ROOT / "harness" / "tools" / "fs_tools.py",
         REPO_ROOT / "harness" / "tools" / "bash_tool.py",
         REPO_ROOT / "harness" / "tools" / "kg_tool.py",
+        SKILLS_DIR / "maxilun-figcraft" / "references" / "canvas-rules.md",
+        SKILLS_DIR / "maxilun-figcraft" / "references" / "batch-patterns.md",
     ]
     all_ok = True
     for p in paths_to_verify:
@@ -748,6 +752,7 @@ def test_cross_references():
         ("maxilun-hunt", ["maxilun-sentinel", "maxilun-verify", "maxilun-deploy"]),
         ("maxilun-deploy", ["maxilun-hunt"]),
         ("maxilun-n8n", ["maxilun-deploy", "maxilun-engineer", "maxilun-sentinel"]),
+        ("maxilun-figcraft", ["maxilun-craft", "maxilun-verify", "maxilun-content"]),
     ]
     passed = True
     for skill, targets in checks:

@@ -1,4 +1,4 @@
-# Daftar 25 Skill Maxilun (1 Orchestrator + 24 Spesialis)
+# Daftar 27 Skill Maxilun (1 Orchestrator + 26 Spesialis)
 
 Kontrak kepemilikan dan aturan kohesi routing lintas-skill ada di [SKILL-CONTRACTS.md](SKILL-CONTRACTS.md) dan [ROUTING-MATRIX.md](ROUTING-MATRIX.md). Aturan Purity Gate publik ada di [PURITY-GATE.md](PURITY-GATE.md).
 
@@ -29,10 +29,12 @@ Kontrak kepemilikan dan aturan kohesi routing lintas-skill ada di [SKILL-CONTRAC
 | 23 | **maxilun-ai** | Rekayasa Aplikasi LLM & RAG: arsitektur hybrid retrieval (dense vector + BM25), chunking semantik, reranking, evaluasi regresi prompt, LLM-as-a-judge, optimasi context caching, dan function calling schemas. | `/maxilun-ai`, `/msal-ai`, `rag`, `embedding`, `prompt eval` |
 | 24 | **maxilun-game** | Rekayasa Game Studio & Multi-Engine: arsitektur engine (Godot GDScript/GDExtension, Unreal Engine C++/GAS, Unity C#/DOTS), sinkronisasi fisika, authoritative netcode, spesifikasi GDD, dan otomasi test game (gdUnit4, NUnit, Unreal Automation). | `/maxilun-game`, `/maxilun-gamestudio`, `game dev`, `godot`, `unreal`, `unity`, `gdd` |
 | 25 | **maxilun-hunt** | Audit Kerentanan Ofensif: pembuktian skenario serangan nyata (IDOR/BOLA, auth bypass pada sibling routes, SSRF, race condition), eliminasi false-positive via 7-Question Gate, mesin verifikasi deterministik (`PROVEN`, `REFUTED`), paket bukti reproducible (`request.http`, `repro.sh`), dan jaminan nol traffic out-of-scope. | `/maxilun-hunt`, `/msal-hunt`, `bug bounty`, `pentest`, `idor` |
+| 26 | **maxilun-n8n** | Otomasi Workflow & Integrasi Event: desain workflow n8n v1, ekspresi aman, webhook HMAC SHA-256, code nodes JS/Python, AI Agent nodes, dan queue mode. | `/maxilun-n8n`, `/msal-n8n`, `n8n`, `automasi n8n` |
+| 27 | **maxilun-figcraft** | Desain Kanvas Live & UI FigCraft Desktop: integrasi MCP Live Canvas (--attach 7979), partisi multi-agent anti-konflik, mutasi atomik batch, Auto Layout presisi, dan penegakan Purity Gate. | `/maxilun-figcraft`, `/msal-figcraft`, `figcraft`, `live canvas`, `desain kanvas desktop` |
 
 ## Prinsip Integrasi Inti
 
 - **Satu Pemilik Kohesif**: Hindari memecah satu halaman atau satu endpoint ke banyak spesialis tanpa batas kapabilitas nyata.
 - **Investigasi Repo Sebelum Bertanya**: Gunakan `maxilun-knowledge-graph` dan pembacaan konfigurasi proyek untuk mengambil keputusan teknis secara mandiri; tanyakan hanya keputusan yang mahal dibalik.
 - **Anti-Monokultur Desain**: `maxilun-craft` memanfaatkan 100 analisis brand nyata di `skills/maxilun-craft/references/design-md/` untuk menyesuaikan struktur dengan domain produk, bukan menyeragamkan semua proyek ke satu template SaaS.
-- **Batas Instruksi Ramping (`≤300` Baris)**: Seluruh 25 berkas `SKILL.md` dijaga tetap padat di bawah 300 baris agar jendela konteks model tetap tajam, dengan referensi mendalam dimuat sesuai kebutuhan.
+- **Batas Instruksi Ramping (`≤300` Baris)**: Seluruh 27 berkas `SKILL.md` dijaga tetap padat di bawah 300 baris agar jendela konteks model tetap tajam, dengan referensi mendalam dimuat sesuai kebutuhan.

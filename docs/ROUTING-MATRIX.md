@@ -24,6 +24,8 @@ Use this matrix to assign **one cohesive primary owner** per deliverable and pre
 | Build game mechanics, multi-engine architecture (Unreal/Unity/Godot), or GDD | `maxilun-game` | `maxilun-craft` (UI/HUD art direction), `maxilun-motion` (camera/VFX), `maxilun-verify` (engine test runner) | `maxilun-engineer` as game engine owner |
 | Hunt vulnerabilities, pentest, or verify IDOR/BOLA/SSRF | `maxilun-hunt` | `maxilun-sentinel` (threat posture), `maxilun-engineer` (remediation), `maxilun-verify` (security regression test) | `maxilun-insight` as adversarial hunt owner |
 | Audit technical SEO, metadata, sitemap, structured data, or ranking drop | `maxilun-seo-audit` | `maxilun-frontend` (metadata/rendering fix), `maxilun-content` (copy rewrite) | `maxilun-content` as audit owner |
+| Design and automate n8n workflows, webhooks, or ETL pipelines | `maxilun-n8n` | `maxilun-deploy` (queue mode), `maxilun-sentinel` (HMAC security), `maxilun-engineer` (glue-code) | `maxilun-engineer` as n8n workflow owner |
+| Design UI layout or vector components on FigCraft Live Canvas | `maxilun-figcraft` | `maxilun-craft` (visual tokens), `maxilun-content` (copy slots), `maxilun-verify` (screenshot QA) | `maxilun-frontend` as canvas owner |
 ## Handoff Record
 
 Keep cross-skill handoffs factual and free of ceremonial banners:

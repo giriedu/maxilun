@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "figcraft-live": {
+      "command": "figcraft-cli",
+      "args": [
+        "mcp",
+        "--attach",
+        "7979"
+      ],
+      "env": {}
+    }
+  }
+}
+

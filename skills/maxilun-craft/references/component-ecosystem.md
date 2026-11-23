@@ -174,4 +174,61 @@ export function DetailView({ open, onOpenChange, title, children }: DetailViewPr
 }
 ```
 
-*Adheres strictly to the 4-State Matrix, zero layout shift (CLS = 0), and seamless mobile-to-desktop responsiveness.*
+*Adheres strictly to the 4-State Matrix, zero layout shift (CLS = 0), and smooth mobile-to-desktop responsiveness.*
+
+---
+
+## 3. Curated UI/UX Inspiration & Production Component Vault
+
+This section catalogs 8 premier inspiration libraries and architectural design systems, mapping their core aesthetic patterns into Maxilun's strict Purity Gate:
+
+### A. `jiro.build` — AI-Ready Component Blueprints (1,500+ Verified Layouts)
+- **Core Archetype**: Production-ready source code across Next.js, Tailwind CSS, and headless primitives.
+- **Architectural Heuristic**: Provides pre-vetted responsive wireframe trees and verified React blocks. When composing screens, use `jiro.build` structural hierarchies to avoid blank-canvas hallucination while replacing generic styling with project-specific OKLCH brand tokens.
+- **Maxilun Invariant**: Strip community emojis (`CMP-003`) and convert floating KPI pill strips into dense, asymmetric tabular ledgers with right-aligned `tabular-nums`.
+
+### B. `header.design` — Masthead & Navigation Architectures
+- **Core Archetype**: Curated header compositions across enterprise software, developer tools, and editorial platforms.
+- **Architectural Heuristic**:
+  - **Operational Status Masthead**: Header integrating real-time telemetry (node status, environment indicator dot, sync timestamp) with negative tracking display typography.
+  - **Sticky Translucent Backdrop**: Header pinning with `backdrop-blur-md bg-neutral-950/80` and `border-b border-neutral-800/80` to preserve scroll context without obscuring viewport real estate.
+  - **Purity Gate Invariant (`HDR-001`)**: Forbid generic dummy breadcrumbs (`Dashboard / Analytics / Overview`) and centered pill stacks. Enforce clear two-level hierarchy: Workspace Switcher + Primary Nav on top, Contextual Action Deck below.
+
+### C. `transitions.dev` — Fluid UI Layout Transitions
+- **Core Archetype**: Tactile cross-screen and state transitions without jarring layout snaps or content jumps.
+- **Architectural Heuristic**:
+  - **FLIP Layout Morphing**: Apply Framer Motion `layoutId` or CSS View Transitions for smooth geometric expansion (e.g., list item expanding into full-width detail view).
+  - **Zero CLS State Transitions**: Container bounds are pre-allocated so asynchronous content resolution causes zero cumulative layout shift.
+  - **Reduced Motion Fallback**: Every layout transition strictly provides `@media (prefers-reduced-motion: reduce)` opacity cross-fades.
+
+### D. `obsidianui.dev` — Obsidian Dark-Mode & Tactical Aesthetics
+- **Core Archetype**: Deep obsidian dark palettes (`#08090C`, `#0E1015`), subtle reactive borders, and technical high-contrast clarity.
+- **Architectural Heuristic**:
+  - **Border Beam & Ray Highlights**: Subtle rotating gradient stroke (`border-neutral-800` accented by a moving hairline specular highlight) applied only to the primary focus anchor.
+  - **Matte Precision**: Replace garish purple-cyan gradients with deep monochromatic slate, obsidian black, and functional emerald/amber status dots.
+
+### E. `ui.aceternity.com` — High-Impact Animated React Primitives
+- **Core Archetype**: Kinetic visual components (3D Pin, Spotlight Card Hover, Tracing Beam, Grid Backgrounds).
+- **Architectural Heuristic**:
+  - **One Signature Moment Rule**: Limit to exactly ONE signature motion element per viewport (e.g. an interactive Spotlight Card on the hero centerpiece or a Tracing Beam timeline).
+  - **Compositor Safety**: Restrict motion execution strictly to GPU-accelerated properties (`transform`, `opacity`). Never animate `width`, `height`, `margin`, or `padding`.
+
+### F. `60fps.design` — Tactile Kinetic Mobile & Desktop Micro-Interactions
+- **Core Archetype**: High-refresh-rate interaction curves, fluid drawer swipe dismissals, and gesture physics.
+- **Architectural Heuristic**:
+  - **Analytical Damped Springs**: Use physical spring constants ($k = 300$, $\zeta = 0.85$) instead of artificial `linear` or ease-in-out bezier curves for touch feedback.
+  - **Inertial Momentum**: Drag gestures respect release velocity, snapping to sheet snap-points without bouncy oscillations.
+
+### G. `mobbin.com` — Production-Tested Mobile & Web User Flows
+- **Core Archetype**: Exhaustive capture of real-world leader user journeys (checkout, multi-step onboarding, settings, paywalls).
+- **Architectural Heuristic**:
+  - **Progressive Disclosure**: Break complex multi-field configurations into 3–4 focused steps with persistent back navigation and inline field validation.
+  - **Tap Ergonomics**: Interactive targets strictly maintain $\ge 44 \times 44$ px touch bounding boxes on mobile screens (`375px` viewport audit).
+
+### H. `styles.refero.design` — AI Agent & Autonomous Interface Patterns
+- **Core Archetype**: Advanced UI patterns tailored specifically for AI-native workflows and agent operations.
+- **Architectural Heuristic**:
+  - **Split Workbench Canvas**: Dual-pane workspace (left: streaming agent thought ledger, tool execution tree, and verification gates; right: live interactive document/canvas preview).
+  - **Human-In-The-Loop Decision Cards**: Non-blocking interactive decision cards presenting concrete options (`[Accept A]`, `[Review B]`) rather than open-ended conversational prompts.
+  - **Collapsible Tool Traces**: Detailed terminal logs, AST queries, and command outputs default to compact collapsible drawers with instant copy buttons and exit code badges.
+

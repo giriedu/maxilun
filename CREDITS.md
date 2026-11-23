@@ -110,6 +110,48 @@ Maxilun synthesizes and builds upon pioneering open-source design engineering ph
 * **License**: Free-to-Use / Open Web Resource
 * **Contribution to Maxilun**: Curated catalog of 60 game feel and tactile juice mechanics (Hit Stop, Screen Shake, Squash & Stretch, Delayed Health Bar Chip, Coyote Time, and Impact Waves for Godot 4, Unity, and interactive Web Canvas) synthesized in `skills/maxilun-game/references/game-feel-juice.md`.
 
+---
+
+### 13. Agent Autoloop
+* **Author**: KKKKhazix
+* **Project**: Agent Autoloop
+* **Repository**: `https://github.com/KKKKhazix/agent-autoloop`
+* **License**: MIT License
+* **Contribution to Maxilun**: Background autonomous scheduling state machine (`queued → claimed → done`), atomic Human-in-The-Loop Decision Cards (`cards.state`), persistent decision memory (`docs/decisions.md` & `docs/declined.md`), and provider rate-limit backoff (`limitedUntil`) synthesized in `skills/maxilun/references/swarm-coordination.md`.
+
+---
+
+### 14. AnyModelBot
+* **Author**: Modelflare AI
+* **Project**: AnyModelBot
+* **Repository**: `https://github.com/modelflare-ai/AnyModelBot`
+* **License**: Apache-2.0 License
+* **Contribution to Maxilun**: Multi-bot persona packaging (`bot.json`, `persona.md`), strict workspace sandboxing, permission gates for mutations outside project root, and secret scrubbing protocols.
+
+---
+
+### 15. AI Employees
+* **Author**: Mark Fulton
+* **Project**: AI Employees
+* **Repository**: `https://github.com/markfulton/ai-employees`
+* **License**: MIT License
+* **Contribution to Maxilun**: Enterprise autonomous routine contracts (`WORK-CYCLE.md`, `SCHEDULE.md`, `ROLE.md`) for 8 business roles, automated routine execution, and verification exit codes.
+
+---
+
+### 16. Curated UI/UX Design Inspiration Platforms
+* **Projects**:
+  - `jiro.build` (1,500+ AI-ready design patterns & source code)
+  - `header.design` (Masthead topologies, operational indicators, editorial headers)
+  - `transitions.dev` (FLIP layout morphing, fluid state transitions, zero CLS)
+  - `obsidianui.dev` (Dark obsidian aesthetics, hairline border beams, high-contrast matte surfaces)
+  - `ui.aceternity.com` (Signature visual primitives, 3D card perspective tilt, spotlight hovers)
+  - `60fps.design` (60 FPS kinetic micro-interactions, analytical damped springs, mobile drawer dismissals)
+  - `mobbin.com` (Real-world production user flows, progressive disclosure, mobile touch ergonomics)
+  - `styles.refero.design` (Specialized AI agent interfaces, dual-pane workbenches, decision card UI)
+* **Contribution to Maxilun**: Curated component reference catalog, masthead topologies, and kinetic micro-interaction recipes synthesized in `skills/maxilun-craft/references/component-ecosystem.md`.
+
+
 
 
 

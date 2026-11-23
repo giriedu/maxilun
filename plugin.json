@@ -1,0 +1,12 @@
+{
+  "name": "maxilun-figcraft",
+  "displayName": "Maxilun FigCraft",
+  "version": "1.3.0",
+  "description": "Maxilun FigCraft Live Canvas MCP integration with multi-agent orchestration, atomic batch mutations, auto-layout precision, and Purity Gate enforcement.",
+  "suggestedPrompts": [
+    "Periksa status koneksi dan struktur layer dokumen aktif di kanvas FigCraft",
+    "Jalankan FigCraft Live Canvas build dengan partisi atomik batch dan Auto Layout",
+    "Jalankan audit visual dan layout pada dokumen aktif FigCraft dengan Maxilun Purity Gate"
+  ]
+}
+

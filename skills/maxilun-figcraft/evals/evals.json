@@ -1,0 +1,40 @@
+{
+  "skill_name": "maxilun-figcraft",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Rancang struktur layout hero section untuk FigCraft Live Canvas dengan MCP batch payload yang aman anti-konflik.",
+      "expected_output": "Atomic batch payload with document target, select: false on every create, exclusive parentId, auto-layout parameters, and no emoji icons.",
+      "assertions": [
+        "atomic batch payload with onError abort",
+        "select: false on every node.create",
+        "uses explicit parentId",
+        "Auto Layout vertical/horizontal with gap and padding",
+        "zero emoji in text nodes (CMP-003)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Bagaimana aturan partisi kanvas dan penanganan undo/redo saat koordinasi multi-agent di FigCraft Live?",
+      "expected_output": "Explains exclusive parentId partitioning per section, forbids global undo/redo, forbids select dependency, and requires explicit node ID targeting.",
+      "assertions": [
+        "exclusive parentId partition",
+        "prohibits global undo/redo during multi-agent turns",
+        "requires explicit IDs on mutations",
+        "does not rely on global selection"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Buatkan token warna dan spesifikasi Auto Layout untuk asymmetric bento dashboard card di FigCraft.",
+      "expected_output": "Hex color tokens with WCAG AAA contrast, concentric corner radius formula, and nested auto-layout frame configuration.",
+      "assertions": [
+        "hex color tokens for surface, border, text, and accent",
+        "concentric radius calculation",
+        "nested auto-layout properties (layout, gap, padding, sizingH)",
+        "asymmetric hierarchy instead of generic 3-card stack"
+      ]
+    }
+  ]
+}
+

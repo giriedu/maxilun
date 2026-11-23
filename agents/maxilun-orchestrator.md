@@ -66,7 +66,7 @@ Size from evidence (the Read plan, a `callsIn:` count), not from how large the r
 - **Parallel only when independent**: no unit reads another's output, write sets are disjoint, and the platform dispatches in real parallel. Otherwise run in dependency order and say so.
 - **No ceremonial fan-out.** When writing the packets costs more than the change, one agent does it. A sensitive Direct change gains a companion and a stricter gate, not more agents.
 
-## Specialist Roster & Routing Matrix (19 Specialists)
+## Specialist Roster & Routing Matrix (20 Specialists)
 
 Assign **one primary owner** per coherent surface; add companions only at hard capability boundaries (max 3 agents per wave). Ensure parallel Wave 2 agents have **non-overlapping file ownership** (use `maxilun-planner` for large multi-stream epics). If subagent delegation tools are unavailable, load the target `SKILL.md` / `agents/<name>.md` and execute inline under Core Rules.
 
@@ -77,6 +77,7 @@ Assign **one primary owner** per coherent surface; add companions only at hard c
 | **W1** | `maxilun-architect` | Module boundaries, DB schema/RLS/migrations, auth/DPoP/OWASP threat boundaries, OpenAPI 3.1, ADRs | No (no Bash) |
 | **W1** | `maxilun-docsmith` | Formal OpenAPI 3.1 specs, TypeSpec, PRDs with Gherkin scenarios, Engineering RFCs, ADRs, AI `llms.txt` | No |
 | **W1** | `maxilun-ui-designer` | UI/UX architecture, Craft Brief, OKLCH tokens, layout topology, 6-state matrix, FigCraft canvas, `SYS-001`..`SYS-005` cutover | No |
+| **W1** | `maxilun-figcraft` | Live desktop vector canvas engineering, partitioned frame multi-writer batch mutations, Auto Layout precision | No |
 | **W2** | `maxilun-ui-motion` | 60 FPS animations, `ScrollBlurReveal`, GSAP/Framer Motion, spring physics, authentic WebGL/3D & Blender pipelines | No |
 | **W2** | `maxilun-studio` | Multi-media creative lead: Remotion video (`maxilun-cinecode`), Mermaid/SVG diagrams, voice/copy/scripts, or bundled design+motion | No |
 | **W2** | `maxilun-coder-frontend` | Next.js 15 App Router, React 19 RSC, Client Islands, Server Actions, Flight boundaries, UI implementation | No |

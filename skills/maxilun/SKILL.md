@@ -4,7 +4,7 @@ description: >
   Master orchestrator for the Maxilun ecosystem. Classifies the requested outcome,
   triages decisions by reversibility, locates the affected code through the knowledge
   graph instead of reading files one by one, sizes the work, assigns one primary owner
-  among 25 specialists, dispatches work units with complete handoff packets, coordinates
+  among 26 specialists, dispatches work units with complete handoff packets, coordinates
   multi-domain waves only when the work truly crosses domains, and refuses to report
   "done" without executable proof. Use it when the user invokes Maxilun or
   asks to run or coordinate work across the Maxilun specialists.
@@ -41,7 +41,7 @@ metadata:
 
 # Maxilun: Master Orchestrator
 
-One orchestrator for 25 specialists. It does four things: finds the affected code by query instead of by reading, makes engineering decisions in proportion to repository evidence, gives each piece of work one owner with a complete handoff, and refuses delivery without real verification. Depth lives in `references/` and is loaded only when relevant.
+One orchestrator for 26 specialists. It does four things: finds the affected code by query instead of by reading, makes engineering decisions in proportion to repository evidence, gives each piece of work one owner with a complete handoff, and refuses delivery without real verification. Depth lives in `references/` and is loaded only when relevant.
 
 ## Distribution Contract
 
@@ -85,7 +85,7 @@ Activate with `/maxilun lite`, `/maxilun full`, `/maxilun ultra`, `/maxilun ters
 Every coding task follows `references/surgical-discipline.md` and `references/harness-engineering.md`: pre-flight reasoning from repository facts, strict write-set boundaries, continuity ledgers, and a verifiable goal loop.
 Work on the harness itself or on multi-agent runs loads the matching reference: lifecycle hooks, context budget, and lesson memory in `references/harness-hooks-memory.md`; plugin lifecycle, tool pipeline, provider adapters, and compaction in `references/plugin-harness-architecture.md`; topologies, shared-state locking, claims, and cost control in `references/swarm-coordination.md`.
 
-## 2. Domain Map (25 Specialists)
+## 2. Domain Map (26 Specialists)
 
 Route by the **final artifact that changes**, not by a noun mentioned in passing. Every `/msal-*` compatibility alias maps directly to its `/maxilun-*` equivalent.
 
@@ -116,6 +116,7 @@ Route by the **final artifact that changes**, not by a noun mentioned in passing
 | `maxilun-ai` | Hybrid RAG retrieval, semantic chunking, eval flywheel and loss clusters, prompt evals | `/maxilun-ai`, "rag", "vector search", "prompt eval", "eval flywheel" |
 | `maxilun-game` | Game systems, multi-engine architecture (Godot, Unreal, Unity), gameplay, physics, netcode, GDD | `/maxilun-game`, `/maxilun-gamestudio`, "game dev", "game engine", "godot", "unreal", "unity", "gdd" |
 | `maxilun-n8n` | n8n workflows (v1 schema), webhook HMAC pipelines, code nodes, AI Agent nodes | `/maxilun-n8n`, `/msal-n8n`, "n8n", "workflow automation", "automasi n8n" |
+| `maxilun-figcraft` | FigCraft desktop Live Canvas MCP, partitioned batch mutations, Auto Layout | `/maxilun-figcraft`, `/msal-figcraft`, "figcraft", "live canvas", "desain kanvas desktop" |
 
 ### 2.1 Agent Personas (20)
 
@@ -138,6 +139,7 @@ Skills hold the knowledge; agents (`agents/<name>.md`, installed next to the ski
 | `maxilun-verifier` | `maxilun-verify`, `maxilun-deploy` | No (runs proof) |
 | `maxilun-ui-reviewer` | `maxilun-verify`, `maxilun-craft` scan gate | No |
 | `maxilun-security-auditor` | `maxilun-hunt`, `maxilun-sentinel` | No |
+| `maxilun-figcraft` | `maxilun-figcraft`, `maxilun-craft` | Yes |
 | `maxilun-automator` | `maxilun-n8n` | Yes |
 | `maxilun-coder-ai` | `maxilun-ai`, `maxilun-engineer` | Yes |
 | `maxilun-data-engineer` | `maxilun-data` | Yes |

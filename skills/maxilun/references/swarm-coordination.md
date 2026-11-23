@@ -159,7 +159,37 @@ Agent count multiplies context cost before it multiplies output.
 5. **Kill early.** A unit that blows its time or token budget is cancelled, not allowed to finish "because it is nearly there".
 6. **Measure the counterfactual honestly.** Claimed savings from a swarm need the same task run by one owner as the baseline; savings computed against an imagined worst case are not evidence.
 
-## 8. Claims to Discount When Evaluating Swarm Frameworks
+## 8. Autonomous Autoloop State Machine, Decision Cards & Routine Cycles
+
+Synthesized from production autonomous runtime paradigms (`agent-autoloop`, `AnyModelBot`, and `ai-employees`):
+
+1. **Autoloop State Transitions (`agent-autoloop`)**:
+   - Background autonomous executions progress through an explicit state machine: `queued → claimed → done / nothing / cancelled`.
+   - Temporary network or execution interruptions transition to `claimed → unknown`. An `unknown` state does not signify failure; late execution receipts are accepted, and new scheduled work may proceed without race conditions.
+   - Run attempts are strictly bounded ($\le 10$ retry attempts with exponential backoff). Terminated runs cannot be re-queued without a fresh event.
+
+2. **Human-In-The-Loop Decision Cards**:
+   - Agents must not block conversational terminals with indefinite waiting loops. When human input is mandatory (e.g. Type 1 irreversible architecture choice or ambiguous requirement), the agent emits an atomic Decision Card (`cards.state`: `open → decided → done` or `open → closed`).
+   - Cards present explicit, numbered choices (`1. Option A`, `2. Option B`) rather than unconstrained questions.
+   - Once the user resolves a card, the autoloop transitions the task back to `claimed` and resumes execution in the assigned workspace lane.
+
+3. **Persistent Decision Memory (`docs/decisions.md` & `docs/declined.md`)**:
+   - To eliminate repetitive questions across separate sessions, whenever a user approves an operational direction, the decision is recorded in `docs/decisions.md` with timestamp, context, and scope.
+   - Conversely, when a user rejects a proposal, the refusal is recorded in `docs/declined.md`. Agents must check both ledgers before raising questions; previously decided matters must never be re-asked.
+
+4. **Quota Backoff Invariant (`limitedUntil`)**:
+   - When an underlying provider returns a rate-limit or quota exhaustion error, the scheduler records a `limitedUntil` timestamp.
+   - The coordinator suspends dispatches to that specific agent until the timestamp expires. No speculative token-burning retries are allowed during quota exhaustion.
+
+5. **Sandboxed Workspace Permission Boundaries (`AnyModelBot`)**:
+   - Each agent operates within a declared directory workspace (`cwd`).
+   - Any proposed file mutation outside the active project root triggers an explicit confirmation gate. Secrets, auth tokens, and private keys are strictly scrubbed from agent logs and execution receipts (`SEC-BOT-001`).
+
+6. **Enterprise Operational Routine Contracts (`ai-employees`)**:
+   - Scheduled autonomous work runs as defined routine contracts with standardized manifests (`WORK-CYCLE.md`, `SCHEDULE.md`, `ROLE.md`).
+   - Covers 8 enterprise operational roles: Chief of Staff (fleet reconciliation, decision briefs), Ad Manager, Customer Satisfaction, GTM Engineer, Sales, SEO, Social Media, and Web Dev. Each routine defines inputs, invariants, output dossiers, and an automated verification exit code.
+
+## 9. Claims to Discount When Evaluating Swarm Frameworks
 
 Swarm platforms commonly advertise properties their code does not deliver in the path an agent actually uses. Before adopting one, or before borrowing its vocabulary, verify each claim in code:
 
@@ -169,7 +199,7 @@ Swarm platforms commonly advertise properties their code does not deliver in the
 4. **"Shared memory with bounded conflict".** Check for a lock or compare-and-set around read-modify-write. Lost-update races in JSON or key-value stores are typical and only show under real concurrency.
 5. **"Cost savings" or "N times faster".** Check what was compared. Many figures compare against brute force at a size where any index wins, or count a no-model path as an agent result.
 
-## 9. Rejected Patterns
+## 10. Rejected Patterns
 
 - **Swarm as default.** Starting a multi-agent run for routine work because the tool exists; Maxilun sizes from evidence first (`SKILL.md` §4).
 - **Large fixed agent rosters.** Six to eight agents for a feature that has two artifacts; a wave holds at most three units.
