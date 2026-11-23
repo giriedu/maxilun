@@ -98,7 +98,7 @@ LINE_RULES = [
      "scattered status pill badges used as micro-frames (CMP-022)", "use plain typography, tabular numbers, or a single live status indicator dot"),
     ("symmetric-kpi-strip", E,
      re.compile(r"\bgrid-cols-(?:4|5)\b[^\"'>\n]*(?:\brounded-(?:lg|xl|2xl)\b|card)", re.I),
-     "symmetrical 4 or 5 KPI card strip without role differentiation (LAY-017)", "anchor layout with an Asymmetric Bento Spotlight (col-span-2) or an Operational List Ledger"),
+     "symmetrical 4 or 5 KPI card strip without role differentiation (LAY-017)", "rank the metrics: let the one that matters lead (wider, alone, or as a chart) and set the rest as a quiet ledger row"),
     ("centered-hero-stack", E,
      re.compile(r"(?:text-center\b[^\n]*\b(?:items-center|mx-auto)\b[^\n]*\brounded-full|rounded-full\b[^\n]*\btext-center\b[^\n]*\b(?:items-center|mx-auto))", re.I),
      "centered hero stack with floating pill badge capsule (LAY-018)", "use an asymmetric start-aligned layout or split editorial composition"),
@@ -229,7 +229,7 @@ def scan_file(path):
                 ln = text[:m_kpi.start()].count("\n") + 1
                 add("symmetric-kpi-strip", E, ln,
                     "symmetrical 4 or 5 KPI card strip across parent/child nodes (LAY-017)",
-                    "anchor layout with an Asymmetric Bento Spotlight (8:4 / col-span-8) or an Operational List Ledger",
+                    "rank the metrics: let the one that matters lead (wider, alone, or as a chart) and set the rest as a quiet ledger row",
                     window.splitlines()[0][:80])
 
     # Multiline Symmetric 3-Card Triad (LAY-008): parent grid-cols-3 with >=3 rounded card boxes and no col-span differentiation
@@ -244,7 +244,7 @@ def scan_file(path):
                 ln = text[:m_tri.start()].count("\n") + 1
                 add("symmetric-triad", W, ln,
                     "symmetrical 3-card triad without role differentiation (LAY-008)",
-                    "replace with Asymmetric Bento Grid (8:4), comparison ledger table, or master-detail split",
+                    "let the content ranking decide: a comparison table, master-detail split, or one lead item with the rest secondary",
                     first_line[:80])
 
     tactile_rx = re.compile(
@@ -256,9 +256,9 @@ def scan_file(path):
     has_tactile = bool(tactile_rx.search(text))
     is_interactive_view = bool(re.search(r"<button|<a\s|<input|onClick", text)) and len(lines) >= 45
     if is_interactive_view and not has_tactile and path.lower().endswith((".tsx", ".jsx", ".vue", ".svelte", ".html")):
-        add("shallow-motion", W, 1,
-            "interactive screen lacks tactile micro-interactions from ui-motion-recipes.md",
-            "mount >=3 domain motion recipes (SlidingPillNav, StaggerBentoGrid, PerspectiveCard, ExpandableDataRow, HoldToConfirmButton)")
+        add("shallow-motion", I, 1,
+            "no motion primitives found in an interactive screen",
+            "check the renders: add motion only where a state change is otherwise hard to follow (ui-motion-recipes.md)")
 
     stats["motion"] = bool(re.search(r"transition|animation|@keyframes|animate-|motion\.", text))
     stats["tactile_motion"] = has_tactile

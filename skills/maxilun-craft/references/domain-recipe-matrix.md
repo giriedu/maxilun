@@ -2,7 +2,7 @@
 
 > **Status**: Reference Document  
 > **Specialists**: `maxilun-craft`, `maxilun-motion`, & `maxilun-scaffold`  
-> **Purpose**: Eliminates guesswork by directly binding domain categories to high-impact Hero Archetypes (`references/hero-section-archetypes.md`), fluid motion recipes (`../maxilun-motion/references/ui-motion-recipes.md`), typography pairings, and authentic seed data.
+> **Purpose**: Worked starting points, not presets. Each row shows one coherent answer for a domain (hero, motion, type pairing, theme, seed data) so you can see how the pieces fit. Use a row as evidence for your own Direction: keep what the Brief's Origin supports, replace the rest, and say why. Shipping a row unchanged (same font pair, same theme, same recipes) makes every product in that domain look alike, which is the averaging this skill exists to stop.
 
 ---
 
@@ -21,11 +21,11 @@
 ## 2. Integration Protocol During Scaffolding
 
 When a new project is bootstrapped via `maxilun-scaffold` / `greenfield.py`:
-1. **Identify the Domain**: Map the user's prompt (e.g. "website sekolah", "portal ujian CBT", "sistem absensi") to one of the 5 Domain Categories above.
-2. **Inject the Matching Hero Component**:
+1. **Identify the nearest row**: Map the prompt (e.g. "website sekolah", "portal ujian CBT", "sistem absensi") to the closest of the 5 rows above as a reference point; most products fit none exactly.
+2. **Compose the hero** (the generated `FirstFoldHero.tsx` / `index.html` hero is a structural stub to be redesigned from the Brief, not a finished design):
    - Write the Hero component into `src/components/hero/FirstFoldHero.tsx` (or `index.html` for GAS) using the code blueprint from `references/hero-section-archetypes.md`.
    - Never generate a bare generic centered hero (`LAY-TEL-01`).
-3. **Inject the UI Motion Primitives**:
+3. **Add motion only where it explains state** (recipes in `../maxilun-motion/references/ui-motion-recipes.md`):
    - Write the designated motion primitives into `src/components/ui/` from `../maxilun-motion/references/ui-motion-recipes.md`.
    - For React/Next.js: use `framer-motion` or CSS spring variables.
    - For GAS/vanilla HTML: use lightweight zero-dependency CSS keyframe animations.

@@ -24,6 +24,8 @@ skills:
 
 > **Paths.** `skills/<name>/...` means the installed skill folder, not the target repo. Check in order, use the first that exists: project `.claude/skills`, `.agents/skills`, `.opencode/skills`; user `~/.claude/skills`, `~/.codex/skills`, `~/.agents/skills`, `~/.config/opencode/skills`, `~/.opencode/skills`. `<kg-skill-dir>` = that root + `maxilun-knowledge-graph`. Resolve once before reading or running. If the `skills:` frontmatter was not preloaded (non-Claude hosts), read each listed `SKILL.md` yourself before working.
 
+> **Look at what you build.** After every visible change run `python skills/maxilun-craft/scripts/render.py <file-or-url>` (serve SPAs over HTTP first), open each PNG it prints, name three defects you can see, fix, and render again (max three rounds). Hand back the PNG paths with your result. A UI judged only from its markup is not done; exit 2 (no renderer) is reported `[UNVERIFIED]`.
+
 You are the dedicated modern frontend coding agent in the Maxilun ecosystem, bundling deep execution capabilities from `maxilun-frontend` and `maxilun-engineer`.
 
 ## Core Responsibilities

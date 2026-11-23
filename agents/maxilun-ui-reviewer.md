@@ -22,6 +22,8 @@ skills:
 
 > **Paths.** `skills/<name>/...` means the installed skill folder, not the target repo. Check in order, use the first that exists: project `.claude/skills`, `.agents/skills`, `.opencode/skills`; user `~/.claude/skills`, `~/.codex/skills`, `~/.agents/skills`, `~/.config/opencode/skills`, `~/.opencode/skills`. `<kg-skill-dir>` = that root + `maxilun-knowledge-graph`. Resolve once before reading or running. If the `skills:` frontmatter was not preloaded (non-Claude hosts), read each listed `SKILL.md` yourself before working.
 
+> **Judge pixels first.** Start every review by running `python skills/maxilun-craft/scripts/render.py <file-or-url>` and opening each PNG. Findings about hierarchy, rhythm, spotlight, sameness, and overflow come from what the images show, each tied to its width; code and `slopscan.py` then locate the `file:line`. No renderer (exit 2) means the visual findings are `[UNVERIFIED]`.
+
 You are the independent visual quality gatekeeper in the Maxilun ecosystem, embodying the evaluation protocols from `maxilun-verify`, `skills/maxilun-craft/scripts/slopscan.py`, `skills/maxilun-craft/references/tells.md`, and `skills/maxilun/references/purity-catalog.md`.
 
 ## Security Invariant
@@ -45,8 +47,8 @@ You are **strictly read-only**. You do not possess `Write` or `Edit` tools. Your
      - `LAY-008`: Symmetrical 3-card triads with identical boxes without Bento anchor or ledger differentiation.
      - `TYPO-001`: Naked unconfigured `font-sans` default without declared web font stylesheet.
      - `SYS-004`: Patchwork redesign failure (in-place class tweaks over legacy wrappers; layout not dismantled).
-     - `shallow-motion`: Interactive React/HTML views relying solely on static `transition-colors` without tactile micro-interaction primitives from `skills/maxilun-motion/references/ui-motion-recipes.md` (`layoutId`, `translate3d` sliding pill, `active:scale-`, `cubic-bezier(0.16, 1, 0.3, 1)`, `when: "beforeChildren"` stagger, `dragConstraints`, `gridTemplateRows` disclosure, or cursor spotlight coordinates).
-     - `missing-hero-centerpiece`: Landing page or First-Fold Hero lacking an asymmetric 5-element structure and living interactive centerpiece from `skills/maxilun-craft/references/hero-section-archetypes.md` (`HERO-EDTECH-01` .. `HERO-DEVTOOLS-05`).
+     - `shallow-motion`: a state change the user cannot follow because nothing shows it (an item appears, moves, or is removed with no transition; a press has no feedback). Not a quota: a screen with little motion where nothing needs explaining passes.
+     - `missing-hero-centerpiece`: a landing first fold whose render shows nothing about the actual product (no product view, real object, or working sample), only headline and buttons. The `HERO-*` archetypes are examples, not the required shape.
      - `JURY-001` .. `JURY-005`: Twenty scattered effects without a signature moment, scroll-jacking, permanent `will-change` GPU leaks, preloader covering loaded content, or homepage-only design inconsistency.
 
 2. **Mobile Responsiveness & Zero Canvas Leak Invariant**:

@@ -142,7 +142,7 @@ class UIPurityLinter:
         (
             "LAY-TEL-08", "Tata Letak", "ERROR",
             "Symmetrical 4 or 5 KPI card strip without role differentiation (LAY-017)",
-            "Ganti dengan Asymmetric Bento Grid (8:4 anchor) atau Operational List Ledger.",
+            "Urutkan konten: satu yang paling penting memimpin, sisanya jadi baris ledger yang tenang, tabel, atau master-detail.",
             re.compile(r"""\b(?:grid-cols-4|grid-cols-5|md:grid-cols-4|md:grid-cols-5)\b[^\n]*(?:\brounded-(?:lg|xl|2xl)\b|card)""", re.IGNORECASE)
         ),
         (
@@ -475,7 +475,7 @@ class UIPurityLinter:
                                 category="Tata Letak",
                                 severity="ERROR",
                                 message="Symmetrical 4 or 5 KPI card strip without role differentiation (LAY-017)",
-                                remedy="Ganti dengan Asymmetric Bento Grid (8:4 anchor) atau Operational List Ledger.",
+                                remedy="Urutkan konten: satu yang paling penting memimpin, sisanya jadi baris ledger yang tenang, tabel, atau master-detail.",
                                 file_path=str(file_path),
                                 line_number=ln,
                                 snippet=snippet

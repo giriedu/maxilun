@@ -115,7 +115,8 @@ In Repair, read the request before planning. An explicit "redesign" or "rombak U
 3. **Write the Brief** (§3) before anything visual exists. State it and proceed when the repository or the request anchors it. Stop for one grouped question only when the Origin has no anchor at all (no brand, no existing tokens, no product brief): a wrong Brief costs a full rebuild, a question costs one message.
 4. **Lock tokens.** Before any component, write the token block (CSS custom properties or the Tailwind theme) following `references/tokens.md`. From here on components use tokens only. A raw hex or a magic pixel value inside a component means the token set is missing something: fix the set, not the component.
 5. **Build in layers** (§4), each one across the whole screen before the next: Structure → Rhythm → Type → Colour → Components and states → Words → Motion → Imagery. Colour cannot fix a bad structure, and motion on an unfinished layout hides problems instead of solving them.
-6. **Prove it** (§7), then **report** (§9).
+6. **Look, critique, fix.** After each layer that changes what is visible, run `python scripts/render.py <file-or-url>` and open every PNG it prints. Write three concrete defects you can *see* ("the KPI row reads as four equal boxes at 1440", "headline wraps to five lines at 320"), fix them, render again. Stop when a fresh look finds nothing you would defend changing, at most three rounds. Judging the screen from its markup alone is not looking.
+7. **Prove it** (§7), then **report** (§9).
 
 ## 3. The Brief
 
@@ -126,7 +127,7 @@ Eight lines derived from the product in front of you.
 - **Voice.** Three adjectives plus one boundary, like `steady, plain, local - serious but not stern`. Words that fit every product are not allowed: clean, modern, minimal, sleek, premium, elegant, professional, simple.
 - **Origin.** Where the visual material comes from, in priority order: (1) the real brand when one exists; (2) objects and documents of the domain (a school has report cards, stamps, chalk, timetables; a library has spines, index cards, date stamps); (3) the place and culture of the users. Origin gives the hue of the neutrals, the accent, the shapes, and any imagery.
 - **Density.** Airy, regular, or dense, with the reason. Tools used daily by trained people are dense; pages seen once by strangers are airy.
-- **Archetype & Domain Recipe Binding.** Declare ONE visual archetype from `references/design-archetypes.md` or `references/hallmark-themes.md` (50 themes: Technical Ledger, Warm Editorial, Neo-Brutalist, Dark Atmospheric, Japanese Wabi-Sabi, etc.), ONE First-Fold Hero Archetype (`HERO-EDTECH-01` .. `HERO-DEVTOOLS-05`) from `references/hero-section-archetypes.md` & `references/domain-recipe-matrix.md`, and at least THREE tactile micro-interaction recipes from `../maxilun-motion/references/ui-motion-recipes.md`. Inject colour tokens via `references/hue-brand-tokens.md`. Unchosen generic slate palettes are banned.
+- **Direction.** Name the visual direction in one line and where it comes from. `references/design-archetypes.md`, `references/hallmark-themes.md`, `references/hero-section-archetypes.md`, `references/domain-recipe-matrix.md`, and the 100 analyses in `references/design-md/` are candidates, not presets: take what fits the Origin, and say what you rejected and why. A direction copied whole from the matrix (its font pair, theme, and recipes unchanged) fails the Swap test by construction. Unchosen generic slate palettes are still banned.
 - **Spotlight.** The single element that receives the emphasis budget: one number, one chart, one action, one image. Naming it means everything else agrees to be quiet.
 - **Refusals.** Three things this design will deliberately not do, like `no cards inside cards, no icons in the table, no second accent`. Refusals make a design recognisable.
 
@@ -139,9 +140,9 @@ If a line could be pasted into the Brief of a different product without edits, r
 Formulas, ranges, and code for every layer are in `references/tokens.md`. Screen-type skeletons (dashboard, data table, form, detail page, landing page, Apps Script web app), the state table, responsive rules, and the accessibility floor are in `references/patterns.md`. Load the deep references only when the task reaches them: `references/interface-engineering.md` (token and layout engineering), `references/component-mobile-patterns.md` (mobile components, overflow), `references/surface-state-topology.md` and `references/resilient-interaction-recovery.md` (states, optimistic updates, undo), `references/task-flow-choreography.md` and `references/cognitive-friction-audit.md` (flow reduction, navigation wording), `references/interaction-telemetry-benchmarks.md` (INP/CLS targets), `references/studio-craft-engine.md` with `assets/craft-primitives.css` (starter primitives). Where a deep reference disagrees with `references/tokens.md` or `references/patterns.md`, those two win.
 
 ### 4.1 Structure
-- Rank content against the Job. The top-ranked thing gets the Spotlight and area. Ban the symmetrical 3-card triad (`LAY-008`), the symmetrical 4/5-card metric strip (`LAY-017`), decorative pill overload (`CMP-022`), and sterile white-box admin templates (`LAY-014`); deploy an Asymmetric Bento Grid (8:4 anchor) or Operational List Ledger (`references/bento-dashboard-recipes.md`). Ban fake breadcrumb trails (`HDR-001`); use domain mastheads.
+- Rank content against the Job. The top-ranked thing gets the Spotlight and area. Avoid the symmetrical 3-card triad (`LAY-008`), the symmetrical 4/5-card metric strip (`LAY-017`), decorative pill overload (`CMP-022`), and sterile white-box admin templates (`LAY-014`) unless the content really is that many equal peers. The replacement comes from the content's own ranking (a ledger, master-detail, one dominant region, a document layout); an asymmetric bento (`references/bento-dashboard-recipes.md`) is one option, not the default, and applied everywhere it is the next trend (`LAY-013`). Ban fake breadcrumb trails (`HDR-001`); use domain mastheads.
 - Group by meaning. Separate groups with space before borders, and with borders before boxes. A card is for a thing that can be picked up as a unit; most cards are unnecessary. Never nest a bordered box inside a bordered box.
-- App shells use the real viewport: fixed-width navigation, fluid content with a readable cap. Marketing pages and first-fold viewports MUST follow `references/hero-section-archetypes.md` and `references/domain-recipe-matrix.md` (asymmetric split or workbench hero with a live interactive centerpiece—never a centred stack `LAY-018` or floating pill tagline `CMP-015`).
+- App shells use the real viewport: fixed-width navigation, fluid content with a readable cap. For marketing pages and first folds, `references/hero-section-archetypes.md` shows composed options (split, workbench, ledger masthead); the composition still comes from the content. A centred stack with a floating pill tagline (`LAY-018`, `CMP-015`) is the template to avoid, not every centred layout.
 - Design the narrow screen as its own layout: reorder by priority, cut secondary columns, keep 44px touch targets. Do not shrink the desktop.
 
 ### 4.2 Rhythm
@@ -181,7 +182,7 @@ Formulas, ranges, and code for every layer are in `references/tokens.md`. Screen
 
 ### 4.7 Motion & Micro-Interactions
 Read `references/motion.md` and `../maxilun-motion/references/ui-motion-recipes.md` before writing UI components.
-- Every Landing Page, Hero Section, and Operational Dashboard MUST mount at least **3 tactile micro-interaction recipes** from `../maxilun-motion/references/ui-motion-recipes.md` mapped by `references/domain-recipe-matrix.md` (e.g. `SlidingPillNav` / `SegmentedControlCSS`, `StaggerBentoGrid` with `when: "beforeChildren"`, `DraggableWorkbenchCard`, `PerspectiveCard` with cursor spotlight, `ExpandableDataRow`, `HoldToConfirmButton`, `CounterOdometer`). Relying solely on `transition-colors` is rejected (`shallow-motion`).
+- Motion earns its place: add a micro-interaction where it explains a change of state, confirms an action, or shows a relationship the static screen cannot (`../maxilun-motion/references/ui-motion-recipes.md` holds ready recipes). There is no quota. A dense tool used all day may need almost none; a first-visit landing page may carry a few. Every motion you add is named in the report with the state change it explains.
 - High-frequency operational controls use crisp `120ms–220ms` spring responses (`cubic-bezier(0.16, 1, 0.3, 1)` or Framer Motion `stiffness: 320–380, damping: 28–30`) and `active:scale-[0.97]` tactile press feedback.
 - Animate only composite properties (`transform`, `opacity`) or zero-CLS grid disclosure (`grid-template-rows: 0fr -> 1fr`). Respect `prefers-reduced-motion` everywhere.
 - Provide Dual-Runtime resilience: use Framer Motion primitives (`layoutId`, `variants`, `dragConstraints`, `useAnimationControls`) when installed, or the paired Zero-Dependency React + CSS Spring recipes in `../maxilun-motion/references/ui-motion-recipes.md` when not installed.
@@ -224,7 +225,7 @@ Do not print a self-made PASS/FAIL block. Evidence only:
 7. **States.** All six states exist and were exercised: idle, loading, populated (including long content), empty + CTA, pending/optimistic, and error + recovery.
 8. **Cutover** (when §5 applied): the old tokens, hardcoded backgrounds, and wrappers are gone, with no colliding leftovers. Ground full-spectrum evaluation in `references/ux-audit-matrix.md` (3-layer audit, concentric radii, 6-state matrix).
 
-When a browser runtime is available, open the page and verify visuals and interactive states directly. When it is not, say `[UNVERIFIED]` for the visual checks and list what was checked from code.
+Checks 2, 3, 4, and 6 are done on the PNGs from `python scripts/render.py` (§2 step 6), not imagined from code. `render.py` uses Playwright when installed (full page plus an overflow probe) and otherwise headless Chrome/Edge (first viewport). Only when it exits 2 (no renderer) say `[UNVERIFIED]` for the visual checks and list what was checked from code.
 Rendered-output measurement (three-exit gates, file-hash receipts, composited contrast, semantic colour, overflow and mobile-first probes) lives in `references/measured-design-gates.md`; wiring those checks to session, pre-edit, post-edit, and end-of-turn hooks lives in `references/uiux-workflow-hooks.md`.
 
 ## 8. Do Not
@@ -238,11 +239,12 @@ Rendered-output measurement (three-exit gates, file-hash receipts, composited co
 ## 9. Report Format
 
 ```
-BRIEF       the eight lines (including Hero Archetype & 3 Motion Recipes)
+BRIEF       the eight lines (Direction names its sources and what was rejected)
 DECISIONS   font, ramp tint, accent, radius, density - each with its reason;
-            hero-section-archetypes.md & ui-motion-recipes.md primitives mounted;
+            motion added and the state change each one explains;
             design-md references adapted / rejected, when used
 CHANGED     one or two lines per layer, with file:line
+LOOKED      render rounds: PNG paths, the defects seen each round, and what fixed them
 SCAN        before → after counts (errors / warnings), justified leftovers
 OPEN        questions for the user: unverified claims, missing assets,
             image descriptions for empty slots, checks left [UNVERIFIED]

@@ -4,20 +4,40 @@
     {
       "id": 1,
       "prompt": "Buatkan dashboard admin untuk SDN Purwantoro 1: jumlah siswa per rombel, status kelengkapan data Dapodik, dan daftar siswa yang datanya masih kurang. Satu file HTML.",
-      "expected_output": "The seven-line Brief is written first; a token block in :root; one lead region (the list of incomplete records) instead of 4 cards + 2 charts; interface text in Indonesian; empty/loading/error states exist; slopscan reports 0 errors.",
-      "assertions": ["slopscan exit code 0", "contains :root custom properties", "no emoji in markup", "html lang=id", "an empty state exists", "prefers-reduced-motion handled or no motion used"]
+      "expected_output": "The eight-line Brief (Direction names its sources) is written first; a token block in :root; one lead region (the list of incomplete records) instead of 4 cards + 2 charts; interface text in Indonesian; empty/loading/error states exist; slopscan reports 0 errors. The report lists render.py PNGs under LOOKED with defects seen and fixed.",
+      "assertions": [
+        "slopscan exit code 0",
+        "contains :root custom properties",
+        "no emoji in markup",
+        "html lang=id",
+        "an empty state exists",
+        "prefers-reduced-motion handled or no motion used",
+        "report has a LOOKED section with render.py PNG paths"
+      ]
     },
     {
       "id": 2,
       "prompt": "Ini landing page hasil AI, kelihatan generik banget. Tolong perbaiki tanpa mengubah isi dan urutan section. (lampirkan evals/fixtures/slop-landing.html)",
       "expected_output": "Repair mode: findings with file:line, then the Brief, then the rewritten file; sections and their order unchanged; unverifiable claims are raised with the user, not invented.",
-      "assertions": ["slopscan errors drop to 0", "section count and order unchanged", "report lists unverified claims under OPEN", "no new gradient/glass/bento trend introduced"]
+      "assertions": [
+        "slopscan errors drop to 0",
+        "section count and order unchanged",
+        "report lists unverified claims under OPEN",
+        "no new gradient/glass/bento trend introduced",
+        "report has a LOOKED section with before/after render.py PNG paths"
+      ]
     },
     {
       "id": 3,
       "prompt": "Review saja, jangan diubah: apakah form update data wali murid ini sudah layak dipakai di HP orang tua?",
       "expected_output": "Review mode: no file is modified; ranked findings with the exact fix; covers labels, 44px touch targets, the pending state of google.script.run calls, and language.",
-      "assertions": ["no files modified", "findings have severity and exact fix", "mentions touch target size", "mentions pending/error state for server calls"]
+      "assertions": [
+        "no files modified",
+        "findings have severity and exact fix",
+        "mentions touch target size",
+        "mentions pending/error state for server calls",
+        "findings cite what the render.py PNGs show at a named width"
+      ]
     }
   ]
 }
