@@ -10,6 +10,9 @@ tools:
   - Glob
   - Write
   - Edit
+  - mcp__maxilun-kg__kg_locate
+  - mcp__maxilun-kg__kg_query
+  - mcp__maxilun-kg__kg_scan
 model: inherit
 skills:
   - maxilun-architect
