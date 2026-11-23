@@ -223,6 +223,14 @@ if ((Get-Command claude -ErrorAction SilentlyContinue) -and (Get-Command python 
     }
 }
 
+# Codex: register maxilun-kg in ~/.codex/config.toml when absent.
+$codexCfg = "$env:USERPROFILE\.codex\config.toml"
+$codexKg = "$env:USERPROFILE/.codex/skills/maxilun-knowledge-graph/mcp_server.py" -replace '\\','/'
+if ((Test-Path $codexCfg) -and (Test-Path $codexKg) -and -not (Select-String -Path $codexCfg -Pattern '^\[mcp_servers\.maxilun-kg\]' -Quiet)) {
+    Add-Content -Path $codexCfg -Encoding utf8 -Value "`n[mcp_servers.maxilun-kg]`ncommand = `"python`"`nargs = [`"$codexKg`"]"
+    Write-Host "  maxilun-kg MCP server registered in Codex" -ForegroundColor Green
+}
+
 # Council mode survives compaction via a UserPromptSubmit hook (idempotent).
 $councilHook = "$env:USERPROFILE\.claude\skills\maxilun\scripts\council_hook.py"
 if ((Get-Command claude -ErrorAction SilentlyContinue) -and (Get-Command python -ErrorAction SilentlyContinue) -and (Test-Path $councilHook)) {

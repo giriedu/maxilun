@@ -253,6 +253,13 @@ if command -v claude >/dev/null 2>&1 && ! claude mcp get maxilun-kg >/dev/null 2
     done
 fi
 
+# Codex: register maxilun-kg in ~/.codex/config.toml when absent.
+codex_kg="${HOME}/.codex/skills/maxilun-knowledge-graph/mcp_server.py"
+if [ -f "${HOME}/.codex/config.toml" ] && [ -f "$codex_kg" ] && ! grep -q '^\[mcp_servers.maxilun-kg\]' "${HOME}/.codex/config.toml"; then
+    printf '\n[mcp_servers.maxilun-kg]\ncommand = "%s"\nargs = ["%s"]\n' "$(command -v python3 || command -v python)" "$codex_kg" >> "${HOME}/.codex/config.toml" \
+        && echo "✅ maxilun-kg MCP server registered in Codex"
+fi
+
 # Council mode survives compaction via a UserPromptSubmit hook (idempotent).
 council_hook="${HOME}/.claude/skills/maxilun/scripts/council_hook.py"
 if command -v claude >/dev/null 2>&1 && [ -f "$council_hook" ]; then
