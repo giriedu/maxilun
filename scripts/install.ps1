@@ -223,6 +223,12 @@ if ((Get-Command claude -ErrorAction SilentlyContinue) -and (Get-Command python 
     }
 }
 
+# Council mode survives compaction via a UserPromptSubmit hook (idempotent).
+$councilHook = "$env:USERPROFILE\.claude\skills\maxilun\scripts\council_hook.py"
+if ((Get-Command claude -ErrorAction SilentlyContinue) -and (Get-Command python -ErrorAction SilentlyContinue) -and (Test-Path $councilHook)) {
+    & python $councilHook --install
+}
+
 Write-Host ""
 Write-Host "  --------------------------------------" -ForegroundColor DarkCyan
 Write-Host "  Post-Install Verification" -ForegroundColor Cyan

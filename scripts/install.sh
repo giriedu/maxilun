@@ -253,6 +253,12 @@ if command -v claude >/dev/null 2>&1 && ! claude mcp get maxilun-kg >/dev/null 2
     done
 fi
 
+# Council mode survives compaction via a UserPromptSubmit hook (idempotent).
+council_hook="${HOME}/.claude/skills/maxilun/scripts/council_hook.py"
+if command -v claude >/dev/null 2>&1 && [ -f "$council_hook" ]; then
+    "$(command -v python3 || command -v python)" "$council_hook" --install
+fi
+
 echo ""
 echo "──────────────────────────────────────"
 echo "  Post-Install Verification"
