@@ -8,7 +8,7 @@ The First Fold (the viewport area visible without scrolling) dictates over 80% o
 
 ---
 
-## 1. The 5-Element Hero Anatomy (Anti-Slop Invariant)
+## 1. The 5-Element Hero Anatomy (Slop-Free Invariant)
 
 Every First-Fold hero section must compose these five structural layers in an **asymmetric start-aligned or 7:5 / 6:6 split layout** (never a monotonous centered stack `LAY-018`):
 
