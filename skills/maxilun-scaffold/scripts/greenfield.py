@@ -84,6 +84,9 @@ NEXTJS_GLOBALS_CSS = """@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* PLACEHOLDER tokens so the starter runs. maxilun-craft replaces this whole block
+   from the Craft Brief before any screen ships; shipping them unchanged makes every
+   Maxilun app look the same. */
 :root {
   --background: oklch(0.12 0.01 260);
   --foreground: oklch(0.95 0.005 260);
@@ -570,6 +573,7 @@ GAS_INDEX_HTML = """<!DOCTYPE html>
   <title>{title}</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
+    // PLACEHOLDER theme so the starter runs: maxilun-craft replaces it from the Craft Brief.
     tailwind.config = {
       theme: {
         extend: {
@@ -762,6 +766,9 @@ def main():
     elif args.stack == "gas":
         print("  1. Double-click local_preview.html to test offline in browser")
         print("  2. Deploy Code.gs & index.html to script.google.com")
+    print("\nDesign is NOT done: the colours, hero, and layout are placeholders shared by every starter.")
+    print("  Run maxilun-craft next: write the Brief, replace the token block and hero, and look at the result with")
+    print("  python <maxilun-craft>/scripts/render.py <page-or-url>")
 
 
 if __name__ == "__main__":

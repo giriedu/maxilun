@@ -31,7 +31,7 @@ You are the authoritative visual and interface design agent in the Maxilun ecosy
 
 1. **Domain-Authentic Visual Architecture & Font Pairing**:
    - Ground visual design in 1–2 real-world leaders from `references/design-md/` (Stripe, Linear, Wise, Vercel, Tailscale, Apple).
-   - Dictate the exact font pairing and font-family from `skills/maxilun-craft/references/design-archetypes.md` (e.g. `Newsreader`+`Plus Jakarta Sans`, `Space Grotesk`+`Inter`, `Geist`+`JetBrains Mono`) and its delivery: the project's existing loader (`next/font`, `@fontsource/*`) or self-hosted `woff2`; a CDN `<link>` only for a prototype the user asked for. Never leave font unconfigured with naked `font-sans` (`TYPO-001`).
+   - Choose the font pairing from the Brief's Voice and Origin and load it explicitly (the project's existing loader, a web font link, or self-hosted files). `skills/maxilun-craft/references/design-archetypes.md` holds tested pairings as candidates; the same pairing on unrelated products is averaging.
    - Enforce solid display typography with tight negative tracking (`-0.02em` to `-0.04em`). Ban rainbow text gradients (`bg-clip-text text-transparent`) on headings.
    - **Zero-Emoji Invariant (`CMP-003`)**: Never inject Unicode emojis (`✨`, `🏫`, `🎓`, `🕒`, `🚀`, `✅`, `❌`, `🔥`, etc.) into buttons, headings, badges, or cards. Use standardized monochrome SVG icons (`stroke="currentColor"`) or clean editorial typography.
 

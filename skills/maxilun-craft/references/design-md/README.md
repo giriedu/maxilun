@@ -5,7 +5,7 @@ This directory is a bundled reference library for `maxilun-craft`. It contains 1
 ## How to use it
 
 1. Read the project brief and identify the audience, primary task, surface type, and platform.
-2. Select at most two references with a comparable problem or visual constraint.
+2. Open `by-problem.md`, shortlist by the problem, read the catalog lines, and select at most two references with a comparable problem or visual constraint.
 3. Extract principles: hierarchy, type scale, spacing rhythm, color roles, component density, interaction behavior, or motion restraint.
 4. Translate those principles into the project's own tokens and content. Do not copy names, logos, screenshots, or brand identity.
 5. Record the selected files, applicable principles, rejected principles, and the reason for each choice.

@@ -1,6 +1,6 @@
 # Design Reference Index
 
-Use filename and subject together when selecting a reference.
+Start from `by-problem.md`: it groups the files by design problem and gives a one-line summary of each. This page lists them by industry only.
 
 ## Product and developer tools
 

@@ -38,6 +38,19 @@
         "mentions pending/error state for server calls",
         "findings cite what the render.py PNGs show at a named width"
       ]
+    },
+    {
+      "id": 4,
+      "prompt": "Buat dua halaman depan, masing-masing satu file HTML: (a) portal pendaftaran siswa baru SMP negeri di Wonosobo untuk orang tua di HP, (b) dashboard antrean servis bengkel motor untuk mekanik di layar meja. Kerjakan terpisah, seolah dua klien berbeda.",
+      "expected_output": "Two Briefs whose Voice, Origin, Density, and Direction differ and cite different sources; the pages differ in font pairing, accent hue, density, and structure; neither copies a domain-recipe-matrix row whole; each report shows render.py PNGs at 320/768/1440 with defects seen and fixed.",
+      "assertions": [
+        "the two pages load different font families",
+        "the two accent colours differ by more than 60 degrees of hue or one page has no accent",
+        "(a) is single-column at 320px with targets of 44px or more; (b) shows at least 8 queue rows above the fold at 1440px",
+        "neither page uses a font pair and theme copied unchanged from domain-recipe-matrix.md",
+        "each report has a LOOKED section with render.py PNG paths",
+        "slopscan exit code 0 on both files"
+      ]
     }
   ]
 }

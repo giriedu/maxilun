@@ -21,6 +21,7 @@ import tempfile
 from pathlib import Path
 
 FOLD_HEIGHT = {320: 720, 360: 760, 390: 844, 768: 1024}
+MIN_WINDOW = 600
 
 
 def to_url(target: str) -> str:
@@ -75,14 +76,22 @@ def with_cli(url: str, widths, height: int, out: Path) -> bool:
         for w in widths:
             h = FOLD_HEIGHT.get(w, height)
             png = out / f"render-{w}.png"
+            shot_url, win_w, note = url, w, ""
+            if w < MIN_WINDOW:
+                # Headless windows cannot be narrower than ~500px, so a real w-px viewport is an iframe.
+                frame = Path(profile) / f"frame-{w}.html"
+                frame.write_text(f'<!doctype html><body style="margin:0;background:#6b6b6b">'
+                                 f'<iframe src="{url}" style="display:block;width:{w}px;height:{h}px;border:0;background:#fff">'
+                                 f'</iframe></body>', encoding="utf-8")
+                shot_url, win_w, note = frame.as_uri(), MIN_WINDOW, f"; page is the left {w}px, grey is outside it"
             subprocess.run([exe, "--headless=new", "--disable-gpu", "--hide-scrollbars", "--no-first-run",
-                            f"--user-data-dir={profile}", "--virtual-time-budget=4000",
-                            f"--window-size={w},{h}", f"--screenshot={png}", url],
+                            "--allow-file-access-from-files", f"--user-data-dir={profile}", "--virtual-time-budget=4000",
+                            f"--window-size={win_w},{h}", f"--screenshot={png}", shot_url],
                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=90, check=False)
             if not png.exists():
                 print(f"could not render {w}px with {exe}", file=sys.stderr)
                 return False
-            print(f"{png}  ({w}x{h}, first viewport only; overflow not probed)")
+            print(f"{png}  ({w}x{h}, first viewport only; overflow not probed{note})")
     finally:
         shutil.rmtree(profile, ignore_errors=True)
     return True

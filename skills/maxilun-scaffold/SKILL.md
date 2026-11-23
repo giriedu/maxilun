@@ -116,15 +116,14 @@ docs/
 When starting in an empty directory or when invoked with `/maxilun-new` / "buat aplikasi dari nol":
 1. **Interactive Stack Triage (1 Batched Question)**:
    - Ask target hosting & architecture: `[A] Next.js 15 Fullstack`, `[B] React Vite + PHP 8+ REST API (SQLite/MySQL)`, or `[C] Google Apps Script (GAS) Web App`.
-   - Ask visual tone: `[A] Obsidian Command Deck (Theme 01)`, `[B] Warm Academic Editorial (Theme 12)`, or `[C] Technical Swiss Ledger (Theme 08)`.
+   - Do not offer a menu of visual themes. The look is decided by the Craft Brief from the product's Origin in step 3.
 2. **Dual-Scaffold Execution**:
    - Generate the 10 context files in `docs/`.
    - Run `python scripts/greenfield.py <target-dir> --stack [nextjs|vite-php|gas] --name <name> --title <title>` (per `references/greenfield-templates.md`).
-3. **Auto-Binding Creative Vanguard**:
-   - Query `../maxilun-craft/references/domain-recipe-matrix.md` to bind the matching Hero Archetype (`../maxilun-craft/references/hero-section-archetypes.md`) and UI Motion Primitives (`../maxilun-motion/references/ui-motion-recipes.md`).
+3. **Craft Pass (required before "ready")**: the generated token block, hero, and layout are placeholders shared by every starter. Run `maxilun-craft`: write the Brief, replace the token block and the hero from it (the domain matrix and hero archetypes are candidates, not presets), then look at the result with `python ../maxilun-craft/scripts/render.py <page-or-url>`.
    - Populate state with Indonesian realistic domain seed data (NISN, class, schedule).
 4. **Mechanical Day-1 Purity Gate**:
-   - Run `python ../maxilun-craft/scripts/slopscan.py <target-dir>` to confirm zero errors before reporting ready.
+   - Run `python ../maxilun-craft/scripts/slopscan.py <target-dir>` to confirm zero errors, and confirm the placeholder token block is gone, before reporting ready.
 
 ## 6. Update Mode (`--update`) & Quick Mode (`--quick`)
 

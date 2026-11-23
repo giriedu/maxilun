@@ -44,6 +44,7 @@ metadata:
     - references/domain-recipe-matrix.md
     - references/design-md/README.md
     - references/design-md/index.md
+    - references/design-md/by-problem.md
     - references/interface-engineering.md
     - references/component-mobile-patterns.md
     - references/surface-state-topology.md
@@ -133,7 +134,7 @@ Eight lines derived from the product in front of you.
 
 If a line could be pasted into the Brief of a different product without edits, rewrite it.
 
-**Reference corpus.** `references/design-md/` holds 100 analyses of shipped design systems. Use it when the Origin needs a structural precedent: read `references/design-md/README.md` and `references/design-md/index.md`, pick at most two references whose *problem* matches (not whose brand is popular), and record in the report what was adapted, what was rejected, and why. A reference is evidence for a decision, never a template to reproduce. Contested direction on a new surface is recorded as a decision record per `references/design-decision-records.md`.
+**Reference corpus.** `references/design-md/` holds 100 analyses of shipped design systems. Use it when the Origin needs a structural precedent: read `references/design-md/by-problem.md` (problem groups plus a one-line summary per file), pick at most two references whose *problem* matches (not whose brand is popular), and record in the report what was adapted, what was rejected, and why. A reference is evidence for a decision, never a template to reproduce. Contested direction on a new surface is recorded as a decision record per `references/design-decision-records.md`.
 
 ## 4. The Layers
 
@@ -152,7 +153,7 @@ Formulas, ranges, and code for every layer are in `references/tokens.md`. Screen
 - Things align to shared edges: icons share a column, numbers right-align, labels share a baseline.
 
 ### 4.3 Type
-- Choose families from the Voice and declare web font links from `references/design-archetypes.md`. Never leave typography to unconfigured `font-sans` (`TYPO-001`). The system stack is valid for offline tools.
+- Choose families from the Voice and the Origin, then load them explicitly (web font link or self-hosted). `references/design-archetypes.md` lists tested pairings as candidates; a pairing it does not list is fine when the Voice asks for it, and reusing the same pairing across unrelated products is averaging. Never leave typography to unconfigured `font-sans` (`TYPO-001`). The system stack is valid for offline tools.
 - At most six sizes from one ratio; two weights plus one reserved for rare emphasis. Hierarchy comes from size, colour role, and space before weight.
 - Sentence case. No all-caps labels with wide tracking, no gradient text (`TYPO-008`), no 800 or 900 weights on interface headings.
 - Compared numbers use tabular figures and a single format. Running text measures 50 to 75 characters.
@@ -181,7 +182,7 @@ Formulas, ranges, and code for every layer are in `references/tokens.md`. Screen
 - Empty states say what will appear here and how to create the first one.
 
 ### 4.7 Motion & Micro-Interactions
-Read `references/motion.md` and `../maxilun-motion/references/ui-motion-recipes.md` before writing UI components.
+When the Brief calls for motion, read `references/motion.md`; open `../maxilun-motion/references/ui-motion-recipes.md` only for the recipe you are about to use.
 - Motion earns its place: add a micro-interaction where it explains a change of state, confirms an action, or shows a relationship the static screen cannot (`../maxilun-motion/references/ui-motion-recipes.md` holds ready recipes). There is no quota. A dense tool used all day may need almost none; a first-visit landing page may carry a few. Every motion you add is named in the report with the state change it explains.
 - High-frequency operational controls use crisp `120ms–220ms` spring responses (`cubic-bezier(0.16, 1, 0.3, 1)` or Framer Motion `stiffness: 320–380, damping: 28–30`) and `active:scale-[0.97]` tactile press feedback.
 - Animate only composite properties (`transform`, `opacity`) or zero-CLS grid disclosure (`grid-template-rows: 0fr -> 1fr`). Respect `prefers-reduced-motion` everywhere.
