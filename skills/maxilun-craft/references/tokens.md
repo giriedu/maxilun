@@ -67,13 +67,16 @@ Choosing a family: start from the Voice, and write the reason next to it.
 
 | The Voice leans | Look among | Because |
 |---|---|---|
-| Institutional, trustworthy, public service | Public Sans, Source Sans 3, IBM Plex Sans, Noto Sans | Built for forms and long reading; wide language coverage |
-| Local, friendly, Indonesian context | Plus Jakarta Sans, Nunito Sans, Figtree | Open shapes, warm without being childish |
-| Dense data, operators, tables | system-ui stack, Inter (if chosen on purpose), IBM Plex Sans + Plex Mono | Holds up at 12–14px, true tabular figures |
-| Technical, exact | Geist, JetBrains Mono for figures, Commit Mono | Mechanical rhythm reads as precision |
-| Editorial, considered | a text serif for headings (Newsreader, Literata, Source Serif 4) over a plain sans | Two voices create hierarchy without weight |
-| Bold, youthful, event | Bricolage Grotesque, Space Grotesk, Unbounded (display only) | Character in the headline, calm sans for everything else |
-| Accessibility first | Atkinson Hyperlegible, Lexend | Letterforms designed to be told apart |
+| Institutional, trustworthy, public service | Public Sans, Source Sans 3, IBM Plex Sans, Noto Sans, Atkinson Hyperlegible | Built for forms and long reading; wide language coverage |
+| Local, friendly, Indonesian context | Figtree, Hanken Grotesk, Albert Sans, Be Vietnam Pro, Red Hat Text | Open shapes, handle long Indonesian words, warm without being childish |
+| Dense data, operators, tables | system-ui stack, IBM Plex Sans + Plex Mono, Source Sans 3, Recursive | Holds up at 12-14px, true tabular figures |
+| Technical, exact | IBM Plex Mono, Commit Mono, Martian Mono, Red Hat Mono for figures over a plain sans | Mechanical rhythm reads as precision |
+| Editorial, considered | a text serif for headings (Newsreader, Literata, Source Serif 4, Spectral, Gelasio) over a plain sans | Two voices create hierarchy without weight |
+| Bold, youthful, event | Bricolage Grotesque, Unbounded, Familjen Grotesk, Darker Grotesque (display only) | Character in the headline, calm sans for everything else |
+| Crafted, regional, heritage | Fraunces only with a stated reason; Young Serif, Rozha One, Alegreya, Bitter | Carries a hand or print origin |
+| Accessibility first | Atkinson Hyperlegible, Lexend (with reason) | Letterforms designed to be told apart |
+
+The table is a starting shelf, not an answer. The saturated defaults listed in `../SKILL.md` §4.3 (Inter, Space Grotesk, Geist, Plus Jakarta Sans, Poppins, DM Sans, JetBrains Mono and the rest) are left out on purpose; use one only with a reason only this product can claim.
 
 Rules: one UI family, optionally one partner (mono for figures or a display
 face for headings). Load only the weights used. Never leave typography to naked `font-sans`

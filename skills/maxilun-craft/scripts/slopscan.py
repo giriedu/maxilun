@@ -33,8 +33,27 @@ EMOJI = re.compile(
 SPACING_PREFIX = (r"(?:p[xytrbl]?|m[xytrbl]?|gap(?:-[xy])?|space-[xy]|"
                   r"w|h|min-w|min-h|max-h|top|left|right|bottom|inset(?:-[xy])?)")
 
+# What a model picks when nobody chose. Matched only as the primary family, so a
+# system-stack fallback like `"Segoe UI", Roboto, sans-serif` stays quiet.
+SATURATED_FONTS = (r"Inter|Roboto|Open[ _+]Sans|Poppins|Montserrat|Lato|Nunito|Space[ _+]Grotesk|"
+                   r"Plus[ _+]Jakarta[ _+]Sans|DM[ _+]Sans|Outfit|Manrope|Sora|Geist(?:[ _+](?:Sans|Mono))?|"
+                   r"Satoshi|Urbanist|Lexend|Playfair[ _+]Display|Instrument[ _+]Serif|Fraunces|Syne|"
+                   r"Clash[ _+]Display|JetBrains[ _+]Mono|Fira[ _+]Code|Space[ _+]Mono")
+
 # (id, level, regex, message, fix)
 LINE_RULES = [
+    ("default-font", W,
+     re.compile(r"(?:font-family\s*:\s*|family=|--font[\w-]*\s*:\s*|(?:sans|serif|mono|display|heading|body)\s*:\s*\[\s*)"
+                r"['\"]?(?:" + SATURATED_FONTS + r")\b"
+                r"|import\s*\{[^}]*\b(?:" + SATURATED_FONTS + r")\b[^}]*\}\s*from\s*['\"]next/font", re.I),
+     "saturated default font (reads as machine-picked)",
+     "derive the face from the Origin (SKILL.md 4.3), or state why only this product can claim it"),
+    ("blur-blob", E,
+     re.compile(r"\bblur-(?:2xl|3xl|\[\d{2,}px\])\b|filter\s*:\s*blur\(\s*(?:[4-9]\d|\d{3,})px", re.I),
+     "large blurred colour blob decoration (CMP-016)", "remove; show the product or an Origin object"),
+    ("sparkle-icon", W,
+     re.compile(r"<(?:Sparkles?|WandSparkles|Wand2|MagicWand|SparklesIcon)\b|\bi-(?:lucide|ph|mdi)[:-]sparkle", re.I),
+     "sparkle or magic-wand icon (stock 'AI' signifier)", "an icon that names the action, or the verb alone"),
     ("gradient-cool", E,
      re.compile(r"(?:from|via|to)-" + COOL + r"-\d{2,3}.*(?:from|via|to)-\w+-\d{2,3}"
                 r"|linear-gradient\([^)]*(?:purple|violet|indigo|#[67a][0-9a-f]5[0-9a-f]f[0-9a-f])", re.I),
@@ -182,6 +201,10 @@ def scan_file(path):
     if blur > 2:
         add("glass", W, 1, "backdrop blur used %d times" % blur,
             "solid surfaces; blur only behind one floating layer")
+    big_r = len(re.findall(r"\brounded-(?:2xl|3xl)\b|border-radius\s*:\s*(?:1[6-9]|[23]\d)px", text))
+    if big_r >= 8:
+        add("radius-monotony", W, 1, "large radius repeated %d times" % big_r,
+            "one radius decision from the Voice; nested radius = outer - padding")
     pills = len(re.findall(r"\brounded-full\b|border-radius\s*:\s*(?:9999px|999px|50rem)", text))
     if pills > 4:
         add("pill-overload", E if pills >= 5 else W, 1, "fully rounded pill shape used %d times (CMP-022)" % pills,
@@ -267,7 +290,6 @@ def scan_file(path):
     stats["interactive"] = bool(re.search(r"<button|<a\s|<input|onClick", text))
     stats["focus"] = bool(re.search(r"focus-visible|:focus|focus:", text))
     stats["tokens"] = bool(re.search(r"--[\w-]+\s*:|@theme|theme\.extend|tailwind\.config", text))
-    stats["inter_only"] = bool(re.search(r"font-family[^;]*\bInter\b|['\"]Inter['\"]", text))
     return findings, stats
 
 
@@ -328,7 +350,7 @@ def main(argv):
         return 2
 
     findings, agg = [], {"motion": False, "reduced": False, "interactive": False,
-                         "focus": False, "tokens": False, "inter_only": False}
+                         "focus": False, "tokens": False}
     for f in files:
         fs, st = scan_file(f)
         findings += fs
@@ -347,8 +369,6 @@ def main(argv):
     if not agg["tokens"]:
         project("no-tokens", W, "no design tokens found (custom properties or theme)",
                 "lock tokens before components: references/tokens.md")
-    if agg["inter_only"]:
-        project("default-font", I, "Inter in use", "confirm it was chosen for the Voice, or replace")
 
     counts = {lvl: sum(1 for f in findings if f["level"] == lvl) for lvl in (E, W, I)}
     score = max(0, 100 - sum(WEIGHT[f["level"]] for f in findings))

@@ -24,6 +24,7 @@ $Timestamp = Get-Date -Format "yyyyMMdd-HHmmssfff"
 
 # --- Python Dependency Check (Knowledge Graph) ---
 $PythonAvailable = $false
+$PyExe = $null
 foreach ($cmd in @("python", "python3", "py")) {
     try {
         $verOutput = & $cmd --version 2>&1
@@ -32,6 +33,8 @@ foreach ($cmd in @("python", "python3", "py")) {
             $minor = [int]$Matches[2]
             if ($major -gt 3 -or ($major -eq 3 -and $minor -ge 8)) {
                 $PythonAvailable = $true
+                # Absolute interpreter path: `python` may be the Store stub or absent (only `py`).
+                $PyExe = ((& $cmd -c "import sys; print(sys.executable)") | Select-Object -First 1) -replace '\\','/'
                 Write-Host "  Python ${major}.${minor} detected ($cmd) -- Knowledge Graph visualizer ready." -ForegroundColor Green
                 break
             }
@@ -206,7 +209,7 @@ if ($AgentsInstalled.Count -gt 0) {
 
 # Register the knowledge graph as a native MCP tool in Claude Code (idempotent),
 # so agents call kg_locate instead of falling back to grep.
-if ((Get-Command claude -ErrorAction SilentlyContinue) -and (Get-Command python -ErrorAction SilentlyContinue)) {
+if ((Get-Command claude -ErrorAction SilentlyContinue) -and $PyExe) {
     & claude mcp get maxilun-kg *> $null
     if ($LASTEXITCODE -ne 0) {
         $kgCandidates = @(
@@ -215,7 +218,7 @@ if ((Get-Command claude -ErrorAction SilentlyContinue) -and (Get-Command python 
         )
         foreach ($kg in $kgCandidates) {
             if (Test-Path $kg.Path) {
-                & claude mcp add --scope $kg.Scope maxilun-kg -- python ($kg.Path -replace '\\','/') *> $null
+                & claude mcp add --scope $kg.Scope maxilun-kg -- $PyExe ($kg.Path -replace '\\','/') *> $null
                 if ($LASTEXITCODE -eq 0) { Write-Host "  maxilun-kg MCP server registered in Claude Code ($($kg.Scope) scope)" -ForegroundColor Green }
                 break
             }
@@ -226,15 +229,16 @@ if ((Get-Command claude -ErrorAction SilentlyContinue) -and (Get-Command python 
 # Codex: register maxilun-kg in ~/.codex/config.toml when absent.
 $codexCfg = "$env:USERPROFILE\.codex\config.toml"
 $codexKg = "$env:USERPROFILE/.codex/skills/maxilun-knowledge-graph/mcp_server.py" -replace '\\','/'
-if ((Test-Path $codexCfg) -and (Test-Path $codexKg) -and -not (Select-String -Path $codexCfg -Pattern '^\[mcp_servers\.maxilun-kg\]' -Quiet)) {
-    Add-Content -Path $codexCfg -Encoding utf8 -Value "`n[mcp_servers.maxilun-kg]`ncommand = `"python`"`nargs = [`"$codexKg`"]"
+if ($PyExe -and (Test-Path $codexCfg) -and (Test-Path $codexKg) -and -not (Select-String -Path $codexCfg -Pattern '^\[mcp_servers\.maxilun-kg\]' -Quiet)) {
+    Add-Content -Path $codexCfg -Encoding utf8 -Value "`n[mcp_servers.maxilun-kg]`ncommand = `"$PyExe`"`nargs = [`"$codexKg`"]"
     Write-Host "  maxilun-kg MCP server registered in Codex" -ForegroundColor Green
 }
 
 # Council mode survives compaction via a UserPromptSubmit hook (idempotent).
 $councilHook = "$env:USERPROFILE\.claude\skills\maxilun\scripts\council_hook.py"
-if ((Get-Command claude -ErrorAction SilentlyContinue) -and (Get-Command python -ErrorAction SilentlyContinue) -and (Test-Path $councilHook)) {
-    & python $councilHook --install
+# No `claude` CLI check: the desktop app reads ~/.claude/settings.json without it on PATH.
+if ($PyExe -and (Test-Path $councilHook)) {
+    & $PyExe $councilHook --install
 }
 
 Write-Host ""

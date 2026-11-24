@@ -11,7 +11,7 @@ Catalog of generic patterns to reject across three domains of the Maxilun ecosys
 
 > **Test Suite Sync**: The banned buzzword vocabulary in Section A.5 is aligned with `BANNED_WORDS` in `scripts/test-suite.py`.
 >
-> **Detection**: Mechanical detection of the visual tells is done by `python ../maxilun-craft/scripts/slopscan.py <path>` (relative to the installed maxilun skill folder). Judgement-only tells are listed in `../maxilun-craft/references/tells.md`.
+> **Detection**: Mechanical detection of the visual tells is done by `<python> "<skill-dir>/../maxilun-craft/scripts/slopscan.py" <path>` (path relative to the installed maxilun skill folder, not the shell cwd). Judgement-only tells are listed in `../maxilun-craft/references/tells.md`.
 
 ---
 

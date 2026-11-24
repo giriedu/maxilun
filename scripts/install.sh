@@ -261,9 +261,12 @@ if [ -f "${HOME}/.codex/config.toml" ] && [ -f "$codex_kg" ] && ! grep -q '^\[mc
 fi
 
 # Council mode survives compaction via a UserPromptSubmit hook (idempotent).
+# No `claude` CLI check: the desktop app reads ~/.claude/settings.json without it on PATH.
 council_hook="${HOME}/.claude/skills/maxilun/scripts/council_hook.py"
-if command -v claude >/dev/null 2>&1 && [ -f "$council_hook" ]; then
-    "$(command -v python3 || command -v python)" "$council_hook" --install
+[ "$PROJECT_MODE" = true ] && council_hook="$(pwd)/.claude/skills/maxilun/scripts/council_hook.py"
+council_py="$(command -v python3 || command -v python || true)"
+if [ -n "$council_py" ] && [ -f "$council_hook" ]; then
+    "$council_py" "$council_hook" --install
 fi
 
 echo ""
