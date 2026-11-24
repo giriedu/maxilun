@@ -25,6 +25,7 @@ from typing import Optional
 MARKER = "# Maxilun-managed pre-commit hook"
 LEGACY_MARKERS = (MARKER, "# Maxilun Pre-Commit Purity Gate", "# Maxilun Purity Gate Pre-Commit Hook")
 LINTER = Path(__file__).resolve().parent / "ui-purity-linter.py"
+SLOPSCAN = Path(__file__).resolve().parent.parent / "skills" / "maxilun-craft" / "scripts" / "slopscan.py"
 
 HOOK_SCRIPT = r"""#!/bin/sh
 # Maxilun-managed pre-commit hook
@@ -33,6 +34,7 @@ HOOK_SCRIPT = r"""#!/bin/sh
 
 PY=@PYTHON@
 LINTER=@LINTER@
+SLOPSCAN=@SLOPSCAN@
 
 if [ ! -x "$PY" ] && ! command -v "$PY" >/dev/null 2>&1; then
     echo "  Maxilun: Python not found at $PY, skipping pre-commit purity check."
@@ -50,6 +52,10 @@ echo "  Maxilun Pre-Commit Purity Gate running..."
 git diff --cached --name-only --diff-filter=ACM | grep -E '\.(html|jsx|tsx|css|vue|svelte)$' | {
     while IFS= read -r file; do
         if [ -f "$file" ] && ! "$PY" "$LINTER" "$file"; then
+            exit 1
+        fi
+        # slopscan fails only on errors; its warnings (default-font and the rest) print but pass.
+        if [ -f "$file" ] && [ -f "$SLOPSCAN" ] && ! "$PY" "$SLOPSCAN" "$file"; then
             exit 1
         fi
     done
@@ -75,7 +81,7 @@ def _sh_path(path: str) -> str:
 
 
 def render_hook() -> str:
-    return HOOK_SCRIPT.replace("@PYTHON@", _sh_path(sys.executable)).replace("@LINTER@", _sh_path(str(LINTER)))
+    return HOOK_SCRIPT.replace("@PYTHON@", _sh_path(sys.executable)).replace("@LINTER@", _sh_path(str(LINTER))).replace("@SLOPSCAN@", _sh_path(str(SLOPSCAN)))
 
 
 def resolve_hooks_dir(root: Path) -> Path:

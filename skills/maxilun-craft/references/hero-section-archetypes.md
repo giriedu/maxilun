@@ -62,7 +62,7 @@ Every project or redesign MUST declare and implement one of these 5 canonical ID
 
 ## 3. Blueprint A (`HERO-EDTECH-01`): Split-Screen Live Academic & CBT Ledger Hero
 
-Zero-dependency React + Tailwind blueprint (with CSS spring micro-interactions, sliding tab indicator, interactive session lookup, and cursor spotlight—passes `slopscan.py` and `ui-purity-linter.py` with 0 errors):
+Zero-dependency React + Tailwind blueprint (with CSS spring micro-interactions, sliding tab indicator, interactive session lookup, and cursor spotlight—passes `slopscan.py` with 0 errors):
 
 ```tsx
 "use client";

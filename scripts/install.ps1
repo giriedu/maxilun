@@ -6,7 +6,7 @@ param(
 $Version = "1.3.0"
 Write-Host ""
 Write-Host "  MAXILUN $Version Installer" -ForegroundColor Cyan
-Write-Host "  26 skills + 20 autonomous agents" -ForegroundColor DarkCyan
+Write-Host "  27 skills + 21 autonomous agents" -ForegroundColor DarkCyan
 Write-Host ""
 
 $ScriptDir = Split-Path -Parent $PSScriptRoot

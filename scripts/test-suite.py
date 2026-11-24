@@ -169,6 +169,12 @@ def test_frontmatter():
         if "description:" not in fm:
             print(f"  ❌ {skill}: Missing 'description'")
             passed = False
+        desc = re.search(r"description:\s*>?\s*\n((?:  .*\n)+)", fm)
+        desc_len = len(" ".join(x.strip() for x in desc.group(1).splitlines())) if desc else 0
+        if desc_len > 1024:
+            # Agent Skills spec limit; strict hosts truncate or reject longer ones.
+            print(f"  ❌ {skill}: description is {desc_len} chars (max 1024)")
+            passed = False
         version_match = re.search(r"^\s+version:\s*['\"]?(\d+\.\d+\.\d+)['\"]?\s*$", fm, re.MULTILINE)
         if not version_match:
             print(f"  ❌ {skill}: Missing or invalid semantic version")
@@ -1297,6 +1303,88 @@ def test_n8n_validator():
     return True
 
 
+def run_py(script: Path, args, stdin="", env=None):
+    import subprocess
+    return subprocess.run([sys.executable, str(script)] + list(args), input=stdin, capture_output=True,
+                          text=True, encoding="utf-8", env={**os.environ, **(env or {})})
+
+
+def test_council_hook():
+    print("\n🧪 Validating council hook (ACC gate, Antigravity edit lock, on/off)...")
+    import importlib.util
+    import json
+    script = ORCHESTRATOR / "scripts" / "council_hook.py"
+    spec = importlib.util.spec_from_file_location("council_hook", script)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    failures = []
+    for text, want in [("ACC", True), ("acc, pakai serif", True), ("gas", True), ("oke lanjut", True),
+                       ("lanjut diskusi", False), ("ok tapi ganti warna", False), ("google it", False),
+                       ("redesign dashboard", False)]:
+        if mod.is_acc(text) != want:
+            failures.append(f"is_acc({text!r}) != {want}")
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        (root / ".git").mkdir()
+        run_py(script, ["--on", tmp])
+        hooks = json.loads((root / ".agents" / "hooks.json").read_text(encoding="utf-8"))
+        if "maxilun-council" not in hooks or not (root / ".maxilun" / "council").is_file():
+            failures.append("--on did not write marker and hook")
+        if "/.agents/hooks.json" not in (root / ".gitignore").read_text(encoding="utf-8"):
+            failures.append("--on did not gitignore the machine-local hook")
+
+        def decide(user, tool, cmd=""):
+            payload = {"hookEventName": "PreToolUse", "cwd": tmp, "lastUserInput": user,
+                       "toolCall": {"name": tool, "args": {"CommandLine": cmd}}}
+            return json.loads(run_py(script, ["--agy"], json.dumps(payload)).stdout)["decision"]
+        for user, tool, cmd, want in [("redesign", "write_to_file", "", "deny"),
+                                      ("redesign", "run_command", "npm i", "deny"),
+                                      ("redesign", "view_file", "", "allow"),
+                                      ("stop council", "run_command", f'"py" "{script}" --off', "ask"),
+                                      ("ACC", "replace_file_content", "", "ask")]:
+            got = decide(user, tool, cmd)
+            if got != want:
+                failures.append(f"{tool} after {user!r}: {got} != {want}")
+        if "Council mode is ON" not in run_py(script, [], "{}", {"CLAUDE_PROJECT_DIR": tmp}).stdout:
+            failures.append("Claude Code reminder missing while marker exists")
+        run_py(script, ["--off", tmp])
+        if (root / ".maxilun" / "council").exists() or (root / ".agents").exists():
+            failures.append("--off left the marker or an empty .agents/")
+    for f in failures:
+        print(f"  ❌ {f}")
+    if not failures:
+        print("  ✅ ACC gate, edit lock, reminder, gitignore, and on/off verified")
+    return not failures
+
+
+def test_slopscan_rules():
+    print("\n🧪 Validating slopscan font and stock-kit rules...")
+    script = SKILLS_DIR / "maxilun-craft" / "scripts" / "slopscan.py"
+    sample = ('<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk">\n'
+              '<style>body{font-family:"Inter",sans-serif}.x{font-family:"Segoe UI", Roboto, sans-serif}'
+              ':root{--font-ui:"Public Sans",sans-serif}</style>\n'
+              '<div class="rounded-full blur-3xl"></div><Sparkles/>\n')
+    with tempfile.TemporaryDirectory() as tmp:
+        f = Path(tmp) / "page.html"
+        f.write_text(sample, encoding="utf-8")
+        import json
+        found = json.loads(run_py(script, [str(f), "--json"]).stdout)["findings"]
+    hits = {}
+    for x in found:
+        hits.setdefault(x["rule"], []).append(x["line"])
+    failures = []
+    if hits.get("default-font") != [1, 2]:
+        failures.append(f"default-font lines {hits.get('default-font')} != [1, 2] (Roboto fallback must stay quiet)")
+    for rule in ("blur-blob", "sparkle-icon"):
+        if rule not in hits:
+            failures.append(f"{rule} not reported")
+    for x in failures:
+        print(f"  ❌ {x}")
+    if not failures:
+        print("  ✅ default-font (primary family only), blur-blob, sparkle-icon verified")
+    return not failures
+
+
 def main():
     print(f"🌑 Starting Maxilun {len(EXPECTED_SKILLS)}-Skill Test Suite\n" + "=" * 48)
     results = [
@@ -1326,6 +1414,8 @@ def main():
         test_evals_suites(),
         test_agent_aliases_system(),
         test_n8n_validator(),
+        test_council_hook(),
+        test_slopscan_rules(),
     ]
 
     print("\n" + "=" * 48)

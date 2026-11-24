@@ -4,6 +4,12 @@ The Multi-Agent Council is Maxilun's collaborative deliberation protocol. It ena
 
 ---
 
+## 0. Persistence and Edit Lock per Host
+
+**Council persists until stopped.** On `/maxilun council` (or an alias) run `<python> "<skill-dir>/scripts/council_hook.py" --on` from the project root; on any deactivation phrase run it with `--off`. `--on` creates the marker `.maxilun/council` and, for Antigravity, adds a `maxilun-council` entry to `.agents/hooks.json` that re-injects council mode before every model call and denies file writes and state-changing commands until the user's message is an ACC. Without Python, create or delete `.maxilun/council` by hand. While it exists, `scripts/council_hook.py` (a Claude Code `UserPromptSubmit` hook, installed by `<python> "<skill-dir>/scripts/council_hook.py" --install`; on Claude Code run that once at activation when `~/.claude/settings.json` has no `council_hook.py` entry, it is idempotent and repairs a path copied from another machine) re-injects council mode into every message, so it survives compaction and new sessions. Other modes are not persisted. **Hosts without that hook** (Cursor, Codex, Gemini CLI, Antigravity, OpenCode, or Claude Code where it was never installed): at the start of every turn check whether `.maxilun/council` exists in the project root and, if it does, run the turn as council. The marker, not the hook, is the switch. When a council dispatch fails because the agents are missing (`~/.claude/agents/maxilun-*.md` or the host's equivalent), say so in one sentence, name the installer to re-run, and continue `[simulated]` per §5.1 step 6.
+
+---
+
 ## 1. Trigger Conditions
 
 Activate Council Mode whenever:

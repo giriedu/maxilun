@@ -47,11 +47,11 @@ python harness/cli.py chat --provider openrouter  # Claude 3.5 Sonnet
 ```
 
 ### Option B: Install as Skill Pack into your AI Editor
-Install all 25 skills into Claude Code, Cursor, Codex, OpenCode, Zed, or Antigravity:
+Install all 27 skills into Claude Code, Cursor, Codex, OpenCode, Zed, or Antigravity:
 ```bash
 npx skills add giriedu/maxilun
 ```
-> Track and explore all 25 skills on [skills.sh/giriedu/maxilun](https://skills.sh/giriedu/maxilun).  
+> Track and explore all 27 skills on [skills.sh/giriedu/maxilun](https://skills.sh/giriedu/maxilun).  
 > **Non-interactive**: `npx skills add giriedu/maxilun -y` (add `-g` for global availability across projects).  
 > **Native Installers**: Use `./scripts/install.sh` (Linux/macOS) or `.\scripts\install.ps1` (Windows) — see [docs/INSTALL.md](docs/INSTALL.md).
 
@@ -148,7 +148,7 @@ Structured by real-world software engineering lifecycle — from foundational ar
 
 ## Four Always-On Quality Engines
 
-Embedded in all 25 skills as an identical `CORE-RULES` block, verified by CI:
+Embedded in all 27 skills as an identical `CORE-RULES` block, verified by CI:
 | Engine | Core Responsibility |
 |---|---|
 | **Focus & Agency Engine** | Repo-first execution, reversibility-gated clarification (max 1 batched turn for irreversible choices), max 3 active workstreams, zero HUD/checkbox theater |
@@ -187,7 +187,7 @@ Use `maxilun-knowledge-graph` for structural or multi-file code changes when its
 Maxilun ships with a complete built-in autonomous agent runtime, AST security inspector, and empirical benchmark suite in `harness/` (100% zero-dependency Python stdlib):
 
 ```bash
-# Inspect all 26 ecosystem skills (1 orchestrator + 25 specialists) and 20 autonomous agents:
+# Inspect all 27 ecosystem skills (1 orchestrator + 26 specialists) and 21 autonomous agents:
 python harness/cli.py skills
 # Run empirical benchmark suite (+55% quality improvement over Raw AI):
 python harness/cli.py bench --view
@@ -235,8 +235,8 @@ On OMP/Termul, the agents install to `~/.omp/agent/agents`.
 | Guide | Description |
 |---|---|
 | [docs/INSTALL.md](docs/INSTALL.md) | Comprehensive installation guides, one-line scripts & verification |
-| [docs/SKILLS.md](docs/SKILLS.md) | Triggers, capabilities, and parameters for all 25 skills |
-| [docs/AGENTS.md](docs/AGENTS.md) | 20 autonomous agents (1 orchestrator + 19 specialists), tool permissions & subagent protocols |
+| [docs/SKILLS.md](docs/SKILLS.md) | Triggers, capabilities, and parameters for all 27 skills |
+| [docs/AGENTS.md](docs/AGENTS.md) | 21 autonomous agents (1 orchestrator + 20 specialists), tool permissions & subagent protocols |
 | [docs/ENGINES.md](docs/ENGINES.md) | Four Always-On Engines and three Operating Protocols |
 | [docs/EXAMPLES.md](docs/EXAMPLES.md) | Real-world engineering scenarios & multi-specialist Wave Patterns |
 | [docs/SKILL-CONTRACTS.md](docs/SKILL-CONTRACTS.md) | Ownership, standalone behavior, inputs, outputs, and handoffs for every skill |
@@ -253,7 +253,7 @@ On OMP/Termul, the agents install to `~/.omp/agent/agents`.
 
 ## About Releases
 
-Maxilun follows [Semantic Versioning](https://semver.org/) and [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Every release is validated against all 26 skills, 20 autonomous agents, Knowledge Graph scanners, UI Purity Linter, and harness integration tests via `python scripts/test-suite.py`.
+Maxilun follows [Semantic Versioning](https://semver.org/) and [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Every release is validated against all 27 skills, 21 autonomous agents, Knowledge Graph scanners, UI Purity Linter, and harness integration tests via `python scripts/test-suite.py`.
 
 - **Latest Stable**: `v1.3.0` — see [CHANGELOG.md](CHANGELOG.md) for full release notes and `[Unreleased]` additions (`16` agents, Shared Agent Bus, `maxilun-kg` MCP, `OutputCompressor`, `/maxilun terse`, `icon_lookup.py`, 5-in-1 design engine, and component ecosystem vault).
 - **Release Pipeline**: See [docs/RELEASE.md](docs/RELEASE.md) and [GitHub Releases](https://github.com/giriedu/maxilun/releases).

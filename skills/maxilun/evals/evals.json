@@ -60,6 +60,41 @@
         "single owner executes",
         "verification still runs"
       ]
+    },
+    {
+      "id": 6,
+      "prompt": "/maxilun council lalu: ganti layout halaman checkout jadi dua kolom.",
+      "expected_output": "Runs council_hook.py --on, holds a meeting where each speaker after the first answers an earlier one by @name, ends with a synthesis and the ACC question, and edits no file in that turn.",
+      "assertions": [
+        "activates council with council_hook.py --on",
+        "speakers reply to each other by @name",
+        "at least one OBJECT with file:line or [UNVERIFIED]",
+        "labels minutes [simulated] when no subagent tool exists",
+        "creates or edits no file before ACC",
+        "ends the turn with the ACC question"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "(council aktif) lanjut diskusi soal warna dulu ya",
+      "expected_output": "Treats the message as more deliberation, not approval; continues the meeting and still edits nothing.",
+      "assertions": [
+        "does not treat \"lanjut diskusi\" as ACC",
+        "edits no file",
+        "continues the meeting on the colour question"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Belum ada knowledge graph di repo ini. Cari di mana validasi NIK di-handle lalu perbaiki bug-nya.",
+      "expected_output": "Builds the graph once with kg_scan or cli.py scan, then locates the validation with kg_locate before any Grep or file read, and reads only the returned ranges.",
+      "assertions": [
+        "first discovery call is the knowledge graph",
+        "builds the graph with scan when none exists",
+        "no Grep/Glob before the graph call",
+        "reads only the located ranges",
+        "proves the fix with a failing-then-passing test"
+      ]
     }
   ]
 }

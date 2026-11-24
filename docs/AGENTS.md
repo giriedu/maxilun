@@ -1,6 +1,6 @@
 # Maxilun Autonomous Agents Architecture
 
-Maxilun menyediakan **20 Autonomous Agents**: **1 orchestrator** (`maxilun-orchestrator`) dan **19 agen spesialis** yang membungkus 25 skill spesialis. Orchestrator berjalan sebagai sesi utama (memimpin dan mendelegasikan lewat tool subagent milik host); bila dipanggil sebagai subagent, ia mengembalikan rencana dan paket handoff tanpa mendelegasikan. Arsitektur agen ini memecah eksekusi tugas ke dalam subagent dengan konteks terisolasi, hak akses tool terikat (*Principle of Least Privilege*), dan gating verifikasi faktual.
+Maxilun menyediakan **21 Autonomous Agents**: **1 orchestrator** (`maxilun-orchestrator`) dan **20 agen spesialis** yang membungkus 26 skill spesialis. Orchestrator berjalan sebagai sesi utama (memimpin dan mendelegasikan lewat tool subagent milik host); bila dipanggil sebagai subagent, ia mengembalikan rencana dan paket handoff tanpa mendelegasikan. Arsitektur agen ini memecah eksekusi tugas ke dalam subagent dengan konteks terisolasi, hak akses tool terikat (*Principle of Least Privilege*), dan gating verifikasi faktual.
 
 ---
 
@@ -105,7 +105,7 @@ python harness/cli.py run "Audit keamanan endpoint login dan buktikan dengan tes
 
 ## 4. Persona Kustom & Alias Panggilan Tim (`maxilun alias`)
 
-Maxilun mendukung pemberian nama panggilan akrab (*custom persona aliases*) untuk ke-19 agen otonom agar kolaborasi terasa seperti bekerja bersama tim rekayasa nyata, tanpa mengubah ID kanonikal sistem (*Canonical Anchor*).
+Maxilun mendukung pemberian nama panggilan akrab (*custom persona aliases*) untuk ke-20 agen otonom agar kolaborasi terasa seperti bekerja bersama tim rekayasa nyata, tanpa mengubah ID kanonikal sistem (*Canonical Anchor*).
 
 ### A. Preset Siap Pakai
 

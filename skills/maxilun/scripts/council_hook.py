@@ -30,8 +30,17 @@ REMINDER = (
     "\"normal mode\", run \"%s\" \"%s\" --off and answer normally." % (
         Path(sys.executable).as_posix(), Path(__file__).resolve().as_posix())
 )
-# A turn whose user message starts with one of these is the approval to implement.
-ACC = re.compile(r"^\s*(acc|approve[d]?|lanjut|gas|setuju|ok(e|ay)?|go|eksekusi)\b", re.I)
+# Approval is the explicit token ACC (notes may follow) or a message that is nothing
+# but an approval word. "lanjut diskusi" or "ok tapi ganti warna" is not approval.
+ACC_TOKEN = re.compile(r"^\s*(acc|approved?)\b", re.I)
+ACC_ONLY = re.compile(r"^\s*(setuju|gas(kan)?|lanjut(kan)?|eksekusi|ok(e|ay)?|go( ahead)?|yes|ya)"
+                      r"(\s*(,|aja|saja|gas|lanjut(kan)?|eksekusi|sekarang))*\s*[.!]*\s*$", re.I)
+NOT_ACC = re.compile(r"\b(tapi|but|revisi|ganti|ubah|jangan|diskusi|tunggu|nanti|wait|kecuali)\b", re.I)
+
+
+def is_acc(text: str) -> bool:
+    return bool(ACC_TOKEN.match(text) or ACC_ONLY.match(text)) and not (
+        NOT_ACC.search(text) and not ACC_TOKEN.match(text))
 # Antigravity tool names are lowercased step types; anything that writes is held.
 WRITE_TOOL = re.compile(r"write|replace|edit|create|delete|remove|move|rename|patch|apply|code_action", re.I)
 READ_TOOL = re.compile(r"(view|read|list|grep|find|search|codebase|get|kg_)", re.I)
@@ -66,7 +75,7 @@ def agy_hook() -> None:
     # PreToolUse. "ask" leaves the user's own permission settings in charge.
     call = p.get("toolCall") or {}
     name, args = call.get("name", ""), call.get("args") or {}
-    approved = bool(ACC.match(p.get("lastUserInput") or ""))
+    approved = is_acc(p.get("lastUserInput") or "")
     cmd = str(args.get("CommandLine", ""))
     stopping = "council_hook.py" in cmd and "--off" in cmd
     held = WRITE_TOOL.search(name) or (name == "run_command" and not (READ_CMD.match(cmd) or stopping))
@@ -82,10 +91,14 @@ def agy_hook() -> None:
 
 def toggle(on: bool, root: Path) -> None:
     marker, hooks_file = root / MARKER, root / AGY_HOOKS
-    data = json.loads(hooks_file.read_text(encoding="utf-8")) if hooks_file.is_file() else {}
+    existed = hooks_file.is_file()
+    data = json.loads(hooks_file.read_text(encoding="utf-8")) if existed else {}
     if on:
         marker.parent.mkdir(parents=True, exist_ok=True)
         marker.touch()
+        if not existed:
+            # The hook holds this machine's paths; keep it out of the repo.
+            ignore(root, ["/.maxilun/", "/.agents/hooks.json"])
         # Absolute paths: Antigravity runs hooks from .agents/, not the skill folder.
         cmd = f'"{Path(sys.executable).as_posix()}" "{Path(__file__).resolve().as_posix()}" --agy'
         data[AGY_NAME] = {
@@ -101,7 +114,20 @@ def toggle(on: bool, root: Path) -> None:
         hooks_file.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
     elif hooks_file.is_file():
         hooks_file.unlink()
+    if not on and hooks_file.parent.is_dir() and not any(hooks_file.parent.iterdir()):
+        hooks_file.parent.rmdir()
     print("council %s in %s" % ("on" if on else "off", root))
+
+
+def ignore(root: Path, lines: list) -> None:
+    if not (root / ".git").exists():
+        return
+    gi = root / ".gitignore"
+    text = gi.read_text(encoding="utf-8") if gi.is_file() else ""
+    missing = [ln for ln in lines if ln not in text.splitlines()]
+    if missing:
+        sep = "" if not text or text.endswith("\n") else "\n"
+        gi.write_text(text + sep + "\n".join(missing) + "\n", encoding="utf-8")
 
 
 def install() -> None:

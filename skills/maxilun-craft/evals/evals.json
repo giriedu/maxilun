@@ -51,6 +51,18 @@
         "each report has a LOOKED section with render.py PNG paths",
         "slopscan exit code 0 on both files"
       ]
+    },
+    {
+      "id": 5,
+      "prompt": "Buatkan landing page untuk koperasi simpan pinjam petani kopi di Temanggung.",
+      "expected_output": "Derives type and colour from the Origin (coffee co-op documents, local signage); does not ship a saturated default font without an Origin reason; slopscan shows no default-font warning or justifies it.",
+      "assertions": [
+        "names a typeface source from the Origin",
+        "no Inter/Space Grotesk/Geist/Plus Jakarta Sans/Poppins without a stated product-specific reason",
+        "no sparkle icons, blur blobs, or glass over blobs",
+        "DECISIONS lists the font reason",
+        "slopscan run with default-font addressed"
+      ]
     }
   ]
 }
