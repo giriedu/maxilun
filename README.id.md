@@ -2,14 +2,14 @@
 
 <div align="center">
 
-<img src="assets/banner.svg" alt="Maxilun — 26 Skill · 20 Agen Otonom · Shared Agent Bus · Knowledge Graph MCP · Purity Gate" width="100%">
+<img src="assets/banner.svg" alt="Maxilun — 27 Skill · 21 Agen Otonom · Shared Agent Bus · Knowledge Graph MCP · Purity Gate" width="100%">
 
 <br/>
 
 [![CI](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml/badge.svg)](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml)
 [![Version](https://img.shields.io/badge/version-1.3.0-7c3aed?style=flat-square)](CHANGELOG.md)
-[![Skills](https://img.shields.io/badge/skills-26_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
-[![Agents](https://img.shields.io/badge/agents-20_autonomous-3b82f6?style=flat-square)](docs/AGENTS.md)
+[![Skills](https://img.shields.io/badge/skills-27_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
+[![Agents](https://img.shields.io/badge/agents-21_autonomous-3b82f6?style=flat-square)](docs/AGENTS.md)
 [![License](https://img.shields.io/badge/license-Free_to_Use-22c55e?style=flat-square)](LICENSE)
 [![Sponsor](https://img.shields.io/badge/Sponsor-GitHub_Sponsors-ea4aaa?style=flat-square)](https://github.com/sponsors/giriedu)
 [![Platform](https://img.shields.io/badge/runs_on-Claude_·_Cursor_·_Codex_·_Antigravity_·_Zed_·_Termul-white?style=flat-square)](#dukungan-platform-ai)
@@ -23,7 +23,7 @@
 
 ---
 
-**Maxilun** adalah ekosistem 25 skill AI untuk tim rekayasa perangkat lunak: satu orchestrator dan 24 spesialis. Setiap skill membawa blok **Core Rules** yang sama, sehingga empat engine kualitas ikut terpasang bersama skill, bukan tertinggal di folder terpisah. Orchestrator menegakkan triase keputusan berbasis reversibilitas (eksekusi dari bukti repositori lebih dulu; tanyakan hanya keputusan yang mahal dibalik), kohesi satu pemilik per permukaan kerja, koordinasi wave saat benar-benar lintas-domain, dan bukti verifikasi nyata tanpa banner HUD seremonial. Materi mendalam (detail engine, katalog purity, higienitas kode, disiplin rekayasa bedah, discovery, dan corpus referensi) ada di `references/` dalam masing-masing skill dan hanya dimuat saat dibutuhkan.
+**Maxilun** adalah ekosistem 27 skill AI untuk tim rekayasa perangkat lunak: satu orchestrator dan 26 spesialis. Setiap skill membawa blok **Core Rules** yang sama, sehingga empat engine kualitas ikut terpasang bersama skill, bukan tertinggal di folder terpisah. Orchestrator menegakkan triase keputusan berbasis reversibilitas (eksekusi dari bukti repositori lebih dulu; tanyakan hanya keputusan yang mahal dibalik), kohesi satu pemilik per permukaan kerja, koordinasi wave saat benar-benar lintas-domain, dan bukti verifikasi nyata tanpa banner HUD seremonial. Materi mendalam (detail engine, katalog purity, higienitas kode, disiplin rekayasa bedah, discovery, dan corpus referensi) ada di `references/` dalam masing-masing skill dan hanya dimuat saat dibutuhkan.
 
 ## Dua Cara Menggunakan Maxilun
 
@@ -47,11 +47,11 @@ python harness/cli.py chat --provider openrouter  # Claude 3.5 Sonnet
 ```
 
 ### Opsi B: Pasang sebagai Skill Pack di Editor AI Anda
-Pasang seluruh 25 skill ke Claude Code, Cursor, Codex, OpenCode, Zed, atau Antigravity:
+Pasang seluruh 27 skill ke Claude Code, Cursor, Codex, OpenCode, Zed, atau Antigravity:
 ```bash
 npx skills add giriedu/maxilun
 ```
-> Pantau dan jelajahi seluruh 25 skill di [skills.sh/giriedu/maxilun](https://skills.sh/giriedu/maxilun).  
+> Pantau dan jelajahi seluruh 27 skill di [skills.sh/giriedu/maxilun](https://skills.sh/giriedu/maxilun).  
 > **Mode Non-interaktif**: `npx skills add giriedu/maxilun -y` (tambahkan `-g` untuk instalasi global).  
 > **Installer Bawaan**: Gunakan `./scripts/install.sh` (Linux/macOS) atau `.\scripts\install.ps1` (Windows) — lihat [docs/INSTALL.md](docs/INSTALL.md).
 
@@ -62,23 +62,23 @@ npx skills add giriedu/maxilun
 Banyak repositori skill AI hanya berisi prompt tipis (*"tulis kode bersih, buat tampilan modern"*). Maxilun dibangun sebagai **infrastruktur rekayasa yang dapat diverifikasi** — lihat perbandingan kode & UI berdampingan di [**docs/BENCHMARKS.md**](docs/BENCHMARKS.md):
 
 <p align="center">
-  <img src="assets/raw-vs-maxilun-proof.svg" alt="Perbandingan Output AI Biasa vs Rekayasa Produksi Maxilun v1.0" width="100%">
+  <img src="assets/raw-vs-maxilun-proof.svg" alt="Perbandingan Output AI Biasa vs Rekayasa Produksi Maxilun v1.3.0" width="100%">
 </p>
 
 | Masalah Umum Output AI Mentah (Raw LLM) | Artefak Nyata di Dalam Repositori Maxilun |
 |---|---|
-| **UI Template AI Generik** (gradien ungu-biru, radius seragam, breadcrumb otomatis, tanpa state loading/error) | **100 Analisis Design System Brand Nyata** di [`skills/maxilun-craft/references/design-md/`](skills/maxilun-craft/references/design-md/index.md) (Stripe, Linear, Vercel, GitHub, Wise, Apple, dll.) + kewajiban **Matriks 4 State UI** (Skeleton, Empty+CTA, Populated `tabular-nums`, Error+Recovery) |
+| **UI Template AI Generik** (gradien ungu-biru, radius seragam, breadcrumb otomatis, tanpa state loading/error) | **100 Analisis Design System Brand Nyata** di [`skills/maxilun-craft/references/design-md/`](skills/maxilun-craft/references/design-md/index.md) (Stripe, Linear, Vercel, GitHub, Wise, Apple, dll.) + kewajiban **Matriks 6 State UI** (Idle, Loading/Skeleton, Populated `tabular-nums`, Empty+CTA, Pending, Error+Recovery) |
 | **Edit Lintas-File Buta** (membaca puluhan file penuh ke context window dan merusak pemanggil fungsi) | **Executable AST Knowledge Graph & 3D WebGL Lens** di [`skills/maxilun-knowledge-graph/`](skills/maxilun-knowledge-graph/SKILL.md) (`cli.py` + AST scanner Python/TS/Polyglot yang mengembalikan `file:line` `defOf:` / `callsIn:` presisi dalam `< 1 detik`) |
 | **Celah Keamanan & Kontrak API Rapuh** (timing attack `!==`, uang memakai `float`, format error acak) | **Playbook Kriptografi & Kontrak OpenAPI 3.1** di [`maxilun-sentinel`](skills/maxilun-sentinel/references/security-playbook.md) & [`maxilun-docsmith`](skills/maxilun-docsmith/references/openapi-contracts.md) (`timingSafeEqual`, Argon2id, `BIGINT` satuan terkecil, RFC 9457 `application/problem+json`) |
 | **Video Programatik Kaku & Tak Terbaca** (drift CSS transition, font kecil 14px, teks paragraf panjang) | **Pipeline Studio Video 5-Spesialis** di [`maxilun-cinecode`](skills/maxilun-cinecode/references/video-production-pipeline.md) + [`maxilun-motion`](skills/maxilun-motion/references/choreography-styles.md) (kompilator frame React, pegas teredam analitik, 14 style signature, 22 hook, FFmpeg `yuv420p`) |
-| **Context Window Bengkak & Seremoni Prompt** (prompt ribuan baris, banner emoji kaku, dan klon tampilan SaaS seragam) | **Batas Ramping `≤ 250 Baris`** di seluruh 25 `SKILL.md`, mode ultra-ringkas `/maxilun terse`, `OutputCompressor`, dan nol checklist centang-sendiri — diverifikasi otomatis oleh [`scripts/test-suite.py`](scripts/test-suite.py) |
+| **Context Window Bengkak & Seremoni Prompt** (prompt ribuan baris, banner emoji kaku, dan klon tampilan SaaS seragam) | **Batas Ramping `≤ 300 Baris`** di seluruh 27 `SKILL.md`, mode ultra-ringkas `/maxilun terse`, `OutputCompressor`, dan nol checklist centang-sendiri — diverifikasi otomatis oleh [`scripts/test-suite.py`](scripts/test-suite.py) |
 
 ---
 
 ## Arsitektur Sistem & Orkestrasi Multi-Wave
 
 <p align="center">
-  <img src="assets/architecture-overview.svg" alt="Arsitektur 3-Lapis Ekosistem Maxilun v1.0" width="100%">
+  <img src="assets/architecture-overview.svg" alt="Arsitektur 4-Lapis Ekosistem Maxilun v1.3.0" width="100%">
 </p>
 
 ### Alur Routing & Koordinasi Tugas Rekayasa Kompleks
@@ -112,7 +112,7 @@ flowchart LR
 
 ---
 
-## 25 Skill: 1 Orchestrator + 24 Spesialis
+## 27 Skill: 1 Orchestrator + 26 Spesialis
 
 Disusun berdasarkan siklus rekayasa perangkat lunak dari fondasi arsitektur hingga eksekusi produksi:
 
@@ -143,12 +143,14 @@ Disusun berdasarkan siklus rekayasa perangkat lunak dari fondasi arsitektur hing
 | 23 | `maxilun-ai` | Rekayasa Aplikasi AI & LLM — hybrid retrieval RAG (dense vector + BM25), chunking semantik, evaluasi regresi prompt, context caching | `/maxilun-ai`, `/msal-ai` |
 | 24 | `maxilun-game` | Rekayasa Game Studio & Multi-Engine — arsitektur engine (Godot, Unreal, Unity), sinkronisasi fisika, authoritative netcode, GDD | `/maxilun-game`, `/maxilun-gamestudio` |
 | 25 | `maxilun-hunt` | Audit Kerentanan Ofensif — skenario serangan nyata, IDOR/BOLA, SSRF, triase bukti 7-Question Gate, paket bukti reproducible | `/maxilun-hunt`, `/msal-hunt` |
+| 26 | `maxilun-n8n` | Otomasi Workflow & Integrasi Event — skema n8n v1, ekspresi aman, webhook HMAC SHA-256, node JS/Python, node AI Agent | `/maxilun-n8n`, `/msal-n8n` |
+| 27 | `maxilun-figcraft` | Desain Kanvas Vektor Live — FigCraft desktop MCP (`--attach 7979`), partisi mutasi atomik multi-agen, Auto Layout presisi | `/maxilun-figcraft`, `/msal-figcraft` |
 
 ---
 
 ## Empat Engine Kualitas yang Selalu Aktif
 
-Digunakan di seluruh 25 skill sebagai blok `CORE-RULES` identik yang diverifikasi oleh CI:
+Digunakan di seluruh 27 skill sebagai blok `CORE-RULES` identik yang diverifikasi oleh CI:
 
 | Mesin | Fungsi Utama |
 |---|---|
@@ -188,7 +190,7 @@ Gunakan `maxilun-knowledge-graph` untuk perubahan kode struktural atau lintas-fi
 Maxilun dilengkapi dengan runtime agen otonom bawaan, inspektor keamanan AST, dan runner benchmark empiris di folder `harness/` (100% zero-dependency Python stdlib):
 
 ```bash
-# Inspeksi 26 skill ekosistem (1 orchestrator + 25 spesialis) dan 20 agen otonom:
+# Inspeksi 27 skill ekosistem (1 orchestrator + 26 spesialis) dan 21 agen otonom:
 python harness/cli.py skills
 
 # Jalankan benchmark komparatif empiris (+55% peningkatan atas Raw AI):
@@ -207,7 +209,7 @@ Arsitektur runtime lengkap, konfigurasi provider, dan skema tool didokumentasika
 
 ## Rapat Agen
 
-Mode council menjalankan rapat antar agen spesialis. Orchestrator memimpin dari sesi utama dan memanggil agen satu per satu lewat tool subagent milik host. Setiap giliran berisi lima baris: `POSITION`, `AGREE`, `OBJECT`, `PROPOSE`, `ASK`. Rapat bersifat read-only: tidak ada agen yang mengubah file. Rapat berhenti setelah satu ronde tanpa keberatan, atau setelah 3 ronde, dan notulen ditampilkan kepada Anda sebelum pekerjaan dimulai.
+Mode council menjalankan rapat antar agen spesialis. Orchestrator memimpin dari sesi utama dan memanggil agen yang diundang dalam ronde paralel (dengan KG brief Fase 0 pada audit/keputusan Deep) lewat tool subagent milik host. Setiap giliran berisi lima baris: `POSITION`, `AGREE`, `OBJECT`, `PROPOSE`, `ASK`. Rapat bersifat read-only: tidak ada agen yang mengubah file. Rapat berhenti setelah satu ronde tanpa keberatan, atau setelah 3 ronde, dan notulen ditampilkan kepada Anda sebelum pekerjaan dimulai.
 
 Dari terminal:
 
@@ -237,8 +239,8 @@ Di OMP/Termul, agen terpasang ke `~/.omp/agent/agents`.
 | Berkas Panduan | Cakupan Informasi |
 |---|---|
 | [docs/INSTALL.md](docs/INSTALL.md) | Panduan instalasi multi-platform lengkap & integrasi CLI |
-| [docs/SKILLS.md](docs/SKILLS.md) | Detail mendalam, peran teknis, dan pemicu seluruh 25 skill |
-| [docs/AGENTS.md](docs/AGENTS.md) | 20 agen otonom (1 orchestrator + 19 spesialis), hak akses tool & protokol subagent |
+| [docs/SKILLS.md](docs/SKILLS.md) | Detail mendalam, peran teknis, dan pemicu seluruh 27 skill |
+| [docs/AGENTS.md](docs/AGENTS.md) | 21 agen otonom (1 orchestrator + 20 spesialis), hak akses tool & protokol subagent |
 | [docs/ENGINES.md](docs/ENGINES.md) | Empat engine kualitas dan tiga protokol operasi |
 | [docs/EXAMPLES.md](docs/EXAMPLES.md) | Contoh skenario rekayasa nyata & orkestrasi Wave Pattern |
 | [docs/SKILL-CONTRACTS.md](docs/SKILL-CONTRACTS.md) | Ownership, mode standalone, input, output, dan handoff setiap skill |
@@ -255,9 +257,9 @@ Di OMP/Termul, agen terpasang ke `~/.omp/agent/agents`.
 
 ## Tentang Rilis
 
-Maxilun mengikuti [Semantic Versioning](https://semver.org/) dan [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Setiap rilis diverifikasi terhadap seluruh 26 skill, 20 agen otonom, scanner Knowledge Graph, UI Purity Linter, dan uji integrasi harness melalui `python scripts/test-suite.py`.
+Maxilun mengikuti [Semantic Versioning](https://semver.org/) dan [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Setiap rilis diverifikasi terhadap seluruh 27 skill, 21 agen otonom, scanner Knowledge Graph, UI Purity Linter, dan uji integrasi harness melalui `python scripts/test-suite.py`.
 
-- **Versi Stabil Terbaru**: `v1.3.0` — lihat [CHANGELOG.md](CHANGELOG.md) untuk catatan rilis lengkap dan pembaruan `[Unreleased]` (`16` agen, Shared Agent Bus, `maxilun-kg` MCP, `OutputCompressor`, `/maxilun terse`, `icon_lookup.py`, 5-in-1 design engine, dan vault ekosistem komponen).
+- **Versi Stabil Terbaru**: `v1.3.0` — lihat [CHANGELOG.md](CHANGELOG.md) untuk catatan rilis lengkap dan pembaruan `[Unreleased]` (`27` skill, `21` agen otonom, Shared Agent Bus, `maxilun-kg` MCP, `OutputCompressor`, `/maxilun terse`, `icon_lookup.py`, `maxilun-n8n`, `maxilun-figcraft`, dan vault ekosistem komponen).
 - **Alur Rilis**: Lihat [docs/RELEASE.md](docs/RELEASE.md) dan [GitHub Releases](https://github.com/giriedu/maxilun/releases).
 
 ---

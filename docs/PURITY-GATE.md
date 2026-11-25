@@ -34,4 +34,4 @@ The **Maxilun Purity Gate** is an engineering and design constraint applied to s
 
 ## Delivery verification
 
-Before yielding, verify ownership cohesion, diff minimalism, factual accuracy, functional states (loading, empty, populated, error), accessibility (`:focus-visible`, contrast, keyboard, `prefers-reduced-motion`), and executed smoke/test proof.
+Before yielding, verify ownership cohesion, diff minimalism, factual accuracy, all 6 UI functional states (idle, loading, populated, empty, pending, error), accessibility (`:focus-visible`, contrast, keyboard, `prefers-reduced-motion`), and executed smoke/test proof.

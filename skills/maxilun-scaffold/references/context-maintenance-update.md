@@ -31,9 +31,9 @@ When invoked with `--update` on an existing `docs/` repository:
 
 ---
 
-## 3. Lean Root Context Contract (4-File Root Contract)
+## 3. Lean 4-File Docs Contract
 
-For lightweight microservices, CLI tools, or headless libraries where a full 10-document `docs/` suite is excessive, adopt the lean 4-file contract:
+For lightweight microservices, CLI tools, or headless libraries where a full 10-document `docs/` suite is excessive, adopt the lean 4-file `docs/` contract (or 4 standalone root contracts `Security.md`, `Code-Style.md`, `Database.md`, `API-Guide.md` when organizing without a `docs/` folder):
 
 ```text
 docs/

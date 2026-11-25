@@ -11,7 +11,7 @@ Skills hold the knowledge; agents (`agents/<name>.md`, installed next to the ski
 | `maxilun-orchestrator` | `maxilun` | No (chairs, dispatches, synthesizes) |
 | `maxilun-scout` | `maxilun-knowledge-graph`, `maxilun-insight`, `maxilun-seo-audit` | No |
 | `maxilun-planner` | `maxilun-scaffold`, `maxilun-docsmith` | Docs only |
-| `maxilun-architect` | `maxilun-architect`, `maxilun-data`, `maxilun-sentinel`, `maxilun-ai` | Contracts, ADRs |
+| `maxilun-architect` | `maxilun-architect`, `maxilun-data`, `maxilun-sentinel`, `maxilun-docsmith`, `maxilun-scaffold`, `maxilun-ai` | Contracts, ADRs |
 | `maxilun-ui-designer` | `maxilun-craft` | Yes |
 | `maxilun-ui-motion` | `maxilun-motion` | Yes |
 | `maxilun-studio` | `maxilun-craft`, `maxilun-motion`, `maxilun-cinecode`, `maxilun-diagrams`, `maxilun-content` | Yes |

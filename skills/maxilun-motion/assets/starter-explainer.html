@@ -15,8 +15,8 @@
   --brand-primary: #10b981;
   --brand-secondary: #0284c7;
   --brand-bg: #08090e;
-  --brand-font-display: 'Inter', system-ui, -apple-system, sans-serif;
-  --brand-font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --brand-font-display: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --brand-font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
   --motion-duration-base: 0.6s;
   --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
   --motion-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -158,6 +158,7 @@ html, body {
   font-weight: 700;
   letter-spacing: -0.02em;
   margin-bottom: 32px;
+  text-wrap: balance;
 }
 
 .scene-body {
@@ -319,8 +320,17 @@ html, body {
     height: 100% !important;
   }
 
-  .scene { opacity: 1 !important; visibility: visible !important; }
-  .scene:not(:first-child) { display: none !important; }
+  .layer--text {
+    overflow-y: auto;
+    pointer-events: auto;
+    padding: 64px 0;
+  }
+  .scene {
+    position: relative !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    margin-bottom: 48px;
+  }
 }
 </style>
 </head>
@@ -510,10 +520,12 @@ const TextKinetics = {
       if (el.dataset.kineticInit) return;
       el.dataset.kineticInit = 'true';
       const text = el.textContent.trim();
+      el.setAttribute('aria-label', text);
       el.textContent = '';
       [...text].forEach(ch => {
         const span = document.createElement('span');
         span.className = 'char';
+        span.setAttribute('aria-hidden', 'true');
         span.textContent = ch === ' ' ? '\u00A0' : ch;
         el.appendChild(span);
       });
@@ -927,7 +939,8 @@ function init() {
 
     if (CONFIG.autoplay) timeline.play();
   } else {
-    // Static fallback: show first scene only
+    // Reduced-motion fallback: all scenes remain stacked and readable in DOM order
+    document.querySelectorAll('.scene').forEach(s => s.classList.add('active'));
     SceneGraph.updateDots(0);
   }
 

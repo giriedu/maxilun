@@ -49,13 +49,22 @@ fi
 echo ""
 echo "  Maxilun Pre-Commit Purity Gate running..."
 
-git diff --cached --name-only --diff-filter=ACM | grep -E '\.(html|jsx|tsx|css|vue|svelte)$' | {
+TMP_HOOK_DIR=$(mktemp -d)
+trap 'rm -rf "$TMP_HOOK_DIR"' EXIT
+
+git -c core.quotepath=false diff --cached --name-only --diff-filter=ACM | grep -iE '\.(html?|jsx|tsx|css|scss|vue|svelte|svg|astro)$' | {
     while IFS= read -r file; do
-        if [ -f "$file" ] && ! "$PY" "$LINTER" "$file"; then
+        [ -n "$file" ] || continue
+        mkdir -p "$TMP_HOOK_DIR/$(dirname "$file")"
+        if ! git show ":$file" > "$TMP_HOOK_DIR/$file" 2>/dev/null; then
+            continue
+        fi
+        staged_copy="$TMP_HOOK_DIR/$file"
+        if ! "$PY" "$LINTER" "$staged_copy"; then
             exit 1
         fi
         # slopscan fails only on errors; its warnings (default-font and the rest) print but pass.
-        if [ -f "$file" ] && [ -f "$SLOPSCAN" ] && ! "$PY" "$SLOPSCAN" "$file"; then
+        if [ -f "$SLOPSCAN" ] && ! "$PY" "$SLOPSCAN" "$staged_copy"; then
             exit 1
         fi
     done

@@ -37,24 +37,36 @@ Invite only the 2-5 agents whose domains the decision actually crosses, in the o
 
 ### 3.1 How the meeting runs
 
+**Two tiers, chosen from the message. Never dispatch speakers one at a time.**
+
+| Tier | When | How |
+|---|---|---|
+| **Chat** | Greeting or small talk with no task ("halo tim", "test", "thanks") | No agents, no KG. The chair replies in one line and asks what to discuss. Never reopen an earlier agenda unless the user asks. |
+| **Quick** (default for a real question) | A question, advice, idea, opinion | No KG scan, no scout. Dispatch the 2-3 agents who own the topic **in one message, in parallel**, one round. Each answers in at most 3 short lines from its own domain (no five-line debate format, no file:line hunting). Reply = `**@agent**: answer` per agent + one chair line. Whole reply under 15 lines: no minutes header, no process notes, no phases. No ACC. |
+| **Deep** | The user asks to check/audit/review the app or code, its weaknesses/strengths (kekurangan/kelebihan), or a code change is being decided | Step 0 KG brief by the chair, then parallel rounds (below), synthesis, ACC gate. |
+
+Only the user's latest message sets the agenda and the tier. The rest of this section describes the Deep tier.
+
 Every turn is a separately dispatched agent, so each specialist reasons with its own skill and persona; one model writing all the voices is not a meeting. Dispatch by host:
 
 | Host | How each turn is dispatched |
 |---|---|
-| Maxilun harness (source repo only, not shipped with the skills) | `convene_meeting` tool (`harness/engine/meeting.py`) runs the whole loop, or `python -m harness.cli meeting "<agenda>" --with <agents>` from that repo root. Anywhere else use the host row below. |
+| Maxilun harness (source repo only, not shipped with the skills) | `convene_meeting` tool (`harness/engine/meeting.py`) automatically builds the Phase 0 KG brief in `hold_meeting` and runs the loop, or `python -m harness.cli meeting "<agenda>" --with <agents>`. |
+| Antigravity IDE (when subagent tools are available) | Define read-only specialists (`define_subagent(EnableWriteTools=false)`) and dispatch all speakers of each round in parallel via `invoke_subagent` / `send_message`, passing the Phase 0 KG brief + full minutes. |
 | Claude Code | Task tool, `subagent_type: maxilun-<agent>` (agents installed in `~/.claude/agents`) |
 | OMP / Termul | `task` tool, `agent: maxilun-<agent>` (agents installed in `~/.omp/agent/agents`) |
 | OpenCode | its agent dispatcher (agents installed in `~/.config/opencode/agents`) |
 
-On the host paths the orchestrator is the loop: dispatch one speaker, append the reply verbatim to the minutes, dispatch the next speaker with the updated minutes, and stop on a round with no objection or after round 3. Each dispatch prompt carries the agenda, the full minutes, the five-line format below, and "read-only: do not edit files".
+On the host paths the orchestrator is the loop, run as **parallel rounds**, not one speaker at a time: complete **Step 0 (Knowledge Graph Pre-Meeting Briefing)** once, yourself (never dispatch `maxilun-scout` and wait for it before the meeting), then dispatch **every invited speaker in the same message** (one Agent/Task call each, in parallel). Collect all replies verbatim into the minutes. Next round: send the full minutes to every speaker again in parallel (Claude Code: `SendMessage` to each speaker's agent id so it keeps its own context; otherwise a fresh dispatch with the minutes). Stop on a round with no objection or after round 3. Subagents cannot message each other directly on these hosts; the chair relays the shared minutes between rounds. Each dispatch prompt carries the agenda, the KG Pre-Meeting Briefing Packet, the full minutes, the five-line format below, and "read-only: do not edit files".
 
-1. **Turn-taking.** Speakers talk one at a time in roster order. Each speaker receives the agenda and the full minutes so far, so the second speaker answers the first and round 2 answers round 1.
+0. **Knowledge Graph Pre-Meeting Briefing (mandatory before Round 1).** Before invoking the first speaker, the chair builds or refreshes the graph (`kg_scan` once if absent), runs `kg_locate` + `kg_query` (`defOf`, `callsIn`, `importersOf`) on the target area, and reads the returned `file:line` ranges. The chair puts a compact **KG Briefing Packet** (structure, `file:line` targets, callers/importers, and bounded excerpts marked as untrusted data) into every speaker's prompt so all agents already know the code structure and contents before discussing.
+1. **Rounds.** Round 1: all speakers give their opening position in parallel from the agenda + KG Briefing Packet. Round 2+: all speakers read the full minutes of the previous round in parallel and reply to each other by `@name` (agree, object, answer every `ASK`). Wall time is rounds, not speakers x rounds. Speakers must surface real weaknesses, gaps, risks, and trade-offs grounded in `file:line` evidence rather than rubber-stamping.
 2. **Fixed turn format.** Every turn is five lines: `POSITION`, `AGREE: @agent`, `OBJECT: @agent + evidence`, `PROPOSE`, `ASK: @agent`. Questions addressed with `@name` must be answered first in that agent's next turn. An objection needs `file:line` evidence or the label `[UNVERIFIED]`.
-3. **Read-only.** During the meeting, speakers can only read files, query the knowledge graph, and read the bus. Writing, shell, and delegation are blocked, so nobody changes code before the decision is made.
-4. **Closing.** A round with no `OBJECT` closes the meeting with consensus. Otherwise it continues up to 3 rounds and returns the open objections. An objection is withdrawn by writing `OBJECT: none`.
+3. **Read-only.** During the meeting, speakers can only read files, query the knowledge graph (`kg_locate`/`kg_query`), and read the bus. Writing, shell mutations, and delegation are blocked (`council_hook.py --agy` permits only read-only `maxilun-kg` MCP queries and quote-validated read commands until ACC).
+4. **Closing.** A round with no `OBJECT` and no unanswered `ASK` closes the meeting with consensus. Otherwise it continues up to 3 rounds and returns the open objections. An objection is withdrawn by writing `OBJECT: none`.
 5. **Minutes.** On the Maxilun harness, every turn is posted to the agent bus as one thread (`meeting_open` → `meeting_turn` → `meeting_close`), with `reply_to` linking each turn to the one before it, and saved to `maxilun-out/agent_bus.json`. Later `delegate_task` handoffs carry the meeting outcome, not the full transcript.
 
-Without any dispatcher (Antigravity IDE without a subagent tool, Cursor, Gemini CLI, Codex without agents), say so in one sentence, then run the same format in order within one message, reading each `agents/<name>.md` for its voice. Label those minutes `[simulated]`; they must still use the five lines per turn, answer every `ASK`, and stop on a round with no objections. Each speaker after the first opens by replying to a named earlier speaker; a round where nobody objects to anything on a cross-domain question is a sign the voices were not separated, so the reviewer looks again before closing.
+Without any dispatcher (Antigravity IDE without a subagent tool, Cursor, Gemini CLI, Codex without agents), say so in one sentence, run Step 0 KG discovery first, then run the same format in order within one message, reading each `agents/<name>.md` for its voice. Label those minutes `[simulated]`; they must still use the five lines per turn, answer every `ASK`, and stop on a round with no objections. Each speaker after the first opens by replying to a named earlier speaker; a round where nobody objects to anything on a cross-domain question is a sign the voices were not separated, so the reviewer looks again before closing.
 
 **Edit lock.** Until the user's own message approves, speakers and the chair read only: no file writes, no state-changing commands, no partial implementation. On Antigravity, `scripts/council_hook.py --on` enforces this with a `PreToolUse` hook in `.agents/hooks.json`.
 

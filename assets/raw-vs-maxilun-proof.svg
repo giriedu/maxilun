@@ -1,84 +1,74 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 440" width="100%" height="100%">
-  <defs>
-    <linearGradient id="bgProof" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#080b12"/>
-      <stop offset="100%" stop-color="#0d1322"/>
-    </linearGradient>
-    <linearGradient id="rawGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#ef4444"/>
-      <stop offset="100%" stop-color="#dc2626"/>
-    </linearGradient>
-    <linearGradient id="craftGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#10b981"/>
-      <stop offset="100%" stop-color="#06b6d4"/>
-    </linearGradient>
-  </defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 600" width="1160" height="600" role="img" aria-labelledby="proof-title proof-desc">
+  <title id="proof-title">Raw LLM Prompting vs Maxilun Harness v1.3.0</title>
+  <desc id="proof-desc">Structural comparison contrasting an unconstrained raw prompt ledger against the Maxilun v1.3.0 harness: 6 UI states, AST navigation, 300-line cognitive budget, confinement hooks, and terminal verification gates.</desc>
 
-  <rect width="1120" height="440" rx="14" fill="url(#bgProof)" stroke="#1e293b" stroke-width="1.5"/>
+  <rect width="1160" height="600" fill="#09090b" rx="12"/>
 
-  <!-- Left Panel: Raw Unconstrained LLM -->
-  <g transform="translate(28, 24)">
-    <rect width="516" height="392" rx="10" fill="#160f18" stroke="#7f1d1d" stroke-width="1.2"/>
-    <rect width="516" height="6" rx="3" fill="url(#rawGrad)"/>
-    <rect x="20" y="20" width="144" height="24" rx="4" fill="#450a0a" stroke="#dc2626" stroke-width="0.8"/>
-    <text x="92" y="36" text-anchor="middle" fill="#fca5a5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700">RAW AI / THIN SKILL</text>
-    <text x="176" y="37" fill="#f8fafc" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="700">What Typical AI Prompts Produce</text>
+  <!-- Header -->
+  <text x="44" y="56" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="700" fill="#f4f4f5">RAW LLM PROMPTING vs. MAXILUN HARNESS (v1.3.0)</text>
+  <text x="44" y="80" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#94a3b8">Observed structural differences across symbol lookup, 6-state UI completeness, write confinement, and verification proof</text>
 
-    <!-- Item 1 -->
-    <rect x="20" y="58" width="476" height="72" rx="6" fill="#1f121d" stroke="#3f1d2b" stroke-width="1"/>
-    <text x="34" y="80" fill="#f87171" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700">1. UI &amp; Design: Generic Purple-Blue Clichés</text>
-    <text x="34" y="100" fill="#cbd5e1" font-family="system-ui, -apple-system, sans-serif" font-size="12">• Default purple gradient hero, auto breadcrumbs, fake "AI-Powered" badges</text>
-    <text x="34" y="118" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="11.5">• Only codes happy path — crashes or renders blank div on loading / API error</text>
+  <!-- Left Panel (430px): Single-Column Failure Ledger -->
+  <rect x="44" y="108" width="430" height="452" rx="8" fill="#111116" stroke="#27272a" stroke-width="1.5"/>
+  <text x="64" y="136" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="11" font-weight="600" fill="#f87171">BASELINE  //  UNCONSTRAINED RAW PROMPT</text>
+  <line x1="64" y1="150" x2="454" y2="150" stroke="#27272a" stroke-width="1.5"/>
 
-    <!-- Item 2 -->
-    <rect x="20" y="140" width="476" height="72" rx="6" fill="#1f121d" stroke="#3f1d2b" stroke-width="1"/>
-    <text x="34" y="162" fill="#f87171" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700">2. Security &amp; API: Vulnerable Happy-Path Code</text>
-    <text x="34" y="182" fill="#cbd5e1" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5">if (sig !== expected) // Timing attack + float money drift!</text>
-    <text x="34" y="200" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="11.5">• Missing Idempotency-Key, OFFSET pagination on 5M rows, inconsistent error JSON</text>
+  <text x="64" y="176" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="10.5" fill="#94a3b8">01  CONTEXT EXPLORATION</text>
+  <text x="64" y="198" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#f4f4f5">Recursive grep &amp; blind file reads</text>
+  <text x="64" y="216" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#cbd5e1">Burns tokens before locating exact symbol callers</text>
+  <line x1="64" y1="232" x2="454" y2="232" stroke="#27272a" stroke-width="1"/>
 
-    <!-- Item 3 -->
-    <rect x="20" y="222" width="476" height="72" rx="6" fill="#1f121d" stroke="#3f1d2b" stroke-width="1"/>
-    <text x="34" y="244" fill="#f87171" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700">3. Multi-File Refactor: Blind Grep &amp; Token Bloat</text>
-    <text x="34" y="264" fill="#cbd5e1" font-family="system-ui, -apple-system, sans-serif" font-size="12">• Reads 20+ whole files into context window, misses transitive callers</text>
-    <text x="34" y="282" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="11.5">• Claims "all tests pass" without executing compiler or test runner</text>
+  <text x="64" y="254" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="10.5" fill="#94a3b8">02  UI &amp; STATE COVERAGE</text>
+  <text x="64" y="276" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#f4f4f5">Happy-path mock UI with AI slop</text>
+  <text x="64" y="294" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#cbd5e1">Omits Empty, Loading, Pending &amp; Error states; adds emojis</text>
+  <line x1="64" y1="310" x2="454" y2="310" stroke="#27272a" stroke-width="1"/>
 
-    <!-- Item 4 -->
-    <rect x="20" y="304" width="476" height="72" rx="6" fill="#1f121d" stroke="#3f1d2b" stroke-width="1"/>
-    <text x="34" y="326" fill="#f87171" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700">4. Motion &amp; Video: Unreadable Frame Drift</text>
-    <text x="34" y="346" fill="#cbd5e1" font-family="system-ui, -apple-system, sans-serif" font-size="12">• Uses CSS transition: all 0.5s inside headless video capture (frame desync)</text>
-    <text x="34" y="364" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="11.5">• Tiny 14px web font on 1080p canvas + 30-word marketing paragraphs</text>
-  </g>
+  <text x="64" y="332" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="10.5" fill="#94a3b8">03  GOVERNANCE &amp; CONFINEMENT</text>
+  <text x="64" y="354" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#f4f4f5">Silent cross-module mutations</text>
+  <text x="64" y="372" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#cbd5e1">Shell chains &amp; symlinks bypass weak path checks</text>
+  <line x1="64" y1="388" x2="454" y2="388" stroke="#27272a" stroke-width="1"/>
 
-  <!-- Right Panel: Maxilun v1.0 Engineered Output -->
-  <g transform="translate(576, 24)">
-    <rect width="516" height="392" rx="10" fill="#09191f" stroke="#0d9488" stroke-width="1.2"/>
-    <rect width="516" height="6" rx="3" fill="url(#craftGrad)"/>
-    <rect x="20" y="20" width="152" height="24" rx="4" fill="#042f2e" stroke="#10b981" stroke-width="0.8"/>
-    <text x="96" y="36" text-anchor="middle" fill="#34d399" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700">MAXILUN v1.0 ENGINE</text>
-    <text x="184" y="37" fill="#f8fafc" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="700">Verifiable Production Engineering</text>
+  <text x="64" y="410" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="10.5" fill="#94a3b8">04  INSTRUCTION BUDGET</text>
+  <text x="64" y="432" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#f4f4f5">Monolithic 800+ line prompts</text>
+  <text x="64" y="450" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#cbd5e1">Middle-context decay drops critical invariants</text>
+  <line x1="64" y1="466" x2="454" y2="466" stroke="#27272a" stroke-width="1"/>
 
-    <!-- Item 1 -->
-    <rect x="20" y="58" width="476" height="72" rx="6" fill="#0d2329" stroke="#115e59" stroke-width="1"/>
-    <text x="34" y="80" fill="#34d399" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700">1. Grounded in 100 Real Brand Systems (design-md/)</text>
-    <text x="34" y="100" fill="#e2e8f0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• Adapts Stripe / Linear / Vercel hierarchy, semantic OKLCH &amp; tabular-nums</text>
-    <text x="34" y="118" fill="#38bdf8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11">• Enforces 4 UI States: Skeleton (CLS=0) · Empty+CTA · Populated · Error+Retry</text>
+  <text x="64" y="492" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="10.5" fill="#94a3b8">05  COMPLETION DISCIPLINE</text>
+  <text x="64" y="516" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#f87171">Self-asserted "done" without command output</text>
+  <text x="64" y="536" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#cbd5e1">Regressions surface only after user delivery</text>
 
-    <!-- Item 2 -->
-    <rect x="20" y="140" width="476" height="72" rx="6" fill="#0d2329" stroke="#115e59" stroke-width="1"/>
-    <text x="34" y="162" fill="#34d399" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700">2. Hardened Contracts &amp; Cryptographic Integrity</text>
-    <text x="34" y="182" fill="#e2e8f0" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5">timingSafeEqual(a, b) + 300s window + BIGINT minor units</text>
-    <text x="34" y="200" fill="#38bdf8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11">• OpenAPI 3.1 + RFC 9457 ProblemDetails + PostgreSQL RLS + Outbox Pattern</text>
+  <!-- Right Panel (626px): Structured Multi-Zone Control Schematic -->
+  <rect x="490" y="108" width="626" height="452" rx="8" fill="#111116" stroke="#818cf8" stroke-width="1.5"/>
+  <text x="510" y="136" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="11" font-weight="600" fill="#34d399">ENFORCED  //  MAXILUN HARNESS &amp; PURITY GATES</text>
 
-    <!-- Item 3 -->
-    <rect x="20" y="222" width="476" height="72" rx="6" fill="#0d2329" stroke="#115e59" stroke-width="1"/>
-    <text x="34" y="244" fill="#34d399" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700">3. AST Knowledge Graph + 5-Tier Verification</text>
-    <text x="34" y="264" fill="#e2e8f0" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5">python cli.py query callsIn: validateToken → exact file:line</text>
-    <text x="34" y="282" fill="#38bdf8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11">• All 18 SKILL.md &lt; 400 lines · Evidence Gate requires real CLI exit code 0</text>
+  <!-- Zone A: Top 6-UI-State Telemetry Strip -->
+  <rect x="510" y="150" width="586" height="64" rx="6" fill="#18181f" stroke="#27272a" stroke-width="1"/>
+  <text x="526" y="173" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="10.5" font-weight="600" fill="#818cf8">MANDATORY 6-STATE SURFACE TOPOLOGY</text>
+  <text x="526" y="197" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="10.5" fill="#f4f4f5">01 Idle  |  02 Loading  |  03 Populated (tabular-nums)  |  04 Empty+CTA  |  05 Pending  |  06 Error</text>
 
-    <!-- Item 4 -->
-    <rect x="20" y="304" width="476" height="72" rx="6" fill="#0d2329" stroke="#115e59" stroke-width="1"/>
-    <text x="34" y="326" fill="#34d399" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700">4. 5-Skill Studio Motion Video Pipeline</text>
-    <text x="34" y="346" fill="#e2e8f0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• Craft (1080p scale) + Motion (14 styles, damped springs) + Content (&lt;=8w/scene)</text>
-    <text x="34" y="364" fill="#38bdf8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11">• CineCode deterministic React frames → FFmpeg libx264 yuv420p + .vtt</text>
-  </g>
+  <!-- Zone B: Asymmetric Mid Split (310px left / 260px right) -->
+  <rect x="510" y="228" width="310" height="190" rx="6" fill="#18181f" stroke="#27272a" stroke-width="1"/>
+  <text x="526" y="252" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="10.5" font-weight="600" fill="#818cf8">AST GRAPH &amp; COGNITIVE BUDGET</text>
+  <text x="526" y="278" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#f4f4f5">One-Call Symbol Navigation</text>
+  <text x="526" y="304" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#cbd5e1">kg_locate &amp; kg_diff_impact map callers first</text>
+  <text x="526" y="328" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#cbd5e1">All 27 SKILL.md kept &lt;= 300 lines</text>
+  <text x="526" y="352" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#cbd5e1">All 21 agents/*.md kept &lt;= 200 lines</text>
+  <text x="526" y="376" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#94a3b8">Shared lessons in .maxilun/lessons.jsonl</text>
+  <text x="526" y="400" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="11" fill="#818cf8">Single primary specialist per wave</text>
+
+  <rect x="836" y="228" width="260" height="190" rx="6" fill="#18181f" stroke="#27272a" stroke-width="1"/>
+  <text x="852" y="252" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="10.5" font-weight="600" fill="#818cf8">SECURITY &amp; ACC HOOKS</text>
+  <text x="852" y="278" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#f4f4f5">Fail-Closed Enforcement</text>
+  <text x="852" y="304" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#cbd5e1">Explicit ACC gate before edits</text>
+  <text x="852" y="328" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#cbd5e1">Workspace &amp; symlink confinement</text>
+  <text x="852" y="352" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#cbd5e1">Quote-balanced shell tokenizer</text>
+  <text x="852" y="376" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#94a3b8">Blocked .env &amp; key read/writes</text>
+  <text x="852" y="400" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="11" fill="#818cf8">Isolated API keys per provider</text>
+
+  <!-- Zone C: Bottom Verification & Purity Footer -->
+  <rect x="510" y="432" width="586" height="110" rx="6" fill="#18181f" stroke="#27272a" stroke-width="1"/>
+  <text x="526" y="456" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="10.5" font-weight="600" fill="#34d399">MECHANICAL PURITY &amp; TERMINAL PROOF (ZERO FAKE PASSES)</text>
+  <text x="526" y="482" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#f4f4f5">Automated Linters + Headless Browser Reflow + Test Suite</text>
+  <text x="526" y="505" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#cbd5e1">ui-purity-linter.py &amp; slopscan.py block emojis, low contrast &amp; SVG XSS</text>
+  <text x="526" y="525" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="11.5" fill="#94a3b8">verify_engine.py checks DOM &amp; Playwright mobile/desktop overflow before sign-off</text>
 </svg>

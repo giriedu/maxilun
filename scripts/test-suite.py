@@ -3,7 +3,7 @@
 Maxilun Skill Ecosystem Test Suite
 
 Structural and functional validation:
-- 25 skills exist with valid frontmatter and one shared version
+- 27 skills exist with valid frontmatter and one shared version
 - Every skill embeds the identical CORE-RULES block (drift detection)
 - Every referenced file inside a skill resolves from that skill's folder
 - No references to external skills or to the removed root rules/ layout
@@ -940,10 +940,10 @@ def test_agents_validity():
             print(f"  ❌ {agent}: Missing 'model' field in frontmatter")
             passed = False
 
-        # Invariant 1: maxilun-scout MUST be strictly read-only
+        # Invariant 1: maxilun-scout MUST be strictly read-only (no Write, Edit, or Bash)
         if agent == "maxilun-scout":
-            if any(t in fm for t in ["Write", "Edit"]):
-                print(f"  ❌ {agent}: Security invariant broken! Scout MUST be strictly read-only.")
+            if any(t in fm for t in ["Write", "Edit", "Bash"]):
+                print(f"  ❌ {agent}: Security invariant broken! Scout MUST be strictly read-only without Write/Edit/Bash.")
                 passed = False
 
         # Invariant 2: maxilun-verifier MUST NOT modify code
@@ -964,7 +964,7 @@ def test_agents_validity():
 
         print(f"  ✅ {agent}: Verified valid frontmatter & security invariants ({lines} lines)")
 
-    # Collaboration Invariant 4: Orchestrator must know all 19 specialist agents
+    # Collaboration Invariant 4: Orchestrator must know all 20 specialist agents
     orch_text = (agents_dir / "maxilun-orchestrator.md").read_text(encoding="utf-8")
     for agent in EXPECTED_AGENTS:
         if agent == "maxilun-orchestrator":
@@ -973,7 +973,7 @@ def test_agents_validity():
             print(f"  ❌ maxilun-orchestrator.md does not reference specialist '{agent}'")
             passed = False
 
-    # Collaboration Invariant 5: Every specialist skill (25) must be covered by at least one agent
+    # Collaboration Invariant 5: Every specialist skill (26) must be covered by at least one agent
     all_agents_text = "\n".join((agents_dir / f"{a}.md").read_text(encoding="utf-8") for a in EXPECTED_AGENTS)
     for skill in EXPECTED_SKILLS:
         if skill == "maxilun":
@@ -982,7 +982,7 @@ def test_agents_validity():
             print(f"  ❌ Skill '{skill}' is not referenced by any agent in agents/")
             passed = False
 
-    # Collaboration Invariant 6: Harness SkillsLoader loads all 20 agents & enforces read-only tools
+    # Collaboration Invariant 6: Harness SkillsLoader loads all 21 agents & enforces read-only tools
     from harness.engine.skills_loader import SkillsLoader
     from harness.tools.registry import ToolRegistry
     loader = SkillsLoader(REPO_ROOT)
@@ -1012,6 +1012,32 @@ def test_agents_validity():
     if "FAIL assertion at app.py:12" not in compressed or len(compressed.splitlines()) >= 150:
         print("  ❌ OutputCompressor failed to compress noise while keeping failure line")
         passed = False
+
+    # Collaboration Invariant 8: Aliases, AGENT_SKILL_MAP, and agent skills: frontmatter parity
+    from harness.engine.aliases import CANONICAL_AGENTS, PRESETS
+    from harness.engine.agent_loop import AGENT_SKILL_MAP
+    expected_set = set(EXPECTED_AGENTS)
+    if set(CANONICAL_AGENTS) != expected_set:
+        print(f"  ❌ CANONICAL_AGENTS drift: {set(CANONICAL_AGENTS) ^ expected_set}")
+        passed = False
+    for preset_name, mapping in PRESETS.items():
+        if set(mapping.keys()) != expected_set:
+            print(f"  ❌ PRESETS['{preset_name}'] drift: {set(mapping.keys()) ^ expected_set}")
+            passed = False
+    if set(AGENT_SKILL_MAP.keys()) != expected_set:
+        print(f"  ❌ AGENT_SKILL_MAP drift: {set(AGENT_SKILL_MAP.keys()) ^ expected_set}")
+        passed = False
+    required_frontmatter_skills = {
+        "maxilun-maker": ["maxilun-frontend", "maxilun-desktop", "maxilun-mobile", "maxilun-iot", "maxilun-network"],
+        "maxilun-architect": ["maxilun-docsmith", "maxilun-scaffold"],
+        "maxilun-security-auditor": ["maxilun-hunt", "maxilun-sentinel"],
+    }
+    for agent_id, req_skills in required_frontmatter_skills.items():
+        atext = (agents_dir / f"{agent_id}.md").read_text(encoding="utf-8")
+        for req_s in req_skills:
+            if req_s not in atext:
+                print(f"  ❌ {agent_id}.md missing '{req_s}' in skills frontmatter/body")
+                passed = False
 
     return passed
 
@@ -1048,7 +1074,7 @@ def test_evals_suites():
 
 
 def test_agent_meeting():
-    print("\n🧪 Checking agent meeting (real turn-taking roundtable on the agent bus)...")
+    print("\n🧪 Checking agent meeting (parallel rounds on the agent bus)...")
     import json
     from harness.engine.agent_loop import MaxilunAgentLoop
     from harness.engine.meeting import AgentMeeting
@@ -1088,9 +1114,11 @@ def test_agent_meeting():
 
     checks = [
         (result.get("status") == "success", f"meeting did not run: {result}"),
-        (order == list(turns), f"speaking order wrong: {order}"),
+        (sorted(order, key=lambda k: (k[1], k[0])) == sorted(turns, key=lambda k: (k[1], k[0])) and [k[1] for k in order] == [1, 1, 2, 2],
+         f"each round must run all speakers before the next round: {order}"),
         (result.get("consensus") is True and result.get("rounds_held") == 2, "objection in round 1 should force round 2, and a clean round 2 should end with consensus"),
-        ("can the 3D hero load as a lazy client island" in by_key.get(("maxilun-coder-frontend", 1), {}).get("prompt", ""), "second speaker did not hear the first speaker's question"),
+        ("can the 3D hero load as a lazy client island" not in by_key.get(("maxilun-coder-frontend", 1), {}).get("prompt", ""), "round 1 speakers run in parallel and must not see each other's same-round turns"),
+        ("can the 3D hero load as a lazy client island" in by_key.get(("maxilun-coder-frontend", 2), {}).get("prompt", ""), "round 2 speaker did not hear the round 1 question"),
         ("blows the 1.2s FCP budget" in by_key.get(("maxilun-ui-designer", 2), {}).get("prompt", ""), "round 2 speaker did not hear the objection raised against them"),
         (all(not (s["tools"] & {"write_file", "edit_file", "execute_bash", "delegate_task", "convene_meeting"}) for s in seen), "meeting speakers were offered edit/shell/delegation tools"),
         (not ctx.touched_files, "a meeting must not edit files"),
@@ -1138,12 +1166,112 @@ def test_agent_meeting():
     backend_brief = forged_res["minutes"][1]["text"]
     checks.append(("\n[R1] @maxilun-coder-backend" not in backend_brief, "a speaker forged a separate minutes line for another speaker"))
 
+    # Failed asked speaker must keep pending ASK unresolved (not cleared before if failed: continue).
+    def ask_then_fail(agent, brief):
+        if agent == pair[0]:
+            return "POSITION: split\nOBJECT: none\nASK: @coder-backend why?"
+        return "Execution Error: HTTP 500"
+    ask_fail = AgentMeeting(SessionContext(), ask_then_fail).convene("Split?", pair, rounds=1)
+    checks.append((not ask_fail.get("consensus") and len(ask_fail.get("unanswered_asks", [])) == 1,
+                   f"failed asked speaker must keep pending_asks unresolved: {ask_fail}"))
+
+    # Oversized structured turn must preserve trailing OBJECT and ASK lines via _cap_turn.
+    long_pos = "A" * 1900
+    def long_turn(agent, brief):
+        if agent == pair[1]:
+            return f"POSITION: {long_pos}\nAGREE: none\nOBJECT: @architect ledger missing\nPROPOSE: add contract\nASK: @architect confirm?"
+        return "POSITION: ok\nOBJECT: none"
+    capped = AgentMeeting(SessionContext(), long_turn).convene("Split?", pair, rounds=1)
+    checks.append((not capped.get("consensus") and len(capped.get("open_objections", [])) == 1 and len(capped.get("unanswered_asks", [])) == 1,
+                   f"oversized structured turn dropped trailing OBJECT/ASK: {capped}"))
+
+    # A round must run its speakers at once: 3 speakers x 0.3s should take ~0.3s, not 0.9s.
+    import time as _t
+    def slow(agent, brief):
+        _t.sleep(0.3)
+        return "POSITION: ok\nOBJECT: none"
+    t0 = _t.perf_counter()
+    trio = AgentMeeting(SessionContext(), slow).convene("Split?", pair + ["maxilun-verifier"], rounds=1)
+    elapsed = _t.perf_counter() - t0
+    checks.append((trio.get("consensus") and elapsed < 0.7, f"round speakers did not run in parallel ({elapsed:.2f}s)"))
+
+    # Isolated Phase 0 KG pre-briefing, HARNESS_REPO fallback, cache reuse, query normalization & invalidation.
+    import tempfile
+    from harness.tools.kg_tool import KnowledgeGraphTool
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        (tmp_path / "billing.py").write_text("def charge(amount):\n    return amount * 100\n", encoding="utf-8")
+        (tmp_path / "checkout.py").write_text("import billing\n\ndef run_checkout():\n    return billing.charge(5)\n", encoding="utf-8")
+
+        captured = []
+        class IsolatedMeetingProvider:
+            model = "scripted-isolated"
+            def complete(self, messages, tools=None, **_):
+                last_user = next((m["content"] for m in reversed(messages) if m["role"] == "user"), "")
+                m = re.search(r"## Meeting, round (\d+) of \d+[\s\S]*?You are @([\w-]+)\.", last_user)
+                if m:
+                    captured.append((m.group(2), int(m.group(1)), last_user))
+                    return ProviderResponse(content="POSITION: reviewed billing\nAGREE: none\nOBJECT: none\nPROPOSE: none\nASK: none")
+                return ProviderResponse(content="ok")
+
+        loop = MaxilunAgentLoop(repo_root=tmp_path, provider=IsolatedMeetingProvider(), max_turns=4, verbose=False)
+        scan_calls = [0]
+        orig_scan = loop.registry.kg._get_builder().scan_project
+        def counted_scan(target, *a, **kw):
+            scan_calls[0] += 1
+            return orig_scan(target, *a, **kw)
+        loop.registry.kg._get_builder().scan_project = counted_scan
+
+        iso_res = loop.hold_meeting(SessionContext(), "Audit billing charge flow in checkout", ["architect", "coder-backend"], rounds=2)
+        checks.append((iso_res.get("status") == "success" and len(captured) == 2, f"isolated hold_meeting failed: {iso_res}"))
+        checks.append((scan_calls[0] == 1, f"expected 1 cold scan across meeting, got {scan_calls[0]}"))
+        checks.append((all("Pre-Meeting Knowledge Graph Context" in p and "billing.py" in p for _, _, p in captured),
+                       f"Phase 0 KG brief missing file:line leads in speaker prompts: {[p[:200] for _, _, p in captured]}"))
+
+        # Disk graph.json cache reuse (0 extra scans on fresh loop) + Windows query normalization + empty guard.
+        (tmp_path / "maxilun-out").mkdir(exist_ok=True)
+        (tmp_path / "maxilun-out" / "graph.json").write_text(json.dumps(loop.registry.kg._cached_graph), encoding="utf-8")
+        kg2 = KnowledgeGraphTool(tmp_path)
+        scan_calls_2 = [0]
+        b2 = kg2._get_builder()
+        orig_scan_2 = b2.scan_project
+        def counted_scan_2(target, *a, **kw):
+            scan_calls_2[0] += 1
+            return orig_scan_2(target, *a, **kw)
+        b2.scan_project = counted_scan_2
+        loc2 = kg2.locate("charge", include_hits=True)
+        q_norm = kg2.query("importersOf", ".\\billing.py")
+        q_empty = kg2.query("defOf", "")
+        checks.append((scan_calls_2[0] == 0 and isinstance(loc2.get("hits"), list), f"disk graph.json cache was not reused: scans={scan_calls_2[0]}"))
+        checks.append((q_norm.get("match_count", 0) >= 1 and q_empty.get("match_count") == 0,
+                       f"query normalization/empty guard failed: norm={q_norm}, empty={q_empty}"))
+        kg2.invalidate()
+        checks.append((kg2._cached_graph is None and kg2._cached_root is None, "kg_tool.invalidate() did not clear cache"))
+
+        # handle_delegate must invalidate KG cache when a delegated subagent edits files.
+        class DelegateEditProvider:
+            model = "scripted-delegate"
+            def complete(self, messages, tools=None, **_):
+                if messages[-1]["role"] == "tool":
+                    return ProviderResponse(content="done")
+                is_sub = any("Autonomous Agent Contract" in m.get("content", "") for m in messages if m["role"] == "system")
+                if is_sub:
+                    return ProviderResponse(tool_calls=[{"id": "w1", "type": "function", "function": {"name": "write_file", "arguments": json.dumps({"path": "extra.py", "content": "x = 1\n"})}}])
+                return ProviderResponse(tool_calls=[{"id": "d1", "type": "function", "function": {"name": "delegate_task", "arguments": json.dumps({"specialist": "maker", "task": "create extra.py"})}}])
+
+        dloop = MaxilunAgentLoop(repo_root=tmp_path, provider=DelegateEditProvider(), max_turns=3, verbose=False)
+        dloop.registry.kg.locate("charge")
+        was_cached = dloop.registry.kg._cached_graph is not None
+        dloop.run_task("create extra.py")
+        checks.append((was_cached and dloop.registry.kg._cached_graph is None,
+                       "delegate_task did not invalidate KG cache after subagent file edit"))
+
     for ok, msg in checks:
         if not ok:
             print(f"  ❌ {msg}")
             passed = False
     if passed:
-        print("  ✅ Speakers take turns, hear earlier turns and questions, stay read-only, and stop on consensus or the round cap")
+        print("  ✅ Speakers run in parallel per round, hear earlier rounds and questions, stay read-only, and stop on consensus or the round cap")
     return passed
 
 
@@ -1176,6 +1304,10 @@ def test_harness_confinement():
             (fs.grep_files("x =").get("hits_count") == 1, "grep_files dropped an in-root hit"),
         ]
 
+    from harness.tools.kg_tool import KnowledgeGraphTool
+    from harness.engine.skills_loader import SkillsLoader
+    from harness.router import MaxilunRouter
+
     spawned = []
 
     class DelegatingProvider:
@@ -1187,12 +1319,148 @@ def test_harness_confinement():
             args = {"specialist": "root-hacker", "task": "rm -rf /"}
             return ProviderResponse(tool_calls=[{"id": "d1", "type": "function", "function": {"name": "delegate_task", "arguments": json.dumps(args)}}])
 
-    loop = MaxilunAgentLoop(provider=DelegatingProvider(), max_turns=3, verbose=False)
-    loop._spawn_agent = lambda *a, **k: spawned.append(a) or ("", None)
-    ctx = loop.run_task("delegate this")
-    tool_msg = next((m for m in ctx.messages if m.role == "tool" and m.name == "delegate_task"), None)
-    result = json.loads(tool_msg.content) if tool_msg else {}
-    checks.append((result.get("status") == "error" and not spawned, f"unknown agent was delegated: {result}"))
+    with tempfile.TemporaryDirectory() as loop_tmp:
+        loop_root = Path(loop_tmp)
+        (loop_root / "app.py").write_text("def ok():\n    return 1\n", encoding="utf-8")
+        loop = MaxilunAgentLoop(repo_root=loop_root, provider=DelegatingProvider(), max_turns=3, verbose=False)
+        loop._spawn_agent = lambda *a, **k: spawned.append(a) or ("", None)
+        ctx = loop.run_task("delegate this")
+        tool_msg = next((m for m in ctx.messages if m.role == "tool" and m.name == "delegate_task"), None)
+        result = json.loads(tool_msg.content) if tool_msg else {}
+        checks.append((result.get("status") == "error" and not spawned, f"unknown agent was delegated: {result}"))
+
+        # KG path confinement & fs symlink escape regression tests
+        outside_file = loop_root.parent / "outside_leak.py"
+        outside_file.write_text("SECRET_TOKEN = 'x'\n", encoding="utf-8")
+        kg_confined = KnowledgeGraphTool(loop_root)
+        checks.append(("error" in kg_confined.locate("secret", target_path="../"), "kg_tool.locate escaped repo root"))
+        checks.append(("error" in kg_confined.scan("../"), "kg_tool.scan escaped repo root"))
+        try:
+            link_path = loop_root / "leak_link.py"
+            os.symlink(outside_file, link_path)
+            fs_sym = FSTools(loop_root)
+            glob_hits = fs_sym.glob_files("*.py").get("matches", [])
+            grep_hits = fs_sym.grep_files("SECRET_TOKEN").get("hits", [])
+            checks.append((not any("leak_link" in m for m in glob_hits), f"glob_files leaked external symlink: {glob_hits}"))
+            checks.append((len(grep_hits) == 0, f"grep_files read external symlink: {grep_hits}"))
+        except OSError:
+            pass
+
+    # Council hook security, CLI linter, verify_engine SVG/HTML, and MCP KG regressions
+    with tempfile.TemporaryDirectory() as sec_tmp:
+        sec_root = Path(sec_tmp)
+        (sec_root / ".maxilun").mkdir()
+        (sec_root / ".maxilun" / "council").write_text("active\n", encoding="utf-8")
+
+        import importlib.util
+        ch_spec = importlib.util.spec_from_file_location("council_hook", str(ORCHESTRATOR / "scripts" / "council_hook.py"))
+        ch_mod = importlib.util.module_from_spec(ch_spec)
+        ch_spec.loader.exec_module(ch_mod)
+        checks += [
+            (ch_mod.is_acc("jangan acc dulu") is False, "is_acc failed on Indonesian negation"),
+            (ch_mod.is_acc("ACC?") is False, "is_acc accepted interrogative ACC?"),
+            (ch_mod.is_acc("ACC, lanjut") is True, "is_acc rejected valid ACC"),
+            (ch_mod._tokenize_safe_cmd('python skills/maxilun-knowledge-graph/cli.py locate "a | b"') is not None, "valid quoted locate cmd blocked"),
+            (ch_mod._is_safe_read_cmd('python skills/maxilun-knowledge-graph/cli.py scan .') is False, "banned kg scan passed _is_safe_read_cmd"),
+            (ch_mod._tokenize_safe_cmd('python cli.py locate "x\\" ; rm -rf /"') is None, "escaped quote command injection bypassed tokenizer"),
+            (ch_mod._tokenize_safe_cmd("python -c 'evil' @(whoami)") is None, "PowerShell subexpression bypassed tokenizer"),
+            (ch_mod._has_bad_flag(["--fi", "x.py"], block_fix=True) is True, "argparse abbrev --fi missed by _has_bad_flag"),
+        ]
+        bash_hook = subprocess.run(
+            [sys.executable, str(ORCHESTRATOR / "scripts" / "council_hook.py"), "--agy"],
+            input=json.dumps({"hookEventName": "PreToolUse", "toolCall": {"name": "Bash", "args": {"command": "rm -rf /"}}}),
+            capture_output=True, text=True, cwd=sec_root, timeout=10,
+        )
+        save_hook = subprocess.run(
+            [sys.executable, str(ORCHESTRATOR / "scripts" / "council_hook.py"), "--agy"],
+            input=json.dumps({"hookEventName": "PreToolUse", "toolCall": {"name": "save_file", "args": {"path": "x.py"}}}),
+            capture_output=True, text=True, cwd=sec_root, timeout=10,
+        )
+        bad_json_hook = subprocess.run(
+            [sys.executable, str(ORCHESTRATOR / "scripts" / "council_hook.py"), "--agy"],
+            input="{malformed",
+            capture_output=True, text=True, cwd=sec_root, timeout=10,
+        )
+        def _decision(proc):
+            try:
+                return json.loads(proc.stdout).get("decision")
+            except Exception:
+                return None
+        checks += [
+            (_decision(bash_hook) == "deny", f"council_hook allowed Bash rm -rf while locked: {bash_hook.stdout}"),
+            (_decision(save_hook) == "deny", f"council_hook allowed save_file while locked: {save_hook.stdout}"),
+            (_decision(bad_json_hook) == "deny", f"council_hook did not fail closed on malformed JSON: {bad_json_hook.stdout}"),
+        ]
+
+        # verify_engine static/SVG checks & UTF-16 BOM
+        bad_html = sec_root / "unclosed.html"
+        bad_html.write_text("<html><head><title>x</title></head><body><div>open</body></html>", encoding="utf-8")
+        utf16_html = sec_root / "utf16.html"
+        utf16_html.write_text("<!doctype html><html><head><meta name='viewport' content='width=device-width'><title>x</title></head><body><button disabled>Go</button></body></html>", encoding="utf-16")
+        bad_svg = sec_root / "xss.svg"
+        bad_svg.write_text('<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>', encoding="utf-8")
+        ve = REPO_ROOT / "skills" / "maxilun-verify" / "verify_engine.py"
+        ve_unclosed = subprocess.run([sys.executable, str(ve), str(bad_html), "--json"], capture_output=True, text=True, timeout=30)
+        ve_svg = subprocess.run([sys.executable, str(ve), str(bad_svg), "--json"], capture_output=True, text=True, timeout=30)
+        checks += [
+            (ve_unclosed.returncode == 1, f"verify_engine missed EOF unclosed div (rc={ve_unclosed.returncode})"),
+            (ve_svg.returncode == 1, f"verify_engine missed SVG XSS script (rc={ve_svg.returncode})"),
+        ]
+        spec_ve = importlib.util.spec_from_file_location("ve_mod", str(ve))
+        ve_mod = importlib.util.module_from_spec(spec_ve)
+        spec_ve.loader.exec_module(ve_mod)
+        checks.append(("button disabled" in ve_mod._read_text_auto(utf16_html), "_read_text_auto failed UTF-16 BOM"))
+
+        # render.py height + slopscan.py + ui-purity-linter.py regressions
+        rnd_spec = importlib.util.spec_from_file_location("rnd_mod", str(REPO_ROOT / "skills" / "maxilun-craft" / "scripts" / "render.py"))
+        rnd_mod = importlib.util.module_from_spec(rnd_spec)
+        rnd_spec.loader.exec_module(rnd_mod)
+        tall_svg = sec_root / "tall.svg"
+        tall_svg.write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760"></svg>', encoding="utf-8")
+        checks.append((rnd_mod._svg_dimensions(tall_svg) == (1200, 760), "render._svg_dimensions failed viewBox 1200x760"))
+        checks.append((rnd_mod._viewport_height(320, 760, True, False) == 760, "render._viewport_height overwrote SVG height"))
+
+        bad_jsx = sec_root / "Slop.tsx"
+        bad_jsx.write_text(
+            'export function Slop() {\n'
+            '  return (<div className="bg-blue-50" style={{background:"linear-gradient(#667eea,#764ba2)", boxShadow:"0 8px 30px #818cf8", fontFamily:"Inter"}}><button><span>🔥</span>Go</button><svg><linearGradient id="g"><stop stopColor="#ff0000"/><stop stopColor="#00ffff"/></linearGradient></svg></div>);\n'
+            '}\n',
+            encoding="utf-8",
+        )
+        slop_proc = subprocess.run([sys.executable, str(REPO_ROOT / "skills" / "maxilun-craft" / "scripts" / "slopscan.py"), str(bad_jsx), "--json"], capture_output=True, text=True, timeout=20)
+        linter_proc = subprocess.run([sys.executable, str(REPO_ROOT / "scripts" / "ui-purity-linter.py"), str(bad_jsx)], capture_output=True, text=True, timeout=20)
+        checks += [
+            (slop_proc.returncode != 0, "slopscan passed Slop.tsx with #667eea, JSX camelCase & emoji"),
+            (linter_proc.returncode != 0, "ui-purity-linter passed Slop.tsx with JSX boxShadow, chromatic SVG & emoji"),
+        ]
+
+        # Router + SkillsLoader + MCP server regressions
+        rtr = MaxilunRouter()
+        n8n_pick = rtr.route("build webhook signature hmac pipeline for n8n")
+        checks.append((n8n_pick.primary_owner == "maxilun-n8n", f"MaxilunRouter missed maxilun-n8n: {n8n_pick.primary_owner}"))
+        loader = SkillsLoader(REPO_ROOT)
+        checks.append((loader.match_skill("maxilun").name == "maxilun", f"SkillsLoader failed direct 'maxilun' lookup"))
+        checks.append((len(loader.skills) == 27 and len(loader.agents) == 21, f"Loader count mismatch: skills={len(loader.skills)}, agents={len(loader.agents)}"))
+        checks.append((len(loader.agents["maxilun-architect"].skills) >= 4, "SkillsLoader missed AgentDefinition.skills YAML list"))
+
+        mcp_spec = importlib.util.spec_from_file_location("kg_mcp_mod", str(SKILLS_DIR / "maxilun-knowledge-graph" / "mcp_server.py"))
+        mcp_mod = importlib.util.module_from_spec(mcp_spec)
+        mcp_spec.loader.exec_module(mcp_mod)
+        checks.append((mcp_mod._parse_file_line({"source_file": "src/app.py:42"}) == ("src/app.py", 42), "_parse_file_line failed"))
+
+    # CLI exit-code & --json purity check
+    lint_missing = subprocess.run([sys.executable, str(REPO_ROOT / "cli.py"), "lint", str(REPO_ROOT / "does_not_exist_xyz")], capture_output=True, text=True, timeout=20)
+    bench_json = subprocess.run([sys.executable, str(REPO_ROOT / "harness" / "cli.py"), "bench", "--json"], capture_output=True, text=True, timeout=20)
+    bench_parsed = False
+    try:
+        json.loads(bench_json.stdout)
+        bench_parsed = True
+    except Exception:
+        pass
+    checks += [
+        (lint_missing.returncode == 1, f"cli.py lint on missing path did not exit 1 (rc={lint_missing.returncode})"),
+        (bench_json.returncode == 0 and bench_parsed, f"harness bench --json stdout invalid JSON (rc={bench_json.returncode})"),
+    ]
 
     proc = subprocess.run([sys.executable, str(REPO_ROOT / "cli.py"), "context", "MaxilunAgentLoop", "--path", "harness"],
                           capture_output=True, text=True, cwd=REPO_ROOT, timeout=300)
@@ -1205,53 +1473,60 @@ def test_harness_confinement():
             print(f"  ❌ {msg}")
             passed = False
     if passed:
-        print("  ✅ FS tools stay inside the root, unknown delegates are refused, and root CLI context runs")
+        print("  ✅ FS/KG confinement, council_hook hardening, verify SVG/UTF16, scanners, loader, router, and CLI gates pass")
     return passed
 
 
 def test_agent_aliases_system():
     print("\n🧪 Validating Agent Persona & Alias System...")
+    import tempfile
+    import harness.engine.aliases as aliases_mod
     from harness.engine.aliases import get_alias_manager, PRESETS, CANONICAL_AGENTS
     passed = True
-    mgr = get_alias_manager()
+    prev_mgr = aliases_mod._GLOBAL_MANAGER
+    try:
+        with tempfile.TemporaryDirectory() as alias_tmp:
+            mgr = get_alias_manager(repo_root=Path(alias_tmp))
 
-    # 1. Check all canonical agents covered in presets
-    for p_name, p_agents in PRESETS.items():
-        missing = [a for a in CANONICAL_AGENTS if a not in p_agents]
-        if missing:
-            print(f"  ❌ Preset '{p_name}' missing agents: {missing}")
-            passed = False
-        for a, info in p_agents.items():
-            if not info.get("alias") or not info.get("callsign"):
-                print(f"  ❌ Preset '{p_name}' agent '{a}' missing alias or callsign")
+            # 1. Check all canonical agents covered in presets
+            for p_name, p_agents in PRESETS.items():
+                missing = [a for a in CANONICAL_AGENTS if a not in p_agents]
+                if missing:
+                    print(f"  ❌ Preset '{p_name}' missing agents: {missing}")
+                    passed = False
+                for a, info in p_agents.items():
+                    if not info.get("alias") or not info.get("callsign"):
+                        print(f"  ❌ Preset '{p_name}' agent '{a}' missing alias or callsign")
+                        passed = False
+
+            # 2. Check resolution
+            mgr.apply_preset("nusantara-squad")
+            if mgr.resolve_agent("@Bram") != "maxilun-architect":
+                print(f"  ❌ Failed to resolve @Bram -> maxilun-architect (got {mgr.resolve_agent('@Bram')})")
+                passed = False
+            if mgr.resolve_agent("maya") != "maxilun-ui-designer":
+                print(f"  ❌ Failed to resolve maya -> maxilun-ui-designer (got {mgr.resolve_agent('maya')})")
+                passed = False
+            if mgr.resolve_agent("maxilun-architect") != "maxilun-architect":
+                print("  ❌ Canonical resolution failed")
                 passed = False
 
-    # 2. Check resolution
-    mgr.apply_preset("nusantara-squad")
-    if mgr.resolve_agent("@Bram") != "maxilun-architect":
-        print(f"  ❌ Failed to resolve @Bram -> maxilun-architect (got {mgr.resolve_agent('@Bram')})")
-        passed = False
-    if mgr.resolve_agent("maya") != "maxilun-ui-designer":
-        print(f"  ❌ Failed to resolve maya -> maxilun-ui-designer (got {mgr.resolve_agent('maya')})")
-        passed = False
-    if mgr.resolve_agent("maxilun-architect") != "maxilun-architect":
-        print("  ❌ Canonical resolution failed")
-        passed = False
+            # 3. Check tag formatting
+            tag = mgr.format_agent_tag("maxilun-architect")
+            if "Bram" not in tag or "Architect" not in tag:
+                print(f"  ❌ Tag formatting unexpected: {tag}")
+                passed = False
 
-    # 3. Check tag formatting
-    tag = mgr.format_agent_tag("maxilun-architect")
-    if "Bram" not in tag or "Architect" not in tag:
-        print(f"  ❌ Tag formatting unexpected: {tag}")
-        passed = False
+            # 4. Check normalization in agent loop
+            from harness.engine.agent_loop import _normalize_agent
+            if _normalize_agent("@Bram") != "maxilun-architect":
+                print(f"  ❌ _normalize_agent(@Bram) failed: got {_normalize_agent('@Bram')}")
+                passed = False
 
-    # 4. Check normalization in agent loop
-    from harness.engine.agent_loop import _normalize_agent
-    if _normalize_agent("@Bram") != "maxilun-architect":
-        print(f"  ❌ _normalize_agent(@Bram) failed: got {_normalize_agent('@Bram')}")
-        passed = False
-
-    if passed:
-        print(f"  ✅ Agent Alias System verified ({len(PRESETS)} presets, {len(CANONICAL_AGENTS)} agents bidirectional resolution)")
+            if passed:
+                print(f"  ✅ Agent Alias System verified ({len(PRESETS)} presets, {len(CANONICAL_AGENTS)} agents bidirectional resolution)")
+    finally:
+        aliases_mod._GLOBAL_MANAGER = prev_mgr
     return passed
 
 
@@ -1333,18 +1608,53 @@ def test_council_hook():
         if "/.agents/hooks.json" not in (root / ".gitignore").read_text(encoding="utf-8"):
             failures.append("--on did not gitignore the machine-local hook")
 
-        def decide(user, tool, cmd=""):
+        def decide(user, tool, cmd="", tool_args=None):
+            args = {"CommandLine": cmd}
+            if tool_args:
+                args.update(tool_args)
             payload = {"hookEventName": "PreToolUse", "cwd": tmp, "lastUserInput": user,
-                       "toolCall": {"name": tool, "args": {"CommandLine": cmd}}}
+                       "toolCall": {"name": tool, "args": args}}
             return json.loads(run_py(script, ["--agy"], json.dumps(payload)).stdout)["decision"]
+        kg_cli = "d:/skills/maxilun-knowledge-graph/cli.py"
+        slop_cli = "d:/skills/maxilun-craft/scripts/slopscan.py"
         for user, tool, cmd, want in [("redesign", "write_to_file", "", "deny"),
+                                      ("redesign", "generate_image", "", "deny"),
                                       ("redesign", "run_command", "npm i", "deny"),
+                                      ("redesign", "run_command", "git status && rm -rf /", "deny"),
+                                      ("redesign", "run_command", "git status; whoami", "deny"),
+                                      ("redesign", "run_command", "ls | sh", "deny"),
+                                      ("redesign", "run_command", "cat a > b", "deny"),
+                                      ("redesign", "run_command", "cat < a", "deny"),
+                                      ("redesign", "run_command", "ls\nrm -rf /", "deny"),
+                                      ("redesign", "run_command", 'git log "$(whoami)"', "deny"),
+                                      ("redesign", "run_command", 'git log `whoami`', "deny"),
+                                      ("redesign", "run_command", f'py "{kg_cli}" scan . -o evil.json', "deny"),
+                                      ("redesign", "run_command", f'py "{kg_cli}" scan . --view', "deny"),
+                                      ("redesign", "run_command", "git diff --output=x", "deny"),
+                                      ("redesign", "run_command", "rg --pre=sh x", "deny"),
+                                      ("redesign", "run_command", f'rm -rf / && py "{script}" --off', "deny"),
                                       ("redesign", "view_file", "", "allow"),
+                                      ("redesign", "mcp__maxilun-kg__kg_locate", "", "allow"),
+                                      ("redesign", "mcp__maxilun-kg__kg_scan", "", "ask"),
+                                      ("redesign", "run_command", 'rg "a|b" src/', "ask"),
+                                      ("redesign", "run_command", f'"C:/Program Files/Python/python.exe" "{kg_cli}" locate "x"', "ask"),
+                                      ("redesign", "run_command", f'"py" -3 "{kg_cli}" query callsIn: foo', "ask"),
+                                      ("redesign", "run_command", f'"py" "{slop_cli}" a.tsx --json', "ask"),
                                       ("stop council", "run_command", f'"py" "{script}" --off', "ask"),
                                       ("ACC", "replace_file_content", "", "ask")]:
             got = decide(user, tool, cmd)
             if got != want:
-                failures.append(f"{tool} after {user!r}: {got} != {want}")
+                failures.append(f"{tool} ({cmd!r}) after {user!r}: {got} != {want}")
+        for t_args, want in [
+            ({"ServerName": "maxilun-kg", "ToolName": "kg_locate"}, "allow"),
+            ({"server_name": "maxilun-kg", "tool_name": "kg_query"}, "allow"),
+            ({"ServerName": "maxilun-kg", "ToolName": "kg_scan"}, "ask"),
+            ({"ServerName": "postgres", "ToolName": "execute_sql"}, "ask"),
+            ({"ServerName": "figcraft", "ToolName": "create_node"}, "deny"),
+        ]:
+            got = decide("redesign", "call_mcp_tool", "", tool_args=t_args)
+            if got != want:
+                failures.append(f"call_mcp_tool ({t_args!r}): {got} != {want}")
         if "Council mode is ON" not in run_py(script, [], "{}", {"CLAUDE_PROJECT_DIR": tmp}).stdout:
             failures.append("Claude Code reminder missing while marker exists")
         run_py(script, ["--off", tmp])
@@ -1385,6 +1695,123 @@ def test_slopscan_rules():
     return not failures
 
 
+def test_repo_parity_and_gates():
+    print("\n🧪 Validating CI, installers, 3-exit verify gate, hook audit whitelist, and SVG scanning...")
+    import importlib.util
+    import subprocess
+    passed = True
+
+    # 1. CI workflow exists and invokes test + harness check + lint
+    ci_file = REPO_ROOT / ".github" / "workflows" / "validate-skills.yml"
+    if not ci_file.exists():
+        print("  ❌ Missing .github/workflows/validate-skills.yml referenced by README CI badge")
+        return False
+    ci_text = ci_file.read_text(encoding="utf-8")
+    for req_cmd in ("scripts/test-suite.py", "harness/cli.py check", "cli.py lint"):
+        if req_cmd not in ci_text:
+            print(f"  ❌ validate-skills.yml missing '{req_cmd}'")
+            passed = False
+
+    # 2. Installer fallback parity (27 skills, $Project scoping)
+    ps1_text = (REPO_ROOT / "scripts" / "install.ps1").read_text(encoding="utf-8")
+    sh_text = (REPO_ROOT / "scripts" / "install.sh").read_text(encoding="utf-8")
+    if '"27"' not in ps1_text and "27" not in ps1_text:
+        print("  ❌ scripts/install.ps1 missing 27-skill count")
+        passed = False
+    if '"25"' in ps1_text or '"25"' in sh_text:
+        print("  ❌ Stale '25' fallback still present in installer scripts")
+        passed = False
+    if "If ($Project)" not in ps1_text and "$Project" not in ps1_text:
+        print("  ❌ scripts/install.ps1 missing $Project scoping")
+        passed = False
+
+    # 3. VerifyEngine 3-exit gate & no invented scrollW on static runs
+    verify_py = SKILLS_DIR / "maxilun-verify" / "verify_engine.py"
+    with tempfile.TemporaryDirectory() as tmpd:
+        clean_html = Path(tmpd) / "clean.html"
+        clean_html.write_text(
+            "<!DOCTYPE html><html><head><meta name='viewport' content='width=device-width,initial-scale=1'></head>"
+            "<body><main><h1>Status</h1><p>Nominal</p></main></body></html>",
+            encoding="utf-8",
+        )
+        broken_html = Path(tmpd) / "broken.html"
+        broken_html.write_text(
+            "<html><body><div style='width: 640px'><span>unclosed</div></body></html>",
+            encoding="utf-8",
+        )
+        res_clean = subprocess.run(
+            [sys.executable, str(verify_py), str(clean_html), "--static"],
+            capture_output=True, text=True, check=False,
+        )
+        if res_clean.returncode != 2 or "[UNVERIFIED]" not in res_clean.stdout or "scrollW=" in res_clean.stdout:
+            print(f"  ❌ VerifyEngine --static clean HTML must exit 2 with [UNVERIFIED] and no scrollW (got rc={res_clean.returncode})")
+            passed = False
+
+        res_broken = subprocess.run(
+            [sys.executable, str(verify_py), str(broken_html), "--static"],
+            capture_output=True, text=True, check=False,
+        )
+        if res_broken.returncode != 1:
+            print(f"  ❌ VerifyEngine --static broken HTML must exit 1 (got rc={res_broken.returncode})")
+            passed = False
+
+        # 4. slopscan.py catches bad SVG + emojis on lines > 2000 chars
+        slop_py = SKILLS_DIR / "maxilun-craft" / "scripts" / "slopscan.py"
+        bad_svg = Path(tmpd) / "bad.svg"
+        long_pad = "A" * 2060
+        bad_svg.write_text(
+            f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300">'
+            f'<defs><linearGradient id="g"><stop stop-color="#22d3ee"/><stop stop-color="#a855f7"/></linearGradient></defs>'
+            f'<text x="20" y="60" font-weight="800" fill="url(#g)" data-pad="{long_pad}">🚀 Launch</text>'
+            f'</svg>',
+            encoding="utf-8",
+        )
+        res_bad_svg = subprocess.run(
+            [sys.executable, str(slop_py), str(bad_svg)],
+            capture_output=True, text=True, check=False,
+        )
+        if res_bad_svg.returncode == 0 or "gradient-cool" not in res_bad_svg.stdout or "svg-missing-title" not in res_bad_svg.stdout:
+            print(f"  ❌ slopscan.py failed to flag bad SVG violations (rc={res_bad_svg.returncode})")
+            passed = False
+
+        res_banner = subprocess.run(
+            [sys.executable, str(slop_py), str(REPO_ROOT / "assets" / "banner.svg")],
+            capture_output=True, text=True, check=False,
+        )
+        if res_banner.returncode != 0:
+            print(f"  ❌ slopscan.py failed on assets/banner.svg:\n{res_banner.stdout}")
+            passed = False
+
+    # 5. council_hook read-only audit whitelist + --fix denial
+    hook_path = SKILLS_DIR / "maxilun" / "scripts" / "council_hook.py"
+    spec = importlib.util.spec_from_file_location("council_hook_parity", str(hook_path))
+    hook_mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(hook_mod)
+    safe_cmds = [
+        "python scripts/test-suite.py",
+        "python scripts/ui-purity-linter.py skills/",
+        "python harness/cli.py check .",
+        "python cli.py lint assets/",
+    ]
+    unsafe_cmds = [
+        "python scripts/ui-purity-linter.py --fix skills/",
+        "python harness/cli.py check . --fix",
+        "python scripts/install-hook.py",
+    ]
+    for cmd in safe_cmds:
+        if not hook_mod._is_safe_read_cmd(cmd):
+            print(f"  ❌ council_hook blocked safe read-only audit command: {cmd}")
+            passed = False
+    for cmd in unsafe_cmds:
+        if hook_mod._is_safe_read_cmd(cmd):
+            print(f"  ❌ council_hook allowed mutating/unsafe command: {cmd}")
+            passed = False
+
+    if passed:
+        print("  ✅ CI, installers, 3-exit verify gate, council whitelist, and SVG scanner verified.")
+    return passed
+
+
 def main():
     print(f"🌑 Starting Maxilun {len(EXPECTED_SKILLS)}-Skill Test Suite\n" + "=" * 48)
     results = [
@@ -1416,6 +1843,7 @@ def main():
         test_n8n_validator(),
         test_council_hook(),
         test_slopscan_rules(),
+        test_repo_parity_and_gates(),
     ]
 
     print("\n" + "=" * 48)

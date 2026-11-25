@@ -2,14 +2,14 @@
 
 <div align="center">
 
-<img src="assets/banner.svg" alt="Maxilun — 26 Skills · 20 Autonomous Agents · Shared Agent Bus · Knowledge Graph MCP · Purity Gate" width="100%">
+<img src="assets/banner.svg" alt="Maxilun — 27 Skills · 21 Autonomous Agents · Shared Agent Bus · Knowledge Graph MCP · Purity Gate" width="100%">
 
 <br/>
 
 [![CI](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml/badge.svg)](https://github.com/giriedu/maxilun/actions/workflows/validate-skills.yml)
 [![Version](https://img.shields.io/badge/version-1.3.0-7c3aed?style=flat-square)](CHANGELOG.md)
-[![Skills](https://img.shields.io/badge/skills-26_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
-[![Agents](https://img.shields.io/badge/agents-20_autonomous-3b82f6?style=flat-square)](docs/AGENTS.md)
+[![Skills](https://img.shields.io/badge/skills-27_skills-06b6d4?style=flat-square)](docs/SKILLS.md)
+[![Agents](https://img.shields.io/badge/agents-21_autonomous-3b82f6?style=flat-square)](docs/AGENTS.md)
 [![License](https://img.shields.io/badge/license-Free_to_Use-22c55e?style=flat-square)](LICENSE)
 [![Sponsor](https://img.shields.io/badge/Sponsor-GitHub_Sponsors-ea4aaa?style=flat-square)](https://github.com/sponsors/giriedu)
 [![Platform](https://img.shields.io/badge/runs_on-Claude_·_Cursor_·_Codex_·_Antigravity_·_Zed_·_Termul-white?style=flat-square)](#platform-support)
@@ -23,7 +23,7 @@
 
 ---
 
-**Maxilun** is an ecosystem of 25 AI skills for software engineering teams: one orchestrator and 24 specialists. Every skill carries the same **Core Rules** block, so the four quality engines travel with the skill instead of living in a separate folder. The orchestrator enforces reversibility-gated decision triage (act from repository evidence first; clarify only irreversible decisions), single-owner routing cohesion, wave coordination when genuinely multi-domain, and real execution proof without ceremonial HUD banners. Deeper material (engine detail, purity catalog, code hygiene, surgical engineering discipline, discovery, and reference corpora) lives in `references/` inside each skill and is loaded only when needed.
+**Maxilun** is an ecosystem of 27 AI skills for software engineering teams: one orchestrator and 26 specialists. Every skill carries the same **Core Rules** block, so the four quality engines travel with the skill instead of living in a separate folder. The orchestrator enforces reversibility-gated decision triage (act from repository evidence first; clarify only irreversible decisions), single-owner routing cohesion, wave coordination when genuinely multi-domain, and real execution proof without ceremonial HUD banners. Deeper material (engine detail, purity catalog, code hygiene, surgical engineering discipline, discovery, and reference corpora) lives in `references/` inside each skill and is loaded only when needed.
 
 ## Two Ways to Use Maxilun
 
@@ -62,23 +62,23 @@ npx skills add giriedu/maxilun
 Most AI skill repositories are thin text wrappers that repeat generic advice (*"write clean code, make it modern"*). Maxilun is built as **verifiable engineering infrastructure** — see full side-by-side code and UI comparisons in [**docs/BENCHMARKS.md**](docs/BENCHMARKS.md):
 
 <p align="center">
-  <img src="assets/raw-vs-maxilun-proof.svg" alt="Raw Unconstrained AI vs Maxilun v1.0 Production Engineering" width="100%">
+  <img src="assets/raw-vs-maxilun-proof.svg" alt="Raw Unconstrained AI vs Maxilun v1.3.0 Production Engineering" width="100%">
 </p>
 
 | What Usually Goes Wrong with Raw AI | What Maxilun Ships inside the Repo to Fix It |
 |---|---|
-| **Generic AI Template UI** (purple-blue gradients, uniform border-radius, automatic breadcrumbs, missing empty/error states) | **100 Real Brand Design Systems** in [`skills/maxilun-craft/references/design-md/`](skills/maxilun-craft/references/design-md/index.md) (Stripe, Linear, Vercel, GitHub, Wise, Apple, etc.) + mandatory **4-State UI Matrix** (Skeleton, Empty+CTA, Populated `tabular-nums`, Error+Recovery) |
+| **Generic AI Template UI** (purple-blue gradients, uniform border-radius, automatic breadcrumbs, missing empty/error states) | **100 Real Brand Design Systems** in [`skills/maxilun-craft/references/design-md/`](skills/maxilun-craft/references/design-md/index.md) (Stripe, Linear, Vercel, GitHub, Wise, Apple, etc.) + mandatory **6-State UI Matrix** (Idle, Loading/Skeleton, Populated `tabular-nums`, Empty+CTA, Pending, Error+Recovery) |
 | **Blind Multi-File Edits** (reading 20 whole files into context and breaking callers) | **Executable AST Knowledge Graph & 3D WebGL Lens** in [`skills/maxilun-knowledge-graph/`](skills/maxilun-knowledge-graph/SKILL.md) (`cli.py` + Python/TS/Polyglot AST scanners returning exact `file:line` `defOf:` / `callsIn:` in `< 1s`) |
 | **Vulnerable Auth & Webhooks** (`!==` timing leaks, float currency drift, ad-hoc error JSON) | **Cryptographic & API Contract Playbooks** in [`maxilun-sentinel`](skills/maxilun-sentinel/references/security-playbook.md) & [`maxilun-docsmith`](skills/maxilun-docsmith/references/openapi-contracts.md) (`timingSafeEqual`, Argon2id, `BIGINT` minor units, OpenAPI 3.1 + RFC 9457 `application/problem+json`) |
 | **Stiff, Unreadable AI Videos** (CSS transition drift, tiny 14px fonts, 30-word paragraphs) | **5-Skill Programmatic Video Studio** in [`maxilun-cinecode`](skills/maxilun-cinecode/references/video-production-pipeline.md) + [`maxilun-motion`](skills/maxilun-motion/references/choreography-styles.md) (React frame compiler, analytical damped springs, 14 style signatures, 22 hooks, FFmpeg `yuv420p`) |
-| **Context Window Bloat & Prompt Ceremony** (2,000-line prompt files, emoji status banners, and single-template SaaS clones) | **Strict `≤ 250 Line` Cognitive Ceiling** across all 25 `SKILL.md` files, `/maxilun terse` ultra-compact mode, `OutputCompressor`, and zero self-checked HUD theater — verified on every commit by [`scripts/test-suite.py`](scripts/test-suite.py) |
+| **Context Window Bloat & Prompt Ceremony** (2,000-line prompt files, emoji status banners, and single-template SaaS clones) | **Strict `≤ 300 Line` Cognitive Ceiling** across all 27 `SKILL.md` files, `/maxilun terse` ultra-compact mode, `OutputCompressor`, and zero self-checked HUD theater — verified on every commit by [`scripts/test-suite.py`](scripts/test-suite.py) |
 
 ---
 
 ## System Architecture & Multi-Wave Orchestration
 
 <p align="center">
-  <img src="assets/architecture-overview.svg" alt="Maxilun v1.0 3-Layer Ecosystem Architecture" width="100%">
+  <img src="assets/architecture-overview.svg" alt="Maxilun v1.3.0 4-Layer Ecosystem Architecture" width="100%">
 </p>
 
 ### How Maxilun Routes & Coordinates Complex Engineering Tasks
@@ -112,7 +112,7 @@ flowchart LR
 
 ---
 
-## 25 Skills: 1 Orchestrator + 24 Specialists
+## 27 Skills: 1 Orchestrator + 26 Specialists
 
 Structured by real-world software engineering lifecycle — from foundational architecture to production delivery:
 
@@ -143,6 +143,8 @@ Structured by real-world software engineering lifecycle — from foundational ar
 | 23 | `maxilun-ai` | AI & LLM Application Engineering — hybrid RAG retrieval (dense vector + BM25), semantic chunking, prompt regression evals, context caching | `/maxilun-ai`, `/msal-ai` |
 | 24 | `maxilun-game` | Game Studio & Multi-Engine Engineering — engine architecture (Godot, Unreal, Unity), physics sync, authoritative netcode, GDD | `/maxilun-game`, `/maxilun-gamestudio` |
 | 25 | `maxilun-hunt` | Offensive Vulnerability Audit — adversarial attack scenarios, IDOR/BOLA, SSRF, 7-Question Gate proof triage, reproducible PoC bundles | `/maxilun-hunt`, `/msal-hunt` |
+| 26 | `maxilun-n8n` | Workflow Automation & Event Integration — n8n v1 schema workflows, safe expressions, HMAC SHA-256 webhooks, JS/Python code nodes, AI Agent nodes | `/maxilun-n8n`, `/msal-n8n` |
+| 27 | `maxilun-figcraft` | Live Vector Canvas Engineering — FigCraft desktop MCP (`--attach 7979`), partitioned multi-agent batch mutations, Auto Layout precision | `/maxilun-figcraft`, `/msal-figcraft` |
 
 ---
 
@@ -205,7 +207,7 @@ Full runtime architecture, provider configurations, and tool schemas are documen
 
 ## Agent Meetings
 
-Council mode runs a meeting between specialist agents. The orchestrator chairs from the main session and dispatches agents one at a time through the host's subagent tool. Every turn is five lines: `POSITION`, `AGREE`, `OBJECT`, `PROPOSE`, `ASK`. Meetings are read-only: no agent edits files. The meeting stops after a round with no objections, or after 3 rounds, and the minutes are shown to you before any work starts.
+Council mode runs a meeting between specialist agents. The orchestrator chairs from the main session and dispatches invited agents in parallel rounds (with a Phase 0 KG brief on Deep audits/decisions) through the host's subagent tool. Every turn is five lines: `POSITION`, `AGREE`, `OBJECT`, `PROPOSE`, `ASK`. Meetings are read-only: no agent edits files. The meeting stops after a round with no objections, or after 3 rounds, and the minutes are shown to you before any work starts.
 
 From the terminal:
 
@@ -255,7 +257,7 @@ On OMP/Termul, the agents install to `~/.omp/agent/agents`.
 
 Maxilun follows [Semantic Versioning](https://semver.org/) and [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Every release is validated against all 27 skills, 21 autonomous agents, Knowledge Graph scanners, UI Purity Linter, and harness integration tests via `python scripts/test-suite.py`.
 
-- **Latest Stable**: `v1.3.0` — see [CHANGELOG.md](CHANGELOG.md) for full release notes and `[Unreleased]` additions (`16` agents, Shared Agent Bus, `maxilun-kg` MCP, `OutputCompressor`, `/maxilun terse`, `icon_lookup.py`, 5-in-1 design engine, and component ecosystem vault).
+- **Latest Stable**: `v1.3.0` — see [CHANGELOG.md](CHANGELOG.md) for full release notes and `[Unreleased]` additions (`27` skills, `21` autonomous agents, Shared Agent Bus, `maxilun-kg` MCP, `OutputCompressor`, `/maxilun terse`, `icon_lookup.py`, `maxilun-n8n`, `maxilun-figcraft`, and component ecosystem vault).
 - **Release Pipeline**: See [docs/RELEASE.md](docs/RELEASE.md) and [GitHub Releases](https://github.com/giriedu/maxilun/releases).
 
 ---

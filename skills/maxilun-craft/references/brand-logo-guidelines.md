@@ -43,7 +43,7 @@ Give every path node a semantic `id` or `class` (`mark-outer`, `mark-core`, `mar
     <circle id="mark-node" cx="32" cy="32" r="4" fill="#ffffff"/>
   </g>
   <!-- Wordmark locked to 8px baseline alignment -->
-  <text id="logo-wordmark" x="80" y="42" fill="#0f172a" font-family="'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" font-size="28" font-weight="700" letter-spacing="-0.8">
+  <text id="logo-wordmark" x="80" y="42" fill="#0f172a" font-family="'Bricolage Grotesque', 'Hanken Grotesk', system-ui, sans-serif" font-size="28" font-weight="700" letter-spacing="-0.8">
     VECTRA
   </text>
 </svg>
@@ -130,3 +130,18 @@ flowchart LR
 2. **Output 2 — Visual System PDF Document (`docs/Brand-Guidelines.pdf`)**: 8 pages with the logo construction grid blueprint, OKLCH/Hex swatches, typography, and UI rules.
 3. **Output 3 — Interactive Web Motion Logo (`assets/brand/logo-animated.svg` / `.html`)**: `stroke-dashoffset` trace animation + spring assembly with a `prefers-reduced-motion` fallback.
 4. **Output 4 — Motion Logo Video (`out/logo-reveal.mp4` & `out/logo-stinger-alpha.webm`)**: Deterministic intro/outro video, ready to attach to product videos through the `<LogoReveal>` component in `maxilun-cinecode`.
+
+---
+
+## 5. SVG Banners, README Mastheads & Social/OG Cards
+
+Use three target profiles so standalone `.svg` banners never lose legibility, accessibility, or contrast across renderers:
+
+| Profile | Target | Structure & Typography | Guardrails |
+|---|---|---|---|
+| **A: Inline Web Banner** | Marketing page / app hero | **2-layer**: non-interactive `<svg>` visual layer (`aria-hidden="true"` or `role="img"` + `<title>`) under semantic HTML headline & CTA over a solid surface/scrim | Dual-theme OKLCH tokens, `tokens.md` Origin font, `prefers-reduced-motion: reduce`, `:focus-visible`, `44x44px` hit target |
+| **B: Static `<img>` / README / Email** | GitHub README, wikis, email | Plain `.svg` (`<text>` with `system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif` + `+25%` width reserve, `<tspan>` wrap); `<path>` only for `logo-mark` | No `<script>`, `on*`, `<foreignObject>`, external font/CSS URLs, or `prefers-color-scheme` (prevents `CLR-009`); include `<title>`, `<desc>`, `role="img"`, slug-prefixed IDs, and host `alt` |
+| **C: Social / `og:image` Raster** | OG `1200x630`, GitHub `1280x640`, LinkedIn `1584x396`, X `1500x500` | Fixed-ratio canvas with `tokens.md` Origin fonts, compiled to PNG/WebP via `python scripts/render.py <file> --preset <name>` | Keep text inside uniform safe-zone margins; never rely on platform `.svg` support |
+
+- **Visual rules**: allow subtle tonal neutral shifts (`maxilun-craft`), keep text on solid surfaces/scrims (`>= 4.5:1` / `>= 3:1` via `slopscan.py --contrast`), ban `CLR-001` multi-hue gradients, `TYPO-008` gradient text, `CMP-016` blur blobs, `LAY-017` symmetrical 4-card strips, and `800-900` weights.
+- **Mechanical check**: run `python scripts/slopscan.py <banner.svg>` and `python scripts/render.py <banner.svg> --preset banner`.

@@ -75,13 +75,13 @@ class UIPurityLinter:
             "CLR-TEL-02", "Warna", "ERROR",
             "Saturated neon glow drop-shadow or saturated colored container border",
             "Gunakan hairline border 1px netral atau bayangan kontak alami beropasitas rendah.",
-            re.compile(r"(?:shadow-(?:purple|indigo|pink|cyan|fuchsia)-\d+|box-shadow:[^;]*(?:rgba\(\s*(?:139|124|168|236|59)\s*,[^;]*\b(?:20|25|30)px\b)|border-(?:purple|cyan|pink|fuchsia)-(?:400|500|600))", re.IGNORECASE)
+            re.compile(r"(?:shadow-(?:purple|indigo|pink|cyan|fuchsia)-\d+|shadow-\[0_0_|(?:box-shadow|boxShadow):\s*[^;\n]*(?:rgba\(\s*(?:16|139|124|168|236|59)\s*,[^;\n]*\b(?:1[2-9]|[2-9]\d)px\b)|border-(?:purple|cyan|pink|fuchsia)-(?:400|500|600))", re.IGNORECASE)
         ),
         (
             "CLR-TEL-03", "Warna", "WARNING",
             "Status indicator relying solely on color dot without text/icon accompaniment",
             "Wajib tambahkan teks atau ikon semantik pendamping (aksesibilitas).",
-            re.compile(r"""<(?:span|div)[^>]*class=["'][^"']*\b(?:bg-green-500|bg-red-500|bg-emerald-500)\b[^"']*\b(?:rounded-full|w-2|h-2|w-3|h-3)\b[^"']*["']\s*(?:/>|></(?:span|div)>)""", re.IGNORECASE)
+            re.compile(r"""<(?:span|div)[^>]*class(?:Name)?=["'][^"']*\b(?:bg-green-500|bg-red-500|bg-emerald-500)\b[^"']*\b(?:rounded-full|w-2|h-2|w-3|h-3)\b[^"']*["']\s*(?:/>|></(?:span|div)>)""", re.IGNORECASE)
         ),
         (
             "CLR-TEL-04", "Warna", "ERROR",
@@ -119,13 +119,13 @@ class UIPurityLinter:
             "LAY-TEL-04", "Tata Letak", "ERROR",
             "Twin solid primary buttons competing for focus in the same view",
             "Tetapkan tepat satu tombol beraksen solid per tampilan; tombol pendamping wajib sekunder/outline.",
-            re.compile(r"""<button[^>]*class=["'][^"']*\bbg-(?:blue|indigo|emerald|violet)-600\b[^"']*["'][^>]*>[^<]*</button>\s*<button[^>]*class=["'][^"']*\bbg-(?:blue|indigo|emerald|violet)-600\b""", re.IGNORECASE)
+            re.compile(r"""<button[^>]*class(?:Name)?=["'][^"']*\bbg-(?:blue|indigo|emerald|violet)-600\b[^"']*["'][^>]*>[^<]*</button>\s*<button[^>]*class(?:Name)?=["'][^"']*\bbg-(?:blue|indigo|emerald|violet)-600\b""", re.IGNORECASE)
         ),
         (
             "LAY-TEL-05", "Tata Letak", "WARNING",
             "Card-inside-a-card wrapper nesting abuse",
             "Gunakan spasi 2x (spatial rhythm) alih-alih menambah kotak garis batas bersarang.",
-            re.compile(r"""<(?:div|section|article)[^>]*class=["'][^"']*\b(?:card|border\b[^"']*\brounded-[a-z0-9]+)\b[^"']*["'][^>]*>\s*<(?:div|section|article)[^>]*class=["'][^"']*\b(?:card|border\b[^"']*\brounded-[a-z0-9]+)\b""", re.IGNORECASE)
+            re.compile(r"""<(?:div|section|article)[^>]*class(?:Name)?=["'][^"']*\b(?:card|border\b[^"']*\brounded-[a-z0-9]+)\b[^"']*["'][^>]*>\s*<(?:div|section|article)[^>]*class(?:Name)?=["'][^"']*\b(?:card|border\b[^"']*\brounded-[a-z0-9]+)\b""", re.IGNORECASE)
         ),
         (
             "LAY-TEL-06", "Tata Letak", "ERROR",
@@ -137,7 +137,7 @@ class UIPurityLinter:
             "LAY-TEL-07", "Tata Letak", "WARNING",
             "Unbounded paragraph line length (> 75ch without max-w constraint)",
             "Terapkan max-w-[65ch] atau max-w-prose dan text-wrap: pretty.",
-            re.compile(r"""<p[^>]*class=["'][^"']*\b(?:max-w-none|w-full)\b[^"']*["'][^>]*>[^<]{120,}""", re.IGNORECASE)
+            re.compile(r"""<p[^>]*class(?:Name)?=["'][^"']*\b(?:max-w-none|w-full)\b[^"']*["'][^>]*>[^<]{120,}""", re.IGNORECASE)
         ),
         (
             "LAY-TEL-08", "Tata Letak", "ERROR",
@@ -193,7 +193,7 @@ class UIPurityLinter:
             "CMP-TEL-07", "Komponen", "WARNING",
             "Numbers, prices, or financial metrics without tabular-nums",
             "Wajib tambahkan font-variant-numeric: tabular-nums (atau class tabular-nums).",
-            re.compile(r"""<(?:span|div|p)[^>]*class=["'](?!.*tabular-nums)[^"']*(?:font-mono|text-[0-9a-z]+)[^"']*["'][^>]*>[\$€£Rp]\s*[0-9]+""", re.IGNORECASE)
+            re.compile(r"""<(?:span|div|p)[^>]*class(?:Name)?=["'](?!.*tabular-nums)[^"']*(?:font-mono|text-[0-9a-z]+)[^"']*["'][^>]*>[\$€£Rp]\s*[0-9]+""", re.IGNORECASE)
         ),
         (
             "CMP-TEL-08", "Komponen", "ERROR",
@@ -237,13 +237,13 @@ class UIPurityLinter:
             "TYP-TEL-05", "Tipografi", "ERROR",
             "Mobile input font-size smaller than 16px (triggers iOS auto-zoom)",
             "Atur font-size input minimal 16px (text-base) pada layar mobile.",
-            re.compile(r"""<input[^>]*class=["'][^"']*\b(?:text-xs|text-sm|text-\[1[0-4]px\])\b[^"']*["']""", re.IGNORECASE)
+            re.compile(r"""<input[^>]*class(?:Name)?=["'][^"']*\b(?:text-xs|text-sm|text-\[1[0-4]px\])\b[^"']*["']""", re.IGNORECASE)
         ),
         (
             "TYP-TEL-06", "Tipografi", "WARNING",
             "Headline text without text-wrap: balance (risk of orphaned words)",
             "Pasang text-wrap: balance pada seluruh judul halaman dan modal.",
-            re.compile(r"""<h[1-3][^>]*class=["'](?!.*(?:text-balance|text-wrap:\s*balance))[^"']*["']""", re.IGNORECASE)
+            re.compile(r"""<h[1-3][^>]*class(?:Name)?=["'](?!.*(?:text-balance|text-wrap:\s*balance))[^"']*["']""", re.IGNORECASE)
         ),
         (
             "TYP-TEL-07", "Tipografi", "WARNING",
@@ -255,7 +255,7 @@ class UIPurityLinter:
             "TYP-TEL-08", "Tipografi", "WARNING",
             "Monospace font forced on non-technical prose or descriptions",
             "Simpan font monospace hanya untuk kode, token, atau koordinat.",
-            re.compile(r"""<p[^>]*class=["'][^"']*\b(?:font-mono|font-\['Courier'\])\b[^"']*["'][^>]*>[A-Za-z\s]{50,}""", re.IGNORECASE)
+            re.compile(r"""<p[^>]*class(?:Name)?=["'][^"']*\b(?:font-mono|font-\['Courier'\])\b[^"']*["'][^>]*>[A-Za-z\s]{50,}""", re.IGNORECASE)
         ),
 
         # --- 29-35: Mobile Native ---
@@ -269,13 +269,13 @@ class UIPurityLinter:
             "MOB-TEL-02", "Mobile Native", "ERROR",
             "Touch target size below 44pt (iOS) or 48dp (Android)",
             "Bungkus tombol/kontrol interaktif dengan target sentuh minimal 44x44pt.",
-            re.compile(r"""<(?:button|a)[^>]*class=["'][^"']*\b(?:w-6\s+h-6|w-7\s+h-7|w-8\s+h-8|w-\[3\dpx\])\b[^"']*["']|\.frame\(\s*(?:width|minWidth):\s*(?:[1-3]\d|[1-9])\s*,\s*(?:height|minHeight):\s*(?:[1-3]\d|[1-9])\s*\)""", re.IGNORECASE)
+            re.compile(r"""<(?:button|a)[^>]*class(?:Name)?=["'][^"']*\b(?:w-6\s+h-6|w-7\s+h-7|w-8\s+h-8|w-\[3\dpx\])\b[^"']*["']|\.frame\(\s*(?:width|minWidth):\s*(?:[1-3]\d|[1-9])\s*,\s*(?:height|minHeight):\s*(?:[1-3]\d|[1-9])\s*\)""", re.IGNORECASE)
         ),
         (
             "MOB-TEL-03", "Mobile Native", "WARNING",
             "Hijacking native platform navigation stack with non-standard custom header",
             "Utamakan pola NavigationStack / UINavigationBar / TopAppBar native.",
-            re.compile(r"""class=["'][^"']*\bfixed\s+top-0\s+left-0\s+w-full\s+z-50\b[^"']*["'][^>]*>\s*<button[^>]*Back</button>""", re.IGNORECASE)
+            re.compile(r"""class(?:Name)?=["'][^"']*\bfixed\s+top-0\s+left-0\s+w-full\s+z-50\b[^"']*["'][^>]*>\s*<button[^>]*Back</button>""", re.IGNORECASE)
         ),
         (
             "MOB-TEL-04", "Mobile Native", "WARNING",
@@ -287,7 +287,7 @@ class UIPurityLinter:
             "MOB-TEL-05", "Mobile Native", "ERROR",
             "Mobile input form without keyboard avoidance padding (imePadding)",
             "Pasang imePadding (Android) atau keyboard avoidance auto-scroll.",
-            re.compile(r"""TextField\(|OutlinedTextField\(|TextInput\b(?!.*(?:imePadding|keyboardAvoiding))""", re.IGNORECASE)
+            re.compile(r"""(?:TextField\(|OutlinedTextField\(|TextInput\b)(?!.*(?:imePadding|keyboardAvoiding))""", re.IGNORECASE)
         ),
         (
             "MOB-TEL-06", "Mobile Native", "WARNING",
@@ -345,7 +345,7 @@ class UIPurityLinter:
             "ANI-TEL-01", "Gerak", "ERROR",
             "Animating layout reflow properties (width, height, top, left, margin)",
             "Animasikan hanya transform dan opacity untuk menjaga 60/120 FPS tanpa layout thrashing.",
-            re.compile(r"""transition(?:-all)?:\s*[^;]*(?:width|height|top|left|margin|padding)""", re.IGNORECASE)
+            re.compile(r"""transition(?:-all)?:\s*[^;\n]*(?:width|height|top|left|margin|padding)|\btransition-all\b[^\n>]*style=\{\{[^}\n]*(?:width|height|top|left|margin|padding)""", re.IGNORECASE)
         ),
         (
             "ANI-TEL-02", "Gerak", "WARNING",
@@ -363,14 +363,175 @@ class UIPurityLinter:
             "ANI-TEL-04", "Gerak", "WARNING",
             "Sluggish micro-interaction transition duration (> 300ms)",
             "Batasi respon mikro-interaksi tombol dan kontrol pada durasi 100-200ms.",
-            re.compile(r"""transition-duration:\s*(?:[4-9]\d{2}|[1-9]\d{3})ms\b|duration-(?:500|700|1000)\b""", re.IGNORECASE)
+            re.compile(r"""transition-duration:\s*(?:[4-9]\d{2}|[1-9]\d{3})ms\b|duration-(?:500|700|1000)\b|transition(?:-duration)?:\s*[^;\n]*\b0\.[4-9]\d*s\b""", re.IGNORECASE)
         ),
     ]
 
     SUPPORTED_EXTENSIONS = {
         ".html", ".htm", ".css", ".scss", ".tsx", ".jsx",
-        ".vue", ".svelte", ".swift", ".kt", ".md"
+        ".vue", ".svelte", ".astro", ".swift", ".kt", ".md", ".svg"
     }
+
+    SVG_SATURATED_FONTS = re.compile(
+        r"(?:font-family\s*=\s*|font-family\s*:\s*)[\"']?(?:Inter|Roboto|Open[ _+]Sans|Poppins|Montserrat|Lato|Nunito|"
+        r"Space[ _+]Grotesk|Plus[ _+]Jakarta[ _+]Sans|DM[ _+]Sans|Outfit|Manrope|Sora|Geist|"
+        r"Satoshi|Urbanist|Lexend|Playfair[ _+]Display|Instrument[ _+]Serif|Fraunces|Syne|"
+        r"Clash[ _+]Display|JetBrains[ _+]Mono|Fira[ _+]Code|Space[ _+]Mono)\b",
+        re.IGNORECASE,
+    )
+    SVG_EMOJI = re.compile(
+        r"[\U0001F300-\U0001FAFF\U00002600-\U000027BF\U00002300-\U000023FF"
+        r"\U00002B50\U00002B55\U00002705\U0000274C\U00002728\U000026A1]"
+    )
+
+    @staticmethod
+    def _strip_block_comments(text: str, keep_examples: bool = False) -> str:
+        def _blank(m: re.Match) -> str:
+            return "".join("\n" if c == "\n" else " " for c in m.group(0))
+        out = re.sub(r"\{/\*[\s\S]*?\*/\}", _blank, text)
+        out = re.sub(r"/\*[\s\S]*?\*/", _blank, out)
+        if not keep_examples:
+            out = re.sub(r"<!--(?!\s*/?maxilun-example:)[\s\S]*?-->", _blank, out)
+        return out
+
+    @staticmethod
+    def _balanced_css_classes(text: str) -> set:
+        """Extracts CSS class selectors whose rules declare `text-wrap: balance`."""
+        balanced = set()
+        for m in re.finditer(r"([^{}]+)\{([^{}]*)\}", text):
+            if re.search(r"text-wrap\s*:\s*balance", m.group(2), re.IGNORECASE):
+                for cls in re.findall(r"\.([a-zA-Z0-9_-]+)", m.group(1)):
+                    balanced.add(cls)
+                for htag in re.findall(r"\b(h[1-3])\b", m.group(1), re.IGNORECASE):
+                    balanced.add(htag.lower())
+        return balanced
+
+    @staticmethod
+    def _circular_hue_span(hues: List[float]) -> float:
+        if len(hues) < 2:
+            return 0.0
+        s = sorted(hues)
+        gaps = [s[i + 1] - s[i] for i in range(len(s) - 1)] + [360.0 - s[-1] + s[0]]
+        return 360.0 - max(gaps)
+
+    @staticmethod
+    def _hex_hue_sat(hexc: str):
+        h = hexc.lstrip("#")
+        if len(h) == 3:
+            h = "".join(c * 2 for c in h)
+        if len(h) < 6:
+            return None
+        r, g, b = (int(h[i:i + 2], 16) / 255.0 for i in (0, 2, 4))
+        mx, mn = max(r, g, b), min(r, g, b)
+        d = mx - mn
+        sat = 0.0 if mx == 0 else d / mx
+        if d == 0:
+            hue = 0.0
+        elif mx == r:
+            hue = 60.0 * (((g - b) / d) % 6)
+        elif mx == g:
+            hue = 60.0 * ((b - r) / d + 2)
+        else:
+            hue = 60.0 * ((r - g) / d + 4)
+        return hue, sat
+
+    def _scan_svg(self, file_path: Path, content: str, inline: bool = False, line_offset: int = 1, doc_text: str = "") -> List[TellViolation]:
+        violations: List[TellViolation] = []
+        fp_str = str(file_path)
+        full_doc = doc_text or content
+
+        if not inline:
+            first_line = content.splitlines()[0][:87] if content else "<svg>"
+            if not re.search(r"<title\b", content, re.IGNORECASE):
+                violations.append(TellViolation(
+                    rule_id="SVG-TEL-01", category="Aksesibilitas SVG", severity="ERROR",
+                    message="Standalone SVG missing <title> accessible summary",
+                    remedy="Tambahkan <title id='...-title'> dan <desc> di awal <svg>.",
+                    file_path=fp_str, line_number=line_offset, snippet=first_line,
+                ))
+            if 'role="img"' not in content and "aria-hidden=" not in content:
+                violations.append(TellViolation(
+                    rule_id="SVG-TEL-01", category="Aksesibilitas SVG", severity="ERROR",
+                    message="Standalone SVG missing role='img' or aria-hidden='true'",
+                    remedy="Tambahkan role='img' + aria-labelledby (atau aria-hidden='true' jika dekoratif).",
+                    file_path=fp_str, line_number=line_offset, snippet=first_line,
+                ))
+
+        unsafe_rx = re.compile(r"<script\b|<foreignObject\b|\bon[a-z]+\s*=|javascript:|https?://[^\s\"']+\.(?:css|woff2?|ttf|otf)", re.IGNORECASE)
+        heavy_rx = re.compile(r"(?:font-weight\s*=\s*[\"']?|font-weight\s*:\s*)[89]00\b", re.IGNORECASE)
+        grad_text_rx = re.compile(r"<text[^>]*?(?:fill\s*=\s*[\"']url\(|fill\s*:\s*url\()", re.IGNORECASE)
+        blur_rx = re.compile(r"<feGaussianBlur[\s\S]{0,160}?stdDeviation\s*=\s*[\"']?(?:1[6-9]|[2-9]\d|\d{3,})", re.IGNORECASE)
+        smil_rx = re.compile(r"<animate(?:Motion|Transform)?[\s\S]{0,200}?repeatCount\s*=\s*[\"']indefinite[\"']", re.IGNORECASE)
+        has_reduced = bool(re.search(r"@media\s*\([^)]*prefers-reduced-motion", full_doc, re.IGNORECASE))
+
+        for rx, rid, cat, sev, msg, rem in (
+            (unsafe_rx, "SVG-TEL-02", "Keamanan SVG", "ERROR",
+             "SVG contains script, foreignObject, event handler, javascript:, or external font/CSS URL",
+             "Hapus <script>/<foreignObject>/on* dan gunakan system font stack tanpa tautan eksternal."),
+            (heavy_rx, "SVG-TEL-03", "Tipografi SVG", "ERROR",
+             "Heavy 800-900 font-weight in SVG typography",
+             "Gunakan bobot 500-700 dengan skala ukuran dan kontras warna."),
+            (grad_text_rx, "SVG-TEL-03", "Tipografi SVG", "ERROR",
+             "Gradient-filled SVG <text> (TYPO-008)",
+             "Gunakan fill warna tinta solid dengan kontras >= 4.5:1."),
+            (blur_rx, "SVG-TEL-03", "Permukaan SVG", "ERROR",
+             "Large SVG Gaussian blur blob (CMP-016)",
+             "Hapus efek blur dekoratif; gunakan permukaan solid atau objek Origin konkret."),
+            (self.SVG_EMOJI, "SVG-TEL-04", "Komponen SVG", "ERROR",
+             "Emoji character inside SVG markup (CMP-003)",
+             "Ganti emoji dengan path SVG monokrom atau teks editorial."),
+            (self.SVG_SATURATED_FONTS, "SVG-TEL-05", "Tipografi SVG", "WARNING",
+             "Saturated default font-family attribute in SVG",
+             "Gunakan system-ui stack aman untuk <img> atau font Origin spesifik."),
+        ):
+            for m in rx.finditer(content):
+                ln = line_offset + content[:m.start()].count("\n")
+                violations.append(TellViolation(
+                    rule_id=rid, category=cat, severity=sev, message=msg, remedy=rem,
+                    file_path=fp_str, line_number=ln, snippet=m.group(0).splitlines()[0].strip()[:87],
+                ))
+
+        if not has_reduced:
+            for m in smil_rx.finditer(content):
+                ln = line_offset + content[:m.start()].count("\n")
+                violations.append(TellViolation(
+                    rule_id="ANI-TEL-03", category="Gerak", severity="ERROR",
+                    message="Infinite SMIL SVG animation lacking prefers-reduced-motion guard",
+                    remedy="Tambahkan guard @media (prefers-reduced-motion: reduce) atau hapus repeatCount='indefinite'.",
+                    file_path=fp_str, line_number=ln, snippet=m.group(0).splitlines()[0].strip()[:87],
+                ))
+
+        for gm in re.finditer(r"<(?:linear|radial)Gradient\b[^>]*>[\s\S]*?</(?:linear|radial)Gradient>", content, re.IGNORECASE):
+            stops = re.findall(r"#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b", gm.group(0))
+            chroma = [hs[0] for hx in stops for hs in (self._hex_hue_sat(hx),) if hs and hs[1] >= 0.25]
+            if len(chroma) >= 2 and self._circular_hue_span(chroma) >= 18:
+                ln = line_offset + content[:gm.start()].count("\n")
+                violations.append(TellViolation(
+                    rule_id="CLR-TEL-01", category="Warna", severity="ERROR",
+                    message="Chromatic multi-hue SVG gradient detected (CLR-001)",
+                    remedy="Gunakan permukaan solid netral atau pergeseran nada satu hue.",
+                    file_path=fp_str, line_number=ln, snippet=gm.group(0).splitlines()[0].strip()[:87],
+                ))
+
+        rect_dims = []
+        for rm in re.finditer(r"<rect\b[^>]*>", content, re.IGNORECASE):
+            tag = rm.group(0)
+            mw = re.search(r'\bwidth\s*=\s*["\'](\d+(?:\.\d+)?)["\']', tag)
+            mh = re.search(r'\bheight\s*=\s*["\'](\d+(?:\.\d+)?)["\']', tag)
+            mrx = re.search(r'\brx\s*=\s*["\'](\d+(?:\.\d+)?)["\']', tag)
+            if mw and mh and mrx:
+                rect_dims.append((mw.group(1), mh.group(1), mrx.group(1)))
+        if rect_dims:
+            from collections import Counter
+            top_dim, count = Counter(rect_dims).most_common(1)[0]
+            if count >= 4 and float(top_dim[0]) >= 120 and float(top_dim[1]) >= 80:
+                violations.append(TellViolation(
+                    rule_id="LAY-TEL-08", category="Tata Letak", severity="ERROR",
+                    message=f"Symmetrical {count}-card strip inside SVG ({top_dim[0]}x{top_dim[1]}, rx={top_dim[2]}) (LAY-017)",
+                    remedy="Ganti strip kartu identik dengan komposisi asimetris atau fokus tunggal.",
+                    file_path=fp_str, line_number=line_offset, snippet=f"{count}x rect {top_dim[0]}x{top_dim[1]} rx={top_dim[2]}",
+                ))
+        return violations
 
     def scan_file(self, file_path: Path) -> List[TellViolation]:
         violations: List[TellViolation] = []
@@ -380,86 +541,129 @@ class UIPurityLinter:
             return violations
 
         try:
-            content = file_path.read_text(encoding="utf-8", errors="ignore")
+            raw_content = file_path.read_text(encoding="utf-8", errors="ignore")
         except Exception:
             return violations
 
-        lines = content.splitlines()
         is_md = file_path.suffix.lower() == ".md"
+        content = self._strip_block_comments(raw_content, keep_examples=is_md)
+        if file_path.suffix.lower() == ".svg":
+            return self._scan_svg(file_path, content, inline=False, line_offset=1, doc_text=content)
+
+        lines = content.splitlines()
+        balanced_css_classes = self._balanced_css_classes(content)
+        has_reduced_motion = bool(re.search(r"@media\s*\([^)]*prefers-reduced-motion|useReducedMotion|motion-reduce:", content, re.IGNORECASE))
         in_code_block = False
+        in_bad_example = False
+        seen_keys = set()
+
+        def _add_v(rule_id, category, severity, msg, remedy, ln, snip):
+            key = (rule_id, ln)
+            if key in seen_keys:
+                return
+            seen_keys.add(key)
+            s = snip.strip()
+            if len(s) > 90:
+                s = s[:87] + "..."
+            violations.append(TellViolation(
+                rule_id=rule_id, category=category, message=msg, severity=severity,
+                file_path=str(file_path), line_number=ln, snippet=s, remedy=remedy,
+            ))
 
         for idx, line in enumerate(lines, start=1):
+            stripped = line.strip()
+            if "<!-- maxilun-example:bad -->" in stripped:
+                in_bad_example = True
+                continue
+            if "<!-- /maxilun-example:bad -->" in stripped:
+                in_bad_example = False
+                continue
             if is_md:
-                if line.strip().startswith("```"):
+                if stripped.startswith("```"):
                     in_code_block = not in_code_block
                     continue
-                if not in_code_block:
+                if not in_code_block or in_bad_example:
                     continue
+            elif in_bad_example:
+                continue
 
             for rule_id, category, severity, msg, remedy, pattern in self.TELL_RULES:
-                # Avoid scanning self definition files
                 if file_path.name in ("ui-purity-linter.py", "purity-catalog.md", "SKILL.md") and "TELL_RULES" in line:
                     continue
-                if rule_id == "ANI-TEL-03" and "prefers-reduced-motion" in content:
+                if rule_id == "ANI-TEL-03" and has_reduced_motion:
+                    continue
+                if rule_id == "ANI-TEL-01" and "interpolate-size" in content:
                     continue
                 match = pattern.search(line)
                 if match:
-                    snippet = line.strip()
+                    if rule_id == "TYP-TEL-06":
+                        htag_m = re.match(r"<(h[1-3])\b[^>]*class(?:Name)?=[\"']([^\"']*)[\"']", match.group(0), re.IGNORECASE)
+                        if htag_m:
+                            elem_classes = set(htag_m.group(2).split()) | {htag_m.group(1).lower()}
+                            if elem_classes & balanced_css_classes:
+                                continue
+                    _add_v(rule_id, category, severity, msg, remedy, idx, line)
+
+        # Inline <svg> and multiline JSX/HTML tag checks for non-Markdown files
+        if not is_md:
+            for svg_m in re.finditer(r"<svg\b[\s\S]*?</svg>", content, re.IGNORECASE):
+                ln = content[:svg_m.start()].count("\n") + 1
+                for sv in self._scan_svg(file_path, svg_m.group(0), inline=True, line_offset=ln, doc_text=content):
+                    _add_v(sv.rule_id, sv.category, sv.severity, sv.message, sv.remedy, sv.line_number, sv.snippet)
+
+            # Flatten multiline opening HTML/JSX tags (<tag\n ... >) to single lines for rule parity.
+            for tag_m in re.finditer(r"<(?:button|a|input|span|div|p|h[1-4])\b[^>]*\n[^>]*>(?:[^<]{0,200}</(?:button|a|h[1-4]|p|span)>)?", content, re.IGNORECASE):
+                ln = content[:tag_m.start()].count("\n") + 1
+                flat = re.sub(r"\s*\n\s*", " ", tag_m.group(0))
+                for rule_id, category, severity, msg, remedy, pattern in self.TELL_RULES:
+                    if rule_id in ("ANI-TEL-03", "ANI-TEL-01"):
+                        continue
+                    if pattern.search(flat):
+                        _add_v(rule_id, category, severity, msg, remedy, ln, flat)
+
+        # Multi-line checks for split JSX/HTML elements
+        if not is_md:
+            multiline_pill = re.search(
+                r"""(?:rounded-full[^"']*\b(?:px-[2-6]|py-[0-3])|\b(?:px-[2-6]|py-[0-3])\b[^"']*rounded-full)[^"']*["'][^>]*>[\s\S]{0,180}?(?:<span[^>]*bg-(?:emerald|green|indigo|cyan)-500|•|\*|&bull;)[\s\S]{0,180}?(?:[A-Z0-9_\/-]{4,}\s*\/\/\s*[A-Z0-9_\/-]{4,}|STANDAR|MULTI-TENANT|SAAS)""",
+                content, re.IGNORECASE
+            )
+            if multiline_pill:
+                ln = content[:multiline_pill.start()].count("\n") + 1
+                if not any(v.rule_id == "CMP-TEL-01" for v in violations):
+                    snippet = multiline_pill.group(0).replace("\n", " ").strip()
                     if len(snippet) > 90:
                         snippet = snippet[:87] + "..."
                     violations.append(TellViolation(
-                        rule_id=rule_id,
-                        category=category,
-                        message=msg,
-                        severity=severity,
+                        rule_id="CMP-TEL-01",
+                        category="Komponen",
+                        severity="ERROR",
+                        message="Floating pill badge with glowing dot stamped above heading",
+                        remedy="Hapus kapsul dekoratif; integrasikan konteks langsung ke dalam judul atau navigasi.",
                         file_path=str(file_path),
-                        line_number=idx,
-                        snippet=snippet,
-                        remedy=remedy,
+                        line_number=ln,
+                        snippet=snippet
                     ))
 
-        # Multi-line checks for split JSX/HTML elements
-        multiline_pill = re.search(
-            r"""(?:rounded-full[^"']*\b(?:px-[2-6]|py-[0-3])|\b(?:px-[2-6]|py-[0-3])\b[^"']*rounded-full)[^"']*["'][^>]*>[\s\S]{0,180}?(?:<span[^>]*bg-(?:emerald|green|indigo|cyan)-500|•|\*|&bull;)[\s\S]{0,180}?(?:[A-Z0-9_\/-]{4,}\s*\/\/\s*[A-Z0-9_\/-]{4,}|STANDAR|MULTI-TENANT|SAAS)""",
-            content, re.IGNORECASE
-        )
-        if multiline_pill:
-            ln = content[:multiline_pill.start()].count("\n") + 1
-            if not any(v.rule_id == "CMP-TEL-01" for v in violations):
-                snippet = multiline_pill.group(0).replace("\n", " ").strip()
-                if len(snippet) > 90:
-                    snippet = snippet[:87] + "..."
-                violations.append(TellViolation(
-                    rule_id="CMP-TEL-01",
-                    category="Komponen",
-                    severity="ERROR",
-                    message="Floating pill badge with glowing dot stamped above heading",
-                    remedy="Hapus kapsul dekoratif; integrasikan konteks langsung ke dalam judul atau navigasi.",
-                    file_path=str(file_path),
-                    line_number=ln,
-                    snippet=snippet
-                ))
-
-        multiline_hero = re.search(
-            r"""text-center[^\n]*mx-auto[\s\S]{0,400}?rounded-full[\s\S]{0,400}?<h1""",
-            content, re.IGNORECASE
-        )
-        if multiline_hero:
-            ln = content[:multiline_hero.start()].count("\n") + 1
-            if not any(v.rule_id == "LAY-TEL-09" for v in violations):
-                snippet = multiline_hero.group(0).replace("\n", " ").strip()
-                if len(snippet) > 90:
-                    snippet = snippet[:87] + "..."
-                violations.append(TellViolation(
-                    rule_id="LAY-TEL-09",
-                    category="Tata Letak",
-                    severity="ERROR",
-                    message="Centered hero stack with floating capsule badge (LAY-018)",
-                    remedy="Terapkan tata letak start-aligned editorial atau split hero dengan working console artifact.",
-                    file_path=str(file_path),
-                    line_number=ln,
-                    snippet=snippet
-                ))
+            multiline_hero = re.search(
+                r"""text-center[^\n]*mx-auto[\s\S]{0,400}?rounded-full[\s\S]{0,400}?<h1""",
+                content, re.IGNORECASE
+            )
+            if multiline_hero:
+                ln = content[:multiline_hero.start()].count("\n") + 1
+                if not any(v.rule_id == "LAY-TEL-09" for v in violations):
+                    snippet = multiline_hero.group(0).replace("\n", " ").strip()
+                    if len(snippet) > 90:
+                        snippet = snippet[:87] + "..."
+                    violations.append(TellViolation(
+                        rule_id="LAY-TEL-09",
+                        category="Tata Letak",
+                        severity="ERROR",
+                        message="Centered hero stack with floating capsule badge (LAY-018)",
+                        remedy="Terapkan tata letak start-aligned editorial atau split hero dengan working console artifact.",
+                        file_path=str(file_path),
+                        line_number=ln,
+                        snippet=snippet
+                    ))
 
         # Multiline checks for Symmetrical 4/5 KPI Card Strip across parent/child nodes (LAY-017)
         if not is_md:
@@ -493,8 +697,8 @@ class UIPurityLinter:
                 files_to_scan.append(target_path)
         elif target_path.is_dir():
             for root, dirs, files in os.walk(target_path):
-                # Ignore node_modules, .git, venv, build, and design-md reference archive
-                dirs[:] = [d for d in dirs if d not in (".git", "node_modules", "venv", ".venv", "build", "dist", ".next", "__pycache__", "design-md")]
+                # Ignore node_modules, .git, venv, build, fixtures, and design-md reference archive
+                dirs[:] = [d for d in dirs if d not in (".git", "node_modules", "venv", ".venv", "build", "dist", ".next", "__pycache__", "design-md", "fixtures")]
                 for f in files:
                     p = Path(root) / f
                     if p.suffix.lower() in self.SUPPORTED_EXTENSIONS:
@@ -538,22 +742,27 @@ class UIPurityLinter:
             content = gradient_pat.sub('text-foreground font-semibold', content)
             fixes_applied.append("Replaced AI rainbow text-gradient with solid text")
 
-        # 2. Fix decorative emojis in spans or inline headings
+        # 2. Fix decorative emojis in spans or inline headings without gluing adjacent words
+        emoji_chars = r'(?:[\U0001F300-\U0001FAFF]|[\u2600-\u27BF]|[\u2300-\u23FF]|[\u2B50\u2B55]|🚀|✨|🔥|💡|🎉|⭐|👉|💎|🌟|🤖|💬|🏫|🎓|🕒)'
         emoji_span_pat = re.compile(
-            r'<(?:span|badge|div|p|h[1-6]|button)[^>]*>\s*(?:[\U0001F300-\U0001FAFF]|[\u2600-\u27BF]|[\u2300-\u23FF]|[\u2B50\u2B55]|🚀|✨|🔥|💡|🎉|⭐|👉|💎|🌟|🤖|💬|🏫|🎓|🕒)\s*</(?:span|badge|div|p|h[1-6]|button)>|\s*(?:[\U0001F300-\U0001FAFF]|[\u2600-\u27BF]|[\u2300-\u23FF]|[\u2B50\u2B55]|🚀|✨|🔥|💡|🎉|⭐|👉|💎|🌟|🤖|💬|🏫|🎓|🕒)\s*',
-            re.UNICODE
+            rf'<(?:span|badge|div|p|h[1-6]|button)[^>]*>\s*{emoji_chars}+\s*</(?:span|badge|div|p|h[1-6]|button)>|[ \t]*{emoji_chars}+[ \t]*',
+            re.UNICODE,
         )
         if emoji_span_pat.search(content):
-            content = emoji_span_pat.sub('', content)
+            def _clean_emoji(m: re.Match) -> str:
+                txt = m.group(0)
+                return "" if txt.startswith("<") else (" " if txt.startswith((" ", "\t")) and txt.endswith((" ", "\t")) else "")
+            content = emoji_span_pat.sub(_clean_emoji, content)
             fixes_applied.append("Removed decorative emojis")
         # 3. Replace checkmark / cross emojis with clean SVG icons
+        cls_attr = "className" if file_path.suffix.lower() in (".tsx", ".jsx") else "class"
         if '✅' in content:
-            svg_check = '<svg class="w-4 h-4 text-emerald-500 inline-block align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>'
+            svg_check = f'<svg {cls_attr}="w-4 h-4 text-emerald-500 inline-block align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>'
             content = content.replace('✅', svg_check)
             fixes_applied.append("Replaced emoji ✅ with monochrome SVG checkmark")
 
         if '❌' in content:
-            svg_cross = '<svg class="w-4 h-4 text-red-500 inline-block align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>'
+            svg_cross = f'<svg {cls_attr}="w-4 h-4 text-red-500 inline-block align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>'
             content = content.replace('❌', svg_cross)
             fixes_applied.append("Replaced emoji ❌ with monochrome SVG cross")
 
@@ -584,7 +793,7 @@ class UIPurityLinter:
                 files_to_fix.append(target_path)
         elif target_path.is_dir():
             for root, dirs, files in os.walk(target_path):
-                dirs[:] = [d for d in dirs if d not in (".git", "node_modules", "venv", ".venv", "build", "dist", ".next", "__pycache__", "design-md")]
+                dirs[:] = [d for d in dirs if d not in (".git", "node_modules", "venv", ".venv", "build", "dist", ".next", "__pycache__", "design-md", "fixtures")]
                 for f in files:
                     p = Path(root) / f
                     if p.suffix.lower() in self.SUPPORTED_EXTENSIONS:
@@ -606,7 +815,7 @@ class UIPurityLinter:
 
 
 def format_report(result: ScanResult, verbose: bool = False) -> str:
-    status_icon = "✅ PASS" if result.passed else "❌ FAIL"
+    status_icon = "[PASS]" if result.passed else "[FAIL]"
     err_count = sum(1 for v in result.violations if v.severity == "ERROR")
     warn_count = sum(1 for v in result.violations if v.severity == "WARNING")
 
@@ -632,8 +841,8 @@ def format_report(result: ScanResult, verbose: bool = False) -> str:
 
 
 def run_self_test() -> bool:
-    """Self-test validating that the 45 tell rules work deterministically."""
-    print("🧪 Running UIPurityLinter self-test on synthetic test cases...")
+    """Self-test validating that the tell rules (web + SVG) work deterministically."""
+    print("Running UIPurityLinter self-test on synthetic test cases...")
     linter = UIPurityLinter()
 
     bad_sample = """
@@ -661,27 +870,58 @@ def run_self_test() -> bool:
         f.write(good_sample)
         temp_good = Path(f.name)
 
+    bad_svg = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400">
+      <defs><linearGradient id="g"><stop stop-color="#22d3ee"/><stop stop-color="#a855f7"/></linearGradient></defs>
+      <text x="40" y="80" font-family="Inter, sans-serif" font-weight="800" fill="url(#g)">🚀 Banner</text>
+      <rect x="40" y="140" width="240" height="120" rx="12"/>
+      <rect x="300" y="140" width="240" height="120" rx="12"/>
+      <rect x="560" y="140" width="240" height="120" rx="12"/>
+      <rect x="820" y="140" width="240" height="120" rx="12"/>
+    </svg>"""
+    with tempfile.NamedTemporaryFile("w", suffix=".svg", delete=False, encoding="utf-8") as f:
+        f.write(bad_svg)
+        temp_bad_svg = Path(f.name)
+
+    good_svg = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 420" role="img" aria-labelledby="t d">
+      <title id="t">System ledger</title>
+      <desc id="d">Deterministic engineering diagram</desc>
+      <rect width="1280" height="420" fill="#090d16"/>
+      <rect x="48" y="48" width="640" height="324" rx="8" fill="#101624" stroke="#232d42"/>
+      <text x="80" y="120" font-family="'Instrument Sans', system-ui, sans-serif" font-weight="700" font-size="36" fill="#f8fafc">System Architecture</text>
+    </svg>"""
+    with tempfile.NamedTemporaryFile("w", suffix=".svg", delete=False, encoding="utf-8") as f:
+        f.write(good_svg)
+        temp_good_svg = Path(f.name)
+
     try:
         bad_res = linter.scan_path(temp_bad)
         good_res = linter.scan_path(temp_good)
+        bad_svg_res = linter.scan_path(temp_bad_svg)
+        good_svg_res = linter.scan_path(temp_good_svg)
 
         assert len(bad_res.violations) >= 5, f"Expected >=5 violations on bad sample, got {len(bad_res.violations)}"
         assert not bad_res.passed, "Bad sample should fail purity check"
         assert len(good_res.violations) == 0, f"Expected 0 violations on good sample, got {len(good_res.violations)}"
         assert good_res.passed, "Good sample should pass purity check"
-        print(f"  ✅ Caught {len(bad_res.violations)} tells in bad sample (Score: {bad_res.score:.1f}/100)")
-        print(f"  ✅ Clean sample passed perfectly (Score: {good_res.score:.1f}/100)")
-        print("  🎉 Self-test passed successfully.")
+        assert not bad_svg_res.passed and len(bad_svg_res.violations) >= 3, (
+            f"Expected >=3 violations on bad SVG, got {len(bad_svg_res.violations)}"
+        )
+        assert good_svg_res.passed and len(good_svg_res.violations) == 0, (
+            f"Expected 0 violations on clean SVG, got {good_svg_res.violations}"
+        )
+        print(f"  [PASS] Caught {len(bad_res.violations)} tells in bad sample (Score: {bad_res.score:.1f}/100)")
+        print(f"  [PASS] Clean sample passed perfectly (Score: {good_res.score:.1f}/100)")
+        print(f"  [PASS] SVG bad failed ({len(bad_svg_res.violations)} tells); SVG clean passed")
+        print("  Self-test passed successfully.")
         return True
     finally:
-        if temp_bad.exists():
-            temp_bad.unlink()
-        if temp_good.exists():
-            temp_good.unlink()
+        for tmp in (temp_bad, temp_good, temp_bad_svg, temp_good_svg):
+            if tmp.exists():
+                tmp.unlink()
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Maxilun UI Purity Linter — 45 AI Design Tells Scanner")
+    parser = argparse.ArgumentParser(description="Maxilun UI Purity Linter — 45 AI Design Tells Scanner", allow_abbrev=False)
     parser.add_argument("target", nargs="?", default=".", help="Target file or directory to scan")
     parser.add_argument("--json", action="store_true", help="Output results in JSON format")
     parser.add_argument("--strict", action="store_true", help="Fail if any warning or error is found")
@@ -702,7 +942,7 @@ def main():
     if args.fix:
         fix_res = linter.fix_path(target_path)
         if not args.json:
-            print(f"🔧 Purity Auto-Fixer: Remediated {fix_res['fixed_files']} / {fix_res['total_files']} files.")
+            print(f"Purity Auto-Fixer: Remediated {fix_res['fixed_files']} / {fix_res['total_files']} files.")
             for fp, fixes in fix_res['details'].items():
                 print(f"   - {Path(fp).name}: {', '.join(fixes)}")
             print()

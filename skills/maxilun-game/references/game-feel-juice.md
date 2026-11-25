@@ -131,13 +131,13 @@ export function JuicyHealthBar({ currentHp, maxHp }: { currentHp: number; maxHp:
     <div className="relative w-64 h-4 bg-neutral-900 rounded-full overflow-hidden border border-neutral-800 p-0.5">
       {/* Delayed Ghost Chip Bar */}
       <div
-        className="absolute top-0.5 bottom-0.5 left-0.5 bg-neutral-200/60 rounded-full transition-all duration-500 ease-out"
-        style={{ width: `${chipPercentage}%` }}
+        className="absolute inset-0.5 origin-left bg-neutral-200/60 rounded-full transition-transform duration-200 ease-out"
+        style={{ transform: `scaleX(${chipPercentage / 100})` }}
       />
       {/* Primary Immediate HP Bar */}
       <div
-        className="relative h-full bg-emerald-500 rounded-full transition-all duration-100 ease-linear shadow-[0_0_12px_rgba(16,185,129,0.5)]"
-        style={{ width: `${percentage}%` }}
+        className="relative h-full w-full origin-left bg-emerald-500 rounded-full transition-transform duration-100 ease-linear ring-1 ring-emerald-400/40"
+        style={{ transform: `scaleX(${percentage / 100})` }}
       />
     </div>
   );

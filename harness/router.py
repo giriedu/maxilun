@@ -98,6 +98,17 @@ class MaxilunRouter:
             if any(k in p for k in ["tabel", "skema", "db", "user table"]):
                 companions.append("maxilun-data")
 
+        elif match_tokens(["n8n", "n8n workflow", "workflow automation", "automasi n8n", "bikin workflow n8n", "n8n expression", "n8n agent", "integrasi webhook"]) or ("webhook" in p and any(k in p for k in ["workflow", "automasi", "etl", "node"])):
+            owner = "maxilun-n8n"
+            rationale = "n8n workflow automation, webhook SHA-256 verification, expression hygiene, and ETL integration."
+            pre_flight = "Inspect existing workflow JSON schemas and validate HMAC webhook triggers + retry backoff."
+            if any(k in p for k in ["hmac", "signature", "keamanan", "secret"]):
+                companions.append("maxilun-sentinel")
+            if any(k in p for k in ["database", "sql", "postgres", "tabel"]):
+                companions.append("maxilun-data")
+            if any(k in p for k in ["ai agent", "langchain", "rag"]):
+                companions.append("maxilun-ai")
+
         elif any(k in p for k in ["webhook", "signature", "hmac"]):
             owner = "maxilun-sentinel"
             companions.append("maxilun-data")
@@ -117,7 +128,7 @@ class MaxilunRouter:
 
         elif any(k in p for k in ["landing page", "desain ui", "redesign", "redesain", "rombak", "revamp", "overhaul", "ganti ui", "komponen ui", "sistem desain", "ui/ux", "tampilan", "dashboard", "halaman web", "website", "logo svg", "brand identity", "ganti tema", "ubah tema", "tema baru"]):
             owner = "maxilun-craft"
-            rationale = "Domain-authentic visual design, OKLCH tokens, 4 UI states, or brand assets."
+            rationale = "Domain-authentic visual design, OKLCH tokens, 6 UI states, or brand assets."
             pre_flight = "Select Archetype from references/design-archetypes.md, select matching design systems from references/design-md/, and verify tokens."
             is_ui_intent = any(k in p for k in [
                 "redesign", "redesain", "rombak", "revamp", "overhaul",
@@ -270,7 +281,7 @@ class MaxilunRouter:
         is_multi = len(companions) > 0 or is_ui_intent or is_council or any(k in p for k in ["lengkap", "fullstack", "end-to-end", "dan test", "beserta ui", "arsitektur"])
         waves = []
         if is_multi:
-            w1_candidates = ("maxilun-architect", "maxilun-craft", "maxilun-data", "maxilun-sentinel", "maxilun-scaffold", "maxilun-network", "maxilun-knowledge-graph", "maxilun-insight", "maxilun-docsmith", "maxilun-seo-audit")
+            w1_candidates = ("maxilun-architect", "maxilun-craft", "maxilun-figcraft", "maxilun-hunt", "maxilun-data", "maxilun-sentinel", "maxilun-scaffold", "maxilun-network", "maxilun-knowledge-graph", "maxilun-insight", "maxilun-docsmith", "maxilun-seo-audit")
             w1_specs = [owner] if owner in w1_candidates else []
             for c in companions:
                 if c in w1_candidates and c not in w1_specs:
@@ -278,13 +289,13 @@ class MaxilunRouter:
             if not w1_specs:
                 w1_specs = [owner]
 
-            w2_candidates = ("maxilun-engineer", "maxilun-frontend", "maxilun-craft", "maxilun-motion", "maxilun-cinecode", "maxilun-content", "maxilun-desktop", "maxilun-mobile", "maxilun-iot", "maxilun-ai", "maxilun-game", "maxilun-data", "maxilun-sentinel", "maxilun-diagrams", "maxilun-network", "maxilun-deploy")
+            w2_candidates = ("maxilun-engineer", "maxilun-frontend", "maxilun-craft", "maxilun-figcraft", "maxilun-n8n", "maxilun-motion", "maxilun-cinecode", "maxilun-content", "maxilun-desktop", "maxilun-mobile", "maxilun-iot", "maxilun-ai", "maxilun-game", "maxilun-data", "maxilun-sentinel", "maxilun-diagrams", "maxilun-network", "maxilun-deploy")
             w2_specs = []
             for s in [owner] + companions:
                 if s in w2_candidates and s not in w2_specs:
                     w2_specs.append(s)
             if not w2_specs:
-                w2_specs = ["maxilun-engineer"]
+                w2_specs = [owner if owner in ("maxilun-verify", "maxilun-hunt") else "maxilun-engineer"]
 
             w3_specs = ["maxilun-verify"]
             if any(s in ("maxilun-craft", "maxilun-frontend", "maxilun-motion") for s in [owner] + companions):

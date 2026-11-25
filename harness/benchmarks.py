@@ -157,11 +157,13 @@ interface Transaction {
 export function Transactions({
   items,
   isLoading,
+  isPending,
   error,
   onAdd
 }: {
   items: Transaction[];
   isLoading: boolean;
+  isPending?: boolean;
   error?: Error;
   onAdd: () => void;
 }) {
@@ -174,11 +176,11 @@ export function Transactions({
   }
 
   if (items.length === 0) {
-    return <div className="p-8 text-center border hairline"><p>Belum ada riwayat transaksi.</p><button onClick={onAdd}>Buat Transaksi Baru</button></div>;
+    return <div className="p-8 text-center border hairline"><p>Belum ada riwayat transaksi.</p><button onClick={onAdd} disabled={isPending}>{isPending ? 'Menyimpan...' : 'Buat Transaksi Baru'}</button></div>;
   }
 
   return (
-    <div className="border hairline bg-surface p-4">
+    <div className="border hairline bg-surface p-4" data-state={isPending ? 'pending' : 'populated'}>
       <table className="w-full border-collapse">
         <tbody>
           {items.map(it => (
@@ -198,7 +200,7 @@ export function Transactions({
 
         return BenchmarkResult(
             benchmark_id="fintech_ui",
-            title="Fintech UI: 4 States, Tabular Nums & Anti-Cliché",
+            title="Fintech UI: 6 States, Tabular Nums & Anti-Cliché",
             prompt=prompt,
             raw_score=raw_res.score,
             raw_passed=raw_res.passed,

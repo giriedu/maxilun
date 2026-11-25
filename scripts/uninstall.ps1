@@ -23,6 +23,7 @@ if ($Project) {
         @{ Name = "Universal / Antigravity / Zed (Project)"; SkillsPath = "$CurrentDir\.agents\skills"; AgentsPath = "$CurrentDir\.agents\agents"; RulesPath = "$CurrentDir\.agents\rules" },
         @{ Name = "OpenCode (Project)";                      SkillsPath = "$CurrentDir\.opencode\skills"; AgentsPath = "$CurrentDir\.opencode\agents"; RulesPath = "$CurrentDir\.opencode\rules" },
         @{ Name = "Claude Code (Project)";                 SkillsPath = "$CurrentDir\.claude\skills"; AgentsPath = "$CurrentDir\.claude\agents"; RulesPath = "$CurrentDir\.claude\rules" },
+        @{ Name = "Cursor (Project)";                      SkillsPath = "$CurrentDir\.cursor\skills"; AgentsPath = $null; RulesPath = $null },
         @{ Name = "Trae (Project)";                          SkillsPath = "$CurrentDir\.trae\skills";   AgentsPath = $null; RulesPath = $null },
         @{ Name = "Windsurf (Project)";                      SkillsPath = "$CurrentDir\.windsurf\skills"; AgentsPath = $null; RulesPath = $null },
         @{ Name = "CodeBuddy (Project)";                     SkillsPath = "$CurrentDir\.codebuddy\skills"; AgentsPath = $null; RulesPath = $null },
@@ -32,10 +33,11 @@ if ($Project) {
     $Targets = @(
         @{ Name = "Antigravity CLI/IDE"; SkillsPath = "$env:USERPROFILE\.agents\skills";          AgentsPath = "$env:USERPROFILE\.agents\agents";          RulesPath = "$env:USERPROFILE\.agents\rules" },
         @{ Name = "Claude Code";         SkillsPath = "$env:USERPROFILE\.claude\skills";          AgentsPath = "$env:USERPROFILE\.claude\agents";          RulesPath = "$env:USERPROFILE\.claude\rules" },
-        @{ Name = "Codex";               SkillsPath = "$env:USERPROFILE\.codex\skills";           AgentsPath = $null;                                      RulesPath = "$env:USERPROFILE\.codex\rules" },
+        @{ Name = "Codex";               SkillsPath = "$env:USERPROFILE\.codex\skills";           AgentsPath = "$env:USERPROFILE\.codex\agents";           RulesPath = "$env:USERPROFILE\.codex\rules" },
         @{ Name = "OpenCode (.config)"; SkillsPath = "$env:USERPROFILE\.config\opencode\skills"; AgentsPath = "$env:USERPROFILE\.config\opencode\agents"; RulesPath = "$env:USERPROFILE\.config\opencode\rules" },
         @{ Name = "OpenCode";            SkillsPath = "$env:USERPROFILE\.opencode\skills";        AgentsPath = "$env:USERPROFILE\.opencode\agents";        RulesPath = "$env:USERPROFILE\.opencode\rules" },
-        @{ Name = "Gemini CLI";          SkillsPath = "$env:USERPROFILE\.gemini\skills";          AgentsPath = $null;                                      RulesPath = $null },
+        @{ Name = "Gemini Config";       SkillsPath = "$env:USERPROFILE\.gemini\config\skills";   AgentsPath = $null;                                      RulesPath = $null },
+        @{ Name = "Gemini CLI";          SkillsPath = "$env:USERPROFILE\.gemini\skills";          AgentsPath = $null;                                      RulesPath = "$env:USERPROFILE\.gemini\rules" },
         @{ Name = "Cursor";              SkillsPath = "$env:USERPROFILE\.cursor\skills";          AgentsPath = $null;                                      RulesPath = $null },
         @{ Name = "Trae";                SkillsPath = "$env:USERPROFILE\.trae\skills";            AgentsPath = $null;                                      RulesPath = $null },
         @{ Name = "Windsurf";            SkillsPath = "$env:USERPROFILE\.windsurf\skills";        AgentsPath = $null;                                      RulesPath = $null },
@@ -53,7 +55,11 @@ foreach ($target in $Targets) {
         }
         if ($skillsDirs) {
             foreach ($dir in $skillsDirs) {
-                Remove-Item -Path $dir.FullName -Recurse -Force
+                if ($dir.Attributes -band [IO.FileAttributes]::ReparsePoint) {
+                    $dir.Delete()
+                } else {
+                    Remove-Item -LiteralPath $dir.FullName -Recurse -Force
+                }
             }
             $Removed += "$($target.Name) (skills): $($target.SkillsPath)"
             Write-Host "  Removed Maxilun/MSAL skills from: $($target.SkillsPath)" -ForegroundColor Green
@@ -113,5 +119,6 @@ if ($Removed.Count -eq 0) {
     Write-Host "  No Maxilun installation found." -ForegroundColor Yellow
 } else {
     Write-Host "  Maxilun removed from $($Removed.Count) location(s)." -ForegroundColor Green
+    Write-Host "  Note: if configured, also remove 'maxilun-kg' via 'claude mcp remove maxilun-kg' / ~/.codex/config.toml and UserPromptSubmit hook in settings.json." -ForegroundColor Gray
 }
 Write-Host ""

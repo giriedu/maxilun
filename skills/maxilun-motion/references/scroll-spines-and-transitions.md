@@ -148,6 +148,13 @@ export function navigateWithTransition(url: string, updateDOM: () => Promise<voi
   from { opacity: 0; filter: blur(4px); transform: translateY(12px); }
   to { opacity: 1; filter: blur(0); transform: translateY(0); }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
 ```
 
 ---

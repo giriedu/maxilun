@@ -198,7 +198,7 @@ export function EdTechAcademicLedgerHero() {
                     <span className="text-xs font-mono text-stone-400 block">
                       Monitor Sesi Ujian Langsung
                     </span>
-                    <h2 className="text-sm font-semibold text-stone-100">
+                    <h2 className="text-sm font-semibold text-stone-100 text-balance">
                       Status Sinkronisasi Ruang CBT
                     </h2>
                   </div>

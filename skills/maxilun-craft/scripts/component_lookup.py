@@ -54,7 +54,7 @@ def cmd_search(query: str):
         print(f"No components found matching '{query}'.")
         return
 
-    print(f"\n🔍 Found {len(results)} component(s) matching '{query}':\n" + "=" * 65)
+    print(f"\nFound {len(results)} component(s) matching '{query}':\n" + "=" * 65)
     for cat, name, purpose, details in results:
         print(f"[{cat}]")
         print(f"  • {name} — {purpose}")
@@ -97,7 +97,7 @@ def cmd_registries():
         return
 
     regs = re.findall(r"-\s*\[([^\]]+)\]\(([^)]+)\)\s*[-—:]\s*([^\n]+)", match.group(0))
-    print(f"\n📦 Curated Community Registries ({len(regs)} total):\n" + "=" * 65)
+    print(f"\nCurated Community Registries ({len(regs)} total):\n" + "=" * 65)
     for name, url, desc in regs:
         print(f"• {name.ljust(24)} : {desc.strip()} ({url})")
     print()
@@ -106,7 +106,7 @@ def cmd_registries():
 def cmd_categories():
     text = load_ecosystem()
     cats = re.findall(r"### ([A-P]\.\s*[^\n]+)", text)
-    print(f"\n📂 Specialized Component Categories ({len(cats)} total):\n" + "=" * 65)
+    print(f"\nSpecialized Component Categories ({len(cats)} total):\n" + "=" * 65)
     for c in cats:
         print(f"  {c}")
     print()

@@ -39,5 +39,5 @@ When `maxilun-scaffold` creates `docs/DESIGN.md`:
 Before `maxilun-scaffold` finishes creating `docs/PRD.md`, confirm:
 - The **Problem Statement** names a measurable impact (time, risk, or cost), not abstract jargon.
 - Every **MVP Feature** has acceptance criteria that `maxilun-verify` can test directly.
-- The **UI/UX Requirements** section of `PRD.md` points directly to `docs/DESIGN.md` and lists the required 4 UI states (Loading, Empty, Populated, Error).
+- The **UI/UX Requirements** section of `PRD.md` points directly to `docs/DESIGN.md` and lists the required 6 UI states (Idle, Loading, Populated, Empty, Pending, Error).
 - The **Out of Scope (Non-Goals)** section has at least 2 items to keep the first sprint focused (YAGNI).

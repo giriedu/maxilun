@@ -174,7 +174,7 @@ export function DetailView({ open, onOpenChange, title, children }: DetailViewPr
 }
 ```
 
-*Adheres strictly to the 4-State Matrix, zero layout shift (CLS = 0), and smooth mobile-to-desktop responsiveness.*
+*Adheres strictly to the 6-State Surface Matrix (`Idle`, `Loading/Skeleton`, `Populated`, `Empty+CTA`, `Pending`, `Error+Recovery`), zero layout shift (CLS = 0), and smooth mobile-to-desktop responsiveness.*
 
 ---
 

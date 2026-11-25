@@ -529,7 +529,7 @@ export function MultiStepDrawer({
         key={stepIdx}
         style={{ animation: "step-fade-in 200ms cubic-bezier(0.16, 1, 0.3, 1)" }}
       >
-        <h3 className="text-sm font-semibold text-stone-100">{current.title}</h3>
+        <h3 className="text-sm font-semibold text-stone-100 text-balance">{current.title}</h3>
         <p className="text-xs text-stone-400 mt-1">{current.summary}</p>
         <p className="text-xs font-mono text-stone-300 mt-2 pt-2 border-t border-stone-800/80">
           {current.detail}

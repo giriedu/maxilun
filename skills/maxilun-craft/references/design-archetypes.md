@@ -341,7 +341,7 @@ Gives the primary task or key artifact the dominant visual area, with supporting
   <div class="lg:col-span-2 p-6 rounded-[var(--r-lg)] border border-[var(--line)] bg-[var(--surface)] flex flex-col justify-between">
     <div>
       <span class="text-xs font-mono text-[var(--accent)] uppercase tracking-wider">Live Workspace</span>
-      <h3 class="text-xl font-semibold tracking-tight text-[var(--text)] mt-1">Primary Operational Stream</h3>
+      <h3 class="text-xl font-semibold tracking-tight text-[var(--text)] mt-1 text-balance">Primary Operational Stream</h3>
       <p class="text-sm text-[var(--text-2)] mt-2 max-w-prose">Full-bleed interactive view with live data telemetry.</p>
     </div>
     <div class="mt-6 border border-[var(--line)] rounded-[var(--r)] bg-[var(--sunken)] p-4 font-mono text-xs">
@@ -402,6 +402,7 @@ Generic AI templates routinely stamp fake breadcrumb trails (`Dashboard / Analyt
 or floating capsule pill badges right above titles. This creates visual clutter without providing navigation utility.
 
 ### Banned Anti-Pattern (`HDR-001` / `CMP-015`)
+<!-- maxilun-example:bad -->
 ```html
 <!-- REJECTED: Breadcrumb slop on flat top-level page -->
 <div class="text-xs text-slate-400 uppercase tracking-widest mb-1">Dashboard / Analytics / Overview</div>
@@ -412,6 +413,7 @@ or floating capsule pill badges right above titles. This creates visual clutter 
   • REAL-TIME • TELEMETRY • V2.0
 </div>
 ```
+<!-- /maxilun-example:bad -->
 
 ### Approved Domain-Authentic Header Patterns
 
@@ -420,8 +422,8 @@ Anchors the view with entity name, live status indicator dot, active filters, an
 ```html
 <header class="py-4 px-6 border-b border-[var(--line)] bg-[var(--surface)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
   <div class="flex items-center gap-3">
-    <h1 class="text-lg font-semibold tracking-tight text-[var(--text)]">Laporan Transaksi Harian</h1>
-    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono bg-[var(--ok)]/10 text-[var(--ok)]">
+    <h1 class="text-lg font-semibold tracking-tight text-[var(--text)] text-balance">Laporan Transaksi Harian</h1>
+    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-mono bg-[var(--ok)]/10 text-[var(--ok)]">
       <span class="w-1.5 h-1.5 rounded-full bg-[var(--ok)]"></span>
       Terkoneksi
     </span>
@@ -446,7 +448,7 @@ Uses hairline metadata rules, high-contrast serif headlines, and horizontal cate
     <span>Edisi 14 • 19 November 2026</span>
     <span>Warta Akademik Terpadu</span>
   </div>
-  <h1 class="font-['Newsreader',serif] text-4xl sm:text-5xl font-medium tracking-tight text-[var(--text)]">
+  <h1 class="font-['Newsreader',serif] text-4xl sm:text-5xl font-medium tracking-tight text-[var(--text)] text-balance">
     Transformasi Pembelajaran Berbasis Bukti
   </h1>
   <p class="mt-3 text-base sm:text-lg text-[var(--text-2)] max-w-[65ch]">

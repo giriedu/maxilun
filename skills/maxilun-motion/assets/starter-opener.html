@@ -15,8 +15,8 @@
   --brand-primary: #10b981;
   --brand-secondary: #0284c7;
   --brand-bg: #08090e;
-  --brand-font-display: 'Inter', system-ui, -apple-system, sans-serif;
-  --brand-font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --brand-font-display: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --brand-font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
   --motion-duration-base: 0.6s;
   --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
   --motion-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -127,9 +127,10 @@ html, body {
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   font-size: 120px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.03em;
   text-align: center;
+  text-wrap: balance;
 }
 
 .subtitle {
@@ -142,6 +143,11 @@ html, body {
   text-transform: uppercase;
   opacity: 0.8;
   text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #particle-canvas { display: none; }
+  .kinetic-text .char { will-change: auto; }
 }
 
 /* ============================================================
@@ -340,11 +346,13 @@ scaleStage();
 const TextKinetics = {
   init() {
     document.querySelectorAll('.kinetic-text').forEach(el => {
-      const text = el.textContent;
+      const text = el.textContent.trim();
+      el.setAttribute('aria-label', text);
       el.textContent = '';
       [...text].forEach(ch => {
         const span = document.createElement('span');
         span.className = 'char';
+        span.setAttribute('aria-hidden', 'true');
         span.textContent = ch === ' ' ? '\u00A0' : ch;
         el.appendChild(span);
       });

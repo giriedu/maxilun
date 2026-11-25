@@ -674,7 +674,8 @@ def main():
         prog='maxilun',
         description='Maxilun Knowledge Graph — Code Intelligence Engine',
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog=__doc__
+        epilog=__doc__,
+        allow_abbrev=False,
     )
 
     subparsers = parser.add_subparsers(dest='command', help='Available commands')

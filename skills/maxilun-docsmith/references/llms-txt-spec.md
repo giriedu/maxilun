@@ -26,7 +26,7 @@ These files follow the standard `llms.txt` specification (and are checked by the
 - [Product Requirements (PRD)](docs/PRD.md): Product goals, user personas, MVP features, non-goals, and success metrics.
 - [System Architecture](docs/ARCHITECTURE.md): C4 diagrams, module boundaries, data flow, and the ADR list.
 - [Tech Stack & Env](docs/TECHSTACK.md): Runtime versions, dependency policy, and the table of required environment variables.
-- [Design System & Tokens](docs/DESIGN.md): OKLCH color tokens, type scale, 4px grid, and the 4 UI state rules (`maxilun-craft`).
+- [Design System & Tokens](docs/DESIGN.md): OKLCH color tokens, type scale, 4px grid, and the 6 UI state rules (`maxilun-craft`).
 - [Security & Threat Model](docs/SECURITY.md): STRIDE matrix, session/JWT policy, RBAC, and PII protection (`maxilun-sentinel`).
 - [Coding Styleguide](docs/STYLEGUIDE.md): Naming conventions, import structure, error handling patterns, and the list of hard prohibitions.
 
@@ -53,4 +53,4 @@ The `README.md` at the repository root contains no marketing filler. Required st
 - Every CLI command in the document has been matched against the actual `package.json` / `Makefile` / `pyproject.toml` in the repository (`[CONFIRMED]`).
 - Every environment variable name in the documentation table matches `.env.example` and the `process.env` / `os.environ` reads in the code.
 - No performance or security claim appears without a real number or mechanism.
-- When the document contains a feature specification/PRD with UI components, the 4-state UI matrix and the design reference note (`../maxilun-craft/references/design-md/index.md`) are included.
+- When the document contains a feature specification/PRD with UI components, the 6-state UI matrix and the design reference note (`../maxilun-craft/references/design-md/index.md`) are included.

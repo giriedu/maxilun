@@ -15,7 +15,7 @@ Jika skill Maxilun bertindak sebagai **governance & instruction layer** bagi mod
                            │
 ┌──────────────────────────▼─────────────────────────────┐
 │  Maxilun Autonomous Agent Engine (harness/engine/)     │
-│  - Skills Loader: parses 24 specialists on disk        │
+│  - Skills Loader: parses 27 skills & 21 agents on disk │
 │  - Reversibility Gate: Type 1 vs Type 2 triage         │
 │  - ReAct Execution Loop: tool calls & state tracking   │
 └───────────┬────────────────────────────────┬───────────┘
@@ -42,7 +42,7 @@ Jika skill Maxilun bertindak sebagai **governance & instruction layer** bagi mod
 Harness dapat dijalankan tanpa dependensi eksternal (stdlib Python 3.8+):
 
 ### A. Sesi Interaktif & Eksekusi Tugas Otonom
-Menjalankan sesi agen terminal lengkap dengan 24 spesialis dan pemanggilan tool bawaan:
+Menjalankan sesi agen terminal lengkap dengan 26 spesialis (27 skill total) dan 21 agen otonom:
 ```bash
 # Sesi chat interaktif mandiri:
 python harness/cli.py chat
@@ -51,7 +51,7 @@ python harness/cli.py chat
 python harness/cli.py run "Baca package.json dan verifikasi skrip build"
 ```
 
-### B. Inspeksi 22 Spesialis Ekosistem
+### B. Inspeksi 27 Skill & 21 Agen Ekosistem
 Memeriksa status, kepatuhan batas baris (`≤ 300`), dan pemicu seluruh spesialis:
 ```bash
 python harness/cli.py skills
@@ -83,7 +83,7 @@ Atau melalui *pipe standard input* (misal: output model atau git diff):
 git diff | python harness/cli.py check -
 ```
 
-### C. Simulasi Triase Master Orchestrator
+### F. Simulasi Triase Master Orchestrator
 Menguji klasifikasi reversibilitas dan penugasan spesialis:
 ```bash
 python harness/cli.py route "Buat endpoint webhook pembayaran dan update saldo invoice"
@@ -96,7 +96,7 @@ Companions: maxilun-data
 Pre-flight: Check webhook replay window, raw body HMAC, and database idempotency table.
 ```
 
-### D. Evaluasi Live Model (OpenAI / DeepSeek / Ollama)
+### G. Evaluasi Live Model (OpenAI / DeepSeek / Ollama)
 Mengirim prompt secara live ke endpoint model dan membandingkan Raw vs Maxilun-governed output:
 ```bash
 # Default menggunakan deepseek-chat (atau mock fallback saat offline):
@@ -109,14 +109,14 @@ python harness/cli.py eval --model deepseek-chat --endpoint https://api.deepseek
 python harness/cli.py eval --model llama3 --endpoint http://localhost:11434/v1
 ```
 
-### E. Verifikasi AST Struktural & Eksekusi Sandbox
+### H. Verifikasi AST Struktural & Eksekusi Sandbox
 Memeriksa kode dengan AST parser dan menjalankan kompilasi/DDL di sandbox terisolasi:
 ```bash
 python harness/cli.py verify-code src/db/migration.sql
 python harness/cli.py verify-code src/auth/session.py
 ```
 
-### F. Pemasangan Git Pre-Commit Hook Otomatis
+### I. Pemasangan Git Pre-Commit Hook Otomatis
 Mencegah AI slop dan kode rentan masuk ke riwayat git:
 ```bash
 # Pasang hook ke .git/hooks/pre-commit
@@ -134,7 +134,7 @@ python harness/cli.py generate-ci
 
 | Skenario | Domain | Aturan yang Diuji |
 |---|---|---|
-| `fintech_ui` | Frontend / UI | 4 UI States, tabular numbers pada kolom moneter, anti gradien ungu klise |
+| `fintech_ui` | Frontend / UI | 6 UI States, tabular numbers pada kolom moneter, anti gradien ungu klise |
 | `payment_webhook` | Security & Data | `timingSafeEqual` HMAC, toleransi replay 300s, kueri berparameter, idempotency |
 | `schema_migration` | Database | Pola Expand-Contract zero-downtime, larangan table lock `NOT NULL DEFAULT` |
 | `surgical_refactor` | Clean Code | Eliminasi banner emoji HUD, checklist palsu `- [ ]`, presisi perubahan minimal |

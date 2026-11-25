@@ -44,6 +44,20 @@ class MiddlewarePipeline:
                 return f"[BLOCKED]: Prohibited command execution: {reason}."
         return None
 
+    _SENSITIVE_NAMES = {".env", "id_rsa", "id_ed25519"}
+
+    @classmethod
+    def _is_sensitive_path(cls, raw_path: str) -> bool:
+        norm = raw_path.replace("\\", "/")
+        name = Path(norm).name.lower()
+        return (
+            name in cls._SENSITIVE_NAMES
+            or name.startswith(".env.")
+            or name.endswith((".pem", ".key"))
+            or "/.git/hooks/" in f"/{norm}"
+            or norm.endswith(".git/config")
+        )
+
     def before_tool_call(self, tool_name: str, arguments: Dict[str, Any]) -> Optional[str]:
         """Pre-flight check before modifying files or executing shell commands."""
         if tool_name in ("execute_bash", "bash", "run_command"):
@@ -52,12 +66,13 @@ class MiddlewarePipeline:
             if sec_err:
                 return sec_err
 
-        if tool_name in ("edit_file", "write_file"):
-            target_path = arguments.get("path", "")
-            target_name = Path(target_path).name.lower()
-            if target_name in (".env", "id_rsa", "id_ed25519"):
-                return f"[BLOCKED]: Modification of sensitive credential file '{target_name}' is guarded."
+        if tool_name in ("read_file", "grep_files", "edit_file", "write_file"):
+            target_path = str(arguments.get("path", ""))
+            if target_path and self._is_sensitive_path(target_path):
+                return f"[BLOCKED]: Access to sensitive credential/hook file '{Path(target_path).name}' is guarded."
 
+        if tool_name in ("edit_file", "write_file"):
+            target_path = str(arguments.get("path", ""))
             # If editing code files, ensure caller blast radius is known
             if target_path.endswith((".ts", ".tsx", ".py", ".go")):
                 filename = Path(target_path).name
@@ -76,7 +91,7 @@ class MiddlewarePipeline:
                 return (
                     "MAXILUN PURITY GATE REJECTION: Your previous response violates Maxilun Core Rules:\n"
                     + "\n".join(f"- {e}" for e in errors)
-                    + "\n\nCorrection instruction: Revise your answer immediately. Remove all buzzwords, HUD banners, or fake checklists, and ensure all engineering invariants (4 UI states, constant-time compare, etc.) are strictly met."
+                    + "\n\nCorrection instruction: Revise your answer immediately. Remove all buzzwords, HUD banners, or fake checklists, and ensure all engineering invariants (6 UI states: Idle/Loading/Populated/Empty/Pending/Error, constant-time compare, etc.) are strictly met."
                 )
         return None
 

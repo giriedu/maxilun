@@ -49,14 +49,14 @@ def cmd_list(args):
     if not lessons:
         print("No lessons recorded in .maxilun/lessons.jsonl.")
         return
-    print(f"\n🧠 Persistent Repository Lessons ({len(lessons)} total):\n" + "=" * 70)
+    print(f"\nPersistent Repository Lessons ({len(lessons)} total):\n" + "=" * 70)
     for l in lessons:
         lid = l.get("id", "L-???")
         trigger = l.get("trigger", "")
         action = l.get("action", "")
         conf = l.get("confidence", 0.9)
         date = l.get("last_confirmed", "")
-        print(f"• [{lid}] ({conf:.2f}) Trigger: {trigger}")
+        print(f"- [{lid}] ({conf:.2f}) Trigger: {trigger}")
         print(f"    Action: {action}")
         print(f"    Date: {date}\n")
 
@@ -73,17 +73,20 @@ def cmd_search(args):
     if not matched:
         print(f"No lessons matching '{args.query}'.")
         return
-    print(f"\n🔍 Found {len(matched)} matching lesson(s) for '{args.query}':\n" + "=" * 70)
+    print(f"\nFound {len(matched)} matching lesson(s) for '{args.query}':\n" + "=" * 70)
     for l in matched:
-        print(f"• [{l.get('id')}] Trigger: {l.get('trigger')}")
+        print(f"- [{l.get('id')}] Trigger: {l.get('trigger')}")
         print(f"    Action: {l.get('action')}")
         print(f"    Evidence: {', '.join(l.get('evidence', []))}\n")
 
 
 def cmd_add(args):
     lessons = load_lessons()
-    next_num = len(lessons) + 1
-    lid = f"L-{next_num:03d}"
+    max_num = max(
+        (int(l["id"].split("-")[1]) for l in lessons if str(l.get("id", "")).startswith("L-") and l["id"].split("-")[1].isdigit()),
+        default=0,
+    )
+    lid = f"L-{max_num + 1:03d}"
     today = datetime.now().strftime("%Y-%m-%d")
 
     evidence = [args.evidence] if isinstance(args.evidence, str) else args.evidence
@@ -100,14 +103,14 @@ def cmd_add(args):
 
     lessons.append(new_lesson)
     save_lessons(lessons)
-    print(f"✅ Added lesson [{lid}] to .maxilun/lessons.jsonl:")
+    print(f"[OK] Added lesson [{lid}] to .maxilun/lessons.jsonl:")
     print(f"   Trigger : {args.trigger}")
     print(f"   Action  : {args.action}")
 
 
 def cmd_validate(args):
     if not LESSONS_FILE.exists():
-        print("✅ .maxilun/lessons.jsonl does not exist yet (clean).")
+        print("[OK] .maxilun/lessons.jsonl does not exist yet (clean).")
         return
     lessons = load_lessons()
     required = ["id", "trigger", "action", "evidence", "confidence", "scope", "last_confirmed"]
@@ -117,12 +120,12 @@ def cmd_validate(args):
             if field not in l:
                 errors.append(f"Lesson {idx} ([{l.get('id', 'unknown')}]) missing required field '{field}'")
     if errors:
-        print(f"❌ Validation failed with {len(errors)} error(s):")
+        print(f"[FAIL] Validation failed with {len(errors)} error(s):")
         for err in errors:
             print(f"   - {err}")
         sys.exit(1)
     else:
-        print(f"✅ Validated {len(lessons)} lessons in .maxilun/lessons.jsonl: 100% compliant.")
+        print(f"[OK] Validated {len(lessons)} lessons in .maxilun/lessons.jsonl: 100% compliant.")
 
 
 def main():

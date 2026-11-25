@@ -81,7 +81,7 @@ Concurrent mutations on a live visual canvas require mathematical boundaries (se
 1. **Zero-Emoji Invariant (`CMP-003`)**: Never inject Unicode emojis into buttons, card titles, badges, or headers on the FigCraft canvas. Use vector SVG path nodes or clean editorial typography.
 2. **Anti-Monoculture Layouts (`LAY-008`, `LAY-014`)**: Reject generic 3-card triads and sterile white-box cards with gray borders. Build asymmetric bento partitions, operational ledger rails, or spotlight anchor structures.
 3. **Contrast & Color Tokens**: Colors must use verified hex values derived from domain-authentic palettes (OKLCH mapped). Text contrast against frame fills must meet WCAG AAA requirements.
-4. **4-State Surface Planning**: For application views, design the explicit visual states (Idle/Populated, Skeleton, Empty State + CTA, and Error with recovery).
+4. **6-State Surface Planning**: For application views, design all six explicit visual states (Idle, Skeleton/Loading, Populated with `tabular-nums`, Empty+CTA, Pending/Mutating, and Error+Recovery).
 
 ## 5. Visual QA & Verification Lifecycle
 

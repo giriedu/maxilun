@@ -1,69 +1,87 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 420" width="100%" height="100%">
-  <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#070a12"/>
-      <stop offset="55%" stop-color="#0d1424"/>
-      <stop offset="100%" stop-color="#09101d"/>
-    </linearGradient>
-    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#22d3ee"/>
-      <stop offset="100%" stop-color="#3b82f6"/>
-    </linearGradient>
-    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#fbbf24"/>
-      <stop offset="100%" stop-color="#f97316"/>
-    </linearGradient>
-    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
-      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#1e293b" stroke-width="0.7" stroke-opacity="0.5"/>
-    </pattern>
-  </defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 420" width="100%" height="100%" role="img" aria-labelledby="maxilun-banner-title maxilun-banner-desc">
+  <title id="maxilun-banner-title">Maxilun Multi-Agent Engineering Harness</title>
+  <desc id="maxilun-banner-desc">Asymmetric architectural overview showing 27 skills (1 orchestrator and 26 specialists), 21 autonomous agents, Knowledge Graph AST indexing, and mechanical Purity Gate verification.</desc>
 
-  <rect width="1280" height="420" rx="18" fill="url(#bg)" stroke="#1e293b" stroke-width="1.5"/>
-  <rect width="1280" height="420" rx="18" fill="url(#grid)"/>
+  <!-- Flat surface & crisp grid (9 intentional WCAG-AA palette hex colors) -->
+  <rect width="1280" height="420" fill="#090d16"/>
+  <rect x="16" y="16" width="1248" height="388" rx="10" fill="#0d1320" stroke="#1e293b" stroke-width="1"/>
 
-  <!-- Top Accent Line -->
-  <rect x="48" y="36" width="120" height="4" rx="2" fill="url(#cyanGrad)"/>
-  <text x="184" y="43" fill="#38bdf8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="700" letter-spacing="1.6">AI ENGINEERING CO-PILOT &amp; AUTONOMOUS AGENT RUNTIME · v1.3.0</text>
-
-  <!-- Main Title -->
-  <text x="48" y="128" fill="#f8fafc" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="72" font-weight="800" letter-spacing="-1.5">MAXILUN</text>
-  <text x="48" y="172" fill="#cbd5e1" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="22" font-weight="500">25 Specialist Skills · 15 Autonomous Agents · Shared Agent Bus · Zero-Slop Purity Gate</text>
-
-  <!-- Feature Cards -->
-  <g transform="translate(48, 214)">
-    <rect width="280" height="148" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1.2"/>
-    <rect x="18" y="18" width="36" height="4" rx="2" fill="#22d3ee"/>
-    <text x="18" y="48" fill="#f8fafc" font-family="system-ui, sans-serif" font-size="17" font-weight="700">15 Autonomous Agents</text>
-    <text x="18" y="74" fill="#94a3b8" font-family="ui-monospace, monospace" font-size="12">Wave 1: scout · planner · architect</text>
-    <text x="18" y="96" fill="#94a3b8" font-family="ui-monospace, monospace" font-size="12">Wave 2: coder-* · ui-* · studio</text>
-    <text x="18" y="118" fill="#94a3b8" font-family="ui-monospace, monospace" font-size="12">Wave 3: verifier · security-auditor</text>
+  <!-- Subtle orthogonal grid accents -->
+  <g stroke="#1e293b" stroke-width="1">
+    <line x1="768" y1="16" x2="768" y2="404"/>
+    <line x1="16" y1="308" x2="768" y2="308"/>
   </g>
 
-  <g transform="translate(350, 214)">
-    <rect width="280" height="148" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1.2"/>
-    <rect x="18" y="18" width="36" height="4" rx="2" fill="#38bdf8"/>
-    <text x="18" y="48" fill="#f8fafc" font-family="system-ui, sans-serif" font-size="17" font-weight="700">Shared Agent Bus</text>
-    <text x="18" y="74" fill="#94a3b8" font-family="ui-monospace, monospace" font-size="12">send_handoff / read_handoffs</text>
-    <text x="18" y="96" fill="#94a3b8" font-family="ui-monospace, monospace" font-size="12">Disjoint write sets per wave</text>
-    <text x="18" y="118" fill="#94a3b8" font-family="ui-monospace, monospace" font-size="12">Failure loopback on gate fail</text>
+  <!-- Left column (60%): Brand mark, typography, deterministic telemetry strip -->
+  <g transform="translate(56, 56)">
+    <!-- Architectural diamond brand mark + monospace classification label -->
+    <polygon points="14,2 26,14 14,26 2,14" fill="#818cf8"/>
+    <polygon points="14,8 20,14 14,20 8,14" fill="#090d16"/>
+    <text x="40" y="19" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12" font-weight="600" letter-spacing="1.6" fill="#94a3b8">MAXILUN HARNESS // V1.3.0</text>
+
+    <!-- Primary display headline (Profile B system font stack, capped at font-weight 700, no gradient text) -->
+    <text x="0" y="90" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="48" font-weight="700" letter-spacing="-0.8" fill="#f8fafc">Maxilun Agent Ecosystem</text>
+    <text x="0" y="132" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="500" fill="#cbd5e1">Multi-agent orchestration with AST codebase indexing</text>
+    <text x="0" y="158" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="500" fill="#cbd5e1">and mechanical runtime verification gates.</text>
   </g>
 
-  <g transform="translate(652, 214)">
-    <rect width="280" height="148" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1.2"/>
-    <rect x="18" y="18" width="36" height="4" rx="2" fill="url(#amberGrad)"/>
-    <text x="18" y="48" fill="#f8fafc" font-family="system-ui, sans-serif" font-size="17" font-weight="700">Knowledge Graph MCP</text>
-    <text x="18" y="74" fill="#94a3b8" font-family="ui-monospace, monospace" font-size="12">kg_locate · kg_query · kg_scan</text>
-    <text x="18" y="96" fill="#94a3b8" font-family="ui-monospace, monospace" font-size="12">kg_diff_impact (git blast radius)</text>
-    <text x="18" y="118" fill="#94a3b8" font-family="ui-monospace, monospace" font-size="12">Code · Markdown · SQL · PDF/SVG</text>
+  <!-- Bottom-left hairline telemetry ledger (asymmetric ledger, NOT 4 symmetrical KPI cards) -->
+  <g transform="translate(56, 336)">
+    <g>
+      <text x="0" y="22" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="24" font-weight="700" fill="#f8fafc">27</text>
+      <text x="44" y="14" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11" font-weight="600" letter-spacing="0.8" fill="#f8fafc">ECOSYSTEM SKILLS</text>
+      <text x="44" y="30" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="400" fill="#94a3b8">1 orchestrator, 26 specialists</text>
+    </g>
+
+    <line x1="242" y1="-6" x2="242" y2="38" stroke="#1e293b" stroke-width="1"/>
+
+    <g transform="translate(264, 0)">
+      <text x="0" y="22" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="24" font-weight="700" fill="#818cf8">21</text>
+      <text x="44" y="14" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11" font-weight="600" letter-spacing="0.8" fill="#f8fafc">AUTONOMOUS AGENTS</text>
+      <text x="44" y="30" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="400" fill="#94a3b8">Shared bus &amp; ACC gate</text>
+    </g>
+
+    <line x1="488" y1="-6" x2="488" y2="38" stroke="#1e293b" stroke-width="1"/>
+
+    <g transform="translate(510, 0)">
+      <text x="0" y="22" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="24" font-weight="700" fill="#34d399">45</text>
+      <text x="44" y="14" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11" font-weight="600" letter-spacing="0.8" fill="#f8fafc">PURITY GATES</text>
+      <text x="44" y="30" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="400" fill="#94a3b8">Zero self-reported pass</text>
+    </g>
   </g>
 
-  <g transform="translate(954, 214)">
-    <rect width="278" height="148" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1.2"/>
-    <rect x="18" y="18" width="36" height="4" rx="2" fill="#10b981"/>
-    <text x="18" y="48" fill="#f8fafc" font-family="system-ui, sans-serif" font-size="17" font-weight="700">Purity &amp; Anti-Slop</text>
-    <text x="18" y="74" fill="#94a3b8" font-family="ui-monospace, monospace" font-size="12">slopscan.py · ui-purity-linter</text>
-    <text x="18" y="96" fill="#94a3b8" font-family="ui-monospace, monospace" font-size="12">icon_lookup.py (Iconify SVG)</text>
-    <text x="18" y="118" fill="#94a3b8" font-family="ui-monospace, monospace" font-size="12">OutputCompressor · /maxilun terse</text>
+  <!-- Right column (38%): Council Verification Pipeline Ledger -->
+  <g transform="translate(800, 48)">
+    <text x="0" y="16" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11" font-weight="600" letter-spacing="1.2" fill="#94a3b8">EXECUTION INVARIANTS</text>
+
+    <!-- Row 1: Knowledge Graph -->
+    <g transform="translate(0, 34)">
+      <rect width="424" height="68" rx="6" fill="#090d16" stroke="#1e293b" stroke-width="1"/>
+      <rect x="0" y="14" width="3" height="40" fill="#818cf8"/>
+      <text x="20" y="28" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#f8fafc">01  maxilun-kg</text>
+      <text x="20" y="48" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#cbd5e1">AST symbol index &amp; blast radius query</text>
+      <text x="404" y="28" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11" font-weight="600" fill="#818cf8">LOCATE</text>
+    </g>
+
+    <!-- Row 2: Council Hook -->
+    <g transform="translate(0, 114)">
+      <rect width="424" height="68" rx="6" fill="#090d16" stroke="#1e293b" stroke-width="1"/>
+      <rect x="0" y="14" width="3" height="40" fill="#f59e0b"/>
+      <text x="20" y="28" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#f8fafc">02  council_hook</text>
+      <text x="20" y="48" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#cbd5e1">Write lock until explicit ACC approval</text>
+      <text x="404" y="28" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11" font-weight="600" fill="#f59e0b">GATED</text>
+    </g>
+
+    <!-- Row 3: Verify Engine -->
+    <g transform="translate(0, 194)">
+      <rect width="424" height="68" rx="6" fill="#090d16" stroke="#1e293b" stroke-width="1"/>
+      <rect x="0" y="14" width="3" height="40" fill="#34d399"/>
+      <text x="20" y="28" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#f8fafc">03  verify_engine</text>
+      <text x="20" y="48" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#cbd5e1">320/768/1440px reflow + SVG purity scan</text>
+      <text x="404" y="28" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11" font-weight="600" fill="#34d399">EXIT 0</text>
+    </g>
+
+    <!-- Footer status -->
+    <text x="0" y="294" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12" font-weight="500" fill="#94a3b8">CLAUDE CODE  |  ANTIGRAVITY  |  CURSOR  |  CODEX</text>
   </g>
 </svg>
-

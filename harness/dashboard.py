@@ -11,6 +11,7 @@ Adheres strictly to maxilun-craft, linear.app.md, and railway.md standards:
 Zero external dependencies.
 """
 
+import base64
 import json
 from pathlib import Path
 from typing import Optional
@@ -35,13 +36,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       --hairline: #1c2233;
       --hairline-strong: #2a334a;
       --ink: #f7f8f8;
-      --ink-muted: #8a8f98;
-      --ink-subtle: #565d6d;
+      --ink-muted: #a1a7b3;
+      --ink-subtle: #94a3b8;
       --primary: #5e6ad2;
       --primary-hover: #717de3;
-      --success: #27a644;
-      --warning: #f59e0b;
-      --error: #ef4444;
+      --primary-ink: #8b95f6;
+      --success: #34d399;
+      --warning: #fbbf24;
+      --error: #f87171;
       --architect: #a855f7;
       --data: #f43f5e;
       --craft: #f97316;
@@ -50,6 +52,21 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       --verify: #eab308;
       --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    button:focus-visible, .tab-btn:focus-visible, .btn-action:focus-visible, .preset-chip:focus-visible, .cmdk-item:focus-visible {
+      outline: 2px solid var(--primary-hover);
+      outline-offset: 2px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -65,11 +82,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     /* LINEAR COMPACT HEADER */
     header {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
+      gap: 10px 14px;
       padding-bottom: 14px;
       border-bottom: 1px solid var(--hairline);
       margin-bottom: 14px;
+    }
+    header > div {
+      flex-wrap: wrap;
+      gap: 8px;
     }
     .brand-title {
       font-size: 16px;
@@ -101,8 +124,10 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     /* LINEAR SINGLE-LINE TELEMETRY STATUS BAR (Replaces generic 4-card KPI strip LAY-012) */
     .telemetry-bar {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
+      gap: 6px 14px;
       background: var(--surface-1);
       border: 1px solid var(--hairline);
       padding: 8px 16px;
@@ -111,6 +136,10 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       font-family: var(--font-mono);
       font-size: 11px;
       color: var(--ink-muted);
+    }
+    .telemetry-bar > div {
+      flex-wrap: wrap;
+      gap: 6px 12px;
     }
     .status-pill {
       display: flex;
@@ -128,6 +157,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     /* NAVIGATION TABS */
     .nav-tabs {
       display: flex;
+      flex-wrap: wrap;
       gap: 4px;
       margin-bottom: 14px;
       border-bottom: 1px solid var(--hairline);
@@ -142,7 +172,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       font-weight: 500;
       cursor: pointer;
       border-radius: 4px;
-      transition: all 0.15s;
+      transition: color 0.15s, background-color 0.15s, border-color 0.15s, opacity 0.15s, transform 0.15s;
     }
     .tab-btn:hover { color: var(--ink); }
     .tab-btn.active {
@@ -161,7 +191,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     }
     .grid-2 {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
       gap: 14px;
     }
     .skill-card {
@@ -169,7 +199,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       border: 1px solid var(--hairline);
       border-radius: 6px;
       padding: 14px 16px;
-      transition: all 0.2s ease;
+      transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -186,8 +216,46 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       grid-template-columns: 1fr 340px;
       gap: 14px;
     }
-    @media (max-width: 1120px) {
+    @media (max-width: 1240px) {
       .orchestration-layout { grid-template-columns: 1fr; }
+      .canvas-stage { overflow-x: auto; }
+    }
+    .code-surface-desktop {
+      left: 24px;
+      top: 162px;
+      width: clamp(240px, 54%, 516px);
+      height: 224px;
+    }
+    @media (max-width: 900px) {
+      body { padding: 14px 12px; }
+      .canvas-stage {
+        height: auto;
+        min-height: 0;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        overflow: visible;
+      }
+      #stage-svg, .swarm-cursor { display: none !important; }
+      .stage-bar, .btn-group {
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .btn-action, .tab-btn, .preset-chip {
+        min-height: 44px;
+      }
+      .topo-node, .code-surface {
+        position: static !important;
+        width: 100% !important;
+        height: auto !important;
+        left: auto !important;
+        top: auto !important;
+      }
+      .roster-dock {
+        position: static !important;
+        margin-top: 4px;
+      }
     }
 
     .canvas-stage {
@@ -213,7 +281,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       padding: 12px 14px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.6);
       z-index: 10;
-      transition: all 0.25s ease;
+      transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, opacity 0.25s ease, transform 0.25s ease;
     }
     .topo-node.active-wave {
       border-color: var(--primary);
@@ -349,7 +417,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.15s;
+      transition: color 0.15s, background-color 0.15s, border-color 0.15s, opacity 0.15s, transform 0.15s;
     }
     .btn-action:hover { border-color: var(--primary); color: white; }
     .btn-action.active { background: var(--primary); border-color: var(--primary); color: white; }
@@ -467,7 +535,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       font-size: 11px;
       font-family: var(--font-mono);
       cursor: pointer;
-      transition: all 0.15s;
+      transition: color 0.15s, background-color 0.15s, border-color 0.15s, opacity 0.15s, transform 0.15s;
     }
     .preset-chip:hover {
       border-color: var(--primary);
@@ -475,11 +543,12 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     }
     .input-action-row {
       display: flex;
+      flex-wrap: wrap;
       gap: 8px;
       margin-bottom: 14px;
     }
     .input-action-row input[type="text"] {
-      flex: 1;
+      flex: 1 1 220px;
       margin-bottom: 0;
     }
 
@@ -490,12 +559,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       padding: 10px 14px;
       color: white;
       border-radius: 4px;
-      font-size: 12px;
+      font-size: 16px;
       margin-bottom: 10px;
       font-family: var(--font-sans);
     }
-    input[type="text"]:focus {
-      outline: none;
+    input[type="text"]:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
       border-color: var(--primary);
     }
 
@@ -509,7 +579,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       display: none;
       align-items: flex-start;
       justify-content: center;
-      padding-top: 15vh;
+      padding: 15vh 12px 0 12px;
     }
     .cmdk-dialog {
       background: var(--surface-1);
@@ -517,13 +587,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       border-radius: 8px;
       width: 100%;
       max-width: 600px;
-      box-shadow: 0 16px 48px rgba(0,0,0,0.8), 0 0 24px rgba(94, 106, 210, 0.15);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8);
       overflow: hidden;
       animation: cmdk-scale 0.15s cubic-bezier(0.16, 1, 0.3, 1);
     }
     @keyframes cmdk-scale {
       from { opacity: 0; transform: scale(0.97) translateY(-6px); }
       to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .cmdk-dialog { animation: none; }
+      #pulse-1, #pulse-2, #pulse-3 { display: none !important; }
     }
     .cmdk-input-wrap {
       display: flex;
@@ -537,10 +611,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       background: transparent !important;
       border: none !important;
       padding: 14px 0 !important;
-      font-size: 13px !important;
+      font-size: 16px !important;
       color: var(--ink) !important;
       margin-bottom: 0 !important;
-      outline: none !important;
+    }
+    .cmdk-input:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
     }
     .cmdk-list {
       max-height: 340px;
@@ -586,28 +663,29 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <div class="vignette-overlay"></div>
 
   <!-- COMMAND PALETTE MODAL -->
-  <div class="cmdk-backdrop" id="cmdk" onclick="onCmdkBackdrop(event)">
+  <div class="cmdk-backdrop" id="cmdk" role="dialog" aria-modal="true" aria-label="Command palette" onclick="onCmdkBackdrop(event)">
     <div class="cmdk-dialog" onclick="event.stopPropagation()">
       <div class="cmdk-input-wrap">
-        <span style="color:var(--primary); font-size:16px;">⌘</span>
-        <input type="text" class="cmdk-input" id="cmdk-query" placeholder="Type a command or search 23 skills, agents, benchmarks..." oninput="onCmdkInput()" onkeydown="onCmdkKey(event)">
+        <span style="color:var(--primary-ink); font-family:var(--font-mono); font-size:12px; font-weight:700;" aria-hidden="true">CMD</span>
+        <label for="cmdk-query" class="sr-only">Search commands, skills, agents, and benchmarks</label>
+        <input type="text" class="cmdk-input" id="cmdk-query" placeholder="Type a command or search skills, agents, benchmarks..." oninput="onCmdkInput()" onkeydown="onCmdkKey(event)">
         <span class="cmdk-kbd">ESC to close</span>
       </div>
-      <div class="cmdk-list" id="cmdk-list"></div>
+      <div class="cmdk-list" id="cmdk-list" role="listbox" aria-label="Command results"></div>
     </div>
   </div>
 
   <!-- HEADER -->
   <header>
     <div class="brand-title">
-      <span class="brand-mark"></span>
+      <span class="brand-mark" aria-hidden="true"></span>
       <span>Maxilun Orchestrator <span style="color:var(--ink-muted); font-weight:400;">/ Swarm Telemetry Control Center</span></span>
     </div>
     <div style="display:flex; gap:8px;">
-      <button class="badge" onclick="toggleCmdK()" style="cursor:pointer; display:flex; align-items:center; gap:5px; background:var(--surface-2); border-color:var(--primary); color:var(--ink);" title="Open Command Palette (Cmd+K)">
-        <span style="color:var(--primary); font-weight:700;">⌘K</span> Command Palette
+      <button type="button" class="badge" onclick="toggleCmdK()" style="cursor:pointer; display:flex; align-items:center; gap:5px; background:var(--surface-2); border-color:var(--primary); color:var(--ink);" title="Open Command Palette (Cmd+K / Ctrl+K)">
+        <span style="color:var(--primary-ink); font-family:var(--font-mono); font-weight:700;">Ctrl/Cmd+K</span> Command Palette
       </button>
-      <span class="badge" style="color:var(--success)">22 Specialists + 1 Orchestrator (23 Skills)</span>
+      <span class="badge" id="ecosystem-count-badge" style="color:var(--success)">20 Specialists + 1 Orchestrator (27 Skills)</span>
       <span class="badge">Linear · Railway Design MD Calibrated</span>
     </div>
   </header>
@@ -615,45 +693,45 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <!-- TELEMETRY STATUS BAR (Compact & Pure) -->
   <div class="telemetry-bar">
     <div class="status-pill">
-      <span class="status-dot"></span>
+      <span class="status-dot" aria-hidden="true"></span>
       <span style="color:var(--ink)">Multi-Wave Orchestration Engine Operational</span>
     </div>
     <div style="display:flex; gap:16px;">
       <span>Wave 1: Contracts [LOCKED]</span>
       <span>Wave 2: Implementation [ISOLATED]</span>
       <span>Wave 3: Proof [EXIT 0]</span>
-      <span style="color:var(--primary); font-weight:700;">Zero Slop</span>
+      <span style="color:var(--primary-ink); font-weight:700;">Zero Slop</span>
     </div>
   </div>
 
   <!-- NAVIGATION TABS -->
-  <div class="nav-tabs">
-    <button class="tab-btn active" data-tab="swarm" onclick="showTab('swarm', this)">Swarm Topology</button>
-    <button class="tab-btn" data-tab="benchmarks" onclick="showTab('benchmarks', this)">Benchmarks & Purity Gate</button>
-    <button class="tab-btn" data-tab="agents" onclick="showTab('agents', this)">Autonomous Agents</button>
-    <button class="tab-btn" data-tab="skills" onclick="showTab('skills', this)">23 Production Skills</button>
-    <button class="tab-btn" data-tab="triage" onclick="showTab('triage', this)">Triage Simulator</button>
+  <div class="nav-tabs" role="tablist" aria-label="Dashboard sections" onkeydown="onTabKeyDown(event)">
+    <button type="button" class="tab-btn active" id="tabbtn-swarm" role="tab" aria-selected="true" aria-controls="tab-swarm" data-tab="swarm" onclick="showTab('swarm', this)">Swarm Topology</button>
+    <button type="button" class="tab-btn" id="tabbtn-benchmarks" role="tab" aria-selected="false" aria-controls="tab-benchmarks" data-tab="benchmarks" onclick="showTab('benchmarks', this)">Benchmarks & Purity Gate</button>
+    <button type="button" class="tab-btn" id="tabbtn-agents" role="tab" aria-selected="false" aria-controls="tab-agents" data-tab="agents" onclick="showTab('agents', this)">21 Autonomous Agents</button>
+    <button type="button" class="tab-btn" id="tabbtn-skills" role="tab" aria-selected="false" aria-controls="tab-skills" data-tab="skills" onclick="showTab('skills', this)">27 Production Skills</button>
+    <button type="button" class="tab-btn" id="tabbtn-triage" role="tab" aria-selected="false" aria-controls="tab-triage" data-tab="triage" onclick="showTab('triage', this)">Triage Simulator</button>
   </div>
 
   <!-- TAB: SWARM TOPOLOGY STAGE -->
-  <div id="tab-swarm">
+  <div id="tab-swarm" role="tabpanel" aria-labelledby="tabbtn-swarm">
     <div class="stage-bar">
       <div class="btn-group">
-        <button class="btn-action active" id="btn-play" onclick="togglePlay()">Pause</button>
-        <button class="btn-action" onclick="restartOrchestration()">Replay Swarm</button>
-        <button class="btn-action" id="btn-sound" onclick="toggleSound()">Audio: ON</button>
+        <button type="button" class="btn-action active" id="btn-play" aria-pressed="true" onclick="togglePlay()">Pause</button>
+        <button type="button" class="btn-action" onclick="restartOrchestration()">Replay Swarm</button>
+        <button type="button" class="btn-action" id="btn-sound" aria-pressed="true" onclick="toggleSound()">Audio: ON</button>
       </div>
       <div class="btn-group">
         <span style="font-size:11px; color:var(--ink-muted); align-self:center; margin-right:4px;">Execution Pace:</span>
-        <button class="btn-action" onclick="setPace(0.5, this)">0.5x</button>
-        <button class="btn-action active" onclick="setPace(1.0, this)">1x</button>
-        <button class="btn-action" onclick="setPace(2.0, this)">2x</button>
+        <button type="button" class="btn-action" onclick="setPace(0.5, this)">0.5x</button>
+        <button type="button" class="btn-action active" onclick="setPace(1.0, this)">1x</button>
+        <button type="button" class="btn-action" onclick="setPace(2.0, this)">2x</button>
       </div>
     </div>
 
     <div class="orchestration-layout">
       <!-- 2D Topology Canvas -->
-      <div class="canvas-stage" id="stage" onmousemove="onStageMouseMove(event)">
+      <div class="canvas-stage" id="stage">
         <!-- Orthogonal SVG Connecting Lines -->
         <svg id="stage-svg" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:2;">
           <defs>
@@ -663,29 +741,22 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             <marker id="arrow-active" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
               <path d="M 0 1 L 10 5 L 0 9 z" fill="#5e6ad2" />
             </marker>
-            <filter id="glow-p" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="3" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
           </defs>
           <!-- Conn 1: Input to Wave 1 -->
           <path id="conn-1" d="M 254 67 L 298 67" stroke="#2a334a" stroke-width="2" fill="none" marker-end="url(#arrow)" stroke-dasharray="4 3"/>
-          <circle id="pulse-1" r="3.5" fill="#717de3" filter="url(#glow-p)" style="display:none;">
+          <circle id="pulse-1" r="3.5" fill="#717de3" style="display:none;">
             <animateMotion id="anim-p1" dur="0.9s" repeatCount="indefinite" path="M 254 67 L 298 67" />
           </circle>
 
           <!-- Conn 2: Wave 1 to Wave 2 -->
           <path id="conn-2" d="M 540 67 L 560 67 L 560 195 L 578 195" stroke="#2a334a" stroke-width="2" fill="none" marker-end="url(#arrow)" stroke-dasharray="4 3"/>
-          <circle id="pulse-2" r="3.5" fill="#38bdf8" filter="url(#glow-p)" style="display:none;">
+          <circle id="pulse-2" r="3.5" fill="#38bdf8" style="display:none;">
             <animateMotion id="anim-p2" dur="1.8s" repeatCount="indefinite" path="M 540 67 L 560 67 L 560 195 L 578 195" />
           </circle>
 
           <!-- Conn 3: Wave 2 to Wave 3 -->
           <path id="conn-3" d="M 695 240 L 695 302" stroke="#2a334a" stroke-width="2" fill="none" marker-end="url(#arrow)" stroke-dasharray="4 3"/>
-          <circle id="pulse-3" r="3.5" fill="#eab308" filter="url(#glow-p)" style="display:none;">
+          <circle id="pulse-3" r="3.5" fill="#eab308" style="display:none;">
             <animateMotion id="anim-p3" dur="0.9s" repeatCount="indefinite" path="M 695 240 L 695 302" />
           </circle>
         </svg>
@@ -717,7 +788,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             <span class="badge">Convergent</span>
           </div>
           <div class="node-title">Engineer · Craft · Frontend</div>
-          <div class="node-body">Surgical implementation & 4 UI states</div>
+          <div class="node-body">Surgical implementation & 6 UI states</div>
         </div>
 
         <!-- Node 4: Wave 3 Verification -->
@@ -731,7 +802,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         </div>
 
         <!-- Live Code Inspector Surface on Canvas -->
-        <div class="code-surface" id="code-surface" style="left: 24px; top: 140px; width: 516px; height: 260px;">
+        <div class="code-surface code-surface-desktop" id="code-surface">
           <div style="color:var(--ink-muted); font-size:10px; margin-bottom:6px; border-bottom:1px solid #1c2233; padding-bottom:4px; display:flex; justify-content:space-between;">
             <span>src/auth/webhook.ts — Convergent Implementation</span>
             <span id="ts-badge" style="color:var(--warning)">Compiling...</span>
@@ -773,51 +844,54 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   </div>
 
   <!-- TAB: BENCHMARKS -->
-  <div id="tab-benchmarks" style="display: none;">
+  <div id="tab-benchmarks" role="tabpanel" aria-labelledby="tabbtn-benchmarks" style="display: none;">
     <div class="card">
-      <h2 style="font-size: 15px; margin-bottom: 8px;">Maxilun Empirical Engineering Benchmarks</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Scenario</th>
-            <th>Raw AI Score</th>
-            <th>Maxilun Score</th>
-            <th>Violations Prevented</th>
-            <th>Verdict</th>
-          </tr>
-        </thead>
-        <tbody id="benchmarks-body"></tbody>
-      </table>
+      <h2 style="font-size: 15px; margin-bottom: 8px;">Maxilun empirical engineering benchmarks</h2>
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Scenario</th>
+              <th>Raw AI Score</th>
+              <th>Maxilun Score</th>
+              <th>Violations Prevented</th>
+              <th>Verdict</th>
+            </tr>
+          </thead>
+          <tbody id="benchmarks-body"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
   <!-- TAB: SKILLS -->
-  <div id="tab-skills" style="display: none;">
+  <div id="tab-skills" role="tabpanel" aria-labelledby="tabbtn-skills" style="display: none;">
     <div class="grid-2" id="skills-grid"></div>
   </div>
 
   <!-- TAB: AGENTS -->
-  <div id="tab-agents" style="display: none;">
+  <div id="tab-agents" role="tabpanel" aria-labelledby="tabbtn-agents" style="display: none;">
     <div class="grid-2" id="agents-grid"></div>
   </div>
 
   <!-- TAB: TRIAGE -->
-  <div id="tab-triage" style="display: none;">
+  <div id="tab-triage" role="tabpanel" aria-labelledby="tabbtn-triage" style="display: none;">
     <div class="card">
-      <h2 style="font-size: 15px; margin-bottom: 6px;">Live Decision Reversibility & Specialist Triage</h2>
+      <h2 style="font-size: 15px; margin-bottom: 6px;">Live decision reversibility and specialist triage</h2>
       <p style="color: var(--ink-muted); font-size: 12px; margin-bottom: 12px;">Simulates Master Orchestrator reversibility triage and multi-wave decomposition:</p>
       
       <div class="triage-preset-chips">
         <span style="font-size: 11px; color: var(--ink-muted); align-self: center;">Test Scenarios:</span>
-        <button class="preset-chip" onclick="applyPreset(0)">Payment Webhook + DB</button>
-        <button class="preset-chip" onclick="applyPreset(1)">Zero-Downtime DB Migration</button>
-        <button class="preset-chip" onclick="applyPreset(2)">UI Redesign 4-State Matrix</button>
-        <button class="preset-chip" onclick="applyPreset(3)">Drop Users Table (Destructive)</button>
+        <button type="button" class="preset-chip" onclick="applyPreset(0)">Payment Webhook + DB</button>
+        <button type="button" class="preset-chip" onclick="applyPreset(1)">Zero-Downtime DB Migration</button>
+        <button type="button" class="preset-chip" onclick="applyPreset(2)">UI Redesign 6-State Matrix</button>
+        <button type="button" class="preset-chip" onclick="applyPreset(3)">Drop Users Table (Destructive)</button>
       </div>
 
       <div class="input-action-row">
-        <input type="text" id="triage-input" value="Bikin webhook pembayaran lengkap beserta update saldo database dan verifikasi testing" placeholder="Enter task prompt...">
-        <button class="btn-action active" onclick="simulateTriage()">Decompose & Route</button>
+        <label for="triage-input" class="sr-only">Task prompt to classify and route</label>
+        <input type="text" id="triage-input" aria-label="Task prompt to classify and route" value="Bikin webhook pembayaran lengkap beserta update saldo database dan verifikasi testing" placeholder="Enter task prompt...">
+        <button type="button" class="btn-action active" onclick="simulateTriage()">Decompose & Route</button>
       </div>
 
       <div id="triage-output" style="margin-top: 12px; font-family: var(--font-mono); font-size: 11px; line-height: 1.6; background: #06080d; padding: 14px; border-radius: 6px; border: 1px solid var(--hairline-strong);">
@@ -827,10 +901,27 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   </div>
 
   <script>
-    const skillsData = __SKILLS_JSON__;
-    const agentsData = __AGENTS_JSON__;
-    const benchmarksData = __BENCHMARKS_JSON__;
-    const telemetryData = __TELEMETRY_JSON__;
+    function decodeB64Json(b64, fallback) {
+      try {
+        const raw = new TextDecoder().decode(Uint8Array.from(atob(b64), c => c.charCodeAt(0)));
+        return JSON.parse(raw);
+      } catch (e) {
+        return fallback;
+      }
+    }
+    function esc(v) {
+      return String(v == null ? '' : v)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+    const skillsData = decodeB64Json("__SKILLS_JSON__", []);
+    const agentsData = decodeB64Json("__AGENTS_JSON__", []);
+    const benchmarksData = decodeB64Json("__BENCHMARKS_JSON__", []);
+    const telemetryData = decodeB64Json("__TELEMETRY_JSON__", []);
+    const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     /*
      * Authentic Figma / DhvanilPatel Vector Cursors
@@ -932,6 +1023,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     let isPlaying = true;
     let pace = 1.0;
     let swarmTimers = [];
+    let swarmIntervals = [];
 
     function initCursors() {
       for (const [k, a] of Object.entries(AGENTS)) {
@@ -955,7 +1047,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       const row = document.createElement('div');
       row.className = 'activity-row';
       row.style.borderLeftColor = color || '#5e6ad2';
-      row.innerHTML = `<span style="color:#64748b">${timeStr}</span> <strong style="color:${color || '#cbd5e1'}">[${role}]</strong> ${msg}`;
+      row.innerHTML = `<span style="color:var(--ink-subtle)">${esc(timeStr)}</span> <strong style="color:${esc(color || '#cbd5e1')}">[${esc(role)}]</strong> ${esc(msg)}`;
       logList.prepend(row);
       if (logList.children.length > 20) logList.lastChild.remove();
     }
@@ -966,18 +1058,31 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       const a = AGENTS[key];
       const actEl = document.getElementById('act-' + key);
       if (actEl && action) actEl.innerText = action;
+      if (reducedMotion) {
+        a.x = targetX; a.y = targetY;
+        el.style.transform = `translate(${targetX}px, ${targetY}px)`;
+        if (onComplete) onComplete();
+        return;
+      }
 
       const x0 = a.x; const y0 = a.y;
       const dx = targetX - x0; const dy = targetY - y0;
       const dist = Math.hypot(dx, dy);
       const bend = (Math.random() < 0.5 ? -1 : 1) * Math.min(dist * 0.12, 40);
       const L = dist || 1;
-      const startTime = performance.now();
       const dur = (durMs || 600) / pace;
+      let lastNow = performance.now();
+      let elapsed = 0;
 
       function frame(now) {
-        if (!isPlaying) { requestAnimationFrame(frame); return; }
-        const p = Math.min(1, (now - startTime) / dur);
+        if (!isPlaying) {
+          lastNow = now;
+          requestAnimationFrame(frame);
+          return;
+        }
+        elapsed += (now - lastNow);
+        lastNow = now;
+        const p = Math.min(1, elapsed / dur);
         const e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
         const off = Math.sin(Math.PI * e) * bend;
         const cx = x0 + dx * e + (-dy / L) * off;
@@ -1005,14 +1110,18 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       }
       const num = id.split('-')[1];
       const pulse = document.getElementById('pulse-' + num);
-      if (pulse) pulse.style.display = active ? 'block' : 'none';
+      if (pulse) pulse.style.display = (active && !reducedMotion) ? 'block' : 'none';
     }
 
     function runOrchestrationPlayback() {
       clearTimers();
-      audio.init();
       codeContent.innerText = "";
       logList.innerHTML = "";
+      if (Array.isArray(telemetryData) && telemetryData.length > 0) {
+        telemetryData.slice(-5).forEach(ev => {
+          addLog(ev.agent || 'harness', `${ev.action || 'event'}${ev.detail ? ': ' + ev.detail : ''}`, '#8b95f6');
+        });
+      }
       document.getElementById('ts-badge').innerText = "Compiling...";
       document.getElementById('ts-badge').style.color = "var(--warning)";
       setConn('conn-1', false);
@@ -1024,7 +1133,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       // 1. WAVE 1: Architect locks contract
       swarmTimers.push(setTimeout(() => {
         setConn('conn-1', true);
-        tweenAgent("architect", 320, 36, "Locking Seam Interface", 500, () => {
+        tweenAgent("architect", 296, 108, "Locking Seam Interface", 500, () => {
           audio.click(-0.2);
           addLog("Architect", "Established Deep Seam: verifyWebhookSignature() contract", "#a855f7");
           document.getElementById('node-w1').classList.add('active-wave');
@@ -1033,11 +1142,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
       // 2. WAVE 1: Sentinel hardens constant-time rule & Data checks schema
       swarmTimers.push(setTimeout(() => {
-        tweenAgent("sentinel", 430, 36, "Enforcing timingSafeEqual", 500, () => {
+        tweenAgent("sentinel", 435, 108, "Enforcing timingSafeEqual", 500, () => {
           audio.click(0.1);
           addLog("Sentinel", "Mandated timingSafeEqual & 300s replay window", "#10b981");
         });
-        tweenAgent("data", 380, 68, "Verifying BIGINT units", 600, () => {
+        tweenAgent("data", 568, 22, "Verifying BIGINT units", 600, () => {
           addLog("Data", "Validated PostgreSQL idempotency schema (UUIDv7 + BIGINT)", "#f43f5e");
         });
       }, 1500 / pace));
@@ -1046,7 +1155,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       swarmTimers.push(setTimeout(() => {
         setConn('conn-2', true);
         addLog("Orchestrator", "Handoff to Wave 2: Implementation (maxilun-engineer)", "#5e6ad2");
-        tweenAgent("engineer", 60, 180, "Writing convergent code", 700, () => {
+        tweenAgent("engineer", 30, 394, "Writing convergent code", 700, () => {
           audio.click(-0.85);
           document.getElementById('node-w2').classList.add('active-wave');
           
@@ -1074,6 +1183,7 @@ export function verifyWebhookSignature(rawBody: Buffer, ts: string, sig: string,
               addLog("Engineer", "Surgical code written with zero dead code", "#38bdf8");
             }
           }, 20 / pace);
+          swarmIntervals.push(typer);
         });
       }, 3000 / pace));
 
@@ -1081,7 +1191,7 @@ export function verifyWebhookSignature(rawBody: Buffer, ts: string, sig: string,
       swarmTimers.push(setTimeout(() => {
         setConn('conn-3', true);
         addLog("Orchestrator", "Handoff to Wave 3: Quality Gate (maxilun-verify)", "#5e6ad2");
-        tweenAgent("verify", 600, 316, "Executing test suite", 600, () => {
+        tweenAgent("verify", 580, 386, "Executing test suite", 600, () => {
           audio.click(0.55);
           audio.chime();
           document.getElementById('node-w3').classList.add('active-wave');
@@ -1108,6 +1218,8 @@ export function verifyWebhookSignature(rawBody: Buffer, ts: string, sig: string,
     function clearTimers() {
       for (const t of swarmTimers) clearTimeout(t);
       swarmTimers = [];
+      for (const iv of swarmIntervals) clearInterval(iv);
+      swarmIntervals = [];
       document.querySelectorAll('.topo-node').forEach(n => n.classList.remove('active-wave'));
       setConn('conn-1', false);
       setConn('conn-2', false);
@@ -1126,20 +1238,28 @@ export function verifyWebhookSignature(rawBody: Buffer, ts: string, sig: string,
     }
 
     function restartOrchestration() {
+      audio.init();
       runOrchestrationPlayback();
     }
 
     function togglePlay() {
+      audio.init();
       isPlaying = !isPlaying;
-      document.getElementById('btn-play').innerText = isPlaying ? "⏸️ Pause" : "▶️ Play";
+      const btn = document.getElementById('btn-play');
+      btn.innerText = isPlaying ? "Pause" : "Play";
+      btn.setAttribute('aria-pressed', String(isPlaying));
     }
 
     function toggleSound() {
+      audio.init();
       audio.enabled = !audio.enabled;
-      document.getElementById('btn-sound').innerText = audio.enabled ? "🔊 Audio: ON" : "🔇 Audio: OFF";
+      const btn = document.getElementById('btn-sound');
+      btn.innerText = audio.enabled ? "Audio: ON" : "Audio: OFF";
+      btn.setAttribute('aria-pressed', String(audio.enabled));
     }
 
     function setPace(p, btn) {
+      audio.init();
       pace = p;
       document.querySelectorAll('.stage-bar .btn-action').forEach(b => {
         if (b.innerText.includes('x')) b.classList.remove('active');
@@ -1147,50 +1267,78 @@ export function verifyWebhookSignature(rawBody: Buffer, ts: string, sig: string,
       btn.classList.add('active');
     }
 
-    function onStageMouseMove(e) {
-      const rect = stage.getBoundingClientRect();
-      const my = e.clientY - rect.top;
+    function onTabKeyDown(e) {
+      const tabs = Array.from(document.querySelectorAll('.nav-tabs .tab-btn'));
+      const cur = tabs.indexOf(document.activeElement);
+      if (cur === -1) return;
+      let next = cur;
+      if (e.key === 'ArrowRight') next = (cur + 1) % tabs.length;
+      else if (e.key === 'ArrowLeft') next = (cur - 1 + tabs.length) % tabs.length;
+      else if (e.key === 'Home') next = 0;
+      else if (e.key === 'End') next = tabs.length - 1;
+      else return;
+      e.preventDefault();
+      tabs[next].focus();
+      showTab(tabs[next].dataset.tab, tabs[next]);
     }
 
     function showTab(id, btn) {
       audio.tab();
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
       ['swarm', 'benchmarks', 'skills', 'agents', 'triage'].forEach(t => {
         const el = document.getElementById('tab-' + t);
         if (el) el.style.display = (t === id) ? 'block' : 'none';
       });
-      if (btn) {
-        btn.classList.add('active');
-      } else {
-        const targetBtn = document.querySelector(`.tab-btn[data-tab="${id}"]`);
-        if (targetBtn) targetBtn.classList.add('active');
+      const targetBtn = btn || document.querySelector(`.tab-btn[data-tab="${id}"]`);
+      if (targetBtn) {
+        targetBtn.classList.add('active');
+        targetBtn.setAttribute('aria-selected', 'true');
       }
     }
 
     function renderBenchmarks() {
       const tbody = document.getElementById('benchmarks-body');
-      tbody.innerHTML = benchmarksData.map(b => `
+      if (!tbody) return;
+      if (!benchmarksData || benchmarksData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="color:var(--ink-muted); text-align:center;">No benchmark telemetry recorded yet. Run <code>python harness/cli.py bench</code>.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = benchmarksData.map(b => {
+        const passed = b.maxilun_passed !== false;
+        const vColor = passed ? 'var(--success)' : 'var(--error)';
+        return `
         <tr>
-          <td><strong>${b.title}</strong><br><span style="font-size:11px; color:var(--ink-muted);">"${b.prompt}"</span></td>
-          <td class="tabular" style="color:var(--error);">${b.raw_score.toFixed(1)}</td>
-          <td class="tabular" style="color:var(--success); font-weight:700;">${b.maxilun_score.toFixed(1)}</td>
-          <td><span class="badge" style="background:#111420; color:var(--primary);">${b.raw_violations.length - b.max_violations.length} prevented</span></td>
-          <td><span style="color:var(--success); font-weight:600;">PASS</span></td>
+          <td><strong>${esc(b.title)}</strong><br><span style="font-size:11px; color:var(--ink-muted);">"${esc(b.prompt)}"</span></td>
+          <td class="tabular" style="color:var(--error);">${Number(b.raw_score || 0).toFixed(1)}</td>
+          <td class="tabular" style="color:var(--success); font-weight:700;">${Number(b.maxilun_score || 0).toFixed(1)}</td>
+          <td><span class="badge" style="background:#111420; color:var(--primary-ink);">${(b.raw_violations || []).length - (b.max_violations || []).length} prevented</span></td>
+          <td><span style="color:${vColor}; font-weight:600;">${passed ? 'PASS' : 'FAIL'}</span></td>
         </tr>
-      `).join('');
+      `}).join('');
     }
 
     function renderSkills() {
       const grid = document.getElementById('skills-grid');
+      if (!grid) return;
+      if (!skillsData || skillsData.length === 0) {
+        grid.innerHTML = `<div class="card" style="color:var(--ink-muted);">No skills loaded from workspace or harness repository.</div>`;
+        return;
+      }
       grid.innerHTML = skillsData.map(s => `
-        <div class="skill-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <span style="font-weight:700; font-family:var(--font-mono); color:var(--primary); font-size:13px;">${s.name}</span>
-            <span class="badge" style="background:rgba(94, 106, 210, 0.12); color:var(--primary); border-color:rgba(94, 106, 210, 0.25);">${s.line_count} lines</span>
+        <div class="skill-card" data-skill-card="${esc(s.name)}">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:8px;">
+            <span style="font-weight:700; font-family:var(--font-mono); color:var(--primary-ink); font-size:13px;">${esc(s.name)}</span>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <span class="badge">v${esc(s.version || '1.3.0')}</span>
+              <span class="badge" style="background:rgba(94, 106, 210, 0.12); color:var(--primary-ink); border-color:rgba(94, 106, 210, 0.25);">${esc(s.line_count)} lines · ${esc(s.ref_count || 0)} refs</span>
+            </div>
           </div>
-          <div style="font-size:12px; color:var(--ink-muted); margin-bottom:10px; line-height:1.5;">${s.owns}</div>
-          <div style="font-family:var(--font-mono); font-size:10px; color:#94a3b8; background:#06080d; padding:6px 10px; border-radius:4px; border:1px solid var(--hairline);">
-            <span style="color:var(--ink-subtle);">Triggers:</span> ${s.triggers.join(', ') || 'orchestration'}
+          <div style="font-size:12px; color:var(--ink-muted); margin-bottom:10px; line-height:1.5;">${esc(s.owns)}</div>
+          <div style="font-family:var(--font-mono); font-size:10px; color:#cbd5e1; background:#06080d; padding:6px 10px; border-radius:4px; border:1px solid var(--hairline);">
+            <span style="color:var(--ink-subtle);">Triggers:</span> ${esc((s.triggers || []).join(', ') || 'orchestration')}
           </div>
         </div>
       `).join('');
@@ -1198,17 +1346,21 @@ export function verifyWebhookSignature(rawBody: Buffer, ts: string, sig: string,
 
     function renderAgents() {
       const grid = document.getElementById('agents-grid');
-      if (!grid || !agentsData) return;
+      if (!grid) return;
+      if (!agentsData || agentsData.length === 0) {
+        grid.innerHTML = `<div class="card" style="color:var(--ink-muted);">No autonomous agent definitions discovered. Check <code>agents/</code> directory.</div>`;
+        return;
+      }
       grid.innerHTML = agentsData.map(a => `
-        <div class="skill-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <span style="font-weight:700; font-family:var(--font-mono); color:var(--primary); font-size:13px;">${a.name}</span>
-            <span class="badge" style="background:rgba(94, 106, 210, 0.15); color:var(--primary); border:1px solid rgba(94, 106, 210, 0.3);">Macro-Role Agent</span>
+        <div class="skill-card" data-agent-card="${esc(a.name)}">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:8px;">
+            <span style="font-weight:700; font-family:var(--font-mono); color:var(--primary-ink); font-size:13px;">${esc(a.name)}</span>
+            <span class="badge" style="background:rgba(94, 106, 210, 0.15); color:var(--primary-ink); border:1px solid rgba(94, 106, 210, 0.3);">${esc((a.skills || []).length)} skill(s)</span>
           </div>
-          <div style="font-size:12px; color:var(--ink-muted); margin-bottom:12px; line-height:1.5;">${a.description}</div>
-          <div style="border-top:1px solid var(--hairline); padding-top:10px; display:flex; justify-content:space-between; align-items:center;">
+          <div style="font-size:12px; color:var(--ink-muted); margin-bottom:12px; line-height:1.5;">${esc(a.description)}</div>
+          <div style="border-top:1px solid var(--hairline); padding-top:10px; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px;">
             <div style="display:flex; gap:6px; flex-wrap:wrap;">
-              ${(a.tools || []).map(t => `<span style="font-size:10px; font-family:var(--font-mono); background:#06080d; border:1px solid var(--hairline-strong); color:var(--ink); padding:2px 7px; border-radius:3px;">${t}</span>`).join('')}
+              ${(a.tools || []).map(t => `<span style="font-size:10px; font-family:var(--font-mono); background:#06080d; border:1px solid var(--hairline-strong); color:var(--ink); padding:2px 7px; border-radius:3px;">${esc(t)}</span>`).join('')}
             </div>
             <span style="font-size:10px; color:var(--success); font-family:var(--font-mono); display:flex; align-items:center; gap:4px;">
               <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--success);"></span> Invariant Enforced
@@ -1221,7 +1373,7 @@ export function verifyWebhookSignature(rawBody: Buffer, ts: string, sig: string,
     const PRESETS = [
       "Bikin webhook pembayaran lengkap beserta update saldo database dan verifikasi testing",
       "Migrasi skema database zero-downtime tambah kolom status ke tabel users ber-traffic tinggi",
-      "Redesign halaman profile dengan 4 state UI (skeleton, empty, populated, error) dan tabular-nums",
+      "Redesign halaman profile dengan 6 state UI (idle, loading, populated, empty, pending, error) dan tabular-nums",
       "Drop tabel users dan hapus semua data audit log (operasi destruktif)"
     ];
 
@@ -1235,58 +1387,76 @@ export function verifyWebhookSignature(rawBody: Buffer, ts: string, sig: string,
     }
 
     function simulateTriage() {
-      const input = document.getElementById('triage-input').value.toLowerCase();
+      const raw = (document.getElementById('triage-input').value || '').trim();
+      const outEl = document.getElementById('triage-output');
+      if (!raw) {
+        outEl.innerHTML = `<div style="color:var(--error);">[INPUT REQUIRED] Enter a task description or choose a preset scenario above.</div>`;
+        return;
+      }
+      const input = raw.toLowerCase();
       let owner = 'maxilun-engineer';
       let companions = [];
-      let isType1 = input.includes('drop') || input.includes('destruktif') || input.includes('redesign total') || input.includes('pecah service');
-      
-      if (input.includes('webhook') || input.includes('signature') || input.includes('auth')) {
+      let isType1 = input.includes('drop') || input.includes('destruktif') || input.includes('redesign') || input.includes('overhaul') || input.includes('pecah service');
+
+      if (input.includes('n8n') || (input.includes('webhook') && input.includes('workflow'))) {
+        owner = 'maxilun-n8n';
+        if (input.includes('hmac') || input.includes('signature')) companions.push('maxilun-sentinel');
+      } else if (input.includes('figcraft') || input.includes('kanvas live')) {
+        owner = 'maxilun-figcraft';
+        companions.push('maxilun-craft', 'maxilun-verify');
+      } else if (input.includes('webhook') || input.includes('signature') || input.includes('auth')) {
         owner = 'maxilun-sentinel';
         if (input.includes('database') || input.includes('saldo') || input.includes('tabel')) companions.push('maxilun-data');
-      } else if (input.includes('migrasi') || input.includes('database') || input.includes('skema')) {
+      } else if (input.includes('migrasi') || input.includes('database') || input.includes('skema') || input.includes('tabel')) {
         owner = 'maxilun-data';
-      } else if (input.includes('ui') || input.includes('desain')) {
+      } else if (input.includes('ui') || input.includes('desain') || input.includes('redesign') || input.includes('halaman')) {
         owner = 'maxilun-craft';
+        companions.push('maxilun-frontend', 'maxilun-verify');
       }
 
       const typeLabel = isType1 ? 'Type 1 (Irreversible — max 1 batched clarification turn)' : 'Type 2 (Reversible — execute directly from repo evidence)';
-      const isMulti = companions.length > 0 || input.includes('lengkap') || input.includes('test');
+      const isMulti = companions.length > 0 || input.includes('redesign') || input.includes('lengkap') || input.includes('test');
+      const w1List = [owner].concat(companions).filter(s => ['maxilun-architect','maxilun-data','maxilun-sentinel','maxilun-craft','maxilun-figcraft'].includes(s));
+      const w2List = [owner].concat(companions).filter(s => ['maxilun-engineer','maxilun-frontend','maxilun-craft','maxilun-n8n','maxilun-data','maxilun-sentinel','maxilun-figcraft'].includes(s));
 
-      document.getElementById('triage-output').innerHTML = `
-        <div style="color:var(--primary); font-weight:700; margin-bottom:6px; font-size:12px;">[ORCHESTRATOR WAVE DECOMPOSITION]</div>
+      outEl.innerHTML = `
+        <div style="color:var(--primary-ink); font-weight:700; margin-bottom:6px; font-size:12px;">[ORCHESTRATOR WAVE DECOMPOSITION]</div>
         <div style="display:grid; grid-template-columns:120px 1fr; gap:4px 8px; margin-bottom:10px;">
-          <span style="color:var(--ink-muted);">Primary Owner:</span> <strong>${owner}</strong>
-          <span style="color:var(--ink-muted);">Reversibility:</span> <span>${typeLabel}</span>
-          <span style="color:var(--ink-muted);">Companions:</span> <span>${companions.join(', ') || 'None (Single Cohesive Owner)'}</span>
+          <span style="color:var(--ink-muted);">Primary Owner:</span> <strong>${esc(owner)}</strong>
+          <span style="color:var(--ink-muted);">Reversibility:</span> <span>${esc(typeLabel)}</span>
+          <span style="color:var(--ink-muted);">Companions:</span> <span>${esc(companions.join(', ') || 'None (Single Cohesive Owner)')}</span>
           <span style="color:var(--ink-muted);">Coordination:</span> <span>${isMulti ? 'Multi-Wave Wave 1 → Wave 2 → Wave 3' : 'Direct Single Surface'}</span>
         </div>
         <hr style="border-color:var(--hairline-strong); margin:10px 0;"/>
         <div style="color:var(--architect); font-weight:700; margin-bottom:2px;">Wave 1 (Contracts & Seams):</div>
-        <div style="color:var(--ink-muted); padding-left:10px; margin-bottom:6px;">→ ${[owner].concat(companions).filter(s => ['maxilun-architect','maxilun-data','maxilun-sentinel'].includes(s)).join(', ') || owner}: Establish schema invariants, contracts & auth boundaries</div>
+        <div style="color:var(--ink-muted); padding-left:10px; margin-bottom:6px;">→ ${esc(w1List.join(', ') || owner)}: Establish schema invariants, design tokens & auth boundaries</div>
         <div style="color:var(--engineer); font-weight:700; margin-bottom:2px;">Wave 2 (Implementation):</div>
-        <div style="color:var(--ink-muted); padding-left:10px; margin-bottom:6px;">→ maxilun-engineer: Consume locked contracts to write convergent production code</div>
+        <div style="color:var(--ink-muted); padding-left:10px; margin-bottom:6px;">→ ${esc((w2List.length ? w2List : ['maxilun-engineer']).join(', '))}: Consume locked contracts to write convergent production code</div>
         <div style="color:var(--verify); font-weight:700; margin-bottom:2px;">Wave 3 (Verification & Proof):</div>
-        <div style="color:var(--ink-muted); padding-left:10px;">→ maxilun-verify: Execute test suite, typecheck & confirm AST invariants (exit code 0)</div>
+        <div style="color:var(--ink-muted); padding-left:10px;">→ maxilun-verify: Execute test suite, slopscan, reflow check & AST invariants (exit code 0)</div>
       `;
     }
     /* COMMAND PALETTE LOGIC */
     let cmdkSelectedIndex = 0;
     let cmdkFilteredItems = [];
+    let lastFocusedEl = null;
 
     function getAllCmdkItems() {
+      const skillCount = (skillsData || []).length;
+      const agentCount = (agentsData || []).length;
       const items = [
-        { label: "Replay Multi-Wave Swarm Simulation", group: "Actions", kbd: "↵", run: () => { showTab('swarm'); restartOrchestration(); } },
+        { label: "Replay Multi-Wave Swarm Simulation", group: "Actions", kbd: "Enter", run: () => { showTab('swarm'); restartOrchestration(); } },
         { label: "Toggle Play / Pause Simulation", group: "Actions", kbd: "P", run: () => togglePlay() },
         { label: "Toggle Audio Synthesizer", group: "Actions", kbd: "A", run: () => toggleSound() },
         { label: "Switch Tab: Multi-Wave Swarm Topology", group: "Navigation", kbd: "1", run: () => showTab('swarm') },
         { label: "Switch Tab: Benchmarks & Purity Gate", group: "Navigation", kbd: "2", run: () => showTab('benchmarks') },
-        { label: "Switch Tab: 6 Autonomous Macro-Agents", group: "Navigation", kbd: "3", run: () => showTab('agents') },
-        { label: "Switch Tab: 23 Production Skills Directory", group: "Navigation", kbd: "4", run: () => showTab('skills') },
+        { label: `Switch Tab: ${agentCount} Autonomous Agents`, group: "Navigation", kbd: "3", run: () => showTab('agents') },
+        { label: `Switch Tab: ${skillCount} Production Skills Directory`, group: "Navigation", kbd: "4", run: () => showTab('skills') },
         { label: "Switch Tab: Live Reversibility Triage Simulator", group: "Navigation", kbd: "5", run: () => showTab('triage') },
-        { label: "Test Scenario: Payment Webhook + DB Balance", group: "Triage", kbd: "↵", run: () => { showTab('triage'); applyPreset(0); } },
-        { label: "Test Scenario: Zero-Downtime DB Migration", group: "Triage", kbd: "↵", run: () => { showTab('triage'); applyPreset(1); } },
-        { label: "Test Scenario: UI Redesign 4-State Matrix", group: "Triage", kbd: "↵", run: () => { showTab('triage'); applyPreset(2); } },
-        { label: "Test Scenario: Drop Users Table (Destructive)", group: "Triage", kbd: "↵", run: () => { showTab('triage'); applyPreset(3); } }
+        { label: "Test Scenario: Payment Webhook + DB Balance", group: "Triage", kbd: "Enter", run: () => { showTab('triage'); applyPreset(0); } },
+        { label: "Test Scenario: Zero-Downtime DB Migration", group: "Triage", kbd: "Enter", run: () => { showTab('triage'); applyPreset(1); } },
+        { label: "Test Scenario: UI Redesign 6-State Matrix", group: "Triage", kbd: "Enter", run: () => { showTab('triage'); applyPreset(2); } },
+        { label: "Test Scenario: Drop Users Table (Destructive)", group: "Triage", kbd: "Enter", run: () => { showTab('triage'); applyPreset(3); } }
       ];
 
       (skillsData || []).forEach(s => {
@@ -1296,9 +1466,9 @@ export function verifyWebhookSignature(rawBody: Buffer, ts: string, sig: string,
           kbd: "Skill",
           run: () => {
             showTab('skills');
-            const target = Array.from(document.querySelectorAll('.skill-card')).find(el => el.innerText.includes(s.name));
+            const target = document.querySelector(`[data-skill-card="${CSS.escape(s.name)}"]`);
             if (target) {
-              target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              target.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' });
               target.style.borderColor = 'var(--primary)';
               setTimeout(() => target.style.borderColor = '', 2000);
             }
@@ -1308,14 +1478,14 @@ export function verifyWebhookSignature(rawBody: Buffer, ts: string, sig: string,
 
       (agentsData || []).forEach(a => {
         items.push({
-          label: `${a.name} — ${a.description.slice(0, 60)}...`,
+          label: `${a.name} — ${(a.description || '').slice(0, 60)}`,
           group: "Agents",
           kbd: "Agent",
           run: () => {
             showTab('agents');
-            const target = Array.from(document.querySelectorAll('.skill-card')).find(el => el.innerText.includes(a.name));
+            const target = document.querySelector(`[data-agent-card="${CSS.escape(a.name)}"]`);
             if (target) {
-              target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              target.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' });
               target.style.borderColor = 'var(--primary)';
               setTimeout(() => target.style.borderColor = '', 2000);
             }
@@ -1333,7 +1503,9 @@ export function verifyWebhookSignature(rawBody: Buffer, ts: string, sig: string,
       if (isOpen) {
         closeCmdK();
       } else {
+        lastFocusedEl = document.activeElement;
         el.style.display = 'flex';
+        audio.init();
         audio.tab();
         const input = document.getElementById('cmdk-query');
         input.value = '';
@@ -1345,7 +1517,13 @@ export function verifyWebhookSignature(rawBody: Buffer, ts: string, sig: string,
 
     function closeCmdK() {
       const el = document.getElementById('cmdk');
-      if (el) el.style.display = 'none';
+      if (el && el.style.display !== 'none') {
+        el.style.display = 'none';
+        if (lastFocusedEl && typeof lastFocusedEl.focus === 'function') {
+          lastFocusedEl.focus();
+        }
+        lastFocusedEl = null;
+      }
     }
 
     function onCmdkBackdrop(e) {
@@ -1360,10 +1538,21 @@ export function verifyWebhookSignature(rawBody: Buffer, ts: string, sig: string,
     function onCmdkKey(e) {
       if (e.key === 'Escape') {
         closeCmdK();
+      } else if (e.key === 'Tab') {
+        const dlg = document.querySelector('#cmdk .cmdk-dialog');
+        const focusables = dlg ? Array.from(dlg.querySelectorAll('input, button')) : [];
+        if (focusables.length > 0) {
+          const idx = focusables.indexOf(document.activeElement);
+          const next = e.shiftKey ? (idx <= 0 ? focusables.length - 1 : idx - 1) : (idx + 1) % focusables.length;
+          e.preventDefault();
+          focusables[next].focus();
+        }
       } else if (e.key === 'ArrowDown') {
         e.preventDefault();
-        cmdkSelectedIndex = Math.min(cmdkFilteredItems.length - 1, cmdkSelectedIndex + 1);
-        renderCmdkList();
+        if (cmdkFilteredItems.length > 0) {
+          cmdkSelectedIndex = Math.min(cmdkFilteredItems.length - 1, cmdkSelectedIndex + 1);
+          renderCmdkList();
+        }
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
         cmdkSelectedIndex = Math.max(0, cmdkSelectedIndex - 1);
@@ -1395,14 +1584,14 @@ export function verifyWebhookSignature(rawBody: Buffer, ts: string, sig: string,
       cmdkFilteredItems.forEach((item, idx) => {
         if (item.group !== currentGroup) {
           currentGroup = item.group;
-          html += `<div class="cmdk-group-title">${currentGroup}</div>`;
+          html += `<div class="cmdk-group-title">${esc(currentGroup)}</div>`;
         }
         const isSel = idx === cmdkSelectedIndex;
         html += `
-          <div class="cmdk-item ${isSel ? 'selected' : ''}" onclick="cmdkFilteredItems[${idx}].run(); closeCmdK();">
-            <span>${item.label}</span>
-            <span class="cmdk-kbd">${item.kbd}</span>
-          </div>
+          <button type="button" role="option" aria-selected="${isSel}" class="cmdk-item ${isSel ? 'selected' : ''}" style="width:100%; border:none; text-align:left;" onclick="cmdkFilteredItems[${idx}].run(); closeCmdK();">
+            <span>${esc(item.label)}</span>
+            <span class="cmdk-kbd">${esc(item.kbd)}</span>
+          </button>
         `;
       });
       listEl.innerHTML = html;
@@ -1420,7 +1609,20 @@ export function verifyWebhookSignature(rawBody: Buffer, ts: string, sig: string,
       }
     });
 
+    function syncDynamicCounts() {
+      const sc = (skillsData || []).length;
+      const ac = (agentsData || []).length;
+      const specCount = Math.max(0, ac - 1);
+      const badge = document.getElementById('ecosystem-count-badge');
+      if (badge && sc && ac) badge.innerText = `${specCount} Specialists + 1 Orchestrator (${sc} Skills)`;
+      const ab = document.getElementById('tabbtn-agents');
+      if (ab && ac) ab.innerText = `${ac} Autonomous Agents`;
+      const sb = document.getElementById('tabbtn-skills');
+      if (sb && sc) sb.innerText = `${sc} Production Skills`;
+    }
+
     // Initialize
+    syncDynamicCounts();
     initCursors();
     renderBenchmarks();
     renderSkills();
@@ -1457,71 +1659,71 @@ class DashboardGenerator:
             except Exception:
                 telemetry_data = []
 
-        skills_json = json.dumps([
+        def _b64(obj) -> str:
+            raw = json.dumps(obj, ensure_ascii=False).encode("utf-8")
+            return base64.b64encode(raw).decode("ascii")
+
+        skills_b64 = _b64([
             {
                 "name": s.name,
                 "version": s.version,
                 "line_count": s.line_count,
                 "triggers": s.triggers[:4],
-                "owns": s.contract.get("Owns", "Implementation")[:80],
+                "owns": s.contract.get("Owns", "Implementation"),
                 "ref_count": len(s.references),
                 "status": "PASS" if s.line_count <= 300 else "EXCEEDED"
             }
             for s in skills
-        ], ensure_ascii=False)
+        ])
 
-        benchmarks_json = json.dumps([
+        benchmarks_b64 = _b64([
             {
                 "id": r.benchmark_id,
                 "title": r.title,
                 "prompt": r.prompt,
                 "raw_score": r.raw_score,
                 "maxilun_score": r.maxilun_score,
+                "maxilun_passed": r.maxilun_passed,
                 "delta": r.score_delta,
                 "raw_violations": r.raw_violations_sample,
                 "max_violations": r.maxilun_violations_sample
             }
             for r in report.results
-        ], ensure_ascii=False)
+        ])
 
-        telemetry_json = json.dumps(telemetry_data, ensure_ascii=False)
+        telemetry_b64 = _b64(telemetry_data)
 
-        agents_dir = root / "agents"
+        import re
         agents_data = []
-        if agents_dir.exists():
-            for af in sorted(agents_dir.glob("*.md")):
-                text = af.read_text(encoding="utf-8")
-                name = af.stem
-                desc = "Autonomous agent"
-                tools = []
-                if text.startswith("---"):
-                    parts = text.split("---", 2)
-                    if len(parts) >= 3:
-                        fm = parts[1]
-                        import re
-                        m_name = re.search(r"^name:\s*([^\s]+)", fm, re.MULTILINE)
-                        if m_name:
-                            name = m_name.group(1).strip()
-                        m_desc = re.search(r"^description:\s*(?:>|\|)?\s*\n?([^\n\r]+)", fm, re.MULTILINE)
-                        if m_desc:
-                            desc = m_desc.group(1).strip()
-                        m_tools = re.findall(r"^\s*-\s*(\w+)", fm, re.MULTILINE)
-                        if m_tools:
-                            tools = m_tools
-                agents_data.append({
-                    "name": name,
-                    "description": desc,
-                    "tools": tools,
-                    "file": af.name
-                })
-        agents_json = json.dumps(agents_data, ensure_ascii=False)
+        for name, agent_def in sorted(loader.agents.items()):
+            text = agent_def.full_content
+            desc = "Autonomous agent"
+            if text.startswith("---"):
+                parts = text.split("---", 2)
+                if len(parts) >= 3:
+                    fm = parts[1]
+                    m_block = re.search(r"^description:\s*(?:>|\|)[ \t]*\n((?:[ \t]+[^\n]+\n?)+)", fm, re.MULTILINE)
+                    if m_block:
+                        desc = " ".join(ln.strip() for ln in m_block.group(1).splitlines() if ln.strip())
+                    else:
+                        m_inline = re.search(r"^description:\s*([^\n\r]+)", fm, re.MULTILINE)
+                        if m_inline:
+                            desc = m_inline.group(1).strip().strip('"').strip("'")
+            agents_data.append({
+                "name": name,
+                "description": desc,
+                "tools": list(agent_def.tools),
+                "skills": list(agent_def.skills),
+                "file": agent_def.path.name
+            })
+        agents_b64 = _b64(agents_data)
 
         html = (
             HTML_TEMPLATE
-            .replace("__SKILLS_JSON__", skills_json)
-            .replace("__BENCHMARKS_JSON__", benchmarks_json)
-            .replace("__TELEMETRY_JSON__", telemetry_json)
-            .replace("__AGENTS_JSON__", agents_json)
+            .replace("__SKILLS_JSON__", skills_b64)
+            .replace("__BENCHMARKS_JSON__", benchmarks_b64)
+            .replace("__TELEMETRY_JSON__", telemetry_b64)
+            .replace("__AGENTS_JSON__", agents_b64)
         )
 
         out_file.write_text(html, encoding="utf-8")

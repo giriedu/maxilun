@@ -371,6 +371,7 @@ canvas {
   color: #fff; pointer-events: auto;
 }
 @keyframes toastIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .toast { animation: none; } }
 
 /* ── DROP OVERLAY ── */
 #drop-zone {
@@ -643,7 +644,7 @@ canvas {
 
     <main class="drop-intro">
       <div class="drop-eyebrow">Codebase intelligence</div>
-      <h1 class="drop-title">See how your codebase connects.</h1>
+      <h1 class="drop-title" style="text-wrap: balance;">See how your codebase connects.</h1>
       <p class="drop-sub">Map symbols, dependencies, and architectural clusters in one interactive view.</p>
       <div class="drop-capabilities" aria-label="Graph capabilities">
         <span>Symbols</span><span>Dependencies</span><span>Architecture</span>

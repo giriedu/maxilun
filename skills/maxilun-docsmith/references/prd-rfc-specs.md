@@ -10,7 +10,7 @@ Use this reference when writing a product- or feature-level **PRD (Product Requi
 |---|---|
 | "Improve the user experience and operational efficiency" | A measured metric: "Reduce invoice reconciliation time from an average of 14 minutes to <90 seconds per transaction" |
 | Generic user story: "As a user, I want to log in so I can get in" | Deterministic acceptance criteria (Given/When/Then) with input limits, rate limit, and error codes |
-| UI section that only says "Clean and modern look" | The Required 4 State table (Loading Skeleton, Empty State + CTA, Populated State, Error State + Recovery) + a reference to `../maxilun-craft/references/design-md/index.md` |
+| UI section that only says "Clean and modern look" | The Required 6-State Matrix (Idle, Loading Skeleton, Populated, Empty+CTA, Pending, Error+Recovery) + a reference to `../maxilun-craft/references/design-md/index.md` |
 | "Uses a scalable and secure architecture" | Concrete numbers: peak throughput (for example `250 RPS`), target latency (`p95 < 180ms`), payload limit (`max 5MB`), and the data isolation mechanism (`Row-Level Security` / `tenant_id`) |
 | No Out-of-Scope / Non-Goals | An explicit list of features **deliberately not built** in this phase, with the reason for each |
 
@@ -65,13 +65,13 @@ Use this reference when writing a product- or feature-level **PRD (Product Requi
 > - **Rejected**: Decorative mesh gradient at the top of the page (not relevant to an operational cashier screen that stays open 8 hours/day).
 > - **Reason**: A high-frequency financial transaction screen needs instantly readable numbers and minimal visual fatigue.
 
-### 4.1 Required 4 UI State Matrix
-Every component/page in this specification must implement the 4 states below:
+### 4.1 Required 6 UI State Matrix
+Every component/page in this specification must handle all 6 surface states (`Idle`, `Loading`, `Populated`, `Empty+CTA`, `Pending/Mutating`, `Error+Recovery`):
 
-| Component / Screen | 1. Loading State (Skeleton) | 2. Empty State (+ First Action) | 3. Populated / Active State | 4. Error State (Message + Recovery) |
+| Component / Screen | 1. Loading State (Skeleton) | 2. Empty State (+ First Action) | 3. Populated / Idle State | 4. Pending & Error Recovery |
 |---|---|---|---|---|
-| **Bill History Table** | 6 skeleton rows with proportional column widths (`120px`, `1fr`, `140px`, `96px`), CLS = 0 | Text: *"No bills yet today."* Button: `"Create New Bill"` | Dense table with `tabular-nums`, factual status badges (`PAID`, `PENDING`, `EXPIRED`), instant filter | Message: *"Failed to load the bill list (Timeout 504)."* Action: `"Reload"` button + keep the filter in the URL |
-| **QRIS Payment Form** | Submit button shows an inline spinner + the text `"Creating QR..."` + `aria-busy="true"` | N/A (the form is always filled from the bill context) | Sharp SVG QR code + countdown timer `04:59` + `"Check Payment Status"` button | Message: *"The payment gateway is not responding."* Action: `"Try Creating the QR Again"` or `"Switch to Cash"` |
+| **Bill History Table** | 6 skeleton rows with proportional column widths (`120px`, `1fr`, `140px`, `96px`), CLS = 0 | Text: *"No bills yet today."* Button: `"Create New Bill"` | Initial/Idle prompt or dense table with `tabular-nums`, status badges (`PAID`, `PENDING`, `EXPIRED`), instant filter | *Pending*: non-blocking row opacity/disabled trigger; *Error*: *"Failed to load bill list (504)."* + `"Reload"` button keeping URL filter |
+| **QRIS Payment Form** | Initial skeleton preserving QR container dimensions | N/A (the form is always filled from the bill context) | Sharp SVG QR code + countdown timer `04:59` + `"Check Payment Status"` button | *Pending*: button spinner + `"Creating QR..."` + `aria-busy="true"`; *Error*: *"Payment gateway unresponsive."* + `"Retry"` / `"Switch to Cash"` |
 
 ### 4.2 Specific Accessibility & Responsiveness
 - Minimum mobile touch target `44x44px`; minimum input font size `16px`.

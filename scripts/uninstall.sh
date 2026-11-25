@@ -27,19 +27,23 @@ if [ "$PROJECT_MODE" = true ]; then
         "Universal / Antigravity / Zed (Project):${CURRENT_DIR}/.agents/skills:${CURRENT_DIR}/.agents/rules:${CURRENT_DIR}/.agents/agents"
         "OpenCode (Project):${CURRENT_DIR}/.opencode/skills:${CURRENT_DIR}/.opencode/rules:${CURRENT_DIR}/.opencode/agents"
         "Claude Code (Project):${CURRENT_DIR}/.claude/skills:${CURRENT_DIR}/.claude/rules:${CURRENT_DIR}/.claude/agents"
+        "Cursor (Project):${CURRENT_DIR}/.cursor/skills::"
         "Trae (Project):${CURRENT_DIR}/.trae/skills::"
         "Windsurf (Project):${CURRENT_DIR}/.windsurf/skills::"
         "CodeBuddy (Project):${CURRENT_DIR}/.codebuddy/skills::"
         "OMP (Project):::${CURRENT_DIR}/.omp/agents"
     )
 else
+    codex_home="${CODEX_HOME:-${HOME}/.codex}"
+    xdg_config="${XDG_CONFIG_HOME:-${HOME}/.config}"
     targets=(
         "Antigravity CLI/IDE:${HOME}/.agents/skills:${HOME}/.agents/rules:${HOME}/.agents/agents"
         "Claude Code:${HOME}/.claude/skills:${HOME}/.claude/rules:${HOME}/.claude/agents"
-        "Codex:${HOME}/.codex/skills:${HOME}/.codex/rules:"
-        "OpenCode (.config):${HOME}/.config/opencode/skills:${HOME}/.config/opencode/rules:${HOME}/.config/opencode/agents"
+        "Codex:${codex_home}/skills:${codex_home}/rules:${codex_home}/agents"
+        "OpenCode (.config):${xdg_config}/opencode/skills:${xdg_config}/opencode/rules:${xdg_config}/opencode/agents"
         "OpenCode:${HOME}/.opencode/skills:${HOME}/.opencode/rules:${HOME}/.opencode/agents"
-        "Gemini CLI:${HOME}/.gemini/skills::"
+        "Gemini Config:${HOME}/.gemini/config/skills::"
+        "Gemini CLI:${HOME}/.gemini/skills:${HOME}/.gemini/rules:"
         "Cursor:${HOME}/.cursor/skills::"
         "Trae:${HOME}/.trae/skills::"
         "Windsurf:${HOME}/.windsurf/skills::"
@@ -58,7 +62,7 @@ for entry in "${targets[@]}"; do
                 rm -rf -- "$skill_path"
                 removed_skills=$((removed_skills + 1))
             fi
-        done < <(find "$skills_dir" -mindepth 1 -maxdepth 1 -type d \( -name "maxilun" -o -name "maxilun-*" -o -name "msal-*" \) -print0 2>/dev/null)
+        done < <(find "$skills_dir" -mindepth 1 -maxdepth 1 \( -type d -o -type l \) \( -name "maxilun" -o -name "maxilun-*" -o -name "msal-*" \) -print0 2>/dev/null)
         if [ "$removed_skills" -gt 0 ]; then
             removed+=("$name (skills): $skills_dir")
             echo "  Removed $removed_skills owned Maxilun skill(s) from: $skills_dir"
@@ -118,6 +122,7 @@ echo ""
 if [ ${#removed[@]} -eq 0 ]; then
     echo "No Maxilun installation found."
 else
-    echo "✅ Maxilun removed from ${#removed[@]} location(s)."
+    echo "Maxilun removed from ${#removed[@]} location(s)."
+    echo "Note: if configured, also remove 'maxilun-kg' via 'claude mcp remove maxilun-kg' / ~/.codex/config.toml and council UserPromptSubmit hook."
 fi
 echo ""

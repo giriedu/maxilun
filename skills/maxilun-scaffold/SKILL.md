@@ -41,10 +41,10 @@ Generate 10 structured project context documents in the `docs/` folder as the sh
 
 ## Skill Contract
 
-- **Owns**: initial project-context document structure and baseline context capture (the 10-document `docs/` suite, or the lean 4-file root context contract: `Security.md`, `Code-Style.md`, `Database.md`, `API-Guide.md`).
+- **Owns**: initial project-context document structure and baseline context capture (the 10-document `docs/` suite, the lean 4-file `docs/` contract `PRD.md`, `ARCHITECTURE.md`, `TASK.md`, `ONBOARDING.md`, or standalone root contracts `Security.md`, `Code-Style.md`, `Database.md`, `API-Guide.md` when requested).
 - **Does not own**: detailed architecture decisions, implementation, or final technical documentation.
 - **Inputs**: repository context, stated product goals, stack facts, known constraints, `references/index.md`, `references/prd-archetypes.md`, `references/doc-templates.md`, and (for UI products) up to two relevant design references from `../maxilun-craft/references/design-md/index.md` (`../maxilun-craft/references/design-md/README.md`).
-- **Outputs**: a consistent, labeled 10-document project-context set in `docs/` or the lean 4-file root context contract (`Security.md`, `Code-Style.md`, `Database.md`, `API-Guide.md`) with unknowns preserved and `DESIGN.md` grounded in real UI/UX references or API/CLI ergonomics.
+- **Outputs**: a consistent, labeled 10-document project-context set in `docs/` (or the lean 4-file contract matching repo scope) with `[INFERRED]` / `[UNCERTAIN]` markers preserved and `DESIGN.md` grounded in real UI/UX references or API/CLI ergonomics.
 - **Handoff**: send architecture decisions to `maxilun-architect`, engineering docs and feature specs to `maxilun-docsmith`, UI implementation to `maxilun-craft`, and code implementation to the relevant specialist.
 
 <!-- CORE-RULES:START -->
@@ -107,7 +107,7 @@ docs/
 
 ## 4. Core Document Authoring Rules
 
-- **`PRD.md`**: State a measurable problem (time wasted, financial risk, or error rate), deterministic acceptance criteria (*Given/When/Then*), and at least 2 *Out of Scope (Non-Goals)*. For products with a UI, include the 4 UI state matrix (*Loading*, *Empty*, *Populated*, *Error*). For in-depth feature specs/RFCs on a running project, collaborate with `maxilun-docsmith` (`../maxilun-docsmith/references/prd-rfc-specs.md`).
+- **`PRD.md`**: State a measurable problem (time wasted, financial risk, or error rate), deterministic acceptance criteria (*Given/When/Then*), and at least 2 *Out of Scope (Non-Goals)*. For products with a UI, include the 6-state UI surface matrix (*Idle*, *Loading/Skeleton*, *Populated*, *Empty*, *Pending*, *Error*). For in-depth feature specs/RFCs on a running project, collaborate with `maxilun-docsmith` (`../maxilun-docsmith/references/prd-rfc-specs.md`).
 - **`DESIGN.md`**: For products with a UI, include the **Design Reference Record** block from `../maxilun-craft/references/design-md/index.md` together with semantic `oklch()` tokens, a typography scale, and `tabular-nums` derived from domain needs. For headless products, document the command structure, the output format (`--json` vs human table), and structured error messages.
 - **`ARCHITECTURE.md`, `TECHSTACK.md`, & `SECURITY.md`**: Align module boundaries with the real folders in the repo; include the **Rejected Alternatives** column in `TECHSTACK.md`; derive the STRIDE threats in `SECURITY.md` from the archetype in `references/prd-archetypes.md`.
 

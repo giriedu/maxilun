@@ -8,7 +8,7 @@ Mendukung instalasi langsung dari GitHub untuk Claude Code, Antigravity, Cursor,
 # 1. Perintah Standar (Interaktif - pilih skill & agen target):
 npx skills add giriedu/maxilun
 
-# 2. Pasang seluruh 25 skill secara global (-g) tanpa prompt (-y):
+# 2. Pasang seluruh 27 skill secara global (-g) tanpa prompt (-y):
 npx skills add giriedu/maxilun -g -y
 
 # 3. Khusus Claude Code (Level Project Workspace):
@@ -38,7 +38,7 @@ cd maxilun; .\scripts\install.ps1
 ```
 *(Mode project: `.\scripts\install.ps1 -Project` atau `bash scripts/install.sh --project` (alias `-p`) memasang ke direktori kerja saat ini.)*
 
-Installer memasang **25 skill** dan **15 agen** (`agents/maxilun-*.md`). Sebelum menyalin agen, installer menghapus file `maxilun-*.md` lama di direktori agen tujuan agar agen yang dihapus/diganti nama tidak tertinggal. Cache `__pycache__`, `*.pyc`, `.maxilun`, dan `maxilun-out` tidak ikut terpasang.
+Installer memasang **27 skill** dan **21 agen** (`agents/maxilun-*.md`). Sebelum menyalin agen, installer menghapus file `maxilun-*.md` lama di direktori agen tujuan agar agen yang dihapus/diganti nama tidak tertinggal. Cache `__pycache__`, `*.pyc`, `.maxilun`, dan `maxilun-out` tidak ikut terpasang.
 
 ## Cara Update Skill ke Versi Terbaru
 
@@ -81,7 +81,7 @@ v1 menaruh aturan di `rules/` pada root repo. `npx skills add` hanya menyalin fo
 2. Installer v2 menghapus sisa file aturan v1 di luar folder skill secara otomatis, hanya jika file tersebut membawa penanda Maxilun.
 3. Verifikasi: setiap `SKILL.md` harus memuat blok `<!-- CORE-RULES:START -->`, dan `skills/maxilun/references/engines.md` harus ada.
 
-Jika Anda memakai skill di luar ekosistem ini, hapus rujukan ke paket eksternal di luar 25 skill Maxilun: v2 berdiri mandiri sepenuhnya tanpa dependensi skill pihak ketiga.
+Jika Anda memakai skill di luar ekosistem ini, hapus rujukan ke paket eksternal di luar 27 skill Maxilun: v2 berdiri mandiri sepenuhnya tanpa dependensi skill pihak ketiga.
 
 
 ## Target Installer (`install.sh` / `install.ps1`)
@@ -93,15 +93,16 @@ Mode global (default). Target bertanda "selalu" dipasang; lainnya hanya jika dir
 | **Antigravity CLI / IDE & Zed** | selalu | `~/.agents/skills/` | `~/.agents/agents/` |
 | **Claude Code & Termul** | selalu | `~/.claude/skills/` | `~/.claude/agents/` |
 | **OMP** | `~/.omp` ada | — (dibaca dari `~/.agents/skills/`) | `~/.omp/agent/agents/` (format OMP) |
-| **Codex** | `~/.codex` ada | `~/.codex/skills/` | — |
-| **OpenCode** | `~/.config/opencode` ada, jika tidak `~/.opencode` ada | `~/.config/opencode/skills/` atau `~/.opencode/skills/` | `agents/` pada direktori yang sama |
+| **Codex** | `$CODEX_HOME` atau `~/.codex` ada | `~/.codex/skills/` | `~/.codex/agents/` |
+| **OpenCode** | `$XDG_CONFIG_HOME/opencode` atau `~/.opencode` ada | `~/.config/opencode/skills/` atau `~/.opencode/skills/` | `agents/` pada direktori yang sama |
+| **Gemini Config** | `~/.gemini/config/skills` ada | `~/.gemini/config/skills/` | — |
 | **Gemini CLI** | `~/.gemini` ada | `~/.gemini/skills/` | — |
 | **Cursor** | `~/.cursor` ada | `~/.cursor/skills/` | — |
 | **Trae** | `~/.trae` ada | `~/.trae/skills/` | — |
 | **Windsurf** | `~/.windsurf` ada | `~/.windsurf/skills/` | — |
 | **CodeBuddy** | `~/.codebuddy` ada | `~/.codebuddy/skills/` | — |
 
-Mode project (`-Project` / `--project` / `-p`), semua target dipasang relatif ke direktori kerja:
+Mode project (`-Project` / `--project` / `-p`), semua target dipasang relatif ke direktori kerja (gunakan `MAXILUN_NO_MODIFY=1` bila tidak ingin menyentuh `settings.json`/`config.toml`):
 
 | Platform | Skills | Agents |
 |---|---|---|
@@ -109,6 +110,7 @@ Mode project (`-Project` / `--project` / `-p`), semua target dipasang relatif ke
 | **OpenCode** | `.opencode/skills/` | `.opencode/agents/` |
 | **Claude Code / Termul** | `.claude/skills/` | `.claude/agents/` |
 | **OMP** | — | `.omp/agents/` (format OMP) |
+| **Cursor** (jika `.cursor/` ada) | `.cursor/skills/` | — |
 | **Trae** | `.trae/skills/` | — |
 | **Windsurf** | `.windsurf/skills/` | — |
 | **CodeBuddy** | `.codebuddy/skills/` | — |

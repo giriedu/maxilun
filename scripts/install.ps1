@@ -16,7 +16,7 @@ if (-not (Test-Path $SkillsSrc)) {
 }
 $AgentsSrc = Join-Path $ScriptDir "agents"
 $ExpectedSkillCount = @(Get-ChildItem -Path $SkillsSrc -Directory -ErrorAction SilentlyContinue | Where-Object { Test-Path (Join-Path $_.FullName "SKILL.md") }).Count
-if ($ExpectedSkillCount -eq 0) { $ExpectedSkillCount = 25 }
+if ($ExpectedSkillCount -eq 0) { $ExpectedSkillCount = 27 }
 
 $InstalledTo = @()
 $BackedUp = @()
@@ -85,9 +85,9 @@ function Install-Agents([string]$Name, [string]$AgentsPath, [string]$Format = "c
 }
 
 $U = $env:USERPROFILE
+$CurrentDir = Get-Location
 $AgentsOnlyTargets = @()
 if ($Project) {
-    $CurrentDir = Get-Location
     $Targets = @(
         @{ Name = "Universal / Antigravity / Zed (Project)"; Path = "$CurrentDir\.agents\skills"; AgentsPath = "$CurrentDir\.agents\agents"; LegacyRules = "$CurrentDir\.agents\rules" },
         @{ Name = "OpenCode (Project)";                      Path = "$CurrentDir\.opencode\skills"; AgentsPath = "$CurrentDir\.opencode\agents"; LegacyRules = "$CurrentDir\.opencode\rules" },
@@ -96,16 +96,19 @@ if ($Project) {
         @{ Name = "Windsurf (Project)";                      Path = "$CurrentDir\.windsurf\skills"; AgentsPath = $null; LegacyRules = $null },
         @{ Name = "CodeBuddy (Project)";                     Path = "$CurrentDir\.codebuddy\skills"; AgentsPath = $null; LegacyRules = $null }
     )
+    if (Test-Path "$CurrentDir\.cursor") { $Targets += @{ Name = "Cursor (Project)"; Path = "$CurrentDir\.cursor\skills"; AgentsPath = $null; LegacyRules = $null } }
     $AgentsOnlyTargets += @{ Name = "OMP (Project)"; AgentsPath = "$CurrentDir\.omp\agents" }
 } else {
+    $CodexHome = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { "$U\.codex" }
+    $XdgConfig = if ($env:XDG_CONFIG_HOME) { $env:XDG_CONFIG_HOME } else { "$U\.config" }
     $Targets = @(
         @{ Name = "Antigravity CLI/IDE & Zed"; Path = "$U\.agents\skills"; AgentsPath = "$U\.agents\agents"; LegacyRules = "$U\.agents\rules" },
         @{ Name = "[CC] & Termul";             Path = "$U\.claude\skills"; AgentsPath = "$U\.claude\agents"; LegacyRules = "$U\.claude\rules" }
     )
     if (Test-Path "$U\.omp") { $AgentsOnlyTargets += @{ Name = "OMP"; AgentsPath = "$U\.omp\agent\agents" } }
-    if (Test-Path "$U\.codex") { $Targets += @{ Name = "Codex"; Path = "$U\.codex\skills"; AgentsPath = "$U\.codex\agents"; LegacyRules = "$U\.codex\rules" } }
-    if (Test-Path "$U\.config\opencode") {
-        $Targets += @{ Name = "OpenCode"; Path = "$U\.config\opencode\skills"; AgentsPath = "$U\.config\opencode\agents"; LegacyRules = "$U\.config\opencode\rules" }
+    if (Test-Path $CodexHome) { $Targets += @{ Name = "Codex"; Path = "$CodexHome\skills"; AgentsPath = "$CodexHome\agents"; LegacyRules = "$CodexHome\rules" } }
+    if (Test-Path "$XdgConfig\opencode") {
+        $Targets += @{ Name = "OpenCode"; Path = "$XdgConfig\opencode\skills"; AgentsPath = "$XdgConfig\opencode\agents"; LegacyRules = "$XdgConfig\opencode\rules" }
     } elseif (Test-Path "$U\.opencode") {
         $Targets += @{ Name = "OpenCode"; Path = "$U\.opencode\skills"; AgentsPath = "$U\.opencode\agents"; LegacyRules = "$U\.opencode\rules" }
     }
@@ -139,7 +142,13 @@ foreach ($target in $Targets) {
             Copy-Item -Path $dir.FullName -Destination (Join-Path $backupSkills $dir.Name) -Recurse -Force -ErrorAction Stop
         }
         $BackedUp += "  $($target.Name): $backupRoot"
-        $existingMaxilun | Remove-Item -Recurse -Force
+        $existingMaxilun | ForEach-Object {
+            if ($_.Attributes -band [IO.FileAttributes]::ReparsePoint) {
+                $_.Delete()
+            } else {
+                Remove-Item -LiteralPath $_.FullName -Recurse -Force -ErrorAction Stop
+            }
+        }
 
         # Keep at most 2 most recent backups to prevent disk bloat
         $oldBackups = @(Get-ChildItem -Path $parentDir -Directory -Filter "_maxilun_backup_*" -ErrorAction SilentlyContinue | Sort-Object Name -Descending)
@@ -175,8 +184,8 @@ foreach ($target in $Targets) {
             $rulePath = Join-Path $target.LegacyRules $ruleName
             if (Test-Path $rulePath) {
                 $head = Get-Content $rulePath -TotalCount 3 -ErrorAction SilentlyContinue
-                if ($head -match 'Maxilun|Four Always-On Engines') {
-                    Remove-Item -LiteralPath $rulePath -Force
+                if ($head -match 'Maxilun Rules|Maxilun Ecosystem|Four Always-On Engines|Maxilun Project Invariants') {
+                    Remove-Item -LiteralPath $rulePath -Force -ErrorAction Stop
                 }
             }
         }
@@ -209,13 +218,19 @@ if ($AgentsInstalled.Count -gt 0) {
 
 # Register the knowledge graph as a native MCP tool in Claude Code (idempotent),
 # so agents call kg_locate instead of falling back to grep.
-if ((Get-Command claude -ErrorAction SilentlyContinue) -and $PyExe) {
+$NoModifyConfig = ($env:MAXILUN_NO_MODIFY -eq "1")
+if (-not $NoModifyConfig -and (Get-Command claude -ErrorAction SilentlyContinue) -and $PyExe) {
     & claude mcp get maxilun-kg *> $null
     if ($LASTEXITCODE -ne 0) {
-        $kgCandidates = @(
-            @{ Path = "$CurrentDir\.claude\skills\maxilun-knowledge-graph\mcp_server.py"; Scope = "project" },
-            @{ Path = "$env:USERPROFILE\.claude\skills\maxilun-knowledge-graph\mcp_server.py"; Scope = "user" }
-        )
+        $kgCandidates = if ($Project) {
+            @(
+                @{ Path = "$CurrentDir\.claude\skills\maxilun-knowledge-graph\mcp_server.py"; Scope = "project" }
+            )
+        } else {
+            @(
+                @{ Path = "$env:USERPROFILE\.claude\skills\maxilun-knowledge-graph\mcp_server.py"; Scope = "user" }
+            )
+        }
         foreach ($kg in $kgCandidates) {
             if (Test-Path $kg.Path) {
                 & claude mcp add --scope $kg.Scope maxilun-kg -- $PyExe ($kg.Path -replace '\\','/') *> $null
@@ -226,19 +241,29 @@ if ((Get-Command claude -ErrorAction SilentlyContinue) -and $PyExe) {
     }
 }
 
-# Codex: register maxilun-kg in ~/.codex/config.toml when absent.
-$codexCfg = "$env:USERPROFILE\.codex\config.toml"
-$codexKg = "$env:USERPROFILE/.codex/skills/maxilun-knowledge-graph/mcp_server.py" -replace '\\','/'
-if ($PyExe -and (Test-Path $codexCfg) -and (Test-Path $codexKg) -and -not (Select-String -Path $codexCfg -Pattern '^\[mcp_servers\.maxilun-kg\]' -Quiet)) {
-    Add-Content -Path $codexCfg -Encoding utf8 -Value "`n[mcp_servers.maxilun-kg]`ncommand = `"$PyExe`"`nargs = [`"$codexKg`"]"
+# Codex: register maxilun-kg in ~/.codex/config.toml (global only) or .codex/config.toml (project) when absent.
+$codexHome = if ($Project) { "$CurrentDir\.codex" } elseif ($env:CODEX_HOME) { $env:CODEX_HOME } else { "$env:USERPROFILE\.codex" }
+$codexCfg = Join-Path $codexHome "config.toml"
+$codexKg = (Join-Path $codexHome "skills\maxilun-knowledge-graph\mcp_server.py") -replace '\\','/'
+$codexPy = $PyExe -replace '\\','/'
+if (-not $NoModifyConfig -and $PyExe -and (Test-Path $codexCfg) -and (Test-Path $codexKg) -and -not (Select-String -Path $codexCfg -Pattern '^\[mcp_servers\.maxilun-kg\]' -Quiet)) {
+    $tomlBlock = "`n[mcp_servers.maxilun-kg]`ncommand = `"$codexPy`"`nargs = [`"$codexKg`"]`n"
+    [IO.File]::AppendAllText($codexCfg, $tomlBlock, (New-Object System.Text.UTF8Encoding $false))
     Write-Host "  maxilun-kg MCP server registered in Codex" -ForegroundColor Green
 }
 
 # Council mode survives compaction via a UserPromptSubmit hook (idempotent).
-$councilHook = "$env:USERPROFILE\.claude\skills\maxilun\scripts\council_hook.py"
+$councilHook = if ($Project) {
+    "$CurrentDir\.claude\skills\maxilun\scripts\council_hook.py"
+} else {
+    "$env:USERPROFILE\.claude\skills\maxilun\scripts\council_hook.py"
+}
 # No `claude` CLI check: the desktop app reads ~/.claude/settings.json without it on PATH.
-if ($PyExe -and (Test-Path $councilHook)) {
+if (-not $NoModifyConfig -and $PyExe -and (Test-Path $councilHook)) {
     & $PyExe $councilHook --install
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "  Warning: council_hook.py --install exited with code $LASTEXITCODE" -ForegroundColor Yellow
+    }
 }
 
 Write-Host ""

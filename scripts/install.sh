@@ -22,8 +22,9 @@ fi
 AGENTS_SRC="${SCRIPT_DIR}/agents"
 expected_skill_count=$(find "$SKILLS_SRC" -maxdepth 2 -name "SKILL.md" 2>/dev/null | wc -l | tr -d ' ')
 if [ -z "$expected_skill_count" ] || [ "$expected_skill_count" -le 0 ]; then
-    expected_skill_count=25
+    expected_skill_count=27
 fi
+CURRENT_DIR="$(pwd)"
 
 installed_to=()
 installed_agents=()
@@ -77,7 +78,7 @@ clean_legacy_skills() {
     local removed=0
     for d in "${target_dir}"/msal-*; do
         [ -d "$d" ] || continue
-        if [ -f "${d}/SKILL.md" ] && grep -Eq '^  ecosystem:\s*maxilun\s*$' "${d}/SKILL.md" 2>/dev/null; then
+        if [ -f "${d}/SKILL.md" ] && grep -Eq '^  ecosystem:[[:space:]]*maxilun[[:space:]]*$' "${d}/SKILL.md" 2>/dev/null; then
             rm -rf -- "$d"
             removed=$((removed + 1))
         fi
@@ -126,10 +127,10 @@ install_target() {
     local existing_maxilun=()
     if [ -d "$target_dir" ]; then
         while IFS= read -r -d '' d; do
-            if [ -f "${d}/SKILL.md" ] && grep -Eq '^  ecosystem:\s*maxilun\s*$' "${d}/SKILL.md" 2>/dev/null; then
+            if [ -f "${d}/SKILL.md" ] && grep -Eq '^  ecosystem:[[:space:]]*maxilun[[:space:]]*$' "${d}/SKILL.md" 2>/dev/null; then
                 existing_maxilun+=("$d")
             fi
-        done < <(find "$target_dir" -mindepth 1 -maxdepth 1 -type d \( -name "maxilun" -o -name "maxilun-*" -o -name "msal-*" \) -print0 2>/dev/null)
+        done < <(find "$target_dir" -mindepth 1 -maxdepth 1 \( -type d -o -type l \) \( -name "maxilun" -o -name "maxilun-*" -o -name "msal-*" \) -print0 2>/dev/null)
     fi
 
     if [ ${#existing_maxilun[@]} -gt 0 ]; then
@@ -157,6 +158,7 @@ install_target() {
     mkdir -p "$target_dir"
     local src name
     for src in "$SKILLS_SRC"/*/; do
+        [ -d "$src" ] || continue
         src="${src%/}"
         name="$(basename "$src")"
         cp -R -- "$src" "$target_dir/" || { echo "❌ Failed to copy ${name} to ${target_dir}" >&2; exit 1; }
@@ -179,21 +181,24 @@ if [ "$PROJECT_MODE" = true ]; then
     install_target "OpenCode (Project)" "${CURRENT_DIR}/.opencode/skills" "${CURRENT_DIR}/.opencode/rules" "${CURRENT_DIR}/.opencode/agents"
     install_target "[CC] / Termul (Project)" "${CURRENT_DIR}/.claude/skills" "${CURRENT_DIR}/.claude/rules" "${CURRENT_DIR}/.claude/agents"
     install_agents "OMP (Project)" "${CURRENT_DIR}/.omp/agents" omp
+    [ -d "${CURRENT_DIR}/.cursor" ] && install_target "Cursor (Project)" "${CURRENT_DIR}/.cursor/skills"
     install_target "Trae (Project)" "${CURRENT_DIR}/.trae/skills"
     install_target "Windsurf (Project)" "${CURRENT_DIR}/.windsurf/skills"
     install_target "CodeBuddy (Project)" "${CURRENT_DIR}/.codebuddy/skills"
 else
+    codex_home="${CODEX_HOME:-${HOME}/.codex}"
+    xdg_config="${XDG_CONFIG_HOME:-${HOME}/.config}"
     install_target "Antigravity CLI/IDE & Zed" "${HOME}/.agents/skills" "${HOME}/.agents/rules" "${HOME}/.agents/agents"
     install_target "[CC] & Termul" "${HOME}/.claude/skills" "${HOME}/.claude/rules" "${HOME}/.claude/agents"
 
     if [ -d "${HOME}/.omp" ]; then
         install_agents "OMP" "${HOME}/.omp/agent/agents" omp
     fi
-    if [ -d "${HOME}/.codex" ]; then
-        install_target "Codex" "${HOME}/.codex/skills" "${HOME}/.codex/rules" "${HOME}/.codex/agents"
+    if [ -d "$codex_home" ]; then
+        install_target "Codex" "${codex_home}/skills" "${codex_home}/rules" "${codex_home}/agents"
     fi
-    if [ -d "${HOME}/.config/opencode" ]; then
-        install_target "OpenCode" "${HOME}/.config/opencode/skills" "${HOME}/.config/opencode/rules" "${HOME}/.config/opencode/agents"
+    if [ -d "${xdg_config}/opencode" ]; then
+        install_target "OpenCode" "${xdg_config}/opencode/skills" "${xdg_config}/opencode/rules" "${xdg_config}/opencode/agents"
     elif [ -d "${HOME}/.opencode" ]; then
         install_target "OpenCode" "${HOME}/.opencode/skills" "${HOME}/.opencode/rules" "${HOME}/.opencode/agents"
     fi
@@ -243,30 +248,42 @@ fi
 
 # Register the knowledge graph as a native MCP tool in Claude Code (idempotent),
 # so agents call kg_locate instead of falling back to grep.
-if command -v claude >/dev/null 2>&1 && ! claude mcp get maxilun-kg >/dev/null 2>&1; then
-    kg_py=$(command -v python3 || command -v python)
-    for kg in "${CURRENT_DIR}/.claude/skills/maxilun-knowledge-graph/mcp_server.py:project" "${HOME}/.claude/skills/maxilun-knowledge-graph/mcp_server.py:user"; do
+if [ "${MAXILUN_NO_MODIFY:-0}" != "1" ] && command -v claude >/dev/null 2>&1 && ! claude mcp get maxilun-kg >/dev/null 2>&1; then
+    kg_py=$(command -v python3 || command -v python || true)
+    if [ "$PROJECT_MODE" = true ]; then
+        kg_candidates=("${CURRENT_DIR}/.claude/skills/maxilun-knowledge-graph/mcp_server.py:project")
+    else
+        kg_candidates=("${HOME}/.claude/skills/maxilun-knowledge-graph/mcp_server.py:user")
+    fi
+    for kg in "${kg_candidates[@]}"; do
         if [ -n "$kg_py" ] && [ -f "${kg%:*}" ]; then
-            claude mcp add --scope "${kg##*:}" maxilun-kg -- "$kg_py" "${kg%:*}" >/dev/null 2>&1                 && echo "✅ maxilun-kg MCP server registered in Claude Code (${kg##*:} scope)"
+            claude mcp add --scope "${kg##*:}" maxilun-kg -- "$kg_py" "${kg%:*}" >/dev/null 2>&1 \
+                && echo "✅ maxilun-kg MCP server registered in Claude Code (${kg##*:} scope)" || true
             break
         fi
     done
 fi
 
-# Codex: register maxilun-kg in ~/.codex/config.toml when absent.
-codex_kg="${HOME}/.codex/skills/maxilun-knowledge-graph/mcp_server.py"
-if [ -f "${HOME}/.codex/config.toml" ] && [ -f "$codex_kg" ] && ! grep -q '^\[mcp_servers.maxilun-kg\]' "${HOME}/.codex/config.toml"; then
-    printf '\n[mcp_servers.maxilun-kg]\ncommand = "%s"\nargs = ["%s"]\n' "$(command -v python3 || command -v python)" "$codex_kg" >> "${HOME}/.codex/config.toml" \
-        && echo "✅ maxilun-kg MCP server registered in Codex"
+# Codex: register maxilun-kg in $CODEX_HOME/config.toml (global only) or .codex/config.toml (project) when absent.
+if [ "$PROJECT_MODE" = true ]; then
+    codex_home="${CURRENT_DIR}/.codex"
+else
+    codex_home="${CODEX_HOME:-${HOME}/.codex}"
+fi
+codex_kg="${codex_home}/skills/maxilun-knowledge-graph/mcp_server.py"
+codex_py=$(command -v python3 || command -v python || true)
+if [ "${MAXILUN_NO_MODIFY:-0}" != "1" ] && [ -n "$codex_py" ] && [ -f "${codex_home}/config.toml" ] && [ -f "$codex_kg" ] && ! grep -q '^\[mcp_servers.maxilun-kg\]' "${codex_home}/config.toml"; then
+    printf '\n[mcp_servers.maxilun-kg]\ncommand = "%s"\nargs = ["%s"]\n' "$codex_py" "$codex_kg" >> "${codex_home}/config.toml" \
+        && echo "✅ maxilun-kg MCP server registered in Codex" || true
 fi
 
 # Council mode survives compaction via a UserPromptSubmit hook (idempotent).
 # No `claude` CLI check: the desktop app reads ~/.claude/settings.json without it on PATH.
 council_hook="${HOME}/.claude/skills/maxilun/scripts/council_hook.py"
-[ "$PROJECT_MODE" = true ] && council_hook="$(pwd)/.claude/skills/maxilun/scripts/council_hook.py"
+[ "$PROJECT_MODE" = true ] && council_hook="${CURRENT_DIR}/.claude/skills/maxilun/scripts/council_hook.py"
 council_py="$(command -v python3 || command -v python || true)"
-if [ -n "$council_py" ] && [ -f "$council_hook" ]; then
-    "$council_py" "$council_hook" --install
+if [ "${MAXILUN_NO_MODIFY:-0}" != "1" ] && [ -n "$council_py" ] && [ -f "$council_hook" ]; then
+    "$council_py" "$council_hook" --install || echo "⚠️  council_hook.py --install failed; run manually if needed."
 fi
 
 echo ""

@@ -133,11 +133,15 @@ class ToolRegistry:
                 "type": "function",
                 "function": {
                     "name": "kg_query",
-                    "description": "Query the Knowledge Graph AST index (defOf, callsIn, callsOut, importersOf).",
+                    "description": "Query the Knowledge Graph AST index (defOf, callsIn, callsOut, importersOf, implementsOf, extendsOf, routesOf).",
                     "parameters": {
                         "type": "object",
                         "properties": {
-                            "operator": {"type": "string", "enum": ["defOf", "callsIn", "callsOut", "importersOf"], "description": "Query operator"},
+                            "operator": {
+                                "type": "string",
+                                "enum": ["defOf", "callsIn", "callsOut", "importersOf", "implementsOf", "extendsOf", "routesOf"],
+                                "description": "Query operator",
+                            },
                             "symbol": {"type": "string", "description": "Symbol or file name to inspect"},
                             "target_path": {"type": "string", "description": "Project root path", "default": "."}
                         },
@@ -156,7 +160,11 @@ class ToolRegistry:
                             "question": {"type": "string", "description": "Question, stack trace, or symbol name"},
                             "also": {"type": "string", "description": "Comma-separated identifiers or synonyms the code may use"},
                             "target_path": {"type": "string", "description": "Project root path", "default": "."},
-                            "top": {"type": "integer", "description": "Maximum files to return", "default": 5}
+                            "top": {"type": "integer", "description": "Maximum files to return", "default": 5},
+                            "lines": {"type": "integer", "description": "Maximum excerpt lines per range", "default": 14},
+                            "budget": {"type": "integer", "description": "Total excerpt characters", "default": 6000},
+                            "include_hits": {"type": "boolean", "description": "Return structured hit metadata", "default": False},
+                            "refresh": {"type": "boolean", "description": "Refresh index before locating", "default": False}
                         },
                         "required": ["question"]
                     }

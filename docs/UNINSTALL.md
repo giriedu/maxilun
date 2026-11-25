@@ -1,6 +1,6 @@
 # Uninstaller Maxilun
 
-Uninstaller menghapus 25 skill dan 15 agen Maxilun dari semua target installer secara selektif. Hanya item milik Maxilun yang dihapus: folder skill yang `SKILL.md`-nya bertanda `ecosystem: maxilun`, file agen `maxilun-*.md`, file aturan v1 yang membawa penanda Maxilun, dan folder cadangan `_maxilun_backup_*` yang dibuat installer. Skill dan agen lain milik Anda tidak disentuh.
+Uninstaller menghapus 27 skill dan 21 agen Maxilun dari semua target installer secara selektif. Hanya item milik Maxilun yang dihapus: folder skill yang `SKILL.md`-nya bertanda `ecosystem: maxilun`, file agen `maxilun-*.md`, file aturan v1 yang membawa penanda Maxilun, dan folder cadangan `_maxilun_backup_*` yang dibuat installer. Skill dan agen lain milik Anda tidak disentuh.
 
 ## macOS / Linux
 
@@ -31,9 +31,10 @@ Mode global:
 | Antigravity CLI / IDE & Zed | `~/.agents/skills/` | `~/.agents/agents/` | `~/.agents/rules/` |
 | Claude Code & Termul | `~/.claude/skills/` | `~/.claude/agents/` | `~/.claude/rules/` |
 | OMP | — | `~/.omp/agent/agents/` | — |
-| Codex | `~/.codex/skills/` | — | `~/.codex/rules/` |
+| Codex | `~/.codex/skills/` | `~/.codex/agents/` | `~/.codex/rules/` |
 | OpenCode | `~/.config/opencode/skills/` dan `~/.opencode/skills/` | `~/.config/opencode/agents/` dan `~/.opencode/agents/` | `.../rules/` |
-| Gemini CLI | `~/.gemini/skills/` | — | — |
+| Gemini Config | `~/.gemini/config/skills/` | — | — |
+| Gemini CLI | `~/.gemini/skills/` | — | `~/.gemini/rules/` |
 | Cursor | `~/.cursor/skills/` | — | — |
 | Trae | `~/.trae/skills/` | — | — |
 | Windsurf | `~/.windsurf/skills/` | — | — |
@@ -46,6 +47,7 @@ Mode project (`-Project` / `--project` / `-p`), relatif ke direktori kerja:
 | Universal / Antigravity / Zed | `.agents/skills/` | `.agents/agents/` | `.agents/rules/` |
 | OpenCode | `.opencode/skills/` | `.opencode/agents/` | `.opencode/rules/` |
 | Claude Code / Termul | `.claude/skills/` | `.claude/agents/` | `.claude/rules/` |
+| Cursor | `.cursor/skills/` | — | — |
 | OMP | — | `.omp/agents/` | — |
 | Trae | `.trae/skills/` | — | — |
 | Windsurf | `.windsurf/skills/` | — | — |

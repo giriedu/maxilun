@@ -1,6 +1,6 @@
 # Canonical Templates for the 10 Project Context Documents (`docs/`)
 
-Use the templates below when generating or updating `docs/`. Fill each section with facts from the repository (`[CONFIRMED]`), domain inferences (`[ASSUMED]`), or open questions labeled with a reason (`[TBD: reason]`).
+Use the templates below when generating or updating `docs/`. Fill each section with facts from the repository (`[CONFIRMED]`), domain inferences (`[INFERRED]`), unverified checks (`[UNVERIFIED]`), or open questions labeled with a reason (`[UNCERTAIN: reason]`).
 
 ---
 
@@ -29,7 +29,7 @@ Use the templates below when generating or updating `docs/`. Fill each section w
 ## Features — MVP (Must Have)
 - [ ] **[MVP-01] [Feature Name]**: [Functional description]
   - *Acceptance Criteria*: Given [context], When [action], Then [measurable result + time limit/validation].
-  - *UI States (`DESIGN.md`)*: Loading skeleton, Empty state + first CTA, Populated state, Error state + recovery step.
+  - *UI States (`DESIGN.md`)*: Idle state, Loading skeleton, Populated state (`tabular-nums`), Empty state + first CTA, Pending/optimistic state, Error state + recovery step.
 - [ ] **[MVP-02] [Feature Name]**: [Description + acceptance criteria]
 
 ## Features — Phase 2 (Should Have)
@@ -147,12 +147,14 @@ Use the templates below when generating or updating `docs/`. Fill each section w
 - **Radius Hierarchy**: Child radius `<=` Parent radius (example: Card `12px`, Inner button/input `8px`, Badge `4px`).
 - **Touch Targets**: Minimum `44x44px` on mobile viewports, minimum input font size `16px`.
 
-## Mandatory 4 UI States Contract
+## Mandatory 6 UI States Contract
 Every screen and data component must specify:
+0. **Idle**: Initial resting state before user action or filter triggers async loading.
 1. **Loading**: A skeleton that mirrors the final layout proportions (`CLS = 0`), not a single spinner in the middle of the screen.
 2. **Empty**: A short explanation of why there is no data + a concrete first action button.
 3. **Populated**: The normal data view with long-text handling (`truncate` / `wrap`) and tabular numbers.
-4. **Error**: A specific cause message the user understands + a recovery button (*retry* / alternative).
+4. **Pending / Mutating**: Non-janky inflight indicator (`aria-busy`, optimistic lock) during submit/refresh.
+5. **Error**: A specific cause message the user understands + a recovery button (*retry* / alternative).
 ```
 
 ---
@@ -280,7 +282,7 @@ flowchart TB
 |---|---|---|---|
 | `core/` / `domain/` | Pure business rules & calculations | Standard library & internal types only | HTTP framework, ORM directly, UI components |
 | `api/` / `server/` | Request handlers, auth guard, transactions | `core/`, `db/`, `lib/` | Client/UI components |
-| `ui/` / `components/` | Interface rendering & the 4 UI states | `lib/`, DTO type contracts | DB connection or server secrets |
+| `ui/` / `components/` | Interface rendering & the 6 UI states | `lib/`, DTO type contracts | DB connection or server secrets |
 
 ## Data Flow & Trust Boundaries
 1. Request arrives → Authentication & Rate Limit middleware.
@@ -308,7 +310,7 @@ flowchart TB
 | `maxilun-scaffold` | `/maxilun-scaffold` | Updating the 10 context documents in `docs/` each milestone |
 | `maxilun-docsmith` | `/maxilun-docsmith` | Follow-up feature specs/PRDs, OpenAPI contracts, ADRs, runbooks, `llms.txt` |
 | `maxilun-architect` | `/maxilun-architect` | Module boundary decisions, API contracts, migration strategy |
-| `maxilun-craft` | `/maxilun-craft` | UI/UX implementation, OKLCH tokens, 4-state & accessibility audit |
+| `maxilun-craft` | `/maxilun-craft` | UI/UX implementation, OKLCH tokens, 6-state & accessibility audit |
 | `maxilun-frontend` | `/maxilun-frontend` | Server/client component architecture, state, and bundle performance |
 | `maxilun-data` | `/maxilun-data` | DB schema design, indexes, and zero-downtime migrations |
 | `maxilun-sentinel` | `/maxilun-sentinel` | Security, authentication, authorization, and cryptography audits |
@@ -353,7 +355,7 @@ flowchart TB
 ## Reading Order for AI Agents (Context Loading Order)
 1. `docs/PRD.md` → Understand the business problem, MVP features, and non-goals.
 2. `docs/ARCHITECTURE.md` & `docs/TECHSTACK.md` → Understand module boundaries and the stack.
-3. `docs/DESIGN.md` → Understand the OKLCH tokens, `maxilun-craft` references, and the 4 UI state rule.
+3. `docs/DESIGN.md` → Understand the OKLCH tokens, `maxilun-craft` references, and the 6 UI state rule.
 4. `docs/SECURITY.md` & `docs/STYLEGUIDE.md` → Understand the hard prohibitions and security boundaries.
 5. `docs/TASK.md` → Check the current active work focus.
 

@@ -64,9 +64,11 @@
     {
       "id": 6,
       "prompt": "/maxilun council lalu: ganti layout halaman checkout jadi dua kolom.",
-      "expected_output": "Runs council_hook.py --on, holds a meeting where each speaker after the first answers an earlier one by @name, ends with a synthesis and the ACC question, and edits no file in that turn.",
+      "expected_output": "Runs council_hook.py --on, executes Phase 0 Knowledge Graph locate/query before Round 1 so every speaker receives verified file:line structure/code context, holds a meeting where each speaker critiques trade-offs and answers earlier ones by @name, ends with a synthesis and the ACC question, and edits no file in that turn.",
       "assertions": [
         "activates council with council_hook.py --on",
+        "runs knowledge graph locate/query before starting the council meeting",
+        "shares KG file:line context with meeting speakers",
         "speakers reply to each other by @name",
         "at least one OBJECT with file:line or [UNVERIFIED]",
         "labels minutes [simulated] when no subagent tool exists",

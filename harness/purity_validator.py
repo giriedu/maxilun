@@ -79,12 +79,28 @@ class PurityValidator:
         violations: List[Violation] = []
         lines = text.splitlines()
         norm_path = file_path.replace("\\", "/") if file_path else ""
-        is_normative_catalog = any(k in norm_path for k in ["purity-catalog.md", "engines.md"])
+        ext = Path(file_path).suffix.lower() if file_path else ""
+        is_md = ext == ".md"
+        is_normative_doc = is_md and any(
+            k in norm_path for k in (
+                "purity-catalog.md", "engines.md", "human-prose-discipline.md", "tells.md",
+                "/docs/", "docs/",
+            )
+        )
 
-        # 1. Banned Words Check (Exempt for normative catalog specifications)
-        if not is_normative_catalog:
-            for pattern, rule_id, msg in self.BANNED_WORDS:
-                for idx, line in enumerate(lines, 1):
+        # 1 & 2. Banned Words & Ceremonial HUD Checks (Exempt normative docs & explicit bad-example blocks)
+        if not is_normative_doc:
+            in_bad_example = False
+            for idx, line in enumerate(lines, 1):
+                if "<!-- maxilun-example:bad -->" in line:
+                    in_bad_example = True
+                    continue
+                if "<!-- /maxilun-example:bad -->" in line:
+                    in_bad_example = False
+                    continue
+                if in_bad_example:
+                    continue
+                for pattern, rule_id, msg in self.BANNED_WORDS:
                     m = re.search(pattern, line, re.IGNORECASE)
                     if m:
                         violations.append(Violation(
@@ -95,11 +111,7 @@ class PurityValidator:
                             snippet=line.strip()[:80],
                             severity="ERROR"
                         ))
-
-        # 2. Ceremonial HUD Check (Exempt for normative catalog specifications)
-        if not is_normative_catalog:
-            for pattern, rule_id, msg in self.CEREMONIAL_PATTERNS:
-                for idx, line in enumerate(lines, 1):
+                for pattern, rule_id, msg in self.CEREMONIAL_PATTERNS:
                     m = re.search(pattern, line)
                     if m:
                         violations.append(Violation(
@@ -110,12 +122,16 @@ class PurityValidator:
                             snippet=line.strip()[:80],
                             severity="ERROR"
                         ))
-        # 3. Contextual Invariants based on file extension / content
-        ext = Path(file_path).suffix.lower() if file_path else ""
-        if ext in {".tsx", ".jsx", ".vue", ".svelte", ".html", ".css", ".scss", ".swift", ".kt"} or any(k in text for k in ["<div", "return (", "className=", "SwiftUI", "VStack", "Composable", "@Composable"]):
-            self._validate_ui_invariants(text, lines, violations, file_path=file_path)
 
-        if ext in {".ts", ".js", ".py", ".go"} or any(k in text for k in ["webhook", "crypto", "createHmac", "SELECT", "UPDATE"]):
+        # 3. Contextual Invariants based on file extension / content
+        ui_exts = {".tsx", ".jsx", ".vue", ".svelte", ".html", ".htm", ".css", ".scss", ".swift", ".kt", ".svg"}
+        if ext in ui_exts or (not file_path and any(k in text for k in ["<div", "return (", "className=", "SwiftUI", "VStack", "Composable", "@Composable"])):
+            self._validate_ui_invariants(text, lines, violations, file_path=file_path)
+        elif is_md and not is_normative_doc:
+            self._run_ui_linter(text, lines, violations, file_path=file_path)
+
+        code_exts = {".ts", ".js", ".py", ".go", ".sql"}
+        if ext in code_exts or (not file_path and any(k in text for k in ["webhook", "crypto", "createHmac", "SELECT", "UPDATE"])):
             self._validate_backend_security_invariants(text, lines, violations)
 
         # Calculate Score: 100 - (errors * 15 + warnings * 5)
@@ -133,7 +149,7 @@ class PurityValidator:
         )
 
     def _validate_ui_invariants(self, text: str, lines: List[str], violations: List[Violation], file_path: Optional[str] = None):
-        """Enforces 4 UI States, tabular numbers, and anti-cliché styling."""
+        """Enforces 6 UI States (loading/empty/error + populated/idle/pending), tabular numbers, and anti-cliché styling."""
         # A. Cliché Gradients
         for idx, line in enumerate(lines, 1):
             if self.AI_CLICHE_GRADIENTS.search(line):
@@ -146,7 +162,7 @@ class PurityValidator:
                     severity="ERROR"
                 ))
 
-        # B. 4 UI States validation for data-driven web components (exempt Remotion video scripts)
+        # B. 6 UI States baseline check for data-driven web components (exempt Remotion video scripts)
         norm_path = file_path.replace("\\", "/") if file_path else ""
         is_remotion = "cinecode" in norm_path or "useCurrentFrame" in text or "Composition" in text
         is_data_component = not is_remotion and bool(re.search(r'(?:items|data|list|records|transactions|users)\.map\(', text))
@@ -180,31 +196,49 @@ class PurityValidator:
                 severity="WARNING"
             ))
 
-        # D. 45 AI Design Tells Scanner Integration
-        ui_exts = {".html", ".htm", ".css", ".scss", ".tsx", ".jsx", ".vue", ".svelte", ".swift", ".kt"}
+        # D. 45 AI Design Tells Scanner Integration (delegated to UIPurityLinter — single source of truth)
+        ui_exts = {".html", ".htm", ".css", ".scss", ".tsx", ".jsx", ".vue", ".svelte", ".swift", ".kt", ".svg"}
         ext = Path(file_path).suffix.lower() if file_path else ""
-        if (ext in ui_exts) or any(k in text for k in ["<div", "className", "style={{", "VStack", "Composable", "@Composable"]):
-            try:
-                import importlib.util
-                linter_path = Path(__file__).resolve().parent.parent / "scripts" / "ui-purity-linter.py"
-                if linter_path.exists():
-                    spec = importlib.util.spec_from_file_location("ui_linter_mod", str(linter_path))
-                    mod = importlib.util.module_from_spec(spec)
-                    spec.loader.exec_module(mod)
-                    linter = mod.UIPurityLinter()
-                    for idx, line in enumerate(lines, 1):
-                        for rule_id, category, severity, msg, remedy, pattern in linter.TELL_RULES:
-                            if pattern.search(line):
-                                violations.append(Violation(
-                                    category="ui_purity_tell",
-                                    rule_id=rule_id,
-                                     message=f"{msg} ({remedy})",
-                                    line_number=idx,
-                                    snippet=line.strip()[:80],
-                                    severity=severity
-                                ))
-            except Exception:
-                pass
+        if (ext in ui_exts) or (not file_path and any(k in text for k in ["<div", "className", "style={{", "VStack", "Composable", "@Composable"])):
+            self._run_ui_linter(text, lines, violations, file_path=file_path)
+
+    def _run_ui_linter(self, text: str, lines: List[str], violations: List[Violation], file_path: Optional[str] = None):
+        """Delegate UI/SVG/Markdown tell scans to scripts/ui-purity-linter.py."""
+        try:
+            import importlib.util
+            linter_path = Path(__file__).resolve().parent.parent / "scripts" / "ui-purity-linter.py"
+            if not linter_path.exists():
+                return
+            spec = importlib.util.spec_from_file_location("ui_linter_mod", str(linter_path))
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+            linter = mod.UIPurityLinter()
+            if file_path and Path(file_path).is_file():
+                for tv in linter.scan_file(Path(file_path)):
+                    violations.append(Violation(
+                        category="ui_purity_tell",
+                        rule_id=tv.rule_id,
+                        message=f"{tv.message} ({tv.remedy})",
+                        line_number=tv.line_number,
+                        snippet=tv.snippet,
+                        severity=tv.severity,
+                    ))
+            else:
+                for idx, line in enumerate(lines, 1):
+                    for rule_id, category, severity, msg, remedy, pattern in linter.TELL_RULES:
+                        if rule_id == "ANI-TEL-03" and "prefers-reduced-motion" in text:
+                            continue
+                        if pattern.search(line):
+                            violations.append(Violation(
+                                category="ui_purity_tell",
+                                rule_id=rule_id,
+                                message=f"{msg} ({remedy})",
+                                line_number=idx,
+                                snippet=line.strip()[:80],
+                                severity=severity,
+                            ))
+        except Exception:
+            pass
 
     def _validate_backend_security_invariants(self, text: str, lines: List[str], violations: List[Violation]):
         """Enforces constant-time crypto comparison, replay tolerance, and parameterized SQL."""

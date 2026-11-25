@@ -30,7 +30,7 @@ AGENT_SKILL_MAP = {
     "maxilun-studio": "maxilun-craft",
     "maxilun-verifier": "maxilun-verify",
     "maxilun-coder-frontend": "maxilun-frontend",
-    "maxilun-coder-backend": "maxilun-data",
+    "maxilun-coder-backend": "maxilun-engineer",
     "maxilun-coder-mobile": "maxilun-mobile",
     "maxilun-coder-systems": "maxilun-desktop",
     "maxilun-ui-designer": "maxilun-craft",
@@ -43,6 +43,7 @@ AGENT_SKILL_MAP = {
     "maxilun-devops": "maxilun-deploy",
     "maxilun-docsmith": "maxilun-docsmith",
     "maxilun-automator": "maxilun-n8n",
+    "maxilun-figcraft": "maxilun-figcraft",
 }
 
 
@@ -79,12 +80,19 @@ class MaxilunAgentLoop:
         allowed_tools: Optional[Set[str]] = None,
         agent_name: Optional[str] = None,
         shared_bus: Optional[List[Dict[str, Any]]] = None,
+        loader: Optional[SkillsLoader] = None,
+        cached_graph: Optional[Dict[str, Any]] = None,
+        cached_root: Optional[str] = None,
     ):
         self.root = repo_root or Path.cwd()
-        self.loader = SkillsLoader(self.root)
+        self.loader = loader or SkillsLoader(self.root)
         self.registry = ToolRegistry(self.root)
+        if cached_graph is not None:
+            self.registry.kg._cached_graph = cached_graph
+            self.registry.kg._cached_root = cached_root or str(self.root.resolve())
         self.provider = provider or UniversalProvider()
         self.middleware = MiddlewarePipeline(self.root)
+        self.middleware.kg = self.registry.kg
         self.max_turns = max_turns
         self.verbose = verbose
         self.is_subagent = is_subagent
@@ -157,13 +165,19 @@ class MaxilunAgentLoop:
         )
 
         # 1. Routing & Specialist Selection
-        decision_type = self.middleware.check_reversibility(prompt)
+        router_decision = self.middleware.router.route(prompt)
+        decision_type = router_decision.decision_type
         context.decision_type = decision_type
 
         if forced_skill:
             active_skill = self.loader.get_skill(forced_skill) or self.loader.match_skill(forced_skill)
         else:
-            active_skill = self.loader.match_skill(prompt)
+            matched_skill = self.loader.match_skill(prompt)
+            routed_owner = self.loader.get_skill(router_decision.primary_owner)
+            if routed_owner and router_decision.primary_owner != "maxilun-engineer" and matched_skill.name != "maxilun":
+                active_skill = routed_owner
+            else:
+                active_skill = matched_skill
 
         context.active_skill = active_skill.name
         context.record_swarm_event(active_skill.name, "Routed task", prompt[:80])
@@ -189,6 +203,8 @@ class MaxilunAgentLoop:
                 handoff = _last_reply(sub_ctx) or "Subagent completed."
                 failed = handoff.startswith("Execution Error")
                 files_mod = sorted(sub_ctx.touched_files)
+                if files_mod:
+                    self.registry.kg.invalidate()
                 context.post_handoff(clean, sender_id, handoff[:400], artifacts=files_mod)
                 context.record_swarm_event(clean, "Subagent failed" if failed else "Subagent finished",
                                            f"{len(files_mod)} file(s) modified")
@@ -204,12 +220,19 @@ class MaxilunAgentLoop:
             def handle_meeting(agenda: str, participants: List[str], rounds: int = 2) -> Dict[str, Any]:
                 return self.hold_meeting(context, agenda, participants, rounds)
 
-            roster_list = "maxilun-scout, maxilun-planner, maxilun-architect, maxilun-ui-designer, maxilun-ui-motion, maxilun-studio, maxilun-coder-frontend, maxilun-coder-backend, maxilun-coder-mobile, maxilun-coder-systems, maxilun-maker, maxilun-verifier, maxilun-ui-reviewer, maxilun-security-auditor"
+            all_specialists = sorted(a for a in self.loader.agents if a != "maxilun-orchestrator")
+            roster_list = ", ".join(all_specialists) if all_specialists else (
+                "maxilun-scout, maxilun-planner, maxilun-architect, maxilun-ui-designer, maxilun-ui-motion, "
+                "maxilun-studio, maxilun-coder-frontend, maxilun-coder-backend, maxilun-coder-mobile, "
+                "maxilun-coder-systems, maxilun-coder-ai, maxilun-data-engineer, maxilun-devops, "
+                "maxilun-docsmith, maxilun-automator, maxilun-figcraft, maxilun-maker, "
+                "maxilun-verifier, maxilun-ui-reviewer, maxilun-security-auditor"
+            )
             schema = {
                 "type": "function",
                 "function": {
                     "name": "delegate_task",
-                    "description": "Spawn a specialized subagent to execute a bounded subtask across Wave 1 (maxilun-scout, maxilun-planner, maxilun-architect), Wave 2 (maxilun-ui-designer, maxilun-ui-motion, maxilun-studio, maxilun-coder-frontend, maxilun-coder-backend, maxilun-coder-mobile, maxilun-coder-systems, maxilun-maker), or Wave 3 (maxilun-verifier, maxilun-ui-reviewer, maxilun-security-auditor).",
+                    "description": f"Spawn a specialized subagent to execute a bounded subtask across Wave 1/2/3 ({roster_list}).",
                     "parameters": {
                         "type": "object",
                         "properties": {
@@ -235,8 +258,9 @@ class MaxilunAgentLoop:
                     "function": {
                         "name": "convene_meeting",
                         "description": (
-                            "Hold a read-only roundtable before planning cross-domain or Type 1 work. Participants speak in turn, "
-                            "each hearing the full minutes, answering questions addressed to them, and agreeing or objecting with evidence. "
+                            "Hold a read-only roundtable before planning cross-domain or Type 1 work. Automatically injects "
+                            "a Phase 0 Knowledge Graph briefing packet before Round 1; participants speak in turn, "
+                            "each hearing the full minutes, answering questions addressed to them, and critiquing gaps or trade-offs with evidence. "
                             "Ends early on a round with no objections. Returns minutes and open objections; no files are edited."
                         ),
                         "parameters": {
@@ -340,6 +364,8 @@ class MaxilunAgentLoop:
                     context.record_swarm_event(active_skill.name, f"Tool call {fn_name}", str(args)[:50])
                 # Execute tool
                 result = self.registry.execute(fn_name, args, allowed_tools=self.allowed_tools)
+                if fn_name in ("write_file", "edit_file") and isinstance(result, dict) and result.get("success"):
+                    self.registry.kg.invalidate()
                 if fn_name == "execute_bash" and isinstance(result, dict):
                     for stream_key in ("stdout", "stderr", "output"):
                         if isinstance(result.get(stream_key), str):
@@ -373,6 +399,74 @@ class MaxilunAgentLoop:
             pass
         return out_dir / "agent_bus.json"
 
+    def _build_meeting_kg_brief(self, agenda: str, max_chars: int = 1800) -> str:
+        """Builds a compact Knowledge Graph briefing packet once before Round 1."""
+        if not agenda or not agenda.strip():
+            return ""
+        try:
+            loc = self.registry.kg.locate(agenda.strip(), top=4, lines=8, budget=1400, include_hits=True)
+        except Exception:
+            return ""
+        if not isinstance(loc, dict) or loc.get("error"):
+            return ""
+
+        hits = loc.get("hits") or []
+        report = (loc.get("report") or "").strip()
+        if not hits and not report:
+            return ""
+
+        lines: List[str] = []
+        seen_files: List[str] = []
+        for h in hits[:4]:
+            f = h.get("file", "")
+            rng = h.get("range") or []
+            span = f"{rng[0]}-{rng[1]}" if len(rng) == 2 else ""
+            sym = h.get("symbol") or ""
+            typ = h.get("type") or ""
+            meta = f" {sym} ({typ})" if sym else ""
+            callers = h.get("callers") or []
+            callees = h.get("callees") or []
+            rel = []
+            if callers:
+                rel.append(f"callers: {', '.join(callers[:3])}")
+            if callees:
+                rel.append(f"calls: {', '.join(callees[:3])}")
+            suffix = f" | {'; '.join(rel)}" if rel else ""
+            lines.append(f"- {f}:{span}{meta}{suffix}")
+            if f and f not in seen_files:
+                seen_files.append(f)
+
+        importer_lines: List[str] = []
+        for f in seen_files[:2]:
+            try:
+                q = self.registry.kg.query("importersOf", f)
+                imps = [r.get("importer") for r in (q.get("results") or [])[:4] if r.get("importer")]
+                if imps:
+                    importer_lines.append(f"- {f} <- {', '.join(imps)}")
+            except Exception:
+                continue
+
+        sections: List[str] = []
+        if lines:
+            sections.append(f"### Targets (confidence: {loc.get('confidence', 'unknown')})\n" + "\n".join(lines))
+        if importer_lines:
+            sections.append("### Importers\n" + "\n".join(importer_lines))
+        if report:
+            sections.append("### KG Excerpts\n" + report)
+
+        combined = "\n".join(sections).strip()
+        if len(combined) <= max_chars:
+            return combined
+        kept: List[str] = []
+        used = 0
+        for ln in combined.splitlines():
+            cost = len(ln) + 1
+            if used + cost > max_chars - 24:
+                break
+            kept.append(ln)
+            used += cost
+        return "\n".join(kept).rstrip() + "\n... (kg_brief truncated)"
+
     def hold_meeting(self, context: SessionContext, agenda: str, participants: List[str], rounds: int = 2) -> Dict[str, Any]:
         """Runs a read-only roundtable; each turn is a real subagent on the shared bus."""
         def speak(agent: str, brief: str) -> str:
@@ -385,8 +479,9 @@ class MaxilunAgentLoop:
             return {"status": "error", "error": f"Unknown agents: {', '.join(unknown)}"}
         if self.verbose:
             print(f"\n🗣️ [Meeting] {', '.join(roster)} on: {agenda[:80]}")
+        kg_brief = self._build_meeting_kg_brief(agenda) if agenda and agenda.strip() else ""
         chair = self.agent_name or "maxilun-orchestrator"
-        return AgentMeeting(context, speak, chair=chair).convene(agenda, roster, rounds)
+        return AgentMeeting(context, speak, chair=chair).convene(agenda, roster, rounds, kg_brief=kg_brief)
 
     def _spawn_agent(self, context: SessionContext, agent: str, task: str, meeting: bool = False):
         """Runs one specialist subagent on the shared bus; meeting turns are read-only and short."""
@@ -398,11 +493,14 @@ class MaxilunAgentLoop:
         subagent = MaxilunAgentLoop(
             repo_root=self.root,
             provider=self.provider,
-            max_turns=min(self.max_turns, 3 if meeting else 6),
+            max_turns=min(self.max_turns, 4 if meeting else 6),
             verbose=self.verbose,
             is_subagent=True,
             allowed_tools=allowed,
             agent_name=agent if agent_def else None,
             shared_bus=context.agent_bus,
+            loader=self.loader,
+            cached_graph=self.registry.kg._cached_graph,
+            cached_root=self.registry.kg._cached_root,
         )
         return target_skill, subagent.run_task(task, forced_skill=target_skill)

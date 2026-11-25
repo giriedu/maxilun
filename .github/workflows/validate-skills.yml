@@ -1,0 +1,49 @@
+name: Validate Maxilun Skills & Purity Gate
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Test Suite & Purity Gate (${{ matrix.os }}, py${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.9', '3.11']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run Maxilun ecosystem test suite
+        run: python scripts/test-suite.py
+
+      - name: Run Harness Purity Gate
+        run: python harness/cli.py check .
+
+      - name: Run UI Purity Linter on skills
+        run: python cli.py lint skills/
+
+      - name: Run UI Purity Linter on assets
+        run: python cli.py lint assets/
+
+      - name: Run Slopscan Gate on assets
+        run: python skills/maxilun-craft/scripts/slopscan.py assets/ --strict
+
+      - name: Build interactive dashboard
+        run: python harness/cli.py dashboard --no-open
+
+      - name: Run UI Purity Linter on generated dashboard
+        run: python cli.py lint maxilun-out/dashboard.html

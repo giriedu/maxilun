@@ -32,6 +32,7 @@ CANONICAL_AGENTS = [
     "maxilun-devops",
     "maxilun-docsmith",
     "maxilun-automator",
+    "maxilun-figcraft",
 ]
 
 PRESETS: Dict[str, Dict[str, Dict[str, str]]] = {
@@ -56,6 +57,7 @@ PRESETS: Dict[str, Dict[str, Dict[str, str]]] = {
         "maxilun-devops": {"alias": "DevOps", "callsign": "DevOps & SRE"},
         "maxilun-docsmith": {"alias": "DocSmith", "callsign": "DocSmith & Specs"},
         "maxilun-automator": {"alias": "Automator", "callsign": "Workflow Automator"},
+        "maxilun-figcraft": {"alias": "FigCraft", "callsign": "Live Canvas Lead"},
     },
     "nusantara-squad": {
         "maxilun-orchestrator": {"alias": "Pandu", "callsign": "Chief Orchestrator"},
@@ -78,6 +80,7 @@ PRESETS: Dict[str, Dict[str, Dict[str, str]]] = {
         "maxilun-devops": {"alias": "Reza", "callsign": "DevOps & SRE"},
         "maxilun-docsmith": {"alias": "Citra", "callsign": "DocSmith & Specs"},
         "maxilun-automator": {"alias": "Aji", "callsign": "Workflow Automator"},
+        "maxilun-figcraft": {"alias": "Raka", "callsign": "Live Canvas Lead"},
     },
     "global-forge": {
         "maxilun-orchestrator": {"alias": "Apex", "callsign": "Chief Orchestrator"},
@@ -100,6 +103,7 @@ PRESETS: Dict[str, Dict[str, Dict[str, str]]] = {
         "maxilun-devops": {"alias": "Marcus", "callsign": "DevOps & SRE"},
         "maxilun-docsmith": {"alias": "Grace", "callsign": "DocSmith & Specs"},
         "maxilun-automator": {"alias": "Felix", "callsign": "Workflow Automator"},
+        "maxilun-figcraft": {"alias": "Theo", "callsign": "Live Canvas Lead"},
     },
 }
 

@@ -7,7 +7,7 @@ Usage:
   slopscan.py <path> --strict              warnings also fail (exit 1)
   slopscan.py --contrast <fg> <bg>         WCAG contrast of two hex colours
 
-Scans .html .htm .css .scss .jsx .tsx .js .ts .vue .svelte .astro .gs.html
+Scans .html .htm .css .scss .jsx .tsx .js .ts .vue .svelte .astro .gs.html .svg
 No dependencies. Exit code 1 when errors are found (or warnings with --strict).
 
 It only finds what can be found by pattern. Structure, hierarchy and taste
@@ -19,7 +19,7 @@ import re
 import sys
 
 EXT = (".html", ".htm", ".css", ".scss", ".jsx", ".tsx", ".js", ".ts",
-       ".vue", ".svelte", ".astro")
+       ".vue", ".svelte", ".astro", ".svg")
 SKIP_DIRS = {"node_modules", ".git", "dist", "build", ".next", "out",
              "vendor", "coverage", ".turbo", ".cache"}
 
@@ -43,20 +43,20 @@ SATURATED_FONTS = (r"Inter|Roboto|Open[ _+]Sans|Poppins|Montserrat|Lato|Nunito|S
 # (id, level, regex, message, fix)
 LINE_RULES = [
     ("default-font", W,
-     re.compile(r"(?:font-family\s*:\s*|family=|--font[\w-]*\s*:\s*|(?:sans|serif|mono|display|heading|body)\s*:\s*\[\s*)"
+     re.compile(r"(?:font-family\s*:\s*|fontFamily\s*:\s*|family=|--[\w-]*font[\w-]*\s*:\s*|(?:sans|serif|mono|display|heading|body)\s*:\s*\[\s*)"
                 r"['\"]?(?:" + SATURATED_FONTS + r")\b"
                 r"|import\s*\{[^}]*\b(?:" + SATURATED_FONTS + r")\b[^}]*\}\s*from\s*['\"]next/font", re.I),
      "saturated default font (reads as machine-picked)",
      "derive the face from the Origin (SKILL.md 4.3), or state why only this product can claim it"),
     ("blur-blob", E,
-     re.compile(r"\bblur-(?:2xl|3xl|\[\d{2,}px\])\b|filter\s*:\s*blur\(\s*(?:[4-9]\d|\d{3,})px", re.I),
+     re.compile(r"\bblur-(?:2xl|3xl|\[\d{2,}px\])\b|filter\s*:\s*['\"]?blur\(\s*(?:[4-9]\d|\d{3,})px", re.I),
      "large blurred colour blob decoration (CMP-016)", "remove; show the product or an Origin object"),
     ("sparkle-icon", W,
      re.compile(r"<(?:Sparkles?|WandSparkles|Wand2|MagicWand|SparklesIcon)\b|\bi-(?:lucide|ph|mdi)[:-]sparkle", re.I),
      "sparkle or magic-wand icon (stock 'AI' signifier)", "an icon that names the action, or the verb alone"),
     ("gradient-cool", E,
      re.compile(r"(?:from|via|to)-" + COOL + r"-\d{2,3}.*(?:from|via|to)-\w+-\d{2,3}"
-                r"|linear-gradient\([^)]*(?:purple|violet|indigo|#[67a][0-9a-f]5[0-9a-f]f[0-9a-f])", re.I),
+                r"|linear-gradient\([^)]*(?:purple|violet|indigo|#667eea|#764ba2|#[67a][0-9a-f][457][0-9a-f][ef][0-9a-f])", re.I),
      "hue-to-hue gradient in the blue/violet/pink family",
      "flat surface from the neutral ramp; accent only on the Spotlight"),
     ("gradient", W,
@@ -64,23 +64,23 @@ LINE_RULES = [
                 r"|\bbg-(?:gradient|linear)-to-\w+\b", re.I),
      "gradient surface", "allowed only as a small tone shift inside one neutral; otherwise flat"),
     ("gradient-text", E,
-     re.compile(r"bg-clip-text|background-clip\s*:\s*text|-webkit-background-clip\s*:\s*text", re.I),
+     re.compile(r"bg-clip-text|(?:-webkit-)?background-clip\s*:\s*['\"]?text|WebkitBackgroundClip\s*:\s*['\"]?text", re.I),
      "gradient-filled text", "solid text colour; hierarchy from size"),
     ("glow", E,
      re.compile(r"shadow-\[0_0_|drop-shadow-\[0_0_|shadow-" + COOL + r"-\d{3}"
-                r"|box-shadow\s*:[^;]*\b0(?:px)?\s+0(?:px)?\s+\d{2,}px[^;]*(?:rgba?\((?!0,\s*0,\s*0)|#(?!000))", re.I),
+                r"|(?:box-shadow|boxShadow)\s*:[^;}\n]*\b0(?:px)?\s+0(?:px)?\s+\d{2,}px[^;}\n]*(?:rgba?\((?!0,\s*0,\s*0)|#(?!000))", re.I),
      "glow or coloured shadow", "surface step + hairline; neutral shadow only for floating layers"),
     ("transition-all", W,
-     re.compile(r"\btransition-all\b|transition\s*:\s*all\b", re.I),
+     re.compile(r"\btransition-all\b|(?:transition|transitionProperty)\s*:\s*['\"]?all\b", re.I),
      "transition on all properties", "name the properties (colour, opacity, transform)"),
     ("loop-motion", W,
-     re.compile(r"\banimate-(?:pulse|ping|bounce)\b|animation[^;:]*:[^;]*\binfinite\b", re.I),
+     re.compile(r"\banimate-(?:pulse|ping|bounce)\b|animation[^;:}\n]*:\s*['\"]?[^;\n]*\binfinite\b", re.I),
      "looping animation", "keep only if the thing is really live or loading"),
     ("hover-scale", W,
      re.compile(r"hover:scale-(?!100\b)\d+|:hover\s*\{[^}]*transform\s*:\s*scale\(1\.[0-9]", re.I),
      "scale on hover", "surface or border step on hover; tiny scale-down on press"),
     ("heavy-weight", W,
-     re.compile(r"\bfont-(?:extrabold|black)\b|font-weight\s*:\s*[89]00", re.I),
+     re.compile(r"\bfont-(?:extrabold|black)\b|(?:font-weight|fontWeight)\s*:\s*['\"]?[89]00\b", re.I),
      "800-900 weight", "500-600 plus size and space for hierarchy"),
     ("shout-label", W,
      re.compile(r"uppercase[^\"'`\n]*tracking-(?:wide|wider|widest)"
@@ -104,7 +104,7 @@ LINE_RULES = [
      re.compile(r">[^<>{}]*[A-Za-z]!+\s*<"),
      "exclamation mark in interface text", "plain statement"),
     ("caps-css", I,
-     re.compile(r"text-transform\s*:\s*uppercase", re.I),
+     re.compile(r"(?:text-transform|textTransform)\s*:\s*['\"]?uppercase", re.I),
      "uppercase transform", "confirm it is not a tracked micro-label"),
     ("breadcrumb-header", W,
      re.compile(r">\s*(?:Home|Dashboard|Overview|App|Pages)\s*[/›>»]\s*(?:Dashboard|Analytics|Overview|Settings|Features|Home)\s*<", re.I),
@@ -130,10 +130,20 @@ OFFGRID_TW = re.compile(r"(?<![\w-])-?" + SPACING_PREFIX + r"-\[(\d+(?:\.\d+)?)p
 OFFGRID_CSS = re.compile(r"(?:padding|margin|gap|row-gap|column-gap)(?:-\w+)?\s*:\s*([^;{}]+)", re.I)
 HEX = re.compile(r"#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b")
 TW_SIZE = re.compile(r"(?<![\w-])text-(xs|sm|base|lg|xl|[2-9]xl|\[\d+(?:\.\d+)?(?:px|rem)\])")
-CSS_SIZE = re.compile(r"font-size\s*:\s*([\d.]+(?:px|rem|em))", re.I)
+CSS_SIZE = re.compile(r"(?:font-size|fontSize)\s*:\s*['\"]?([\d.]+(?:px|rem|em))", re.I)
 TW_HUE = re.compile(r"(?:bg|text|border|from|to|via|ring|fill|stroke)-"
                     r"(red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|"
                     r"indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}")
+
+
+def _strip_block_comments(text: str) -> str:
+    """Replaces /* ... */, <!-- ... -->, and {/* ... */} comments while preserving line numbers."""
+    def _blank(m: re.Match) -> str:
+        return "".join("\n" if c == "\n" else " " for c in m.group(0))
+    out = re.sub(r"\{/\*[\s\S]*?\*/\}", _blank, text)
+    out = re.sub(r"/\*[\s\S]*?\*/", _blank, out)
+    out = re.sub(r"<!--[\s\S]*?-->", _blank, out)
+    return out
 
 
 def is_comment(line):
@@ -141,38 +151,153 @@ def is_comment(line):
     return s.startswith(("//", "/*", "*", "<!--", "#!"))
 
 
+def _rgb_hue_sat(hexc):
+    h = hexc.lstrip("#")
+    if len(h) == 3:
+        h = "".join(c * 2 for c in h)
+    if len(h) < 6:
+        return None
+    r, g, b = (int(h[i:i + 2], 16) / 255.0 for i in (0, 2, 4))
+    mx, mn = max(r, g, b), min(r, g, b)
+    d = mx - mn
+    sat = 0.0 if mx == 0 else d / mx
+    if d == 0:
+        hue = 0.0
+    elif mx == r:
+        hue = 60 * (((g - b) / d) % 6)
+    elif mx == g:
+        hue = 60 * ((b - r) / d + 2)
+    else:
+        hue = 60 * ((r - g) / d + 4)
+    return hue, sat
+
+
+def _circular_hue_span(hues):
+    if len(hues) < 2:
+        return 0.0
+    s = sorted(hues)
+    gaps = [s[i + 1] - s[i] for i in range(len(s) - 1)] + [360.0 - s[-1] + s[0]]
+    return 360.0 - max(gaps)
+
+
+def _scan_svg_block(svg_text, line_offset, add, full_doc_text, standalone=True):
+    """Audits standalone SVG files or inline <svg> blocks inside HTML/JSX/Vue."""
+    if standalone:
+        if not re.search(r"<title\b", svg_text, re.IGNORECASE):
+            add("svg-missing-title", E, line_offset, "standalone SVG missing <title> element",
+                "add <title id='...-title'> and <desc> inside <svg>")
+        if 'role="img"' not in svg_text and "aria-hidden=" not in svg_text:
+            add("svg-missing-role", E, line_offset, "standalone SVG missing role='img' or aria-hidden='true'",
+                "add role='img' with aria-labelledby (or aria-hidden='true' if decorative)")
+
+    unsafe_rx = re.compile(r"<script\b|<foreignObject\b|\bon[a-z]+\s*=|javascript:|https?://[^\s\"']+\.(?:css|woff2?|ttf|otf)", re.IGNORECASE)
+    heavy_rx = re.compile(r"(?:font-weight\s*=\s*[\"']?|font-weight\s*:\s*)[89]00\b", re.IGNORECASE)
+    grad_text_rx = re.compile(r"<text[^>]*?(?:fill\s*=\s*[\"']url\(|fill\s*:\s*url\()", re.IGNORECASE)
+    blur_rx = re.compile(r"<feGaussianBlur[\s\S]{0,160}?stdDeviation\s*=\s*[\"']?(?:1[6-9]|[2-9]\d|\d{3,})", re.IGNORECASE)
+    svg_font_rx = re.compile(r"(?:font-family\s*=\s*|font-family\s*:\s*)[\"']?(?:" + SATURATED_FONTS + r")\b", re.IGNORECASE)
+    smil_rx = re.compile(r"<animate(?:Motion|Transform)?[\s\S]{0,200}?repeatCount\s*=\s*[\"']indefinite[\"']", re.IGNORECASE)
+
+    has_reduced = bool(re.search(r"@media\s*\([^)]*prefers-reduced-motion", full_doc_text, re.I))
+    for rx, rid, lvl, msg, fix in (
+        (unsafe_rx, "svg-unsafe", E, "SVG contains script, foreignObject, event handler, javascript:, or external font/CSS URL",
+         "keep SVG self-contained with system font stack and zero scripting"),
+        (heavy_rx, "heavy-weight", W, "800-900 font-weight in SVG",
+         "use 500-700 weight plus size and space for hierarchy"),
+        (grad_text_rx, "gradient-text", E, "gradient-filled SVG <text> (TYPO-008)",
+         "use solid ink colour with >= 4.5:1 contrast"),
+        (blur_rx, "blur-blob", E, "large SVG Gaussian blur blob (CMP-016)",
+         "remove blur blob; show concrete Origin geometry"),
+        (svg_font_rx, "default-font", W, "saturated default font-family in SVG",
+         "use system-ui stack for <img> or an Origin display face"),
+    ):
+        for m in rx.finditer(svg_text):
+            ln = line_offset + svg_text[:m.start()].count("\n")
+            add(rid, lvl, ln, msg, fix, m.group(0).splitlines()[0])
+
+    if not has_reduced:
+        for m in smil_rx.finditer(svg_text):
+            ln = line_offset + svg_text[:m.start()].count("\n")
+            add("loop-motion", W, ln, "infinite SMIL SVG animation without prefers-reduced-motion guard",
+                "wrap animation or add @media (prefers-reduced-motion: reduce) guard", m.group(0).splitlines()[0])
+
+    for gm in re.finditer(r"<(?:linear|radial)Gradient\b[^>]*>[\s\S]*?</(?:linear|radial)Gradient>", svg_text, re.IGNORECASE):
+        stops = HEX.findall(gm.group(0))
+        chroma = []
+        for hx in stops:
+            hs = _rgb_hue_sat(hx)
+            if hs and hs[1] >= 0.25:
+                chroma.append(hs[0])
+        if len(chroma) >= 2 and _circular_hue_span(chroma) >= 18:
+            ln = line_offset + svg_text[:gm.start()].count("\n")
+            add("gradient-cool", E, ln, "chromatic multi-hue SVG gradient (CLR-001)",
+                "use flat neutral surfaces or a quiet single-ramp tonal shift", gm.group(0).splitlines()[0])
+
+    rect_dims = []
+    for rm in re.finditer(r"<rect\b[^>]*>", svg_text, re.IGNORECASE):
+        tag = rm.group(0)
+        mw = re.search(r'\bwidth\s*=\s*["\'](\d+(?:\.\d+)?)["\']', tag)
+        mh = re.search(r'\bheight\s*=\s*["\'](\d+(?:\.\d+)?)["\']', tag)
+        mrx = re.search(r'\brx\s*=\s*["\'](\d+(?:\.\d+)?)["\']', tag)
+        if mw and mh and mrx:
+            rect_dims.append((mw.group(1), mh.group(1), mrx.group(1)))
+    if rect_dims:
+        from collections import Counter
+        top_dim, count = Counter(rect_dims).most_common(1)[0]
+        if count >= 4 and float(top_dim[0]) >= 120 and float(top_dim[1]) >= 80:
+            add("symmetric-kpi-strip", E, line_offset,
+                f"symmetrical {count}-card strip inside SVG ({top_dim[0]}x{top_dim[1]}, rx={top_dim[2]}) (LAY-017)",
+                "replace uniform cards with an asymmetric layout or single Spotlight")
+
+
 def scan_file(path):
     findings, stats = [], {}
     try:
-        text = open(path, encoding="utf-8", errors="ignore").read()
+        raw_text = open(path, encoding="utf-8", errors="ignore").read()
     except OSError:
         return findings, stats
+    text = _strip_block_comments(raw_text)
     lines = text.split("\n")
+    is_svg = path.lower().endswith(".svg")
 
     def add(rule, level, ln, msg, fix, sample=""):
         findings.append({"file": path, "line": ln, "rule": rule, "level": level,
                          "message": msg, "fix": fix, "sample": sample.strip()[:90]})
 
+    if is_svg:
+        _scan_svg_block(text, 1, add, text, standalone=True)
+    else:
+        for svg_m in re.finditer(r"<svg\b[\s\S]*?</svg>", text, re.IGNORECASE):
+            ln = text[:svg_m.start()].count("\n") + 1
+            _scan_svg_block(svg_m.group(0), ln, add, text, standalone=False)
+
     emoji_lines, offgrid = [], []
     for n, line in enumerate(lines, 1):
-        if is_comment(line) or len(line) > 2000:
+        if is_comment(line):
             continue
-        for rid, lvl, rx, msg, fix in LINE_RULES:
-            m = rx.search(line)
-            if m:
-                add(rid, lvl, n, msg, fix, m.group(0))
+        if is_svg:
+            # Run text-level typography/hype/caps rules on SVG <text>/<style> content too.
+            for rid, lvl, rx, msg, fix in LINE_RULES:
+                if rid in ("hype", "greeting", "caps-css", "placeholder-data"):
+                    m = rx.search(line)
+                    if m:
+                        add(rid, lvl, n, msg, fix, m.group(0))
+        else:
+            for rid, lvl, rx, msg, fix in LINE_RULES:
+                m = rx.search(line)
+                if m:
+                    add(rid, lvl, n, msg, fix, m.group(0))
+            for m in OFFGRID_TW.finditer(line):
+                v = float(m.group(1))
+                if v > 2 and v % 4:
+                    offgrid.append((n, m.group(0)))
+            for m in OFFGRID_CSS.finditer(line):
+                for px in re.findall(r"(?<![\w.#-])(\d+(?:\.\d+)?)px", m.group(1)):
+                    v = float(px)
+                    if v > 2 and v % 4:
+                        offgrid.append((n, m.group(0).strip()))
+                        break
         if EMOJI.search(line):
             emoji_lines.append(n)
-        for m in OFFGRID_TW.finditer(line):
-            v = float(m.group(1))
-            if v > 2 and v % 4:
-                offgrid.append((n, m.group(0)))
-        for m in OFFGRID_CSS.finditer(line):
-            for px in re.findall(r"(?<![\w.#-])(\d+(?:\.\d+)?)px", m.group(1)):
-                v = float(px)
-                if v > 2 and v % 4:
-                    offgrid.append((n, m.group(0).strip()))
-                    break
 
     if emoji_lines:
         add("emoji", E if len(emoji_lines) > 2 else W, emoji_lines[0],
@@ -197,15 +322,15 @@ def scan_file(path):
     if len(sizes) > 6:
         add("size-sprawl", W, 1, "%d distinct font sizes" % len(sizes),
             "at most six sizes from one ratio")
-    blur = len(re.findall(r"backdrop-blur|backdrop-filter\s*:\s*blur", text))
+    blur = len(re.findall(r"backdrop-blur|(?:backdrop-filter|backdropFilter)\s*:\s*['\"]?blur", text))
     if blur > 2:
         add("glass", W, 1, "backdrop blur used %d times" % blur,
             "solid surfaces; blur only behind one floating layer")
-    big_r = len(re.findall(r"\brounded-(?:2xl|3xl)\b|border-radius\s*:\s*(?:1[6-9]|[23]\d)px", text))
+    big_r = len(re.findall(r"\brounded-(?:2xl|3xl)\b|(?:border-radius|borderRadius)\s*:\s*['\"]?(?:1[6-9]|[23]\d)px", text))
     if big_r >= 8:
         add("radius-monotony", W, 1, "large radius repeated %d times" % big_r,
             "one radius decision from the Voice; nested radius = outer - padding")
-    pills = len(re.findall(r"\brounded-full\b|border-radius\s*:\s*(?:9999px|999px|50rem)", text))
+    pills = len(re.findall(r"\brounded-full\b|(?:border-radius|borderRadius)\s*:\s*['\"]?(?:9999px|999px|50rem)", text))
     if pills > 4:
         add("pill-overload", E if pills >= 5 else W, 1, "fully rounded pill shape used %d times (CMP-022)" % pills,
             "one radius decision; pills only for tags and toggles, maximum 2 per screen")
@@ -218,7 +343,7 @@ def scan_file(path):
             "monotonous centered hero stack with floating pill capsule (LAY-018)",
             "use an asymmetric start-aligned layout or split editorial composition", m_hero.group(0)[:80])
 
-    # Tagline pill capsule with or without nested child spans
+    # Tagline pill capsule with explicit eyebrow markers (•, //, STANDAR, SAAS) rather than benign version chips.
     for m in re.finditer(r"rounded-full[^>]*>[\s\S]{0,250}?(?:STANDAR|MULTI-TENANT|SAAS|\b[A-Z0-9_\/-]{4,}\s*\/\/\s*[A-Z0-9_\/-]{4,})[\s\S]{0,100}?<\/(?:div|span)>", text, re.I):
         if len(m.group(0)) < 350:
             ln = text[:m.start()].count("\n") + 1
@@ -226,7 +351,7 @@ def scan_file(path):
                 add("pill-tagline", E, ln, "floating pill tagline capsule above headline (CMP-015)",
                     "unbordered sentence-case text eyebrow or integrate context directly into headline", m.group(0)[:80])
 
-    m_pill = re.search(r"rounded-full[^>]*>\s*(?:[•·\|\/\*]\s*)?[A-Z0-9_\s\/-]{3,80}\s*</", text, re.I)
+    m_pill = re.search(r"rounded-full[^>]*>\s*(?:[•·\|\/\*]\s*[A-Z0-9_\s\/-]{3,80}|[A-Z0-9_-]{3,}\s*//\s*[A-Z0-9_-]{3,})\s*</", text, re.I)
     if m_pill and not any(f["rule"] == "pill-tagline" for f in findings):
         ln = text[:m_pill.start()].count("\n") + 1
         add("pill-tagline", E, ln, "floating pill tagline capsule above headline (CMP-015)",
@@ -243,11 +368,11 @@ def scan_file(path):
             "%d generic white rounded cards with light borders/shadows (LAY-014)" % white_cards,
             "declare an authentic archetype (e.g. Technical Ledger, Deep Space Obsidian, Swiss High-Contrast); avoid generic white boxes on light-gray background")
 
-    # Multiline Symmetric 4/5 KPI Card Strip (LAY-017): parent grid-cols-4/5 with child rounded cards and no col-span anchor
+    # Multiline Symmetric 4/5 KPI Card Strip (LAY-017)
     for m_kpi in re.finditer(r"\b(?:md:|lg:|xl:)?grid-cols-(?:4|5)\b[\s\S]{0,650}", text, re.I):
         window = m_kpi.group(0)
         if not re.search(r"\bcol-span-(?:2|3|4|5|6|7|8)\b", window):
-            card_children = len(re.findall(r"\brounded-(?:lg|xl|2xl|3xl)\b", window))
+            card_children = len(re.findall(r"\brounded-(?:lg|xl|2xl|3xl)\b[^\"'>]*(?:p-|border|bg-|shadow)", window))
             if card_children >= 2 and not any(f["rule"] == "symmetric-kpi-strip" for f in findings):
                 ln = text[:m_kpi.start()].count("\n") + 1
                 add("symmetric-kpi-strip", E, ln,
@@ -255,20 +380,26 @@ def scan_file(path):
                     "rank the metrics: let the one that matters lead (wider, alone, or as a chart) and set the rest as a quiet ledger row",
                     window.splitlines()[0][:80])
 
-    # Multiline Symmetric 3-Card Triad (LAY-008): parent grid-cols-3 with >=3 rounded card boxes and no col-span differentiation
+    # Multiline Symmetric 3-Card Triad (LAY-008)
     for m_tri in re.finditer(r"\b(?:md:|lg:)?grid-cols-3\b[\s\S]{0,800}", text, re.I):
         window = m_tri.group(0)
         first_line = window.splitlines()[0]
         if "tablist" in first_line or "<dl" in first_line:
             continue
         if not re.search(r"\bcol-span-(?:2|4|6|8)\b", window):
-            tri_cards = len(re.findall(r"\brounded-(?:xl|2xl|3xl)\b", window))
+            tri_cards = len(re.findall(r"\brounded-(?:xl|2xl|3xl)\b[^\"'>]*(?:p-|border|bg-|shadow)", window))
             if tri_cards >= 3 and not any(f["rule"] == "symmetric-triad" for f in findings):
                 ln = text[:m_tri.start()].count("\n") + 1
                 add("symmetric-triad", W, ln,
                     "symmetrical 3-card triad without role differentiation (LAY-008)",
                     "let the content ranking decide: a comparison table, master-detail split, or one lead item with the rest secondary",
                     first_line[:80])
+
+    # Multiline JSX/HTML generic action button detection
+    for m_btn in re.finditer(r"<(?:button|a)\b[^>]*>\s*(?:Submit|Click here|OK)\s*</(?:button|a)>", text, re.I):
+        ln = text[:m_btn.start()].count("\n") + 1
+        if not any(f["rule"] == "generic-button" and f["line"] == ln for f in findings):
+            add("generic-button", I, ln, "generic button label", "verb + object, e.g. 'Simpan data siswa'", m_btn.group(0)[:80])
 
     tactile_rx = re.compile(
         r"cubic-bezier\(0\.16,\s*1,\s*0\.3,\s*1\)|layoutId|useSpring|useAnimationControls|"
@@ -283,9 +414,9 @@ def scan_file(path):
             "no motion primitives found in an interactive screen",
             "check the renders: add motion only where a state change is otherwise hard to follow (ui-motion-recipes.md)")
 
-    stats["motion"] = bool(re.search(r"transition|animation|@keyframes|animate-|motion\.", text))
+    stats["motion"] = bool(re.search(r"(?:transition\s*:|@keyframes\b|\banimate-(?:pulse|ping|bounce|spin)|\bmotion\.)", text))
     stats["tactile_motion"] = has_tactile
-    stats["reduced"] = bool(re.search(r"prefers-reduced-motion|motion-reduce:|motion-safe:|"
+    stats["reduced"] = bool(re.search(r"@media\s*\([^)]*prefers-reduced-motion|motion-reduce:|motion-safe:|"
                                       r"useReducedMotion|reducedMotion", text))
     stats["interactive"] = bool(re.search(r"<button|<a\s|<input|onClick", text))
     stats["focus"] = bool(re.search(r"focus-visible|:focus|focus:", text))
@@ -360,13 +491,14 @@ def main(argv):
     def project(rule, level, msg, fix):
         findings.append({"file": "(project)", "line": 0, "rule": rule, "level": level,
                          "message": msg, "fix": fix, "sample": ""})
-    if agg["motion"] and not agg["reduced"]:
+    all_svg = all(f.lower().endswith(".svg") for f in files)
+    if not all_svg and agg["motion"] and not agg["reduced"]:
         project("no-reduced-motion", W, "motion present but no reduced-motion handling",
                 "add the global prefers-reduced-motion guard")
-    if agg["interactive"] and not agg["focus"]:
+    if not all_svg and agg["interactive"] and not agg["focus"]:
         project("no-focus-style", W, "interactive elements but no focus styles found",
                 "add a visible :focus-visible ring")
-    if not agg["tokens"]:
+    if not all_svg and not agg["tokens"]:
         project("no-tokens", W, "no design tokens found (custom properties or theme)",
                 "lock tokens before components: references/tokens.md")
 

@@ -65,7 +65,7 @@ An animated CSS underline that signals studio quality at once:
   background: currentColor;
   transform: scaleX(0);
   transform-origin: right;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .craft-link:hover::after,
 .craft-link:focus-visible::after {
@@ -83,7 +83,7 @@ Avoid cheap color filters; use a subtle zoom inside an `overflow: hidden` contai
 }
 .craft-media-frame img,
 .craft-media-frame video {
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
 }
 .craft-media-frame:hover img,

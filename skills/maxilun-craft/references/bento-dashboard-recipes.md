@@ -88,7 +88,7 @@ export function EduCoreDashboardView() {
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span className="text-xs font-mono uppercase tracking-wider text-stone-400">SMA Negeri 1 EduCore Jakarta &bull; Node ID: CBT-JKT-01</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-stone-100 mt-1">
+          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-stone-100 mt-1 text-balance">
             Pusat Kendali Asesmen & Administrasi
           </h1>
           <p className="text-sm text-stone-400 mt-0.5">
@@ -218,7 +218,7 @@ export function EduCoreDashboardView() {
         {/* === CARD 2: QUICK ACTION & OPERATIONAL DECK (4 cols) === */}
         <section className="lg:col-span-4 rounded-xl bg-stone-800/60 border border-stone-800 p-6 flex flex-col justify-between">
           <div>
-            <h2 className="text-sm font-semibold text-stone-200 tracking-tight">Tindakan Cepat & Telemetri</h2>
+            <h2 className="text-sm font-semibold text-stone-200 tracking-tight text-balance">Tindakan Cepat & Telemetri</h2>
             <p className="text-xs text-stone-400 mt-0.5">Operasional pengawas ruang ujian</p>
 
             <ul className="mt-4 space-y-2">
@@ -316,7 +316,7 @@ export function EduCoreDashboardView() {
         {/* === CARD 4: ASYMMETRIC METRIC SUMMARY POD (4 cols) === */}
         <section className="lg:col-span-4 rounded-xl bg-stone-800/60 border border-stone-800 p-6 flex flex-col justify-between">
           <div>
-            <h2 className="text-sm font-semibold text-stone-200 tracking-tight">Ringkasan Metrik Kunci</h2>
+            <h2 className="text-sm font-semibold text-stone-200 tracking-tight text-balance">Ringkasan Metrik Kunci</h2>
             <p className="text-xs text-stone-400 mt-0.5">Indikator kinerja pedagogis</p>
 
             <div className="mt-4 space-y-4">

@@ -112,7 +112,13 @@ class FSTools:
         for p in base.glob(glob_pat):
             if any(part in SKIP_DIRS or part.startswith("_maxilun_backup") for part in p.parts):
                 continue
-            matches.append(str(p.relative_to(base)).replace("\\", "/"))
+            try:
+                rp = p.resolve()
+                if rp != self.root and self.root not in rp.parents:
+                    continue
+                matches.append(str(rp.relative_to(base)).replace("\\", "/"))
+            except (OSError, ValueError):
+                continue
             if len(matches) >= GLOB_HIT_CAP:
                 break
 
@@ -133,10 +139,13 @@ class FSTools:
             if not f.is_file() or f.suffix not in GREP_SUFFIXES or any(part in SKIP_DIRS for part in f.parts):
                 continue
             try:
-                lines = f.read_text(encoding="utf-8", errors="ignore").splitlines()
+                rf = f.resolve()
+                if rf != self.root and self.root not in rf.parents:
+                    continue
+                lines = rf.read_text(encoding="utf-8", errors="ignore").splitlines()
             except OSError:
                 continue
-            rel = self._display(f)
+            rel = self._display(rf)
             for idx, line in enumerate(lines, 1):
                 if regex.search(line):
                     hits.append(f"{rel}:{idx}: {line.strip()[:100]}")

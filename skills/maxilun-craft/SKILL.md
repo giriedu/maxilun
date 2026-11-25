@@ -68,7 +68,7 @@ Removing decoration is not the goal. A grey, tidy, anonymous screen is the secon
 
 ## Skill Contract
 
-- **Owns**: everything rendered. Visual structure and navigation, design tokens, typography, colour, component and data states, interface words, UI micro-motion, design accessibility, the `scripts/slopscan.py` gate, SVG icon resolution (`scripts/icon_lookup.py`), SVG logo suites (`logo-mark.svg`, `logo-horizontal.svg`, `logo-wordmark.svg`, `logo-mono-light.svg`, `logo-mono-dark.svg`, `favicon.svg`), and the print-ready `Brand-Guidelines.pdf`.
+- **Owns**: everything rendered. Visual structure and navigation, design tokens, typography, colour, component and data states, interface words, UI micro-motion, design accessibility, the `scripts/slopscan.py` gate, SVG icon resolution (`scripts/icon_lookup.py`), SVG logo suites (`logo-mark.svg`, `logo-horizontal.svg`, `logo-wordmark.svg`, `logo-mono-light.svg`, `logo-mono-dark.svg`, `favicon.svg`), SVG banners/OG mastheads, and the print-ready `Brand-Guidelines.pdf`.
 - **Does not own**: Next.js RSC/Server Action wiring (`maxilun-frontend`), business logic and data access (`maxilun-engineer`), scroll-driven choreography and 3D/WebGL scenes (`maxilun-motion`), long-form copy (`maxilun-content`), technical SEO (`maxilun-seo-audit`), rendered MP4/WebM video (`maxilun-cinecode`).
 - **Inputs**: the stack and files that render the screen, anything already decided (logo, brand colour, tokens, component library, project rule files, UI language), product context (PRD or `docs/DESIGN.md` when present), and at most two analyses from `references/design-md/index.md`.
 - **Outputs**: the Brief, a locked token block, the changed UI files, the scan result before and after, and open questions; or, in Review mode, findings with `file:line`, severity, and exact fix.
@@ -166,7 +166,7 @@ Formulas, ranges, and code for every layer are in `references/tokens.md`. Screen
 ### 4.5 Components and States
 - One radius decision derived from the Voice; nested radius = outer radius − padding. Full pills only for literal tags and toggles; no decorative pill above the headline (`CMP-015`).
 - One icon family, one size, one stroke, coloured by text role. No emoji as icons (`CMP-003`); no icons in pastel rounded squares (`CMP-021`). An icon that only repeats the label beside it can go.
-- Every interactive element has hover, focus-visible, active, and disabled. Every data region has loading, empty, error, and partial. A screen without its empty state is half a screen.
+- Every interactive element has hover, focus-visible, active, and disabled. Every data region covers all 6 states: idle, loading, populated, empty, pending, and error. A screen without its empty state is half a screen.
 - Forms: label above the field and always visible; help text before the error happens; error text says what to do; one primary button per form; typed data is never lost on a failed submit.
 - Tables: text left, numbers right, quiet header, consistent row height, actions at the row end; never zebra plus borders plus hover at once.
 - Charts: type follows the question, one series carries the accent, grid and labels muted, direct labels beat legends.
@@ -206,7 +206,7 @@ Fix at the root as a clean cutover: replace the token block, open the shell, upg
 
 ## 6. Brand Artifacts & Native Surfaces
 
-- **Logo suite and Brand PDF**: build SVG logos on the `64×64` grid, pass the 1-bit monochrome test, and compile the 8-page `Brand-Guidelines.pdf` per `references/brand-logo-guidelines.md`. Output the complete 6-variant suite (`logo-mark.svg`, `logo-horizontal.svg`, `logo-wordmark.svg`, `logo-mono-light.svg`, `logo-mono-dark.svg`, `favicon.svg`).
+- **Logo suite, SVG banners, and Brand PDF**: build SVG logos on the `64×64` grid, pass the 1-bit monochrome test, follow the 3-profile banner standard (Inline Web / Static `<img>` plain `.svg` / Social PNG via `render.py --preset`), and compile the 8-page `Brand-Guidelines.pdf` per `references/brand-logo-guidelines.md`. Output the complete 6-variant logo suite (`logo-mark.svg`, `logo-horizontal.svg`, `logo-wordmark.svg`, `logo-mono-light.svg`, `logo-mono-dark.svg`, `favicon.svg`).
 - **Native platforms**: follow `references/platform-surface-specs.md` for safe-area insets, Dynamic Type, platform materials, and touch targets of 44pt (iOS) / 48dp (Android). Platform conventions outrank web habits on native surfaces.
 - **Design tools over MCP** (Figma-class canvases, Framer): the same loop applies. Write the Brief and tokens first, then apply them through the tool instead of through code.
 

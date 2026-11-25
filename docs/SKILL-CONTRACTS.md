@@ -43,6 +43,8 @@ The primary skill owns the deliverable. Companion skills advise or validate; the
 | `maxilun-ai` | RAG architecture, semantic chunking, hybrid retrieval, prompt regression evals, context caching, and structured tool schemas | general database schema design or non-AI code implementation |
 | `maxilun-game` | game studio multi-engine systems (Unreal, Unity, Godot), gameplay code, deterministic physics, authoritative replication, shader pipeline, and GDD specifications | non-game web/mobile UI design, marketing video rendering, or generic cloud container orchestration |
 | `maxilun-hunt` | adversarial vulnerability hunting, attack surface verification, 7-Question Gate proof triage, reproducible PoC bundles, and scope enforcement | production code fix implementation, defensive crypto/DPoP design, or cloud WAF deployment |
+| `maxilun-n8n` | n8n v1 workflow JSON design, webhook HMAC verification, Code node logic, and AI Agent node integration | application backend REST endpoints outside webhook glue or general container orchestration |
+| `maxilun-figcraft` | FigCraft live desktop MCP vector canvas mutations (`--attach 7979`), frame partitioning, Auto Layout specs, and canvas visual QA | production React/Next.js DOM frontend implementation or native desktop binaries |
 ## Standalone rule
 
 Never require the orchestrator, a local path, a private tool, or another skill to produce the skill's primary output. If an optional companion is unavailable, use a clearly labeled fallback and preserve evidence quality.

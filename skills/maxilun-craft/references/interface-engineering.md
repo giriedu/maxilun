@@ -316,13 +316,15 @@ Dashboards are the area most exposed to AI slop pollution. Automatic generators 
    - *Observability, Cloud, DevTools*: Use a **Master-Detail Inspector** (entity panel on the left, live telemetry and logs on the right).
    - *Clinic & Reservation*: Use a **Timeline / Calendar Slot Matrix** (focus on time slots and the patient queue).
 
-3. **4-State Discipline on Every Dashboard Panel & Table**:
+3. **6-State Discipline on Every Dashboard Panel & Table**:
    - Do not show the dashboard only in its ideal static-data condition.
-   - Every panel and table must have a concrete implementation of the 4 states:
-     1. *Loading State*: Proportional 1:1 geometric skeleton ($\text{CLS}=0$); an empty spinner floating mid-screen is forbidden.
-     2. *Empty State*: A factual reason why there is no data yet + a clear first-action button (for example: *"No transactions yet today · [Create New Transaction]"*).
+   - Every panel and table must have a concrete implementation covering all 6 surface states (`surface-state-topology.md`):
+     1. *Idle State*: Unsubmitted/pre-filter default view before async load.
+     2. *Loading State*: Proportional 1:1 geometric skeleton ($\text{CLS}=0$); an empty spinner floating mid-screen is forbidden.
      3. *Populated State*: Real data with right-aligned `tabular-nums` figures and long text that is safe from overflow (`truncate` + `min-w-0`).
-     4. *Error State*: An inline failure message that offers a fix + a *Retry* button.
+     4. *Empty State*: A factual reason why there is no data yet + a clear first-action button (for example: *"No transactions yet today · [Create New Transaction]"*).
+     5. *Pending / Mutating State*: Explicit disabled/optimistic inflight indicator during submit or refetch.
+     6. *Error State*: An inline failure message that offers a fix + a *Retry* button.
 
 4. **Accessible Status Indicators (Anti-Color-Only Dot `CLR-004`)**:
    - A green/yellow/red dot must never stand alone. Always pair it with semantic status text (`Active`, `Syncing`, `Degraded`, `Offline`) and a supporting icon.

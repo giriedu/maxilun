@@ -43,7 +43,7 @@ GitHub "About" (deskripsi di sidebar) **tidak bisa diset via file** — harus ma
 1. Buka: https://github.com/giriedu/maxilun
 2. Klik ikon ⚙️ (gear) di sebelah kanan "About"
 3. Isi form:
-   - **Description**: `AI engineering co-pilot — 25 skills (24 specialists), 15 agents, 100 UI design references, graph code discovery, programmatic motion video & evidence-based orchestration`
+   - **Description**: `AI engineering co-pilot — 27 skills (26 specialists), 21 agents, 100 UI design references, graph code discovery, programmatic motion video & evidence-based orchestration`
    - **Website**: `https://skills.sh/giriedu/maxilun`
    - **Topics**: `ai-skills`, `claude-code`, `antigravity`, `cursor`, `codex`, `zed`, `termul`, `knowledge-graph`, `purity-engine`, `motion-design`, `programmatic-video`, `design-system`, `openapi`, `project-scaffold`
 4. Klik "Save changes"

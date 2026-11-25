@@ -15,7 +15,7 @@ Maxilun menyediakan **21 Autonomous Agents**: **1 orchestrator** (`maxilun-orche
 
 ---
 
-## 2. Peta 6 Macro-Role Agents & 24 Spesialis
+## 2. Peta Arsitektur Agen (1 Orchestrator + 20 Spesialis)
 
 ```mermaid
 flowchart TD
@@ -49,14 +49,14 @@ flowchart TD
 
 | Nama Agent | Spesialis yang Dibungkus | Izin Tool (*Whitelist*) | Tanggung Jawab Utama |
 |---|---|---|---|
-| **`maxilun-orchestrator`** | `maxilun` | `Read`, `Grep`, `Glob`, `Bash` | Triase reversibilitas (Type 1 vs Type 2), penunjukan pemilik utama, orkestrasi Wave 1 $\rightarrow$ Wave 2 $\rightarrow$ Wave 3, dan gate bukti nyata. |
-| **`maxilun-scout`** | `maxilun-knowledge-graph`, `maxilun-insight`, `maxilun-seo-audit` | **Strict Read-Only**: `Read`, `Grep`, `Glob`, `Bash` (hanya CLI graf, tanpa edit) | Pemetaan graf simbol (`defOf:`, `callsIn:`), pencarian akar masalah, audit radius dampak edit, dan crawlability SEO tanpa risiko mengubah file. |
-| **`maxilun-architect`** | `maxilun-architect`, `maxilun-data`, `maxilun-sentinel`, `maxilun-docsmith` | `Read`, `Grep`, `Glob`, `Write`, `Edit` (kontrak & docs) | Batas modul dalam (*Deep Modules*), migrasi skema zero-downtime, threat modeling OWASP/STRIDE, kontrak OpenAPI 3.1, dan ADR. |
-| **`maxilun-maker`** | `maxilun-engineer`, `maxilun-frontend`, `maxilun-desktop`, `maxilun-mobile`, `maxilun-iot`, `maxilun-network`, `maxilun-game` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Payung makro eksekusi kode produksi lintas-surface dengan diff minimal. |
-| **`maxilun-studio`** | `maxilun-craft`, `maxilun-motion`, `maxilun-cinecode`, `maxilun-diagrams`, `maxilun-content` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Payung makro desain visual, motion graphics, video programatik Remotion, dan diagram Mermaid. |
-| **`maxilun-verifier`** | `maxilun-verify`, `maxilun-deploy` | `Read`, `Grep`, `Glob`, `Bash` (**Tanpa izin edit kode**) | Eksekusi test runner (unit, E2E Playwright), typecheck, audit aksesibilitas WCAG, hardening Docker non-root, dan pipeline CI/CD. |
-| **`maxilun-coder-frontend`** | `maxilun-frontend`, `maxilun-engineer` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Next.js 15 App Router, React 19 RSC vs Client boundaries, Server Actions, serialisasi Flight, client state, dan zero-leak layout. |
-| **`maxilun-coder-backend`** | `maxilun-engineer`, `maxilun-data`, `maxilun-sentinel`, `maxilun-docsmith` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | API REST / OpenAPI 3.1, skema 3NF relasional, transaksi ACID, idempotensi webhook, timing-safe crypto, dan RFC 9457 errors. |
+| **`maxilun-orchestrator`** | `maxilun` | `Read`, `Grep`, `Glob`, `Bash`, `mcp__maxilun-kg__*` | Triase reversibilitas (Type 1 vs Type 2), penunjukan pemilik utama, orkestrasi Wave 1 $\rightarrow$ Wave 2 $\rightarrow$ Wave 3, dan gate bukti nyata. |
+| **`maxilun-scout`** | `maxilun-knowledge-graph`, `maxilun-insight`, `maxilun-seo-audit` | **Strict Read-Only**: `Read`, `Grep`, `Glob`, `mcp__maxilun-kg__*` (tanpa Bash/edit) | Pemetaan graf simbol (`defOf:`, `callsIn:`), pencarian akar masalah, audit radius dampak edit, dan crawlability SEO tanpa risiko mengubah file. |
+| **`maxilun-architect`** | `maxilun-architect`, `maxilun-data`, `maxilun-sentinel`, `maxilun-docsmith`, `maxilun-scaffold`, `maxilun-ai` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `mcp__maxilun-kg__*` (kontrak & docs) | Batas modul dalam (*Deep Modules*), migrasi skema zero-downtime, threat modeling OWASP/STRIDE, kontrak OpenAPI 3.1, arsitektur RAG, dan ADR. |
+| **`maxilun-maker`** | `maxilun-engineer`, `maxilun-frontend`, `maxilun-desktop`, `maxilun-mobile`, `maxilun-iot`, `maxilun-network`, `maxilun-game` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash`, `mcp__maxilun-kg__*` | Payung makro eksekusi kode produksi lintas-surface dengan diff minimal. |
+| **`maxilun-studio`** | `maxilun-craft`, `maxilun-motion`, `maxilun-cinecode`, `maxilun-diagrams`, `maxilun-content` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash`, `mcp__maxilun-kg__*` | Payung makro desain visual, motion graphics, video programatik Remotion, dan diagram Mermaid. |
+| **`maxilun-verifier`** | `maxilun-verify`, `maxilun-deploy` | `Read`, `Grep`, `Glob`, `Bash`, `mcp__maxilun-kg__*` (**Tanpa izin edit kode**) | Eksekusi test runner (unit, E2E Playwright), typecheck, audit aksesibilitas WCAG, hardening Docker non-root, dan pipeline CI/CD. |
+| **`maxilun-coder-frontend`** | `maxilun-frontend`, `maxilun-engineer` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash`, `mcp__maxilun-kg__*` | Next.js 15 App Router, React 19 RSC vs Client boundaries, Server Actions, serialisasi Flight, client state, dan zero-leak layout. |
+| **`maxilun-coder-backend`** | `maxilun-engineer`, `maxilun-data`, `maxilun-ai`, `maxilun-sentinel` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash`, `mcp__maxilun-kg__*` | API REST / OpenAPI 3.1, skema 3NF relasional, transaksi ACID, idempotensi webhook, RAG hybrid retrieval, timing-safe crypto, dan RFC 9457 errors. |
 | **`maxilun-coder-mobile`** | `maxilun-mobile`, `maxilun-engineer` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Native Android (Kotlin Compose), iOS (Swift SwiftUI), Flutter, React Native, arsitektur offline-first, dan touch ergonomics $\ge 44\text{pt}$. |
 | **`maxilun-coder-systems`** | `maxilun-desktop`, `maxilun-iot`, `maxilun-network` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Native Desktop Win32/WPF/Qt/PowerBuilder, firmware IoT ESP32 FreeRTOS (zero-heap ISR), dan enterprise MikroTik RouterOS scripts. |
 | **`maxilun-ui-designer`** | `maxilun-craft` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | 100 sistem desain brand nyata, protokol buka kunci desain (*Clean Cutover*), tata letak asimetris, tipografi display solid, dan anti-slop. |
@@ -69,6 +69,7 @@ flowchart TD
 | **`maxilun-security-auditor`** | `maxilun-hunt`, `maxilun-sentinel` | **Read-Only**: `Read`, `Grep`, `Glob`, `Bash` (PoC, tanpa izin edit kode) | Audit keamanan adversarial berbasis coverage ledger, 7-Question Gate, PoC reproducible, dan verdict `confirmed` / `needs_validation` / `rejected`. |
 | **`maxilun-automator`** | `maxilun-n8n`, `maxilun-engineer`, `maxilun-deploy`, `maxilun-sentinel` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Otomasi alur kerja n8n v1, pipa webhook HMAC anti-tamper, node kode JS/Python, orkestrasi visual AI Agent, dan glue-code Next.js/PHP. |
 | **`maxilun-coder-ai`** | `maxilun-ai`, `maxilun-engineer`, `maxilun-sentinel` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Rekayasa aplikasi AI & LLM: arsitektur hybrid RAG deterministik, semantic chunking, prompt regression evals, LLM-as-a-judge rubrics, context caching hygiene, dan structured JSON tool schemas. |
+| **`maxilun-figcraft`** | `maxilun-figcraft`, `maxilun-craft` | `Read`, `Grep`, `Glob`, `Write`, `Edit`, `Bash` | Rekayasa kanvas live FigCraft desktop via MCP (`--attach 7979`), partisi mutasi batch anti-konflik, Auto Layout presisi, dan penegakan Purity Gate. |
 ---
 
 ## 3. Cara Menggunakan Agen di Editor AI
@@ -105,7 +106,7 @@ python harness/cli.py run "Audit keamanan endpoint login dan buktikan dengan tes
 
 ## 4. Persona Kustom & Alias Panggilan Tim (`maxilun alias`)
 
-Maxilun mendukung pemberian nama panggilan akrab (*custom persona aliases*) untuk ke-20 agen otonom agar kolaborasi terasa seperti bekerja bersama tim rekayasa nyata, tanpa mengubah ID kanonikal sistem (*Canonical Anchor*).
+Maxilun mendukung pemberian nama panggilan akrab (*custom persona aliases*) untuk ke-21 agen otonom agar kolaborasi terasa seperti bekerja bersama tim rekayasa nyata, tanpa mengubah ID kanonikal sistem (*Canonical Anchor*).
 
 ### A. Preset Siap Pakai
 

@@ -32,12 +32,13 @@
     },
     {
       "title": "Quality & Operations",
-      "description": "Automated verification, root-cause diagnostics, CI/CD pipelines, and technical documentation.",
+      "description": "Automated verification, root-cause diagnostics, CI/CD pipelines, n8n workflow automation, and technical documentation.",
       "skills": [
         "maxilun-verify",
         "maxilun-insight",
         "maxilun-deploy",
-        "maxilun-docsmith"
+        "maxilun-docsmith",
+        "maxilun-n8n"
       ]
     },
     {

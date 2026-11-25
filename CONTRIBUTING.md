@@ -39,7 +39,7 @@ metadata:
 
 ### 3. Core Rules block + domain deltas
 
-Every SKILL.md must contain the canonical `CORE-RULES` block, copied verbatim from `skills/maxilun/SKILL.md` (between the `<!-- CORE-RULES:START -->` and `<!-- CORE-RULES:END -->` markers). CI compares the block across all 18 skills and fails on drift.
+Every SKILL.md must contain the canonical `CORE-RULES` block, copied verbatim from `skills/maxilun/SKILL.md` (between the `<!-- CORE-RULES:START -->` and `<!-- CORE-RULES:END -->` markers). CI compares the block across all 27 skills and fails on drift.
 
 After the block, declare only domain deltas:
 
@@ -72,7 +72,7 @@ Add the new skill name to `EXPECTED_SKILLS` list in `scripts/test-suite.py`. PRs
 
 There is no `rules/` directory. Shared material lives inside the orchestrator skill so it survives `npx skills add`, which copies skill folders only.
 
-1. Rule applies to every skill → edit the `CORE-RULES` block in `skills/maxilun/SKILL.md`, then copy it verbatim into the other 17 skills.
+1. Rule applies to every skill → edit the `CORE-RULES` block in `skills/maxilun/SKILL.md`, then copy it verbatim into the other 26 skills.
 2. Rule needs explanation longer than the block → add or edit a file in `skills/maxilun/references/` and link it from the block or from the relevant section.
 3. Rule applies to one domain only → put it in that skill's `## 1. Engine Overrides` section.
 
@@ -88,7 +88,7 @@ python scripts/test-suite.py
 
 The test suite validates:
 - Frontmatter delimiters and required name, description, version, and license fields
-- All 18 skills present and loadable
+- All 27 skills and 21 agents present and loadable
 - Purity engine compliance (no banned cliches)
 - Installer integrity
 - Cross-platform script validity

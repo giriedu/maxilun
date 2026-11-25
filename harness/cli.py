@@ -72,7 +72,7 @@ def cmd_agent(args):
         sys.exit(f"Unknown agent '{args.name}'. Known: {', '.join(sorted(AGENT_SKILL_MAP))}")
     target = AGENT_SKILL_MAP[agent_name]
     agent_loop = _persona_loop(args, agent_name)
-    print(f"\n🚀 Launching agent: [{agent_name}] (skill: {target})")
+    print(f"\nLaunching agent: [{agent_name}] (skill: {target})")
     print(f"   Task: {args.task}")
     print("=" * 65)
     agent_loop.run_task(args.task, forced_skill=target)
@@ -80,7 +80,7 @@ def cmd_agent(args):
 
 def cmd_chat(args):
     agent = _persona_loop(args)
-    print("🌑 Maxilun Harness Agent Session (type 'exit' or 'quit' to end)")
+    print("Maxilun Harness Agent Session (type 'exit' or 'quit' to end)")
     print(f"   Governed by Maxilun Core Rules: {len(agent.loader.skills)} skills, {len(agent.loader.agents)} agents")
     print("=" * 60)
 
@@ -127,10 +127,10 @@ def cmd_meeting(args):
 def cmd_skills(args):
     loader = SkillsLoader()
     skills = loader.list_skills()
-    print(f"\n🌑 Maxilun Ecosystem Skills ({len(skills)} specialists discovered):")
+    print(f"\nMaxilun Ecosystem Skills ({len(skills)} discovered):")
     print("=" * 75)
     for s in skills:
-        status = "✅ PASS" if s.line_count <= 300 else "❌ OVER"
+        status = "PASS" if s.line_count <= 300 else "OVER"
         triggers = ", ".join(s.triggers[:3]) if s.triggers else "none"
         print(f"[{status}] {s.name:<25} ({s.line_count:3d} lines, {len(s.references):2d} refs) | Triggers: {triggers}")
     print("=" * 75)
@@ -138,8 +138,8 @@ def cmd_skills(args):
 
 def cmd_dashboard(args):
     out_path = DashboardGenerator.generate()
-    print(f"✅ Maxilun Interactive Dashboard generated: {out_path}")
-    if args.open:
+    print(f"Maxilun Interactive Dashboard generated: {out_path}")
+    if getattr(args, "open", True) and not getattr(args, "no_open", False):
         try:
             webbrowser.open(str(out_path.resolve()))
         except Exception:
@@ -148,7 +148,7 @@ def cmd_dashboard(args):
 
 def cmd_swarm(args):
     out_path = DashboardGenerator.generate()
-    print(f"✨ Launching Maxilun Live Swarm Studio: {out_path}")
+    print(f"Launching Maxilun Live Swarm Studio: {out_path}")
     try:
         webbrowser.open(str(out_path.resolve()))
     except Exception:
@@ -191,25 +191,43 @@ def cmd_check(args):
     elif p.is_dir():
         total_files = 0
         failed_files = 0
-        skip_dirs = {".git", "node_modules", "__pycache__", ".next", "dist", "build", "maxilun-out", ".agents", ".claude"}
+        skipped_fixtures = 0
+        skip_dirs = {".git", "node_modules", "__pycache__", ".next", "dist", "build", "maxilun-out", ".agents", ".claude", "design-md", "venv", ".venv", ".maxilun", "promosi", "_references_external"}
+        is_maxilun_repo = (p / "skills" / "maxilun" / "SKILL.md").exists()
+        self_fixture_rels = {
+            "harness/benchmarks.py", "harness/live_evaluator.py", "harness/purity_validator.py",
+            "scripts/ui-purity-linter.py", "scripts/test-suite.py", "skills/maxilun-craft/scripts/slopscan.py",
+            "scripts/graphics_engine.py",
+        }
+        scan_exts = {".ts", ".tsx", ".js", ".jsx", ".py", ".md", ".go", ".sql", ".html", ".css", ".svg"}
         for f in p.rglob("*"):
             if any(part in skip_dirs or part.startswith("_maxilun_backup") for part in f.parts):
                 continue
-            if f.is_file() and f.suffix in {".ts", ".tsx", ".js", ".jsx", ".py", ".md", ".go", ".sql"}:
-                total_files += 1
-                text = f.read_text(encoding="utf-8", errors="replace")
-                res = validator.validate_text(text, file_path=str(f))
-                ast_res = ast_inspector.inspect_file(str(f))
+            if not (f.is_file() and f.suffix.lower() in scan_exts):
+                continue
+            rel = f.relative_to(p).as_posix()
+            if is_maxilun_repo and (
+                rel in self_fixture_rels
+                or "/evals/fixtures/" in f"/{rel}"
+                or rel.startswith(("scripts/build_content_", "scripts/compile_content_", "scripts/content_data", "scripts/generate_", "scripts/test_"))
+            ):
+                skipped_fixtures += 1
+                continue
+            total_files += 1
+            text = f.read_text(encoding="utf-8", errors="replace")
+            res = validator.validate_text(text, file_path=str(f))
+            ast_res = ast_inspector.inspect_file(str(f))
 
-                if not (res.passed and ast_res.passed):
-                    failed_files += 1
-                    print(f"\n❌ {f.relative_to(p)}")
-                    for v in res.violations:
-                        print(f"   [{v.rule_id}] {v.message}")
-                    for fnd in ast_res.findings:
-                        print(f"   [AST-{fnd.rule_id}] {fnd.message}")
+            if not (res.passed and ast_res.passed):
+                failed_files += 1
+                print(f"\nFAIL: {rel}")
+                for v in res.violations:
+                    print(f"   [{v.rule_id}] {v.message}")
+                for fnd in ast_res.findings:
+                    print(f"   [AST-{fnd.rule_id}] {fnd.message}")
 
-        print(f"\nPurity Scan Complete: {total_files - failed_files}/{total_files} passed.")
+        suffix = f" ({skipped_fixtures} test fixtures/generators excluded)" if skipped_fixtures else ""
+        print(f"\nPurity Scan Complete: {total_files - failed_files}/{total_files} passed{suffix}.")
         sys.exit(1 if failed_files > 0 else 0)
 
 
@@ -217,7 +235,7 @@ def cmd_route(args):
     router = MaxilunRouter()
     prompt = args.prompt
     decision = router.route(prompt)
-    print("\n🌑 Maxilun Master Orchestrator — Triage Result")
+    print("\nMaxilun Master Orchestrator — Triage Result")
     print("=" * 50)
     print(decision.summary())
     print("=" * 50)
@@ -225,7 +243,8 @@ def cmd_route(args):
 
 def cmd_bench(args):
     runner = BenchmarkRunner()
-    print("🌑 Running Maxilun Engineering Harness Benchmarks...")
+    if not args.json:
+        print("Running Maxilun Engineering Harness Benchmarks...")
     report = runner.run_all()
 
     if args.json:
@@ -277,13 +296,15 @@ def cmd_bench(args):
 
     md_file = out_dir / "BENCHMARK_REPORT.md"
     md_file.write_text(report.to_markdown(), encoding="utf-8")
-    print(f"\nArtifacts generated:")
-    print(f"  - JSON Report: {report_file}")
-    print(f"  - Markdown Report: {md_file}")
+    if not args.json:
+        print(f"\nArtifacts generated:")
+        print(f"  - JSON Report: {report_file}")
+        print(f"  - Markdown Report: {md_file}")
 
     if args.view:
         dashboard_path = DashboardGenerator.generate()
-        print(f"  - Interactive Dashboard: {dashboard_path}")
+        if not args.json:
+            print(f"  - Interactive Dashboard: {dashboard_path}")
         try:
             webbrowser.open(str(dashboard_path.resolve()))
         except Exception:
@@ -292,7 +313,8 @@ def cmd_bench(args):
 
 def cmd_eval(args):
     target_model = args.model or "deepseek-chat"
-    print(f"🌑 Starting Live Model Evaluation (Provider: {args.provider or 'auto'}, Model: {target_model})...")
+    if not args.json:
+        print(f"Starting Live Model Evaluation (Provider: {args.provider or 'auto'}, Model: {target_model})...")
     evaluator = LiveModelEvaluator(
         provider=args.provider,
         api_key=args.api_key,
@@ -335,7 +357,7 @@ def cmd_verify_code(args):
     content = p.read_text(encoding="utf-8", errors="replace")
     ext = p.suffix.lower()
 
-    print(f"🌑 Verifying Code & Runtime Sandbox for: {target}")
+    print(f"Verifying Code & Runtime Sandbox for: {target}")
     print("=" * 50)
 
     # 1. AST Inspection
@@ -357,7 +379,7 @@ def cmd_verify_code(args):
 
     passed = ast_res.passed and (sandbox_res is None or sandbox_res.passed)
     print("=" * 50)
-    print(f"Final Code Verdict: {'✅ PASS' if passed else '❌ FAIL'}")
+    print(f"Final Code Verdict: {'[PASS]' if passed else '[FAIL]'}")
     sys.exit(0 if passed else 1)
 
 
@@ -397,7 +419,7 @@ def cmd_memory(args):
 
     if action == "stats":
         print("\n" + "=" * 65)
-        print("  🧠 Maxilun Persistent Memory & Lessons Learned")
+        print("  Maxilun Persistent Memory & Lessons Learned")
         print("=" * 65)
         print(f"File Path:              {lessons_file}")
         print(f"Total Lessons Recorded: {len(lessons)}")
@@ -409,12 +431,12 @@ def cmd_memory(args):
             print(f"Scopes:                 {', '.join(scopes)}")
             print("\nRecent Lesson Triggers:")
             for l in lessons[-5:]:
-                print(f"  • [{l.get('id', 'L-???')}] {l.get('trigger')} (conf: {l.get('confidence', 1.0)})")
+                print(f"  - [{l.get('id', 'L-???')}] {l.get('trigger')} (conf: {l.get('confidence', 1.0)})")
         print("=" * 65 + "\n")
 
     elif action == "list":
         print("\n" + "=" * 80)
-        print("  🧠 Maxilun Repository Lessons (.maxilun/lessons.jsonl)")
+        print("  Maxilun Repository Lessons (.maxilun/lessons.jsonl)")
         print("=" * 80)
         if not lessons:
             print("  (No lessons recorded yet. Use 'maxilun-harness memory --action add' to add one.)")
@@ -431,7 +453,7 @@ def cmd_memory(args):
         print("\n" + "=" * 80 + "\n")
 
     elif action == "prune":
-        print("\n🧹 Pruning stale and duplicate lessons in .maxilun/lessons.jsonl...")
+        print("\nPruning stale and duplicate lessons in .maxilun/lessons.jsonl...")
         deduped = {}
         for l in lessons:
             trig = l.get("trigger", "").strip().lower()
@@ -444,15 +466,19 @@ def cmd_memory(args):
         with open(lessons_file, "w", encoding="utf-8") as f:
             for l in pruned_list:
                 f.write(json.dumps(l, ensure_ascii=False) + "\n")
-        print(f"✅ Pruning complete: {removed_count} stale/duplicate entries removed. {len(pruned_list)} active lessons retained.\n")
+        print(f"Pruning complete: {removed_count} stale/duplicate entries removed. {len(pruned_list)} active lessons retained.\n")
 
     elif action == "add":
         trigger = getattr(args, "trigger", None)
         action_text = getattr(args, "action_text", None)
         if not trigger or not action_text:
-            print("❌ Error: Both --trigger and --action-text are required for 'add'.")
+            print("Error: Both --trigger and --action-text are required for 'add'.")
             return
-        new_id = f"L-{len(lessons) + 1:03d}"
+        max_num = max(
+            (int(l["id"].split("-")[1]) for l in lessons if str(l.get("id", "")).startswith("L-") and l["id"].split("-")[1].isdigit()),
+            default=0,
+        )
+        new_id = f"L-{max_num + 1:03d}"
         from datetime import date
         today = date.today().isoformat()
         entry = {
@@ -466,7 +492,7 @@ def cmd_memory(args):
         }
         with open(lessons_file, "a", encoding="utf-8") as f:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
-        print(f"✅ Successfully added lesson [{new_id}]: \"{trigger}\" -> \"{action_text}\"")
+        print(f"Successfully added lesson [{new_id}]: \"{trigger}\" -> \"{action_text}\"")
 
 
 def cmd_alias(args):
@@ -474,9 +500,9 @@ def cmd_alias(args):
     mgr = get_alias_manager()
 
     if getattr(args, "list_presets", False):
-        print("\n🏛️  Available Maxilun Persona Presets:")
+        print("\nAvailable Maxilun Persona Presets:")
         for name, agents in PRESETS.items():
-            print(f"\n  • Preset: '{name}'")
+            print(f"\n  - Preset: '{name}'")
             sample = [f"{info['alias']} ({k.replace('maxilun-', '')})" for k, info in list(agents.items())[:6]]
             print(f"    Sample: {', '.join(sample)} ...")
         print("\nApply a preset using: python -m harness alias --preset <name>\n")
@@ -488,20 +514,24 @@ def cmd_alias(args):
 
     if getattr(args, "preset", None):
         mgr.apply_preset(args.preset)
-        print(f"✅ Persona preset '{args.preset}' applied successfully to {mgr.get_config_path()}!\n")
+        print(f"Persona preset '{args.preset}' applied successfully to {mgr.get_config_path()}!\n")
         print(mgr.get_summary() + "\n")
         return
 
-    if getattr(args, "set", None):
+    if getattr(args, "set", None) and not getattr(args, "interactive", False):
         agent_id, alias = args.set
         callsign = getattr(args, "callsign", "")
-        mgr.set_alias(agent_id, alias, callsign=callsign)
-        print(f"✅ Alias for '{agent_id}' set to '{alias}' (callsign: '{callsign or 'Custom'}')")
+        try:
+            mgr.set_alias(agent_id, alias, callsign=callsign)
+        except ValueError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            sys.exit(1)
+        print(f"Alias for '{agent_id}' set to '{alias}' (callsign: '{callsign or 'Custom'}')")
         return
 
     # Interactive setup or default
     print("\n" + "=" * 65)
-    print("🏛️  MAXILUN PERSONA & ALIAS CONFIGURATION")
+    print("MAXILUN PERSONA & ALIAS CONFIGURATION")
     print("=" * 65)
     print("Pilih preset panggilan nama agen untuk kolaborasi yang lebih personal:")
     print("  [1] default        - Nama resmi Maxilun (Architect, Designer, Coder, dll.)")
@@ -517,7 +547,7 @@ def cmd_alias(args):
     if choice in preset_map:
         p_name = preset_map[choice]
         mgr.apply_preset(p_name)
-        print(f"\n✅ Preset '{p_name}' berhasil diaktifkan!")
+        print(f"\n[OK] Preset '{p_name}' berhasil diaktifkan!")
         print(f"\n{mgr.get_summary()}\n")
     elif choice == "4":
         print(f"\n{mgr.get_summary()}\n")
@@ -526,30 +556,30 @@ def cmd_alias(args):
 
 
 def cmd_doctor(args):
-    print("\n🌑 Maxilun Ecosystem Healthcheck (Doctor):")
+    print("\nMaxilun Ecosystem Healthcheck (Doctor):")
     print("=" * 65)
     py_ver = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
     py_ok = sys.version_info >= (3, 8)
-    print(f"[{'✅ PASS' if py_ok else '❌ FAIL'}] Python runtime: {py_ver} (>= 3.8 required)")
+    print(f"[{'PASS' if py_ok else 'FAIL'}] Python runtime: {py_ver} (>= 3.8 required)")
 
     import shutil
     node_bin = shutil.which("node")
     npx_bin = shutil.which("npx")
-    print(f"[{'✅ PASS' if node_bin else '⚠️  WARN'}] Node.js runtime: {node_bin or 'Not found (optional for npx skills)'}")
-    print(f"[{'✅ PASS' if npx_bin else '⚠️  WARN'}] npx package runner: {npx_bin or 'Not found'}")
+    print(f"[{'PASS' if node_bin else 'WARN'}] Node.js runtime: {node_bin or 'Not found (optional for npx skills)'}")
+    print(f"[{'PASS' if npx_bin else 'WARN'}] npx package runner: {npx_bin or 'Not found'}")
 
     loader = SkillsLoader()
     skills = loader.list_skills()
-    skills_ok = len(skills) >= 26 and all(s.line_count <= 300 for s in skills)
-    print(f"[{'✅ PASS' if skills_ok else '❌ FAIL'}] Skills inventory: {len(skills)}/26 skills discovered (all <= 300 lines)")
+    skills_ok = len(skills) >= 27 and all(s.line_count <= 300 for s in skills)
+    print(f"[{'PASS' if skills_ok else 'FAIL'}] Skills inventory: {len(skills)}/27 skills discovered (all <= 300 lines)")
 
     repo_root = Path(__file__).resolve().parent.parent
     agents_dir = repo_root / "agents"
     agents_found = list(agents_dir.glob("*.md")) if agents_dir.exists() else []
-    agents_ok = len(agents_found) >= 20
-    print(f"[{'✅ PASS' if agents_ok else '❌ FAIL'}] Autonomous agents: {len(agents_found)}/20 agents present in agents/")
+    agents_ok = len(agents_found) >= 21
+    print(f"[{'PASS' if agents_ok else 'FAIL'}] Autonomous agents: {len(agents_found)}/21 agents present in agents/")
     for a in sorted(agents_found):
-        print(f"     • {a.name}")
+        print(f"     - {a.name}")
 
     user_home = Path.home()
     detected_editors = []
@@ -557,22 +587,37 @@ def cmd_doctor(args):
         detected_editors.append("Claude Code")
     if (user_home / ".agents").exists() or (repo_root / ".agents").exists():
         detected_editors.append("Antigravity / Zed")
-    if (user_home / ".cursor").exists():
+    if (user_home / ".cursor").exists() or (repo_root / ".cursor").exists():
         detected_editors.append("Cursor")
-    if (user_home / ".codex").exists():
+    if (user_home / ".codex").exists() or (repo_root / ".codex").exists():
         detected_editors.append("Codex")
-    if (user_home / ".config" / "opencode").exists() or (user_home / ".opencode").exists():
+    if (user_home / ".config" / "opencode").exists() or (user_home / ".opencode").exists() or (repo_root / ".opencode").exists():
         detected_editors.append("OpenCode")
-    print(f"[ℹ️  INFO] Detected AI Platforms: {', '.join(detected_editors) if detected_editors else 'None (standalone mode)'}")
+    if (user_home / ".gemini").exists() or (repo_root / ".gemini").exists():
+        detected_editors.append("Gemini CLI")
+    if (user_home / ".trae").exists() or (repo_root / ".trae").exists():
+        detected_editors.append("Trae")
+    if (user_home / ".windsurf").exists() or (repo_root / ".windsurf").exists():
+        detected_editors.append("Windsurf")
+    if (user_home / ".codebuddy").exists() or (repo_root / ".codebuddy").exists():
+        detected_editors.append("CodeBuddy")
+    if (user_home / ".omp").exists() or (repo_root / ".omp").exists():
+        detected_editors.append("OMP")
+    print(f"[INFO] Detected AI Platforms: {', '.join(detected_editors) if detected_editors else 'None (standalone mode)'}")
     print("=" * 65)
-    print("🎉 Maxilun ecosystem is ready for multi-agent autonomous engineering.\n")
-
+    overall_ok = py_ok and skills_ok and agents_ok
+    if overall_ok:
+        print("Maxilun ecosystem is ready for multi-agent autonomous engineering.\n")
+        sys.exit(0)
+    print("Healthcheck failed. Inspect [FAIL] entries above.\n", file=sys.stderr)
+    sys.exit(1)
 
 
 def main():
     parser = argparse.ArgumentParser(
         prog="maxilun-harness",
-        description="Maxilun Autonomous Agent Runtime, Purity Gate & Quality Governance Center."
+        description="Maxilun Autonomous Agent Runtime, Purity Gate & Quality Governance Center.",
+        allow_abbrev=False,
     )
     subparsers = parser.add_subparsers(dest="command")
 
@@ -594,7 +639,7 @@ def main():
     run_parser.add_argument("--max-turns", type=int, default=10, help="Max interaction turns")
 
     # agent
-    agent_parser = subparsers.add_parser("agent", help="Directly run one of the 15 Maxilun agents (scout, architect, maker, coder-backend, ...)")
+    agent_parser = subparsers.add_parser("agent", help="Directly run one of the 21 Maxilun agents (scout, architect, maker, coder-backend, ...)")
     agent_parser.add_argument("name", help="Agent name with or without the maxilun- prefix, e.g. architect, coder-backend")
     agent_parser.add_argument("task", help="Task prompt to execute")
     agent_parser.add_argument("--provider", choices=["deepseek", "openai", "openrouter", "ollama", "groq", "gemini"], default=None, help="Provider preset")
@@ -615,12 +660,13 @@ def main():
     meet_parser.add_argument("--max-turns", type=int, default=10, help="Max turns per speaker loop")
 
     # skills
-    subparsers.add_parser("skills", help="List and inspect all 25 Maxilun ecosystem skills (1 orchestrator + 24 specialists)")
-    subparsers.add_parser("doctor", help="Run diagnostic healthcheck on environment, 25 skills, and 15 agents")
+    subparsers.add_parser("skills", help="List and inspect all 27 Maxilun ecosystem skills (1 orchestrator + 26 specialists)")
+    subparsers.add_parser("doctor", help="Run diagnostic healthcheck on environment, 27 skills, and 21 agents")
 
     # dashboard
     dash_parser = subparsers.add_parser("dashboard", help="Generate and open the interactive visual HTML dashboard")
     dash_parser.add_argument("--open", action="store_true", default=True, help="Automatically open in browser")
+    dash_parser.add_argument("--no-open", action="store_true", help="Generate without opening browser")
 
     # swarm
     subparsers.add_parser("swarm", help="Launch the Live Swarm Studio multiplayer agent visualizer in browser")

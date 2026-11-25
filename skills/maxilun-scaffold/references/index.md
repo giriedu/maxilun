@@ -16,5 +16,5 @@ This directory is a bundled reference library for `maxilun-scaffold`. It provide
 1. Determine the product domain from repository scan or user interview.
 2. Read `references/prd-archetypes.md` to select the closest domain archetype.
 3. Read `../maxilun-craft/references/design-md/index.md` and up to two matching brand analysis files in `../maxilun-craft/references/design-md/` to ground `docs/DESIGN.md` in production-proven visual hierarchy and tokens rather than empty `[TBD]` placeholders.
-4. Read `references/doc-templates.md` and generate all 10 files in `docs/` with `[CONFIRMED]`, `[ASSUMED]`, or `[TBD: reason]` markers.
+4. Read `references/doc-templates.md` and generate all 10 files in `docs/` with `[CONFIRMED]`, `[INFERRED]`, `[UNCERTAIN: reason]`, or `[UNVERIFIED]` markers matching Core Rules.
 5. Include the `References`, `Applied`, `Rejected`, and `Reason` block inside `docs/DESIGN.md`.

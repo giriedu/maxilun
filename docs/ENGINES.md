@@ -1,6 +1,6 @@
 # Four Always-On Engines and Three Operating Protocols
 
-Empat engine pertama adalah fondasi perilaku dan kualitas eksekusi. Tiga bagian berikutnya adalah protokol kerja pendukung. Spesifikasi kanonik ada di `skills/maxilun/references/engines.md`, dan ringkasannya tertanam identik sebagai blok `CORE-RULES` di seluruh 23 `SKILL.md`.
+Empat engine pertama adalah fondasi perilaku dan kualitas eksekusi. Tiga bagian berikutnya adalah protokol kerja pendukung. Spesifikasi kanonik ada di `skills/maxilun/references/engines.md`, dan ringkasannya tertanam identik sebagai blok `CORE-RULES` di seluruh 27 `SKILL.md`.
 
 ## 1. Focus & Agency Engine
 

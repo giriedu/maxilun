@@ -5,10 +5,11 @@ Antigravity IDE, Claude Code, Cursor, and any MCP-compatible client.
 """
 
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Optional, Tuple
 
 KG_DIR = Path(__file__).resolve().parent
 if str(KG_DIR) not in sys.path:
@@ -89,7 +90,7 @@ TOOLS = [
     },
 ]
 
-_GRAPH_CACHE: Dict[str, Dict[str, Any]] = {}
+_GRAPH_CACHE: Dict[str, Tuple[float, Dict[str, Any]]] = {}
 
 
 def _resolve_root(raw_path: str) -> Path:
@@ -97,25 +98,48 @@ def _resolve_root(raw_path: str) -> Path:
     return p.resolve() if p.is_absolute() else (Path.cwd() / p).resolve()
 
 
+def _parse_file_line(node: Dict[str, Any]) -> Tuple[Optional[str], Optional[int]]:
+    raw = str(node.get("source_file") or "")
+    line = node.get("line")
+    if not raw:
+        return None, int(line) if isinstance(line, int) else None
+    m = re.match(r"^(.*):(\d+)$", raw)
+    if m:
+        fpath = m.group(1).replace("\\", "/")
+        return fpath, int(line) if isinstance(line, int) else int(m.group(2))
+    return raw.replace("\\", "/"), int(line) if isinstance(line, int) else None
+
+
 def _get_or_scan(root: Path, force: bool = False, use_cache: bool = True) -> Dict[str, Any]:
     key = str(root)
-    if not force and key in _GRAPH_CACHE:
-        return _GRAPH_CACHE[key]
-    graph_json = root / "maxilun-out" / "graph.json"
-    if not force and graph_json.is_file():
-        try:
-            data = json.loads(graph_json.read_text(encoding="utf-8", errors="replace"))
-            if isinstance(data, dict) and "nodes" in data:
-                _GRAPH_CACHE[key] = data
-                return data
-        except Exception:
-            pass
+    graph_files = [root / "maxilun-out" / "graph.json", root / ".maxilun" / "graph.json"]
+    if not force:
+        for gf in graph_files:
+            if gf.is_file():
+                try:
+                    mtime = gf.stat().st_mtime
+                    cached = _GRAPH_CACHE.get(key)
+                    if cached and cached[0] >= mtime:
+                        return cached[1]
+                    data = json.loads(gf.read_text(encoding="utf-8", errors="replace"))
+                    if isinstance(data, dict) and "nodes" in data:
+                        _GRAPH_CACHE[key] = (mtime, data)
+                        return data
+                except Exception:
+                    pass
+        if key in _GRAPH_CACHE and not any(gf.is_file() for gf in graph_files):
+            return _GRAPH_CACHE[key][1]
     gb = GraphBuilder()
     graph = gb.scan_project(key, use_cache=use_cache)
     out_dir = root / "maxilun-out"
     out_dir.mkdir(parents=True, exist_ok=True)
-    gb.save_graph(str(out_dir / "graph.json"), merged=True)
-    _GRAPH_CACHE[key] = graph
+    gf_out = out_dir / "graph.json"
+    gb.save_graph(str(gf_out), merged=True)
+    try:
+        mtime = gf_out.stat().st_mtime
+    except OSError:
+        mtime = 0.0
+    _GRAPH_CACHE[key] = (mtime, graph)
     return graph
 
 
@@ -135,6 +159,9 @@ def _handle_tool(name: str, args: Dict[str, Any]) -> str:
         }, indent=2)
 
     graph = _get_or_scan(root, force=bool(args.get("refresh", False)), use_cache=True)
+    nodes = graph.get("nodes", [])
+    edges = graph.get("edges", [])
+    node_locs = {n["id"]: _parse_file_line(n) for n in nodes if n.get("id")}
 
     if name == "kg_locate":
         question = args["question"]
@@ -146,18 +173,18 @@ def _handle_tool(name: str, args: Dict[str, Any]) -> str:
 
     if name == "kg_query":
         op = args["operator"].rstrip(":")
-        symbol = args["symbol"]
-        nodes = graph.get("nodes", [])
-        edges = graph.get("edges", [])
+        symbol = str(args["symbol"]).replace("\\", "/")
         matches = []
         if op == "defOf":
             for n in nodes:
-                if n.get("label") == symbol or symbol in n.get("id", ""):
+                nid = str(n.get("id", "")).replace("\\", "/")
+                if n.get("label") == symbol or symbol in nid:
+                    nfile, nline = _parse_file_line(n)
                     matches.append({
                         "id": n.get("id"),
                         "type": n.get("type"),
-                        "file": n.get("source_file"),
-                        "line": n.get("line"),
+                        "file": nfile,
+                        "line": nline,
                     })
         else:
             edge_map = {
@@ -171,16 +198,23 @@ def _handle_tool(name: str, args: Dict[str, Any]) -> str:
             if op in edge_map:
                 etype, match_field, other_field = edge_map[op]
                 for e in edges:
-                    if e.get("type") == etype and symbol in str(e.get(match_field, "")):
+                    mval = str(e.get(match_field, "")).replace("\\", "/")
+                    if e.get("type") == etype and symbol in mval:
+                        src_file, src_line = node_locs.get(e.get("source"), (None, None))
+                        ef = e.get("source_file") or src_file
+                        el = e.get("line") if isinstance(e.get("line"), int) else src_line
                         matches.append({
                             "match": e.get(match_field),
                             "related": e.get(other_field),
                             "type": etype,
                             "confidence": e.get("confidence", "exact"),
-                            "file": e.get("source_file"),
-                            "line": e.get("line"),
+                            "file": ef,
+                            "line": el,
                         })
-        return json.dumps({"operator": op, "symbol": symbol, "count": len(matches), "matches": matches[:50]}, indent=2)
+        payload: Dict[str, Any] = {"operator": op, "symbol": symbol, "count": len(matches), "matches": matches[:50]}
+        if op == "routesOf" and not matches:
+            payload["note"] = "No EXPOSES route edges in graph; use kg_locate with endpoint/router terms for HTTP route lookup."
+        return json.dumps(payload, indent=2)
 
     if name == "kg_diff_impact":
         changed = []
@@ -194,21 +228,26 @@ def _handle_tool(name: str, args: Dict[str, Any]) -> str:
             except Exception:
                 pass
 
-        edges = graph.get("edges", [])
         impacted = {}
         for f in changed:
             stem = Path(f).stem
-            importers = sorted({
-                e.get("source_file") or e.get("source")
-                for e in edges
-                if e.get("type") == "IMPORTS" and (f in str(e.get("target", "")) or stem in str(e.get("target", "")))
-            })
-            callers = sorted({
-                f"{e.get('source_file') or e.get('source')}:{e.get('line', '')}".rstrip(":")
-                for e in edges
-                if e.get("type") == "CALLS" and f == e.get("source_file")
-            })
-            impacted[f] = {"importers": importers[:20], "outbound_calls": callers[:20]}
+            no_ext = f.rsplit(".", 1)[0] if "." in Path(f).name else f
+            importers = set()
+            callers = set()
+            for e in edges:
+                etype = e.get("type")
+                src_file, src_line = node_locs.get(e.get("source"), (None, None))
+                ef = str(e.get("source_file") or src_file or "").replace("\\", "/")
+                if etype == "IMPORTS":
+                    tval = str(e.get("target", "")).replace("\\", "/")
+                    if tval.endswith(f) or tval.endswith(no_ext) or Path(tval).stem == stem and ("/" in tval and f.endswith(tval) or tval == stem):
+                        importers.add(ef or str(e.get("source")))
+                elif etype == "CALLS":
+                    if ef == f or ef.endswith("/" + f) or f"file:{f}" in str(e.get("source", "")) or f":{f}:" in str(e.get("source", "")):
+                        loc = f"{ef}:{src_line}" if (ef and src_line) else (ef or str(e.get("source")))
+                        target_sym = str(e.get("target", ""))
+                        callers.add(f"{loc} -> {target_sym}" if target_sym else loc)
+            impacted[f] = {"importers": sorted(importers)[:20], "outbound_calls": sorted(callers)[:20]}
 
         return json.dumps({"changed_files": changed, "impact": impacted}, indent=2)
 

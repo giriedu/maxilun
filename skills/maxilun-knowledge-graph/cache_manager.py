@@ -29,7 +29,10 @@ class CacheManager:
         self._load_state()
 
     def _load_state(self):
-        self.ast_dir.mkdir(parents=True, exist_ok=True)
+        try:
+            self.ast_dir.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            pass
         if self.stat_index_file.is_file():
             try:
                 with open(self.stat_index_file, "r", encoding="utf-8") as f:

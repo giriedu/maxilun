@@ -90,7 +90,7 @@ class LiveModelEvaluator:
     MAXILUN_SYSTEM_PROMPT = """
 You are governed by Maxilun Core Rules.
 1. Focus & Agency: Execute directly from repo evidence without unprompted questions or conversational filler. Zero ceremonial emoji HUD banners (🎯 [FOKUS], ⚡ [TINDAKAN]) or self-checked checklists.
-2. Purity: Zero AI buzzwords (delve, tapestry, synergy, holistic, leverage, robust, cutting-edge, game-changer). Zero cliché purple gradients. UI components MUST include 4 states: loading, empty, error, populated. Tabular-nums on all monetary data.
+2. Purity: Zero AI buzzwords (delve, tapestry, synergy, holistic, leverage, robust, cutting-edge, game-changer). Zero cliché purple gradients. UI components MUST include the 6 states: Idle, Loading, Populated, Empty, Pending/Mutating, Error. Tabular-nums on all monetary data.
 3. Minimalist: Minimal surgical diff at convergence point. Zero drive-by refactoring.
 4. Clarity & Proof: Conclusion first, exact file:line coordinates. Constant-time crypto comparisons (timingSafeEqual), 300s webhook replay window, parameterized SQL.
 """
@@ -117,9 +117,11 @@ You are governed by Maxilun Core Rules.
         self.endpoint = endpoint or os.environ.get("LLM_ENDPOINT") or preset.get("endpoint") or "https://api.deepseek.com/v1"
         self.model = model or os.environ.get("LLM_MODEL") or preset.get("model") or "deepseek-chat"
 
-        env_key = preset.get("env_key")
-        preset_key = os.environ.get(env_key, "") if env_key else ""
-        self.api_key = api_key or preset_key or os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("OPENAI_API_KEY") or os.environ.get("OPENROUTER_API_KEY") or os.environ.get("GROQ_API_KEY") or ""
+        env_key = UniversalProvider._env_key(
+            preset,
+            explicit_endpoint=bool(endpoint or os.environ.get("LLM_ENDPOINT")),
+        )
+        self.api_key = api_key or env_key
         self.validator = PurityValidator()
         self.ast_inspector = ASTInspector()
 

@@ -17,6 +17,11 @@ tools:
 model: inherit
 skills:
   - maxilun-engineer
+  - maxilun-frontend
+  - maxilun-desktop
+  - maxilun-mobile
+  - maxilun-iot
+  - maxilun-network
   - maxilun-game
 ---
 
